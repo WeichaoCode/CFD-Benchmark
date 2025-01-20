@@ -54,4 +54,3 @@ def compare_code_output_loss(file1, file2):
 # Example usage
 result = compare_code_output_loss("response.py", "instruction.py")
 print(result)
-

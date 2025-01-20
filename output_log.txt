@@ -1,0 +1,1 @@
+compare key 3, {'MAPE (%)': np.float64(0.0), 'MSE': np.float64(0.0), 'Same Output': np.True_}

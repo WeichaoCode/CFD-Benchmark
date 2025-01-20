@@ -1,7 +1,7 @@
 import subprocess
 import re
 import numpy as np
-
+import datetime
 
 def extract_numbers(output):
     """Extract numerical values (integers and floats) from output string."""
@@ -52,5 +52,47 @@ def compare_code_output_loss(file1, file2):
 
 
 # Example usage
-result = compare_code_output_loss("response.py", "instruction.py")
+file1 = "response/3.py"
+file2 = "instruction/3.py"
+
+# Extract the key dynamically (assumes filenames follow "X.py" format)
+key_match = re.search(r"(\d+)\.py", file1)  # Extracts '3' from "3.py"
+if key_match:
+    key = key_match.group(1)
+else:
+    raise ValueError("Invalid file format. Expected 'X.py' structure.")
+
+# Generate log entry
+result = compare_code_output_loss(file1, file2)
+log_entry = f"compare key {key}, {result}"
+
+# Log file path
+log_file = "output_log.txt"
+
+# Read existing log data
+log_lines = []
+existing_keys = {}
+
+try:
+    with open(log_file, "r") as log:
+        for line in log:
+            match = re.search(r"compare key (\d+),", line)
+            if match:
+                existing_keys[match.group(1)] = line.strip()
+            log_lines.append(line.strip())
+except FileNotFoundError:
+    pass  # Log file doesn't exist yet, will be created
+
+# Update log (rewrite existing key entry or append new)
+if key in existing_keys:
+    log_lines = [log_entry if f"compare key {key}," in line else line for line in log_lines]
+else:
+    log_lines.append(log_entry)
+
+# Write updated log back to file
+with open(log_file, "w") as log:
+    for line in log_lines:
+        log.write(line + "\n")
+
+
 print(result)

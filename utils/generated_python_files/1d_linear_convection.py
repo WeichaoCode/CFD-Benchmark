@@ -1,0 +1,36 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Physical parameters
+c = 1  # Wave speed
+Nx = 41  # Number of spatial grid points
+Lx = 2.0  # Domain length
+dx = Lx / (Nx - 1)  # Grid spacing
+dt = 0.025  # Time step (should satisfy CFL condition)
+Nt = 25  # Number of time steps
+
+# Create spatial grid
+x = np.linspace(0, Lx, Nx)
+
+# Initialize u with the given initial condition
+u = np.ones(Nx)  # u = 1 everywhere
+u[(x >= 0.5) & (x <= 1)] = 2  # Set u = 2 in the range 0.5 ≤ x ≤ 1
+
+# Plot initial condition
+plt.plot(x, u, label="Initial Condition", color='k')
+
+# Time integration using Upwind Scheme
+for n in range(Nt):
+    u_new = u.copy()  # Copy current u for update
+    for i in range(1, Nx):  # Upwind scheme requires i-1 index
+        u_new[i] = u[i] - c * dt / dx * (u[i] - u[i-1])
+    u = u_new.copy()  # Update solution
+
+# Plot final solution
+plt.plot(x, u, label="Final Condition (t={:.2f})".format(Nt * dt), linestyle='--', color='r')
+plt.xlabel('x')
+plt.ylabel('u')
+plt.title('1D Linear Convection Equation')
+plt.legend()
+plt.grid()
+plt.show()

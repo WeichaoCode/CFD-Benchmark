@@ -21,39 +21,39 @@ def mean_squared_error(y_true, y_pred):
 
 def compare_code_output_loss(file1, file2):
     try:
-        # Run both scripts and capture outputs
-        result1 = subprocess.run(["python", file1], capture_output=True, text=True, timeout=5)
-        result2 = subprocess.run(["python", file2], capture_output=True, text=True, timeout=5)
+        # Run both scripts and save the output arrays to temporary files
+        subprocess.run(["python", file1], check=True, timeout=100)
+        subprocess.run(["python", file2], check=True, timeout=100)
 
-        # Extract numerical values
-        numbers1 = extract_numbers(result1.stdout)
-        numbers2 = extract_numbers(result2.stdout)
+        # Load the u and v arrays from both script outputs
+        u1 = np.load("u_true.npy")
+        v1 = np.load("v_true.npy")
+        u2 = np.load("u_pred.npy")
+        v2 = np.load("v_pred.npy")
 
-        # Ensure both outputs contain numbers
-        if len(numbers1) == 0 or len(numbers2) == 0:
-            return "Error: One or both outputs contain no numeric values."
+        # Compute differences (Mean Squared Error)
+        u_loss = np.mean((u1 - u2) ** 2)
+        v_loss = np.mean((v1 - v2) ** 2)
 
-        # Ensure both outputs are the same length
-        if len(numbers1) != len(numbers2):
-            return f"Error: Output lengths differ (Response: {len(numbers1)}, Instruction: {len(numbers2)})"
+        print(f"Loss between u arrays (MSE): {u_loss:.6f}")
+        print(f"Loss between v arrays (MSE): {v_loss:.6f}")
 
-        # Compute loss functions
-        mape = mean_absolute_percentage_error(numbers1, numbers2)
-        mse = mean_squared_error(numbers1, numbers2)
+        # Compute absolute differences for debugging
+        max_u_diff = np.max(np.abs(u1 - u2))
+        max_v_diff = np.max(np.abs(v1 - v2))
+        print(f"Max absolute difference in u: {max_u_diff:.6f}")
+        print(f"Max absolute difference in v: {max_v_diff:.6f}")
 
-        return {
-            "MAPE (%)": round(mape, 4),
-            "MSE": round(mse, 6),
-            "Same Output": mape < 1.0  # Consider outputs "same" if relative error is < 1%
-        }
+        return u_loss, v_loss
 
     except Exception as e:
-        return str(e)
+        print(f"Error comparing outputs: {e}")
+        return None, None
 
 
 # Example usage
-file1 = "response/3.py"
-file2 = "instruction/3.py"
+file1 = "response/9.py"
+file2 = "instruction/9.py"
 
 # Extract the key dynamically (assumes filenames follow "X.py" format)
 key_match = re.search(r"(\d+)\.py", file1)  # Extracts '3' from "3.py"

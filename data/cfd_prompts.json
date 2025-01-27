@@ -1,0 +1,44 @@
+{
+    "prompts": [
+        {
+            "name": "1D linear convection",
+            "prompt": "Solve the 1D linear convection problem using Python.\n\nEquation:\n\u2202u/\u2202t + c\u2202u/\u2202x = 0\n\nPhysical Properties:\n{'wave speed c': 1}\n\nBoundary Conditions:\n{}\n\nInitial Conditions:\n{'u': '2 at 0.5<=x<=1; 1 else where'}\n\nDomain: [0, 2]\nGrid: Nx=41, Ny={}\n\nWrite Python code to numerically solve this equation using finite difference or finite volume method. Include necessary libraries and comments to explain the implementation."
+        },
+        {
+            "name": "1D nonlinear convection",
+            "prompt": "Solve the 1D nonlinear convection problem using Python.\n\nEquation:\n\u2202u/\u2202t + u\u2202u/\u2202x = 0\n\nPhysical Properties:\n{}\n\nBoundary Conditions:\n{}\n\nInitial Conditions:\n{'u': '2 at 0.5<=x<=1; 1 else where'}\n\nDomain: [0, 2]\nGrid: Nx=41, Ny={}\n\nWrite Python code to numerically solve this equation using finite difference or finite volume method. Include necessary libraries and comments to explain the implementation."
+        },
+        {
+            "name": "1D diffusion equation",
+            "prompt": "Solve the 1D diffusion equation problem using Python.\n\nEquation:\n\\frac{\\partial u}{\\partial t} = \\nu \\frac{\\partial^2 u}{\\partial x^2}\n\n\nPhysical Properties:\n{'viscosity \\nu': 0.3}\n\nBoundary Conditions:\n{}\n\nInitial Conditions:\n{'u': '2 at 0.5<=x<=1; 1 else where'}\n\nDomain: [0, 2]\nGrid: Nx=41, Ny={}\n\nWrite Python code to numerically solve this equation using finite difference or finite volume method. Include necessary libraries and comments to explain the implementation."
+        },
+        {
+            "name": "1D Burgers' equation",
+            "prompt": "Solve the 1D Burgers' equation problem using Python.\n\nEquation:\n\\\\frac{\\\\partial u}{\\\\partial t} + u \\\\frac{\\\\partial u}{\\\\partial x} = \\\\nu \\\\frac{\\\\partial^2 u}{\\\\partial x^2}\n\nPhysical Properties:\n{'viscosity \\nu': 0.07}\n\nBoundary Conditions:\n{'all boundaries': 'periodic boundary conditions'}\n\nInitial Conditions:\n{'u': 'u = -\\\\\\\\frac{2\\\\\\\\nu}{\\\\\\\\phi} \\\\\\\\frac{\\\\\\\\partial \\\\\\\\phi}{\\\\\\\\partial x} + 4, where \\\\\\\\phi = \\\\\\\\exp\\\\\\\\left(\\\\\\\\frac{-x^2}{4\\\\\\\\nu}\\\\\\\\right) + \\\\\\\\exp\\\\\\\\left(\\\\\\\\frac{-(x - 2\\\\\\\\pi)^2}{4\\\\\\\\nu}\\\\\\\\right)'}\n\nDomain: [0, 2]\nGrid: Nx=101, Ny={}\n\nWrite Python code to numerically solve this equation using finite difference or finite volume method. Include necessary libraries and comments to explain the implementation."
+        },
+        {
+            "name": "2D linear convection equation",
+            "prompt": "Solve the 2D linear convection equation problem using Python.\n\nEquation:\n\\\\frac{\\\\partial u}{\\\\partial t} + c \\\\frac{\\\\partial u}{\\\\partial x} + c \\\\frac{\\\\partial u}{\\\\partial y} = 0\n\nPhysical Properties:\n{'wave speed c': 1}\n\nBoundary Conditions:\n{'all boundaries': 'u = 1 for x = 0,2 and y = 0,2'}\n\nInitial Conditions:\n{'u': 'u(x,y) = 2 for 0.5 \u2264 x, y \u2264 1, and u(x,y) = 1 everywhere else'}\n\nDomain: [0, 2, 0, 2]\nGrid: Nx=81, Ny=81\n\nWrite Python code to numerically solve this equation using finite difference or finite volume method. Include necessary libraries and comments to explain the implementation."
+        },
+        {
+            "name": "2D convection equation",
+            "prompt": "Solve the 2D convection equation problem using Python.\n\nEquation:\n\\\\frac{\\\\partial u}{\\\\partial t} + u \\\\frac{\\\\partial u}{\\\\partial x} + v \\\\frac{\\\\partial u}{\\\\partial y} = 0 \\\\] \\n \\\\[ \\\\frac{\\\\partial v}{\\\\partial t} + u \\\\frac{\\\\partial v}{\\\\partial x} + v \\\\frac{\\\\partial v}{\\\\partial y} = 0\n\nPhysical Properties:\n{}\n\nBoundary Conditions:\n{'all boundaries': 'u = 1, v = 1 for x = 0,2 and y = 0,2'}\n\nInitial Conditions:\n{'u': 'u(x,y) = 2 for 0.5 \u2264 x, y \u2264 1, and u(x,y) = 1 everywhere else', 'v': 'v(x,y) = 2 for 0.5 \u2264 x, y \u2264 1, and v(x,y) = 1 everywhere else'}\n\nDomain: [0, 2, 0, 2]\nGrid: Nx=101, Ny=101\n\nWrite Python code to numerically solve this equation using finite difference or finite volume method. Include necessary libraries and comments to explain the implementation."
+        },
+        {
+            "name": "2D diffusion equation",
+            "prompt": "Solve the 2D diffusion equation problem using Python.\n\nEquation:\n\\n \\\\[ \\\\frac{\\\\partial u}{\\\\partial t} = \\\\nu \\\\frac{\\\\partial^2 u}{\\\\partial x^2} + \\\\nu \\\\frac{\\\\partial^2 u}{\\\\partial y^2} \\\\]\n\nPhysical Properties:\n{'viscosity \\nu': 0.05}\n\nBoundary Conditions:\n{'all boundaries': 'u = 1 for x = 0,2 and y = 0,2'}\n\nInitial Conditions:\n{'u': 'u(x,y) = 2 for 0.5 \u2264 x, y \u2264 1, and u(x,y) = 1 everywhere else'}\n\nDomain: [0, 2, 0, 2]\nGrid: Nx=31, Ny=31\n\nWrite Python code to numerically solve this equation using finite difference or finite volume method. Include necessary libraries and comments to explain the implementation."
+        },
+        {
+            "name": "2D Burgers' equation",
+            "prompt": "Solve the 2D Burgers' equation problem using Python.\n\nEquation:\n\\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} + v \\frac{\\partial u}{\\partial y} = \\nu \\left( \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} \\right) \\frac{\\partial v}{\\partial t} + u \\frac{\\partial v}{\\partial x} + v \\frac{\\partial v}{\\partial y} = \\nu \\left( \\frac{\\partial^2 v}{\\partial x^2} + \\frac{\\partial^2 v}{\\partial y^2} \\right)\n\nPhysical Properties:\n{'viscosity \\nu': 0.01}\n\nBoundary Conditions:\n{'all boundaries': 'u = 1, v = 1 for x = 0,2 and y = 0,2'}\n\nInitial Conditions:\n{'u': 'u(x,y) = 2 for 0.5 \u2264 x, y \u2264 1, and u(x,y) = 1 everywhere else', 'v': 'v(x,y) = 2 for 0.5 \u2264 x, y \u2264 1, and v(x,y) = 1 everywhere else'}\n\nDomain: [0, 2, 0, 2]\nGrid: Nx=41, Ny=41\n\nWrite Python code to numerically solve this equation using finite difference or finite volume method. Include necessary libraries and comments to explain the implementation."
+        },
+        {
+            "name": "2D Laplace equation",
+            "prompt": "Solve the 2D Laplace equation problem using Python.\n\nEquation:\n\\frac{\\partial^2 p}{\\partial x^2} + \\frac{\\partial^2 p}{\\partial y^2} = 0\n\nPhysical Properties:\n{}\n\nBoundary Conditions:\n{'all boundaries': 'p = 0 at x = 0, p = y at x = 2,\\\\frac{\\\\partial p}{\\\\partial y} = 0 at y = 0, 1'}\n\nInitial Conditions:\n{'p': 'p = 0 everywhere'}\n\nDomain: [0, 2, 0, 1]\nGrid: Nx=31, Ny=31\n\nWrite Python code to numerically solve this equation using finite difference or finite volume method. Include necessary libraries and comments to explain the implementation."
+        },
+        {
+            "name": "2D Poisson equation",
+            "prompt": "Solve the 2D Poisson equation problem using Python.\n\nEquation:\n\\frac{\\partial^2 p}{\\partial x^2} + \\frac{\\partial^2 p}{\\partial y^2} = b\n\n\nPhysical Properties:\n{'source term': 'b_{i,j} = 100 at i = nx/4, j=ny/4; b_{i,j}=-100 at i=3nx/4, j=3ny/4; b_{i,j}=0, elsewhere'}\n\nBoundary Conditions:\n{'all boundaries': 'p = 0 at x = 0, x = 2 and y = 0 and y = 1'}\n\nInitial Conditions:\n{'p': 'p = 0'}\n\nDomain: [0, 2, 0, 1]\nGrid: Nx=50, Ny=50\n\nWrite Python code to numerically solve this equation using finite difference or finite volume method. Include necessary libraries and comments to explain the implementation."
+        }
+    ]
+}

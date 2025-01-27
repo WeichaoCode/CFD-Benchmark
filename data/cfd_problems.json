@@ -1,0 +1,180 @@
+{
+    "problems": [
+        {
+            "name": "1D linear convection",
+            "equation_format": "∂u/∂t + c∂u/∂x = 0",
+            "physical_properties": {
+                "wave speed c": 1
+            },
+            "boundary_conditions": {
+            },
+            "initial_conditions": {
+                "u": "2 at 0.5<=x<=1; 1 else where"
+            },
+            "domain": [0, 2],
+            "grid": {
+                "Nx": 41,
+                "Ny": {}
+            }
+        },
+        {
+            "name": "1D nonlinear convection",
+            "equation_format": "∂u/∂t + u∂u/∂x = 0",
+            "physical_properties": {
+            },
+            "boundary_conditions": {
+            },
+            "initial_conditions": {
+                "u": "2 at 0.5<=x<=1; 1 else where"
+            },
+            "domain": [0, 2],
+            "grid": {
+                "Nx": 41,
+                "Ny": {}
+            }
+        },
+        {
+            "name": "1D diffusion equation",
+            "equation_format": "\\frac{\\partial u}{\\partial t} = \\nu \\frac{\\partial^2 u}{\\partial x^2}\n",
+            "physical_properties": {
+                "viscosity \nu": 0.3
+            },
+            "boundary_conditions": {
+            },
+            "initial_conditions": {
+                "u": "2 at 0.5<=x<=1; 1 else where"
+            },
+            "domain": [0, 2],
+            "grid": {
+                "Nx": 41,
+                "Ny": {}
+            }
+        },
+        {
+            "name": "1D Burgers' equation",
+            "equation_format": "\\\\frac{\\\\partial u}{\\\\partial t} + u \\\\frac{\\\\partial u}{\\\\partial x} = \\\\nu \\\\frac{\\\\partial^2 u}{\\\\partial x^2}",
+            "physical_properties": {
+                "viscosity \nu": 0.07
+            },
+            "boundary_conditions": {
+                "all boundaries": "periodic boundary conditions"
+            },
+            "initial_conditions": {
+                "u": "u = -\\\\frac{2\\\\nu}{\\\\phi} \\\\frac{\\\\partial \\\\phi}{\\\\partial x} + 4, where \\\\phi = \\\\exp\\\\left(\\\\frac{-x^2}{4\\\\nu}\\\\right) + \\\\exp\\\\left(\\\\frac{-(x - 2\\\\pi)^2}{4\\\\nu}\\\\right)"
+            },
+            "domain": [0, 2],
+            "grid": {
+                "Nx": 101,
+                "Ny": {}
+            }
+        },
+        {
+            "name": "2D linear convection equation",
+            "equation_format": "\\\\frac{\\\\partial u}{\\\\partial t} + c \\\\frac{\\\\partial u}{\\\\partial x} + c \\\\frac{\\\\partial u}{\\\\partial y} = 0",
+            "physical_properties": {
+                "wave speed c": 1
+            },
+            "boundary_conditions": {
+                "all boundaries": "u = 1 for x = 0,2 and y = 0,2"
+            },
+            "initial_conditions": {
+                "u": "u(x,y) = 2 for 0.5 ≤ x, y ≤ 1, and u(x,y) = 1 everywhere else"
+            },
+            "domain": [0, 2, 0, 2],
+            "grid": {
+                "Nx": 81,
+                "Ny": 81
+            }
+        },
+        {
+            "name": "2D convection equation",
+            "equation_format": "\\\\frac{\\\\partial u}{\\\\partial t} + u \\\\frac{\\\\partial u}{\\\\partial x} + v \\\\frac{\\\\partial u}{\\\\partial y} = 0 \\\\] \\n \\\\[ \\\\frac{\\\\partial v}{\\\\partial t} + u \\\\frac{\\\\partial v}{\\\\partial x} + v \\\\frac{\\\\partial v}{\\\\partial y} = 0",
+            "physical_properties": {
+            },
+            "boundary_conditions": {
+                "all boundaries": "u = 1, v = 1 for x = 0,2 and y = 0,2"
+            },
+            "initial_conditions": {
+                "u": "u(x,y) = 2 for 0.5 ≤ x, y ≤ 1, and u(x,y) = 1 everywhere else",
+                "v": "v(x,y) = 2 for 0.5 ≤ x, y ≤ 1, and v(x,y) = 1 everywhere else"
+            },
+            "domain": [0, 2, 0, 2],
+            "grid": {
+                "Nx": 101,
+                "Ny": 101
+            }
+        },
+        {
+            "name": "2D diffusion equation",
+            "equation_format": "\\n \\\\[ \\\\frac{\\\\partial u}{\\\\partial t} = \\\\nu \\\\frac{\\\\partial^2 u}{\\\\partial x^2} + \\\\nu \\\\frac{\\\\partial^2 u}{\\\\partial y^2} \\\\]",
+            "physical_properties": {
+                "viscosity \nu":0.05
+            },
+            "boundary_conditions": {
+                "all boundaries": "u = 1 for x = 0,2 and y = 0,2"
+            },
+            "initial_conditions": {
+                "u": "u(x,y) = 2 for 0.5 ≤ x, y ≤ 1, and u(x,y) = 1 everywhere else"
+            },
+            "domain": [0, 2, 0, 2],
+            "grid": {
+                "Nx": 31,
+                "Ny": 31
+            }
+        },
+        {
+            "name": "2D Burgers' equation",
+            "equation_format": "\\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} + v \\frac{\\partial u}{\\partial y} = \\nu \\left( \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} \\right) \\frac{\\partial v}{\\partial t} + u \\frac{\\partial v}{\\partial x} + v \\frac{\\partial v}{\\partial y} = \\nu \\left( \\frac{\\partial^2 v}{\\partial x^2} + \\frac{\\partial^2 v}{\\partial y^2} \\right)",
+            "physical_properties": {
+                "viscosity \nu": 0.01
+            },
+            "boundary_conditions": {
+                "all boundaries": "u = 1, v = 1 for x = 0,2 and y = 0,2"
+            },
+            "initial_conditions": {
+                "u": "u(x,y) = 2 for 0.5 ≤ x, y ≤ 1, and u(x,y) = 1 everywhere else",
+                "v": "v(x,y) = 2 for 0.5 ≤ x, y ≤ 1, and v(x,y) = 1 everywhere else"
+            },
+            "domain": [0, 2, 0, 2],
+            "grid": {
+                "Nx": 41,
+                "Ny": 41
+            }
+        },
+        {
+            "name": "2D Laplace equation",
+            "equation_format": "\\frac{\\partial^2 p}{\\partial x^2} + \\frac{\\partial^2 p}{\\partial y^2} = 0",
+            "physical_properties": {
+            },
+            "boundary_conditions": {
+                "all boundaries": "p = 0 at x = 0, p = y at x = 2,\\frac{\\partial p}{\\partial y} = 0 at y = 0, 1"
+            },
+            "initial_conditions": {
+                "p": "p = 0 everywhere"
+            },
+            "domain": [0, 2, 0, 1],
+            "grid": {
+                "Nx": 31,
+                "Ny": 31
+            }
+        },
+        {
+            "name": "2D Poisson equation",
+            "equation_format": "\\frac{\\partial^2 p}{\\partial x^2} + \\frac{\\partial^2 p}{\\partial y^2} = b\n",
+            "physical_properties": {
+                "source term": "b_{i,j} = 100 at i = nx/4, j=ny/4; b_{i,j}=-100 at i=3nx/4, j=3ny/4; b_{i,j}=0, elsewhere"
+            },
+            "boundary_conditions": {
+                "all boundaries": "p = 0 at x = 0, x = 2 and y = 0 and y = 1"
+            },
+            "initial_conditions": {
+                "p": "p = 0"
+            },
+            "domain": [0, 2, 0, 1],
+            "grid": {
+                "Nx": 50,
+                "Ny": 50
+            }
+        }
+    ]
+}

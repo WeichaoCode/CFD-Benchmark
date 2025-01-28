@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+import json
 
 # Physical parameters
 c = 1  # Wave speed
@@ -34,3 +36,32 @@ plt.title('1D Linear Convection Equation')
 plt.legend()
 plt.grid()
 plt.show()
+
+# Identify the filename of the running script
+script_filename = os.path.basename(__file__)
+
+# Define the JSON file
+json_filename = "/opt/CFD-Benchmark/data/output_generate.json"
+
+# Load existing JSON data if the file exists
+if os.path.exists(json_filename):
+    with open(json_filename, "r") as file:
+        try:
+            data = json.load(file)
+        except json.JSONDecodeError:
+            data = {}  # Handle empty or corrupted file
+else:
+    data = {}
+
+# Save filename and output array in a structured format
+data[script_filename] = {
+    "filename": script_filename,
+    "u": u.tolist()
+}
+
+# Save the updated JSON data
+with open(json_filename, "w") as file:
+    json.dump(data, file, indent=4)
+
+print(f"Saved output of {script_filename} to {json_filename}")
+

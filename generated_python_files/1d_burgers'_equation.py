@@ -8,8 +8,9 @@ nu = 0.07  # Viscosity
 Lx = 2 * np.pi  # Domain length
 Nx = 101  # Number of spatial points
 dx = Lx / (Nx - 1)  # Grid spacing
-sigma = 0.2  # CFL-like parameter for stability
-dt = sigma * dx**2 / nu  # Time step
+# sigma = 0.2  # CFL-like parameter for stability
+# dt = sigma * dx**2 / nu  # Time step
+dt = 0.002
 Nt = 200  # Number of time steps
 
 # Define spatial grid

@@ -21,7 +21,6 @@ nt = 200
 dx = 2 * numpy.pi / (nx - 1)
 nu = .07
 dt = 0.002
-
 x = numpy.linspace(0, 2 * numpy.pi, nx)
 un = numpy.empty(nx)
 t = 0

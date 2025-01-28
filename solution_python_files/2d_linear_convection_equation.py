@@ -8,12 +8,15 @@ import json
 ###variable declarations
 nx = 101
 ny = 101
-nt = 100
+# nt = 100
 c = 1
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)
-sigma = .2
-dt = sigma * dx
+# sigma = .2
+# dt = sigma * dx
+sigma = 0.2  # CFL-like stability parameter
+dt = sigma * min(dx, dy) / c  # Time step
+nt = 100  # Number of time steps
 
 x = numpy.linspace(0, 2, nx)
 y = numpy.linspace(0, 2, ny)

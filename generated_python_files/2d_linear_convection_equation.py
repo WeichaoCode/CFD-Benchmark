@@ -6,7 +6,7 @@ import json
 # Define parameters
 c = 1.0  # Wave speed
 Lx, Ly = 2.0, 2.0  # Domain size
-Nx, Ny = 81, 81  # Number of grid points
+Nx, Ny = 101, 101  # Number of grid points
 dx, dy = Lx / (Nx - 1), Ly / (Ny - 1)  # Grid spacing
 sigma = 0.2  # CFL-like stability parameter
 dt = sigma * min(dx, dy) / c  # Time step

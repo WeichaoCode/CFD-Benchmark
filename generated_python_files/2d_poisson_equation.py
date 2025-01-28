@@ -8,7 +8,7 @@ Lx, Ly = 2.0, 1.0  # Domain size
 Nx, Ny = 50, 50  # Number of grid points
 dx, dy = Lx / (Nx - 1), Ly / (Ny - 1)  # Grid spacing
 tolerance = 1e-4  # Convergence criterion
-max_iterations = 5000  # Maximum number of iterations
+max_iterations = 100  # Maximum number of iterations
 omega = 1.5  # Over-relaxation factor for SOR (optional)
 
 # Create mesh grid

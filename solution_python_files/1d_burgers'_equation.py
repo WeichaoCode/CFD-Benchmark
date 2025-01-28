@@ -16,7 +16,8 @@ from matplotlib import pyplot
 
 ###variable declarations
 nx = 101
-nt = 500
+# nt = 500
+nt = 200
 dx = 2 * numpy.pi / (nx - 1)
 nu = .07
 dt = 0.002

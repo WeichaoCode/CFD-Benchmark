@@ -5,14 +5,17 @@ import json
 from mpl_toolkits.mplot3d import Axes3D  ##library for 3d projection plots
 
 ###variable declarations
-nx = 101
-ny = 101
-nt = 200
+nx = 31
+ny = 31
+# nt = 200
 nu = .05
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)
-sigma = .25
-dt = sigma * dx * dy / nu
+# sigma = .25
+# dt = sigma * dx * dy / nu
+sigma = 0.25  # CFL-like stability parameter
+dt = sigma * min(dx, dy) ** 2 / nu  # Time step
+nt = 500  # Number of time steps
 
 x = numpy.linspace(0, 2, nx)
 y = numpy.linspace(0, 2, ny)

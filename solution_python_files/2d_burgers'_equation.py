@@ -7,13 +7,16 @@ from mpl_toolkits.mplot3d import Axes3D
 ###variable declarations
 nx = 101
 ny = 101
-nt = 200
+nt = 500
 c = 1
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)
 sigma = .0009
 nu = 0.01
 dt = sigma * dx * dy / nu
+# sigma = 0.2  # CFL-like stability parameter
+# dt = sigma * min(dx, dy) ** 2 / nu  # Time step
+# nt = 500  # Number of time steps
 
 
 x = numpy.linspace(0, 2, nx)

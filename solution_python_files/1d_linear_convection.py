@@ -2,7 +2,7 @@ import numpy as np
 import os
 import json
 
-nx = 40  # try changing this number from 41 to 81 and Run All ... what happens?
+nx = 41  # try changing this number from 41 to 81 and Run All ... what happens?
 dx = 2 / (nx - 1)
 nt = 25  # nt is the number of timesteps we want to calculate
 dt = .025  # dt is the amount of time each timestep covers (delta t)

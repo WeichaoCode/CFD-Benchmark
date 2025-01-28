@@ -78,7 +78,7 @@ p[:, -1] = y  # p = y @ x = 2
 p[0, :] = p[1, :]  # dp/dy = 0 @ y = 0
 p[-1, :] = p[-2, :]  # dp/dy = 0 @ y = 1
 
-p = laplace2d(p, y, dx, dy, 1e-4)
+p = laplace2d(p, y, dx, dy, 1e-5)
 # p_slow = laplace2d_slow(p, y, dx, dy, 1e-4)
 plot2D(x, y, p)
 pyplot.show()

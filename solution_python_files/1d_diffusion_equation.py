@@ -4,10 +4,13 @@ import numpy  # loading our favorite library
 
 nx = 41
 dx = 2 / (nx - 1)
-nt = 50  # the number of timesteps we want to calculate
+# nt = 50  # the number of timesteps we want to calculate
 nu = 0.3  # the value of viscosity
-sigma = .2  # sigma is a parameter, we'll learn more about it later
-dt = 0.0025  # dt is defined using sigma ... more later!
+# sigma = .2  # sigma is a parameter, we'll learn more about it later
+# dt = 0.0025  # dt is defined using sigma ... more later!
+sigma = 0.2  # CFL-like number for stability
+dt = sigma * dx**2 / nu  # time step
+nt = 100  # number of time steps
 
 u = numpy.ones(nx)  # a numpy array with nx elements all equal to 1.
 u[int(.5 / dx):int(1 / dx + 1)] = 2  # setting u = 2 between 0.5 and 1 as per our I.C.s

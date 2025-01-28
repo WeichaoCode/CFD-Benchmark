@@ -8,8 +8,10 @@ nu = 0.01  # Viscosity
 Lx, Ly = 2.0, 2.0  # Domain size
 Nx, Ny = 41, 41  # Number of grid points
 dx, dy = Lx / (Nx - 1), Ly / (Ny - 1)  # Grid spacing
-sigma = 0.2  # CFL-like stability parameter
-dt = sigma * min(dx, dy) ** 2 / nu  # Time step
+# sigma = 0.2
+sigma = 0.0009  # CFL-like stability parameter chatgpt used to choose 0.2 which cannot ensure stable
+# dt = sigma * min(dx, dy) ** 2 / nu  # Time step
+dt = sigma * dx * dy / nu
 Nt = 500  # Number of time steps
 
 # Create mesh grid

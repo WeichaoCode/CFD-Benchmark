@@ -5,7 +5,7 @@ import json
 
 # Define parameters
 Lx, Ly = 2.0, 1.0  # Domain size
-Nx, Ny = 31, 31  # Number of grid points
+Nx, Ny = 101, 51  # Number of grid points
 dx, dy = Lx / (Nx - 1), Ly / (Ny - 1)  # Grid spacing
 tolerance = 1e-5  # Convergence criterion
 omega = 1.5  # Over-relaxation factor for SOR

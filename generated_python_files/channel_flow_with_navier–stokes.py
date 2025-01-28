@@ -1,29 +1,7 @@
-import json
-import os
-
-# Directory to save Python files
-code_dir = "../generated_python_files"
-os.makedirs(code_dir, exist_ok=True)
-
-# JSON file to store problem-solution mapping
-output_json_path = "../data/generated_cfd_solutions.json"
-
-# Load existing JSON data if the file exists
-if os.path.exists(output_json_path):
-    with open(output_json_path, "r") as json_file:
-        try:
-            json_data = json.load(json_file)
-        except json.JSONDecodeError:
-            json_data = {"solutions": []}  # Initialize if JSON is empty
-else:
-    json_data = {"solutions": []}
-
-# Manually add solutions (copy-paste GPT-generated code here)
-new_solution = {
-    "name": "Cavity Flow with Navier–Stokes",
-    "prompt": "Solve the Cavity Flow with Navier–Stokes problem using Python...",
-    "generated_code": """import numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
+import os
+import json
 
 # Domain and grid parameters
 Lx, Ly = 2.0, 2.0  # Domain size
@@ -32,6 +10,7 @@ dx, dy = Lx / (Nx - 1), Ly / (Ny - 1)  # Grid spacing
 dt = 0.001  # Time step size
 nu = 0.1  # Kinematic viscosity
 rho = 1.0  # Density
+F = 1.0  # Source term (forcing)
 
 # Create grids
 x = np.linspace(0, Lx, Nx)
@@ -44,25 +23,25 @@ v = np.zeros((Ny, Nx))  # y-velocity
 p = np.zeros((Ny, Nx))  # Pressure
 b = np.zeros((Ny, Nx))  # RHS of Poisson equation
 
-# Apply boundary conditions
+# Boundary conditions
 def apply_boundary_conditions(u, v, p):
-    # Lid-driven boundary (top wall, y = Ly)
-    u[-1, :] = 1  # Moving lid velocity
+    # Periodic in x-direction
+    u[:, 0] = u[:, -2]
+    u[:, -1] = u[:, 1]
+    v[:, 0] = v[:, -2]
+    v[:, -1] = v[:, 1]
+    p[:, 0] = p[:, -2]
+    p[:, -1] = p[:, 1]
+
+    # No-slip on y-boundaries
+    u[0, :] = 0
+    u[-1, :] = 0
+    v[0, :] = 0
     v[-1, :] = 0
 
-    # No-slip conditions at other walls
-    u[0, :] = 0   # Bottom wall
-    v[0, :] = 0
-    u[:, 0] = 0   # Left wall
-    v[:, 0] = 0
-    u[:, -1] = 0  # Right wall
-    v[:, -1] = 0
-
-    # Pressure boundary conditions (Neumann ∂p/∂y = 0 at y = 0)
+    # Pressure Neumann BC (∂p/∂y = 0)
     p[0, :] = p[1, :]
-    p[-1, :] = 0  # Dirichlet p = 0 at the lid
-    p[:, 0] = p[:, 1]  # Neumann at x = 0
-    p[:, -1] = p[:, -2]  # Neumann at x = Lx
+    p[-1, :] = p[-2, :]
 
 # Poisson equation solver for pressure correction
 def pressure_poisson(p, b, tol=1e-5, max_iter=500):
@@ -95,7 +74,7 @@ for n in range(num_steps):
                                             vn[1:-1, 1:-1] * (un[2:, 1:-1] - un[:-2, 1:-1]) / (2 * dy)) -
                      dt * (1 / rho) * (p[1:-1, 2:] - p[1:-1, :-2]) / (2 * dx) +
                      nu * dt * ((un[1:-1, 2:] - 2 * un[1:-1, 1:-1] + un[1:-1, :-2]) / dx**2 +
-                                (un[2:, 1:-1] - 2 * un[1:-1, 1:-1] + un[:-2, 1:-1]) / dy**2))
+                                (un[2:, 1:-1] - 2 * un[1:-1, 1:-1] + un[:-2, 1:-1]) / dy**2) + dt * F)
 
     v[1:-1, 1:-1] = (vn[1:-1, 1:-1] - dt * (un[1:-1, 1:-1] * (vn[1:-1, 2:] - vn[1:-1, :-2]) / (2 * dx) +
                                             vn[1:-1, 1:-1] * (vn[2:, 1:-1] - vn[:-2, 1:-1]) / (2 * dy)) -
@@ -127,38 +106,34 @@ plt.xlabel("x")
 plt.ylabel("y")
 plt.show()
 
-    """
+# Identify the filename of the running script
+script_filename = os.path.basename(__file__)
+
+# Define the JSON file
+json_filename = "/opt/CFD-Benchmark/data/output_true.json"
+
+# Load existing JSON data if the file exists
+if os.path.exists(json_filename):
+    with open(json_filename, "r") as file:
+        try:
+            data = json.load(file)
+        except json.JSONDecodeError:
+            data = {}  # Handle empty or corrupted file
+else:
+    data = {}
+
+# Save filename and output array in a structured format
+data[script_filename] = {
+    "filename": script_filename,
+    "p": p.tolist(),
+    "u": u.tolist(),
+    "v": v.tolist()
 }
 
-# Generate a filename based on the problem name
-file_name = new_solution["name"].replace(" ", "_").lower() + ".py"
-file_path = os.path.join(code_dir, file_name)
+# Save the updated JSON data
+with open(json_filename, "w") as file:
+    json.dump(data, file, indent=4)
 
-# Save the generated code to a Python file
-with open(file_path, "w") as py_file:
-    py_file.write(new_solution["generated_code"])
+print(f"Saved output of {script_filename} to {json_filename}")
 
-# Check if the solution already exists in JSON and replace it
-found = False
-for solution in json_data["solutions"]:
-    if solution["name"] == new_solution["name"]:
-        solution["prompt"] = new_solution["prompt"]
-        solution["file_name"] = file_name
-        found = True
-        break
-
-# If not found, append as a new entry
-if not found:
-    json_data["solutions"].append({
-        "name": new_solution["name"],
-        "prompt": new_solution["prompt"],
-        "file_name": file_name
-    })
-
-# Save updated JSON file
-with open(output_json_path, "w") as json_file:
-    json.dump(json_data, json_file, indent=4)
-
-print(f"Solution saved for '{new_solution['name']}' in {file_path}")
-print(f"Updated JSON saved to {output_json_path}")
-
+    

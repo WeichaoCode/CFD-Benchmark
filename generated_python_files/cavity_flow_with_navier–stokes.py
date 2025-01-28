@@ -1,29 +1,7 @@
-import json
-import os
-
-# Directory to save Python files
-code_dir = "../generated_python_files"
-os.makedirs(code_dir, exist_ok=True)
-
-# JSON file to store problem-solution mapping
-output_json_path = "../data/generated_cfd_solutions.json"
-
-# Load existing JSON data if the file exists
-if os.path.exists(output_json_path):
-    with open(output_json_path, "r") as json_file:
-        try:
-            json_data = json.load(json_file)
-        except json.JSONDecodeError:
-            json_data = {"solutions": []}  # Initialize if JSON is empty
-else:
-    json_data = {"solutions": []}
-
-# Manually add solutions (copy-paste GPT-generated code here)
-new_solution = {
-    "name": "Cavity Flow with Navier–Stokes",
-    "prompt": "Solve the Cavity Flow with Navier–Stokes problem using Python...",
-    "generated_code": """import numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
+import os
+import json
 
 # Domain and grid parameters
 Lx, Ly = 2.0, 2.0  # Domain size
@@ -127,38 +105,34 @@ plt.xlabel("x")
 plt.ylabel("y")
 plt.show()
 
-    """
+# Identify the filename of the running script
+script_filename = os.path.basename(__file__)
+
+# Define the JSON file
+json_filename = "/opt/CFD-Benchmark/data/output_generate.json"
+
+# Load existing JSON data if the file exists
+if os.path.exists(json_filename):
+    with open(json_filename, "r") as file:
+        try:
+            data = json.load(file)
+        except json.JSONDecodeError:
+            data = {}  # Handle empty or corrupted file
+else:
+    data = {}
+
+# Save filename and output array in a structured format
+data[script_filename] = {
+    "filename": script_filename,
+    "p": p.tolist(),
+    "u": u.tolist(),
+    "v": v.tolist()
 }
 
-# Generate a filename based on the problem name
-file_name = new_solution["name"].replace(" ", "_").lower() + ".py"
-file_path = os.path.join(code_dir, file_name)
+# Save the updated JSON data
+with open(json_filename, "w") as file:
+    json.dump(data, file, indent=4)
 
-# Save the generated code to a Python file
-with open(file_path, "w") as py_file:
-    py_file.write(new_solution["generated_code"])
+print(f"Saved output of {script_filename} to {json_filename}")
 
-# Check if the solution already exists in JSON and replace it
-found = False
-for solution in json_data["solutions"]:
-    if solution["name"] == new_solution["name"]:
-        solution["prompt"] = new_solution["prompt"]
-        solution["file_name"] = file_name
-        found = True
-        break
-
-# If not found, append as a new entry
-if not found:
-    json_data["solutions"].append({
-        "name": new_solution["name"],
-        "prompt": new_solution["prompt"],
-        "file_name": file_name
-    })
-
-# Save updated JSON file
-with open(output_json_path, "w") as json_file:
-    json.dump(json_data, json_file, indent=4)
-
-print(f"Solution saved for '{new_solution['name']}' in {file_path}")
-print(f"Updated JSON saved to {output_json_path}")
-
+    

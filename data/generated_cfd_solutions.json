@@ -49,6 +49,16 @@
             "name": "2D Poisson equation",
             "prompt": "Solve the 2D Poisson equation problem using Python...",
             "file_name": "2d_poisson_equation.py"
+        },
+        {
+            "name": "Channel Flow with Navier\u2013Stokes",
+            "prompt": "Solve the Channel Flow with Navier\u2013Stokes problem using Python...",
+            "file_name": "channel_flow_with_navier\u2013stokes.py"
+        },
+        {
+            "name": "Cavity Flow with Navier\u2013Stokes",
+            "prompt": "Solve the Cavity Flow with Navier\u2013Stokes problem using Python...",
+            "file_name": "cavity_flow_with_navier\u2013stokes.py"
         }
     ]
 }

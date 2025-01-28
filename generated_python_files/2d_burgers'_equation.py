@@ -4,7 +4,7 @@ import os
 import json
 
 # Define parameters
-nu = 0.01  # Kinematic viscosity
+nu = 0.01  # Viscosity
 Lx, Ly = 2.0, 2.0  # Domain size
 Nx, Ny = 41, 41  # Number of grid points
 dx, dy = Lx / (Nx - 1), Ly / (Ny - 1)  # Grid spacing

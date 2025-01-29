@@ -7,7 +7,7 @@ import json
 Lx, Ly = 2.0, 2.0  # Domain size
 Nx, Ny = 41, 41    # Number of grid points
 dx, dy = Lx / (Nx - 1), Ly / (Ny - 1)  # Grid spacing
-dt = 0.001  # Time step size
+dt = 0.01  # Time step size
 nu = 0.1  # Kinematic viscosity
 rho = 1.0  # Density
 F = 1.0  # Source term (forcing)

@@ -4,8 +4,8 @@ import os
 import re
 
 # Define input JSON and output folder
-input_json = "/opt/CFD-Benchmark/data/cfd_prompts.json"  # JSON containing prompts
-output_folder = "/opt/CFD-Benchmark/results/generate_code"  # Folder to save Python code files
+input_json = "/opt/CFD-Benchmark/MMS/data/cfd_prompt.json"  # JSON containing prompts
+output_folder = "/opt/CFD-Benchmark/MMS/generated_code"  # Folder to save Python code files
 
 # Ensure the output directory exists
 os.makedirs(output_folder, exist_ok=True)
@@ -21,12 +21,11 @@ with open(input_json, "r") as file:
     data = json.load(file)
 
 # Process each prompt
-for problem in data["prompts"]:
+for problem in data["prompts"][:5]:
     name = problem["name"].replace(" ", "_")  # Replace spaces with underscores for valid filenames
-    key = problem["key"]
     user_prompt = problem["prompt"]
 
-    print(f"Generating code for: key {key}: {name}...")
+    print(f"Generating code for: {name}...")
 
     # Construct API request
     request_body = {
@@ -67,7 +66,7 @@ for problem in data["prompts"]:
         extracted_code = f"# Error: {str(e)}"
 
     # Save extracted code to a Python file
-    file_path = os.path.join(output_folder, f"{name}_{key}.py")
+    file_path = os.path.join(output_folder, f"{name}.py")
     with open(file_path, "w") as code_file:
         code_file.write(extracted_code)
 

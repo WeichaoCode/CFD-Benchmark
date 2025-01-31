@@ -1,77 +1,145 @@
+import os
+import json
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
 
-# Grid parameters
-Nx = 101
-Ny = 101
-Nt = 500
-dx = 2.0/(Nx-1)
-dy = 2.0/(Ny-1)
-dt = 2.0/Nt
+# Define parameters
+Nx = 101  # Number of points in x-direction
+Ny = 101  # Number of points in y-direction
+Lx = 2.0  # Length of domain in x-direction
+Ly = 2.0  # Length of domain in y-direction
+dx = Lx / (Nx-1)  # Grid spacing in x
+dy = Ly / (Ny-1)  # Grid spacing in y
+dt = 0.001  # Time step
+t_final = 1.0  # Final time
+Nt = int(t_final/dt)  # Number of time steps
 
-x = np.linspace(0, 2, Nx)
-y = np.linspace(0, 2, Ny)
+# Create spatial grids
+x = np.linspace(0, Lx, Nx)
+y = np.linspace(0, Ly, Ny)
 X, Y = np.meshgrid(x, y)
 
-# Initialize arrays
+# Initialize velocity fields
 u = np.ones((Ny, Nx))
 v = np.ones((Ny, Nx))
 
 # Set initial conditions
-u[(Y >= 0.5) & (Y <= 1.0) & (X >= 0.5) & (X <= 1.0)] = 2.0
-v[(Y >= 0.5) & (Y <= 1.0) & (X >= 0.5) & (X <= 1.0)] = 2.0
+for i in range(Ny):
+    for j in range(Nx):
+        if 0.5 <= x[j] <= 1.0 and 0.5 <= y[i] <= 1.0:
+            u[i,j] = 2.0
+            v[i,j] = 2.0
 
-# Arrays for next time step
-un = u.copy()
-vn = v.copy()
+# Create arrays to store new values
+u_new = np.zeros((Ny, Nx))
+v_new = np.zeros((Ny, Nx))
 
-# Time stepping
-for n in range(Nt):
-    # Store previous values
-    un = u.copy()
-    vn = v.copy()
+def apply_boundary_conditions(u, v):
+    # Apply boundary conditions
+    u[0,:] = 1.0  # Bottom boundary
+    u[-1,:] = 1.0  # Top boundary
+    u[:,0] = 1.0  # Left boundary
+    u[:,-1] = 1.0  # Right boundary
     
-    # Update interior points
+    v[0,:] = 1.0  # Bottom boundary
+    v[-1,:] = 1.0  # Top boundary
+    v[:,0] = 1.0  # Left boundary
+    v[:,-1] = 1.0  # Right boundary
+    return u, v
+
+# Time stepping loop
+for n in range(Nt):
+    # Apply upwind scheme for interior points
     for i in range(1, Ny-1):
         for j in range(1, Nx-1):
-            # Central difference for spatial derivatives
-            u[i,j] = un[i,j] - dt * (
-                un[i,j] * (un[i,j+1] - un[i,j-1])/(2*dx) +
-                vn[i,j] * (un[i+1,j] - un[i-1,j])/(2*dy)
-            )
+            # x-derivatives
+            if u[i,j] > 0:
+                du_dx = (u[i,j] - u[i,j-1])/dx
+                dv_dx = (v[i,j] - v[i,j-1])/dx
+            else:
+                du_dx = (u[i,j+1] - u[i,j])/dx
+                dv_dx = (v[i,j+1] - v[i,j])/dx
             
-            v[i,j] = vn[i,j] - dt * (
-                un[i,j] * (vn[i,j+1] - vn[i,j-1])/(2*dx) +
-                vn[i,j] * (vn[i+1,j] - vn[i-1,j])/(2*dy)
-            )
+            # y-derivatives
+            if v[i,j] > 0:
+                du_dy = (u[i,j] - u[i-1,j])/dy
+                dv_dy = (v[i,j] - v[i-1,j])/dy
+            else:
+                du_dy = (u[i+1,j] - u[i,j])/dy
+                dv_dy = (v[i+1,j] - v[i,j])/dy
+            
+            # Update velocities
+            u_new[i,j] = u[i,j] - dt*(u[i,j]*du_dx + v[i,j]*du_dy)
+            v_new[i,j] = v[i,j] - dt*(u[i,j]*dv_dx + v[i,j]*dv_dy)
     
-    # Apply boundary conditions
-    u[0,:] = 1.0  # Bottom
-    u[-1,:] = 1.0 # Top
-    u[:,0] = 1.0  # Left
-    u[:,-1] = 1.0 # Right
-    
-    v[0,:] = 1.0  # Bottom
-    v[-1,:] = 1.0 # Top
-    v[:,0] = 1.0  # Left
-    v[:,-1] = 1.0 # Right
+    # Update values and apply boundary conditions
+    u = u_new.copy()
+    v = v_new.copy()
+    u, v = apply_boundary_conditions(u, v)
 
-# Plot final results
+    # Print progress
+    if n % 100 == 0:
+        print(f"Time step {n}/{Nt}")
+
+# Plot results
 plt.figure(figsize=(12, 5))
 
 plt.subplot(121)
-plt.contourf(X, Y, u, levels=np.linspace(1, 2, 20))
-plt.colorbar(label='u')
-plt.title('u-velocity at t = 2')
+plt.contourf(X, Y, u, levels=50, cmap=cm.viridis)
+plt.colorbar(label='u velocity')
+plt.title('u-velocity field')
 plt.xlabel('x')
 plt.ylabel('y')
 
 plt.subplot(122)
-plt.contourf(X, Y, v, levels=np.linspace(1, 2, 20))
-plt.colorbar(label='v')
-plt.title('v-velocity at t = 2')
+plt.contourf(X, Y, v, levels=50, cmap=cm.viridis)
+plt.colorbar(label='v velocity')
+plt.title('v-velocity field')
 plt.xlabel('x')
 plt.ylabel('y')
 
 plt.tight_layout()
 plt.show()
+
+# Plot velocity vectors
+plt.figure(figsize=(8, 6))
+skip = 5  # Plot every 5th vector for clarity
+plt.quiver(X[::skip, ::skip], Y[::skip, ::skip], 
+          u[::skip, ::skip], v[::skip, ::skip])
+plt.title('Velocity Vector Field')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
+##############################################
+# The following lines are used to print output
+##############################################
+
+# Identify the filename of the running script
+script_filename = os.path.basename(__file__)
+
+# Define the JSON file
+json_filename = "/opt/CFD-Benchmark/results/output_pred.json"
+
+# Load existing JSON data if the file exists
+if os.path.exists(json_filename):
+    with open(json_filename, "r") as file:
+        try:
+            data = json.load(file)
+        except json.JSONDecodeError:
+            data = {}  # Handle empty or corrupted file
+else:
+    data = {}
+
+# Save filename and output array in a structured format
+data[script_filename] = {
+    "filename": script_filename,
+    "u": u.tolist(),
+    "v": v.tolist(),
+}
+
+# Save the updated JSON data
+with open(json_filename, "w") as file:
+    json.dump(data, file, indent=4)
+
+print(f"Saved output of {script_filename} to {json_filename}")

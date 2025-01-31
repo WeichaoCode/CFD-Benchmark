@@ -13,9 +13,10 @@ dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)
 # sigma = .25
 # dt = sigma * dx * dy / nu
-sigma = 0.25  # CFL-like stability parameter
-dt = sigma * min(dx, dy) ** 2 / nu  # Time step
-nt = 500  # Number of time steps
+# Time parameters
+dt = 0.25 * min(dx, dy)**2 / nu  # stability condition
+t_end = 1.0
+nt = int(t_end/dt)
 
 x = numpy.linspace(0, 2, nx)
 y = numpy.linspace(0, 2, ny)
@@ -74,7 +75,7 @@ u = diffuse(200)
 script_filename = os.path.basename(__file__)
 
 # Define the JSON file
-json_filename = "/opt/CFD-Benchmark/data/output_true.json"
+json_filename = "/opt/CFD-Benchmark/results/output_true.json"
 
 # Load existing JSON data if the file exists
 if os.path.exists(json_filename):

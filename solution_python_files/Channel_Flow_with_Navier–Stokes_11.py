@@ -61,10 +61,11 @@ def pressure_poisson_periodic(p, dx, dy):
 
     return p
 
+
 ##variable declarations
 nx = 41
 ny = 41
-nt = 500
+nt = 1000
 nit = 50
 c = 1
 dx = 2 / (nx - 1)
@@ -73,14 +74,13 @@ x = numpy.linspace(0, 2, nx)
 y = numpy.linspace(0, 2, ny)
 X, Y = numpy.meshgrid(x, y)
 
-
 ##physical variables
 rho = 1
 nu = .1
 F = 1
-dt = .01
+dt = 0.001
 
-#initial conditions
+# initial conditions
 u = numpy.zeros((ny, nx))
 un = numpy.zeros((ny, nx))
 
@@ -184,7 +184,7 @@ while stepcount <= nt:
     udiff = (numpy.sum(u) - numpy.sum(un)) / numpy.sum(u)
     stepcount += 1
 
-fig = pyplot.figure(figsize = (11,7), dpi=100)
+fig = pyplot.figure(figsize=(11, 7), dpi=100)
 pyplot.quiver(X[::3, ::3], Y[::3, ::3], u[::3, ::3], v[::3, ::3])
 pyplot.show()
 
@@ -192,7 +192,7 @@ pyplot.show()
 script_filename = os.path.basename(__file__)
 
 # Define the JSON file
-json_filename = "/opt/CFD-Benchmark/data/output_generate.json"
+json_filename = "/opt/CFD-Benchmark/results/output_generate.json"
 
 # Load existing JSON data if the file exists
 if os.path.exists(json_filename):
@@ -218,4 +218,3 @@ with open(json_filename, "w") as file:
 
 print(f"Saved output of {script_filename} to {json_filename}")
 
-    

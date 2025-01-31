@@ -37,3 +37,24 @@ def add_instruction_to_json(filename, instruction):
         json.dump(data, file, indent=4)
 
     print(f"Updated JSON saved in {filename}")
+
+
+def change_problems_to_json(filename, changed_key, changed_value):
+    # Load the JSON file
+    with open(filename, "r") as file:
+        data = json.load(file)
+
+    for problem in data["problems"]:
+        problem[changed_key] = changed_value  # Append instruction to the existing prompt
+
+    # Save the updated JSON back to the same file
+    with open(filename, "w") as file:
+        json.dump(data, file, indent=4)
+
+    print(f"Updated JSON saved in {filename}")
+
+
+# change_problems_to_json("/opt/CFD-Benchmark/data/cfd_problems.json", "time",
+#                         "Final time T = 2, start time is 0")
+
+add_key_to_json("/opt/CFD-Benchmark/data/cfd_prompts.json", "key")

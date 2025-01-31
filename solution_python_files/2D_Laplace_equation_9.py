@@ -78,7 +78,7 @@ p[:, -1] = y  # p = y @ x = 2
 p[0, :] = p[1, :]  # dp/dy = 0 @ y = 0
 p[-1, :] = p[-2, :]  # dp/dy = 0 @ y = 1
 
-p = laplace2d(p, y, dx, dy, 1e-5)
+p = laplace2d(p, y, dx, dy, 1e-6)
 # p_slow = laplace2d_slow(p, y, dx, dy, 1e-4)
 plot2D(x, y, p)
 pyplot.show()
@@ -86,7 +86,7 @@ pyplot.show()
 script_filename = os.path.basename(__file__)
 
 # Define the JSON file
-json_filename = "/opt/CFD-Benchmark/data/output_true.json"
+json_filename = "/opt/CFD-Benchmark/results/output_true.json"
 
 # Load existing JSON data if the file exists
 if os.path.exists(json_filename):

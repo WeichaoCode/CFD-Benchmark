@@ -6,17 +6,17 @@ import os
 import json
 
 ###variable declarations
-nx = 101
-ny = 101
+nx = 81
+ny = 81
 # nt = 100
 c = 1
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)
 # sigma = .2
 # dt = sigma * dx
-sigma = 0.2  # CFL-like stability parameter
-dt = sigma * min(dx, dy) / c  # Time step
-nt = 100  # Number of time steps
+t_final = 1.0  # final time
+dt = 0.4 * min(dx, dy) / c  # CFL condition
+nt = int(t_final / dt)  # number of time steps
 
 x = numpy.linspace(0, 2, nx)
 y = numpy.linspace(0, 2, ny)
@@ -57,7 +57,7 @@ surf2 = ax.plot_surface(X, Y, u[:], cmap=cm.viridis)
 script_filename = os.path.basename(__file__)
 
 # Define the JSON file
-json_filename = "/opt/CFD-Benchmark/data/output_true.json"
+json_filename = "/opt/CFD-Benchmark/results/output_true.json"
 
 # Load existing JSON data if the file exists
 if os.path.exists(json_filename):
@@ -80,4 +80,3 @@ with open(json_filename, "w") as file:
     json.dump(data, file, indent=4)
 
 print(f"Saved output of {script_filename} to {json_filename}")
-

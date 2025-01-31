@@ -6,7 +6,6 @@ import json
 
 nx = 41
 ny = 41
-nt = 500
 nit = 50
 c = 1
 dx = 2 / (nx - 1)
@@ -17,7 +16,9 @@ X, Y = numpy.meshgrid(x, y)
 
 rho = 1
 nu = .1
+total_time = 3.0
 dt = .001
+nt = int(total_time/dt)
 
 u = numpy.zeros((ny, nx))
 v = numpy.zeros((ny, nx))
@@ -102,6 +103,7 @@ def cavity_flow(nt, u, v, dt, dx, dy, p, rho, nu):
 
     return u, v, p
 
+
 u = numpy.zeros((ny, nx))
 v = numpy.zeros((ny, nx))
 p = numpy.zeros((ny, nx))
@@ -109,7 +111,7 @@ b = numpy.zeros((ny, nx))
 nt = 500
 u, v, p = cavity_flow(nt, u, v, dt, dx, dy, p, rho, nu)
 
-fig = pyplot.figure(figsize=(11,7), dpi=100)
+fig = pyplot.figure(figsize=(11, 7), dpi=100)
 # plotting the pressure field as a contour
 pyplot.contourf(X, Y, p, alpha=0.5, cmap=cm.viridis)
 pyplot.colorbar()
@@ -125,7 +127,7 @@ pyplot.show()
 script_filename = os.path.basename(__file__)
 
 # Define the JSON file
-json_filename = "/opt/CFD-Benchmark/data/output_true.json"
+json_filename = "/opt/CFD-Benchmark/results/output_true.json"
 
 # Load existing JSON data if the file exists
 if os.path.exists(json_filename):
@@ -151,4 +153,3 @@ with open(json_filename, "w") as file:
 
 print(f"Saved output of {script_filename} to {json_filename}")
 
-    

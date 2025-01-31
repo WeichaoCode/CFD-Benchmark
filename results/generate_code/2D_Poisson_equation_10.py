@@ -1,70 +1,118 @@
+import os
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Grid parameters
-nx = 101
-ny = 101
-nt = 500
-
-# Domain
-Lx = 2.0
-Ly = 2.0
-dx = Lx/(nx-1)
-dy = Ly/(ny-1)
-x = np.linspace(0, Lx, nx)
-y = np.linspace(0, Ly, ny)
-X, Y = np.meshgrid(x, y)
-
-# Time parameters
-T = 2.0
-dt = T/nt
-
-# Initialize arrays
-p = np.zeros((ny, nx))
-pn = np.zeros((ny, nx))
-b = np.zeros((ny, nx))
-
-# Source terms
-b[ny//4, nx//4] = 100
-b[3*ny//4, 3*nx//4] = -100
-
-# Coefficients for the numerical scheme
-dx2 = dx*dx
-dy2 = dy*dy
-dt2 = dt*dt
-
-# Time stepping
-for n in range(nt):
-    pn = p.copy()
+def solve_poisson_2d():
+    # Grid parameters
+    nx = 50  # Number of points in x-direction
+    ny = 50  # Number of points in y-direction
     
-    # Interior points
-    p[1:-1,1:-1] = ((dx2*dy2)/(2*(dx2+dy2))) * \
-                    ((pn[1:-1,2:] + pn[1:-1,:-2])/dx2 + \
-                     (pn[2:,1:-1] + pn[:-2,1:-1])/dy2 - \
-                      b[1:-1,1:-1])
+    # Domain dimensions
+    Lx = 2.0  # Length in x-direction
+    Ly = 1.0  # Length in y-direction
     
-    # Boundary conditions
-    p[0,:] = 0  # Bottom
-    p[-1,:] = 0 # Top
-    p[:,0] = 0  # Left
-    p[:,-1] = 0 # Right
+    # Grid spacing
+    dx = Lx / (nx - 1)
+    dy = Ly / (ny - 1)
+    
+    # Create grid points
+    x = np.linspace(0, Lx, nx)
+    y = np.linspace(0, Ly, ny)
+    X, Y = np.meshgrid(x, y)
+    
+    # Initialize pressure field
+    p = np.zeros((ny, nx))
+    
+    # Initialize source term
+    b = np.zeros((ny, nx))
+    # Set source/sink terms
+    b[ny//4, nx//4] = 100
+    b[3*ny//4, 3*nx//4] = -100
+    
+    # Iteration parameters
+    max_iter = 10000
+    tolerance = 1e-4
+    
+    # Gauss-Seidel iteration
+    for it in range(max_iter):
+        p_old = p.copy()
+        
+        # Update interior points
+        for i in range(1, ny-1):
+            for j in range(1, nx-1):
+                p[i,j] = ((p[i+1,j] + p[i-1,j])/dx**2 +
+                         (p[i,j+1] + p[i,j-1])/dy**2 -
+                         b[i,j]) / (2/dx**2 + 2/dy**2)
+        
+        # Apply boundary conditions
+        p[0,:] = 0  # Bottom boundary
+        p[-1,:] = 0  # Top boundary
+        p[:,0] = 0  # Left boundary
+        p[:,-1] = 0  # Right boundary
+        
+        # Check convergence
+        error = np.max(np.abs(p - p_old))
+        if error < tolerance:
+            print(f"Solution converged after {it+1} iterations")
+            break
+            
+    return X, Y, p
 
-# Plot results
-plt.figure(figsize=(10,8))
-plt.contourf(X, Y, p, levels=50)
-plt.colorbar(label='p')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title('2D Poisson Equation Solution')
-plt.show()
+def plot_solution(X, Y, p):
+    plt.figure(figsize=(10, 5))
+    
+    # Plot pressure contours
+    plt.subplot(121)
+    plt.contourf(X, Y, p, levels=50, cmap='RdBu')
+    plt.colorbar(label='Pressure')
+    plt.title('Pressure Contours')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    
+    # Plot surface
+    ax = plt.subplot(122, projection='3d')
+    surf = ax.plot_surface(X, Y, p, cmap='RdBu')
+    plt.colorbar(surf, label='Pressure')
+    ax.set_title('Pressure Surface')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('p')
+    
+    plt.tight_layout()
+    plt.show()
 
-# Plot surface
-fig = plt.figure(figsize=(10,8))
-ax = fig.add_subplot(111, projection='3d')
-surf = ax.plot_surface(X, Y, p, cmap='viridis')
-plt.colorbar(surf)
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_zlabel('p')
-plt.title('2D Poisson Equation Solution (Surface)')
-plt.show()
+# Solve the equation and plot results
+X, Y, p = solve_poisson_2d()
+plot_solution(X, Y, p)
+##############################################
+# The following lines are used to print output
+##############################################
+
+# Identify the filename of the running script
+script_filename = os.path.basename(__file__)
+
+# Define the JSON file
+json_filename = "/opt/CFD-Benchmark/results/output_pred.json"
+
+# Load existing JSON data if the file exists
+if os.path.exists(json_filename):
+    with open(json_filename, "r") as file:
+        try:
+            data = json.load(file)
+        except json.JSONDecodeError:
+            data = {}  # Handle empty or corrupted file
+else:
+    data = {}
+
+# Save filename and output array in a structured format
+data[script_filename] = {
+    "filename": script_filename,
+    "p": p.tolist()
+}
+
+# Save the updated JSON data
+with open(json_filename, "w") as file:
+    json.dump(data, file, indent=4)
+
+print(f"Saved output of {script_filename} to {json_filename}")

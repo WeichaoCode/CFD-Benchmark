@@ -1,64 +1,120 @@
+import os
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Grid parameters
-Nx = 101
-Ny = 101
-Lx = 2.0
-Ly = 2.0
-dx = Lx/(Nx-1)
-dy = Ly/(Ny-1)
-x = np.linspace(0, Lx, Nx)
-y = np.linspace(0, Ly, Ny)
-X, Y = np.meshgrid(x, y)
-
-# Time parameters
-T = 2.0
-nt = 500
-dt = T/nt
-
-# Initialize solution array
-p = np.zeros((Ny, Nx))
-
-# Time stepping loop
-for n in range(nt):
-    p_old = p.copy()
+def solve_laplace_2d():
+    # Grid parameters
+    Nx = 31  # Number of points in x direction
+    Ny = 31  # Number of points in y direction
     
-    # Interior points
-    for i in range(1, Ny-1):
-        for j in range(1, Nx-1):
-            p[i,j] = (dx**2*(p_old[i+1,j] + p_old[i-1,j]) + 
-                      dy**2*(p_old[i,j+1] + p_old[i,j-1]))/(2*(dx**2 + dy**2))
+    # Domain boundaries
+    x_min, x_max = 0, 2
+    y_min, y_max = 0, 1
     
-    # Boundary conditions
-    # x = 0
-    p[:,0] = 0
+    # Grid spacing
+    dx = (x_max - x_min) / (Nx - 1)
+    dy = (y_max - y_min) / (Ny - 1)
     
-    # x = 2
-    p[:,-1] = y
+    # Create grid points
+    x = np.linspace(x_min, x_max, Nx)
+    y = np.linspace(y_min, y_max, Ny)
+    X, Y = np.meshgrid(x, y)
     
-    # y = 0 (Neumann)
-    p[0,1:-1] = p[1,1:-1]
+    # Initialize solution array
+    p = np.zeros((Ny, Nx))
     
-    # y = 2 (Neumann)
-    p[-1,1:-1] = p[-2,1:-1]
+    # Set boundary conditions
+    # Right boundary: p = y at x = 2
+    p[:, -1] = y
+    
+    # Iteration parameters
+    max_iter = 10000
+    tolerance = 1e-6
+    error = 1.0
+    
+    # Gauss-Seidel iteration
+    iteration = 0
+    while error > tolerance and iteration < max_iter:
+        p_old = p.copy()
+        
+        # Update interior points
+        for i in range(1, Ny-1):
+            for j in range(1, Nx-1):
+                # For boundary y = 0 and y = 1, implement Neumann condition
+                if i == 0 or i == Ny-1:
+                    p[i,j] = p[i+1,j] if i == 0 else p[i-1,j]
+                else:
+                    p[i,j] = 0.25 * (p[i+1,j] + p[i-1,j] + 
+                                    p[i,j+1] + p[i,j-1])
+        
+        # Implement Neumann boundary conditions at y = 0 and y = 1
+        p[0,:] = p[1,:]    # dp/dy = 0 at y = 0
+        p[-1,:] = p[-2,:]  # dp/dy = 0 at y = 1
+        
+        # Calculate error
+        error = np.max(np.abs(p - p_old))
+        iteration += 1
+    
+    print(f"Solution converged after {iteration} iterations")
+    return X, Y, p
 
-# Plot solution
-plt.figure(figsize=(10,8))
-plt.contourf(X, Y, p, levels=50)
-plt.colorbar(label='p')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title('2D Laplace Equation Solution')
-plt.show()
+def plot_solution(X, Y, p):
+    # Create contour plot
+    plt.figure(figsize=(10, 8))
+    plt.contourf(X, Y, p, levels=20, cmap='viridis')
+    plt.colorbar(label='Pressure (p)')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.title('2D Laplace Equation Solution')
+    
+    # Add gridlines
+    plt.grid(True, linestyle='--', alpha=0.6)
+    
+    plt.show()
+    
+    # Create 3D surface plot
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    surf = ax.plot_surface(X, Y, p, cmap='viridis')
+    fig.colorbar(surf, label='Pressure (p)')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('p')
+    ax.set_title('3D Surface Plot of Solution')
+    plt.show()
 
-# Plot surface
-fig = plt.figure(figsize=(10,8))
-ax = fig.add_subplot(111, projection='3d')
-surf = ax.plot_surface(X, Y, p, cmap='viridis')
-plt.colorbar(surf)
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_zlabel('p')
-plt.title('2D Laplace Equation Solution (Surface)')
-plt.show()
+# Solve the equation and plot results
+X, Y, p = solve_laplace_2d()
+plot_solution(X, Y, p)
+##############################################
+# The following lines are used to print output
+##############################################
+
+# Identify the filename of the running script
+script_filename = os.path.basename(__file__)
+
+# Define the JSON file
+json_filename = "/opt/CFD-Benchmark/results/output_pred.json"
+
+# Load existing JSON data if the file exists
+if os.path.exists(json_filename):
+    with open(json_filename, "r") as file:
+        try:
+            data = json.load(file)
+        except json.JSONDecodeError:
+            data = {}  # Handle empty or corrupted file
+else:
+    data = {}
+
+# Save filename and output array in a structured format
+data[script_filename] = {
+    "filename": script_filename,
+    "p": p.tolist(),
+}
+
+# Save the updated JSON data
+with open(json_filename, "w") as file:
+    json.dump(data, file, indent=4)
+
+print(f"Saved output of {script_filename} to {json_filename}")

@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 import os
 
 # Load the JSON files
-with open("/opt/CFD-Benchmark/data/output_true.json", "r") as file:
+with open("/opt/CFD-Benchmark/results/output_true.json", "r") as file:
     true_data = json.load(file)
 
-with open("/opt/CFD-Benchmark/data/output_generate.json", "r") as file:
+with open("/opt/CFD-Benchmark/results/output_pred.json", "r") as file:
     generated_data = json.load(file)
 
 # Create a directory for saving plots
-output_dir = "/opt/CFD-Benchmark/comparison_plots"
+output_dir = "/opt/CFD-Benchmark/results/comparison_plots"
 os.makedirs(output_dir, exist_ok=True)
 
 

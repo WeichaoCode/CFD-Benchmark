@@ -7,16 +7,14 @@ from mpl_toolkits.mplot3d import Axes3D
 ###variable declarations
 nx = 101
 ny = 101
-nt = 500
 c = 1
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)
 sigma = .0009
 nu = 0.01
-dt = sigma * dx * dy / nu
-# sigma = 0.2  # CFL-like stability parameter
-# dt = sigma * min(dx, dy) ** 2 / nu  # Time step
-# nt = 500  # Number of time steps
+dt = 0.001  # Time step
+t_final = 1.0  # Final time
+nt = int(t_final/dt)  # Number of time steps
 
 
 x = numpy.linspace(0, 2, nx)
@@ -91,7 +89,7 @@ ax.set_ylabel('$y$')
 script_filename = os.path.basename(__file__)
 
 # Define the JSON file
-json_filename = "/opt/CFD-Benchmark/data/output_true.json"
+json_filename = "/opt/CFD-Benchmark/results/output_true.json"
 
 # Load existing JSON data if the file exists
 if os.path.exists(json_filename):

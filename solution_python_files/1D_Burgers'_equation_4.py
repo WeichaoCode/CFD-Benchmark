@@ -17,10 +17,11 @@ from matplotlib import pyplot
 ###variable declarations
 nx = 101
 # nt = 500
-nt = 200
+t_end = 2.0
+dt = 0.001
+nt = int(t_end/dt)
 dx = 2 * numpy.pi / (nx - 1)
 nu = .07
-dt = 0.002
 x = numpy.linspace(0, 2 * numpy.pi, nx)
 un = numpy.empty(nx)
 t = 0
@@ -44,7 +45,7 @@ for n in range(nt):
 script_filename = os.path.basename(__file__)
 
 # Define the JSON file
-json_filename = "/opt/CFD-Benchmark/data/output_true.json"
+json_filename = "/opt/CFD-Benchmark/results/output_true.json"
 
 # Load existing JSON data if the file exists
 if os.path.exists(json_filename):

@@ -2,7 +2,7 @@ import os
 import subprocess
 
 # Define directories
-generated_dir = "/opt/CFD-Benchmark/generated_python_files"
+generated_dir = "/opt/CFD-Benchmark/results/generate_code"
 solution_dir = "/opt/CFD-Benchmark/solution_python_files"
 
 

@@ -21,11 +21,12 @@ with open(input_json, "r") as file:
     data = json.load(file)
 
 # Process each prompt
-for problem in data["prompts"][:5]:
+for problem in data["prompts"][:24]:
+    key = problem["key"]
     name = problem["name"].replace(" ", "_")  # Replace spaces with underscores for valid filenames
     user_prompt = problem["prompt"]
 
-    print(f"Generating code for: {name}...")
+    print(f"Generating code for key {key}: {name}...")
 
     # Construct API request
     request_body = {
@@ -66,7 +67,7 @@ for problem in data["prompts"][:5]:
         extracted_code = f"# Error: {str(e)}"
 
     # Save extracted code to a Python file
-    file_path = os.path.join(output_folder, f"{name}.py")
+    file_path = os.path.join(output_folder, f"{name}_{key}.py")
     with open(file_path, "w") as code_file:
         code_file.write(extracted_code)
 

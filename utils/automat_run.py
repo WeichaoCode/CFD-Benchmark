@@ -2,7 +2,7 @@ import os
 import subprocess
 
 # Define directories
-generated_dir = "/opt/CFD-Benchmark/results/generate_code"
+generated_dir = "/opt/CFD-Benchmark/MMS/generated_code"
 solution_dir = "/opt/CFD-Benchmark/solution_python_files"
 
 
@@ -25,4 +25,4 @@ def run_python_scripts(directory):
 
 # Run scripts from both folders
 run_python_scripts(generated_dir)
-run_python_scripts(solution_dir)
+# run_python_scripts(solution_dir)

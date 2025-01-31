@@ -65,6 +65,7 @@ for problem in data["problems"]:
 
     # Append the structured prompt
     prompt_data["prompts"].append({
+        "key": problem["key"],
         "name": problem["name"],
         "prompt": prompt_text.strip()
     })

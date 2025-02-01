@@ -1,66 +1,87 @@
+import os
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Parameters
-L = 2.0  # Length of domain
-T = 2.0  # Total time
-c = 1.0  # Wave speed
+nx = 80  # number of grid points
+nt = 160  # number of time steps
+dx = 2.0 / (nx - 1)  # grid spacing
+dt = 2.0 / nt  # time step
+c = 1.0  # wave speed
+CFL = c * dt / dx  # Courant number
 
-# Grid parameters
-nx = 100  # Number of spatial points
-nt = 200  # Number of time points
-dx = L / (nx-1)
-dt = T / (nt-1)
+# Initialize arrays
+x = np.linspace(0, 2, nx)
+u = np.zeros((nt + 1, nx))
 
-# Check CFL condition for stability (von Neumann analysis)
-CFL = c * dt / dx
-print(f"CFL number: {CFL}")
-if CFL > 1:
-    print("Warning: Solution might be unstable!")
-
-# Initialize grid
-x = np.linspace(0, L, nx)
-t = np.linspace(0, T, nt)
-
-# Initialize solution array
-u = np.zeros((nt, nx))
-
-# Set initial condition
+# Initial condition
 u[0, :] = np.sin(np.pi * x)
 
-# Set boundary conditions
-u[:, 0] = 0
-u[:, -1] = 0
+# Source term function
+def source(x, t):
+    return -np.pi * c * np.exp(-t) * np.cos(np.pi * x) + np.exp(-t) * np.sin(np.pi * x)
 
-# First time step using Forward Euler (needed to start Leapfrog)
-for i in range(1, nx-1):
-    u[1, i] = u[0, i] - 0.5*CFL*(u[0, i+1] - u[0, i-1]) + \
-              dt*(np.pi*c*np.exp(-t[0])*np.cos(np.pi*x[i]) - \
-                  np.exp(-t[0])*np.sin(np.pi*x[i]))
+# Beam-Warming scheme
+for n in range(nt):
+    un = u[n, :].copy()
+    
+    # Interior points using Beam-Warming scheme
+    for i in range(2, nx-1):
+        u[n+1, i] = (un[i] - 
+                     CFL * (3*un[i] - 4*un[i-1] + un[i-2])/2 + 
+                     dt * source(x[i], n*dt))
+    
+    # Boundary conditions
+    u[n+1, 0] = 0
+    u[n+1, -1] = 0
 
-# Leapfrog time stepping
-for n in range(1, nt-1):
-    for i in range(1, nx-1):
-        source = np.pi*c*np.exp(-t[n])*np.cos(np.pi*x[i]) - \
-                 np.exp(-t[n])*np.sin(np.pi*x[i])
-        u[n+1, i] = u[n-1, i] - CFL*(u[n, i+1] - u[n, i-1]) + \
-                    2*dt*source
-
-# Plot results
+# Plot results at key time steps
 plt.figure(figsize=(10, 6))
-plot_times = [0, int(nt/4), int(nt/2), nt-1]
+key_times = [0, nt//4, nt//2, nt]
 labels = ['t = 0', 't = T/4', 't = T/2', 't = T']
-for i, n in enumerate(plot_times):
-    plt.plot(x, u[n, :], label=labels[i])
+colors = ['b', 'g', 'r', 'k']
 
-plt.title('1D Linear Convection - Leapfrog Method')
+for i, t in enumerate(key_times):
+    plt.plot(x, u[t, :], colors[i], label=labels[i])
+
+plt.grid(True)
 plt.xlabel('x')
 plt.ylabel('u')
-plt.grid(True)
+plt.title('1D Linear Convection - Beam-Warming Scheme')
 plt.legend()
 plt.show()
 
-# Calculate and print maximum error at final time
-exact_solution = np.exp(-T) * np.sin(np.pi * x)
-error = np.max(np.abs(u[-1, :] - exact_solution))
-print(f"Maximum error at t = T: {error}")
+# Print stability condition
+print(f"CFL number: {CFL}")
+if CFL <= 1:
+    print("Solution should be stable (CFL ≤ 1)")
+else:
+    print("Warning: Solution might be unstable (CFL > 1)")
+# Identify the filename of the running script
+script_filename = os.path.basename(__file__)
+
+# Define the JSON file
+json_filename = "/opt/CFD-Benchmark/MMS/result/output.json"
+
+# Load existing JSON data if the file exists
+if os.path.exists(json_filename):
+    with open(json_filename, "r") as file:
+        try:
+            data = json.load(file)
+        except json.JSONDecodeError:
+            data = {}  # Handle empty or corrupted file
+else:
+    data = {}
+
+# Save filename and output array in a structured format
+data[script_filename] = {
+    "filename": script_filename,
+    "u": u[-1, :].tolist()  # Convert NumPy array to list for JSON serialization
+}
+
+# Save the updated JSON data
+with open(json_filename, "w") as file:
+    json.dump(data, file, indent=4)
+
+print(f"Saved output of {script_filename} to {json_filename}")

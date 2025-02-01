@@ -21,7 +21,7 @@ with open(input_json, "r") as file:
     data = json.load(file)
 
 # Process each prompt
-for problem in data["prompts"][:24]:
+for problem in data["prompts"][:12]:
     key = problem["key"]
     name = problem["name"].replace(" ", "_")  # Replace spaces with underscores for valid filenames
     user_prompt = problem["prompt"]

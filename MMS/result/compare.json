@@ -1,0 +1,42 @@
+{
+    "1D_Burgers'_equation_10.py": {
+        "MSE": 0.002727813841895848,
+        "L2_loss": 0.5222847730784278
+    },
+    "1D_diffusion_equation_8.py": {
+        "MSE": Infinity,
+        "L2_loss": Infinity
+    },
+    "1D_Burgers'_equation_11.py": {
+        "MSE": NaN,
+        "L2_loss": NaN
+    },
+    "1D_linear_convection_2.py": {
+        "MSE": 0.13908321824608627,
+        "L2_loss": 3.7293862530728332
+    },
+    "1D_Burgers'_equation_12.py": {
+        "MSE": 0.0031766237471566893,
+        "L2_loss": 0.5636154493230903
+    },
+    "1D_linear_convection_3.py": {
+        "MSE": 0.04695733034683447,
+        "L2_loss": 1.9381915353614456
+    },
+    "1D_nonlinear_convection_5.py": {
+        "MSE": 0.011892732683361353,
+        "L2_loss": 1.0905380636805555
+    },
+    "1D_diffusion_equation_7.py": {
+        "MSE": NaN,
+        "L2_loss": NaN
+    },
+    "1D_diffusion_equation_9.py": {
+        "MSE": NaN,
+        "L2_loss": NaN
+    },
+    "1D_linear_convection_1.py": {
+        "MSE": 0.04126153336706259,
+        "L2_loss": 2.0312935131847043
+    }
+}

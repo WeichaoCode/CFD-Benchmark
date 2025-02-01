@@ -205,7 +205,7 @@ def delete_prompts_by_keys(json_filename, keys_to_delete):
 
 
 # Example Usage:
-delete_prompts_by_keys("/opt/CFD-Benchmark/MMS/data/cfd_problem.json", [1, 8, 15, 22])
+# delete_prompts_by_keys("/opt/CFD-Benchmark/MMS/data/cfd_problem.json", [1,7,13,19,3,9,15,21,5,11,17,23])
 
 # Example Usage:
 # generate_new_prompts_for_keys("/opt/CFD-Benchmark/MMS/data/cfd_problem.json", [1, 2, 3, 4], {
@@ -222,7 +222,7 @@ delete_prompts_by_keys("/opt/CFD-Benchmark/MMS/data/cfd_problem.json", [1, 8, 15
 #     "other information": "Write a Python program to solve the given PDE using a numerical method. Do not use external "
 #                          "packages. Ensure the solution is stable by applying von Neumann stability analysis. Plot "
 #                          "the solution at key time steps: t = 0, t = T/4, t = T/2, and t = T in the same figure, "
-#                          "figure title is equation name + numerical method"
+#                          "figure title is equation name + numerical method."
 # })
 
 # Example Usage:

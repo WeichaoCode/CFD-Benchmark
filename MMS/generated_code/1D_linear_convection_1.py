@@ -1,61 +1,100 @@
+import os
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Parameters
-nx = 100  # number of spatial points
-nt = 1000  # number of time steps
-dx = 2.0 / (nx - 1)  # spatial step size
-dt = 0.002  # time step size (chosen for stability)
-c = 1.0  # wave speed
 
-# Grid points
-x = np.linspace(0, 2, nx)
-t = np.linspace(0, 2, nt)
+def solve_1d_convection_fou():
+    # Physical parameters
+    c = 1.0  # Wave speed
+    L = 2.0  # Domain length
+    T = 2.0  # Total time
 
-# Initialize solution array
-u = np.zeros((nt, nx))
+    # Numerical parameters
+    nx = 100  # Number of spatial points
+    dx = L / (nx - 1)  # Spatial step size
 
-# Set initial condition
-u[0, :] = np.sin(np.pi * x)
+    # Apply CFL condition for stability (CFL ≤ 1)
+    CFL = 0.8
+    dt = CFL * dx / c
+    nt = int(T / dt)  # Number of time steps
 
-# FTCS scheme
-def source_term(x, t):
-    return -np.pi * c * np.exp(-t) * np.cos(np.pi * x) + np.exp(-t) * np.sin(np.pi * x)
+    # Initialize grid
+    x = np.linspace(0, L, nx)
+    u = np.sin(np.pi * x)  # Initial condition
 
-# Check stability (von Neumann analysis)
-CFL = c * dt / dx
-print(f"CFL number: {CFL}")
-if CFL > 1:
-    print("Warning: Scheme might be unstable!")
+    # Arrays to store solutions at key time steps
+    u_t0 = u.copy()
+    u_t1 = np.zeros_like(u)
+    u_t2 = np.zeros_like(u)
+    u_t3 = np.zeros_like(u)
 
-# Solve using FTCS
-for n in range(0, nt-1):
-    for i in range(1, nx-1):
-        u[n+1, i] = u[n, i] - 0.5 * c * dt/dx * (u[n, i+1] - u[n, i-1]) + dt * source_term(x[i], t[n])
-    
-    # Apply boundary conditions
-    u[n+1, 0] = 0
-    u[n+1, -1] = 0
+    # Time stepping
+    t = 0
+    for n in range(nt):
+        un = u.copy()
 
-# Plot results
-plt.figure(figsize=(10, 6))
-time_steps = [0, nt//4, nt//2, nt-1]
-labels = ['t = 0', 't = T/4', 't = T/2', 't = T']
+        # First Order Upwind scheme
+        for i in range(1, nx - 1):
+            source_term = -np.pi * c * np.exp(-t) * np.cos(np.pi * x[i]) + np.exp(-t) * np.sin(np.pi * x[i])
+            u[i] = un[i] - c * dt / dx * (un[i] - un[i - 1]) + dt * source_term
 
-for i, n in enumerate(time_steps):
-    plt.plot(x, u[n, :], label=labels[i])
+        # Apply boundary conditions
+        u[0] = 0
+        u[-1] = 0
 
-plt.title('1D Linear Convection - FTCS Method')
-plt.xlabel('x')
-plt.ylabel('u')
-plt.grid(True)
-plt.legend()
-plt.show()
+        t += dt
 
-# Calculate and print maximum error at final time
-# (assuming we know analytical solution)
-def analytical_solution(x, t):
-    return np.exp(-t) * np.sin(np.pi * x)
+        # Store solutions at key time steps
+        if abs(t - T / 4) < dt:
+            u_t1 = u.copy()
+        elif abs(t - T / 2) < dt:
+            u_t2 = u.copy()
+        elif abs(t - T) < dt:
+            u_t3 = u.copy()
 
-error = np.max(np.abs(u[-1, :] - analytical_solution(x, 2)))
-print(f"Maximum error at t = T: {error}")
+    # Plotting
+    plt.figure(figsize=(10, 6))
+    plt.plot(x, u_t0, 'b-', label='t = 0')
+    plt.plot(x, u_t1, 'r--', label=f't = {T / 4:.2f}')
+    plt.plot(x, u_t2, 'g-.', label=f't = {T / 2:.2f}')
+    plt.plot(x, u_t3, 'm:', label=f't = {T:.2f}')
+
+    plt.xlabel('x')
+    plt.ylabel('u')
+    plt.title('1D Linear Convection - First Order Upwind')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+    return u_t3
+
+
+# Run the simulation
+u_t3 = solve_1d_convection_fou()
+# Identify the filename of the running script
+script_filename = os.path.basename(__file__)
+
+# Define the JSON file
+json_filename = "/opt/CFD-Benchmark/MMS/result/output.json"
+
+# Load existing JSON data if the file exists
+if os.path.exists(json_filename):
+    with open(json_filename, "r") as file:
+        try:
+            data = json.load(file)
+        except json.JSONDecodeError:
+            data = {}  # Handle empty or corrupted file
+else:
+    data = {}
+
+# Save filename and output array in a structured format
+data[script_filename] = {
+    "filename": script_filename,
+    "u": u_t3.tolist()  # Convert NumPy array to list for JSON serialization
+}
+
+# Save the updated JSON data
+with open(json_filename, "w") as file:
+    json.dump(data, file, indent=4)
+
+print(f"Saved output of {script_filename} to {json_filename}")

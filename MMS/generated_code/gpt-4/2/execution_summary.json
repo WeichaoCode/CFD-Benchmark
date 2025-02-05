@@ -1,0 +1,29 @@
+{
+    "summary": {
+        "passed": 3,
+        "failed": 0,
+        "warnings": 1
+    },
+    "details": {
+        "1D_Linear_Convection_1.py": {
+            "status": "passed",
+            "error_type": null,
+            "error_message": null
+        },
+        "1D_Nonlinear_Convection_2.py": {
+            "status": "passed",
+            "error_type": null,
+            "error_message": null
+        },
+        "1D_Diffusion_equation_3.py": {
+            "status": "passed",
+            "error_type": null,
+            "error_message": null
+        },
+        "1D_Burgers'_equation_4.py": {
+            "status": "warning",
+            "error_type": "RuntimeWarning",
+            "error_message": "/opt/CFD-Benchmark/MMS/generated_code/gpt-4/2/1D_Burgers'_equation_4.py:27: RuntimeWarning: overflow encountered in scalar multiply\n  u[n+1,j] = u[n,j] - c*dt/(2*dx)*(u[n,j+1] - u[n,j-1]) + nu*dt/dx**2*(u[n,j+1] - 2*u[n,j] + u[n,j-1])\n/opt/CFD-Benchmark/MMS/generated_code/gpt-4/2/1D_Burgers'_equation_4.py:27: RuntimeWarning: overflow encountered in scalar add\n  u[n+1,j] = u[n,j] - c*dt/(2*dx)*(u[n,j+1] - u[n,j-1]) + nu*dt/dx**2*(u[n,j+1] - 2*u[n,j] + u[n,j-1])\n/opt/CFD-Benchmark/MMS/generated_code/gpt-4/2/1D_Burgers'_equation_4.py:27: RuntimeWarning: overflow encountered in scalar subtract\n  u[n+1,j] = u[n,j] - c*dt/(2*dx)*(u[n,j+1] - u[n,j-1]) + nu*dt/dx**2*(u[n,j+1] - 2*u[n,j] + u[n,j-1])\n/opt/CFD-Benchmark/MMS/generated_code/gpt-4/2/1D_Burgers'_equation_4.py:27: RuntimeWarning: invalid value encountered in scalar add\n  u[n+1,j] = u[n,j] - c*dt/(2*dx)*(u[n,j+1] - u[n,j-1]) + nu*dt/dx**2*(u[n,j+1] - 2*u[n,j] + u[n,j-1])\n/opt/CFD-Benchmark/MMS/generated_code/gpt-4/2/1D_Burgers'_equation_4.py:27: RuntimeWarning: invalid value encountered in scalar subtract\n  u[n+1,j] = u[n,j] - c*dt/(2*dx)*(u[n,j+1] - u[n,j-1]) + nu*dt/dx**2*(u[n,j+1] - 2*u[n,j] + u[n,j-1])"
+        }
+    }
+}

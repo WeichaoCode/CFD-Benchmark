@@ -45,8 +45,8 @@
 # print(f"Prompts saved successfully to {output_filename}")
 import json
 
-input_json = "/opt/CFD-Benchmark/MMS/data/cfd_problem.json"  # Your original problems JSON file
-output_json = "/opt/CFD-Benchmark/MMS/data/cfd_prompt.json"    # The new JSON file with "name" and "prompt"
+input_json = "/opt/CFD-Benchmark/MMS/data_1/cfd_problems.json"  # Your original problems JSON file
+output_json = "/opt/CFD-Benchmark/MMS/data_1/cfd_prompts.json"    # The new JSON file with "name" and "prompt"
 
 # Load the existing problems JSON file
 with open(input_json, "r") as file:

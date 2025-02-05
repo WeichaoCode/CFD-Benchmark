@@ -64,6 +64,6 @@ print(f"Saved output of {{script_filename}} to {{json_filename}}")
 
 
 # Example usage
-folder_path = "/opt/CFD-Benchmark/MMS/generated_code"
+folder_path = "/opt/CFD-Benchmark/MMS/generated_code/sonnet-35/1"
 modify_python_files(folder_path)
 

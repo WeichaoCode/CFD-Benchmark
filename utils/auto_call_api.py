@@ -5,7 +5,7 @@ import re
 
 # Define input JSON and output folder
 input_json = "/opt/CFD-Benchmark/MMS/data/cfd_prompt.json"  # JSON containing prompts
-output_folder = "/opt/CFD-Benchmark/MMS/generated_code"  # Folder to save Python code files
+output_folder = "/opt/CFD-Benchmark/MMS/generated_code/haiku/1"  # Folder to save Python code files
 
 # Ensure the output directory exists
 os.makedirs(output_folder, exist_ok=True)
@@ -14,7 +14,7 @@ os.makedirs(output_folder, exist_ok=True)
 bedrock_runtime = boto3.client("bedrock-runtime", region_name="us-west-2")
 
 # Define Sonnet-3.5 profile Inference Profile ARN
-inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/56i8iq1vib3e"
+inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/g47vfd2xvs5w"
 
 # Load CFD problem JSON
 with open(input_json, "r") as file:

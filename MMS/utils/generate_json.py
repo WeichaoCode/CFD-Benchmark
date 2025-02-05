@@ -205,12 +205,11 @@ def delete_prompts_by_keys(json_filename, keys_to_delete):
 
 
 # Example Usage:
-# delete_prompts_by_keys("/opt/CFD-Benchmark/MMS/data/cfd_problem.json", [1,7,13,19,3,9,15,21,5,11,17,23])
+delete_prompts_by_keys("/opt/CFD-Benchmark/MMS/data_1/cfd_problems.json", [2,3,4,5,6])
 
 # Example Usage:
-# generate_new_prompts_for_keys("/opt/CFD-Benchmark/MMS/data/cfd_problem.json", [1, 2, 3, 4], {
-#     "numerical method": ["finite difference: Forward in Time, Centered in Space (FTCS)",
-#                          "finite difference: First Order Upwind (FOU)",
+# generate_new_prompts_for_keys("/opt/CFD-Benchmark/MMS/data_1/cfd_problems.json", [1], {
+#     "numerical_method": ["finite difference: Forward in Time, Centered in Space (FTCS)",
 #                          "finite difference: Leapfrog",
 #                          "finite difference: Lax-Friedrichs",
 #                          "finite difference: Lax-Wendroff",
@@ -218,11 +217,17 @@ def delete_prompts_by_keys(json_filename, keys_to_delete):
 # })
 
 # Example Usage:
-# update_multiple_problems("/opt/CFD-Benchmark/MMS/data/cfd_problem.json", list(range(1, 29)), {
-#     "other information": "Write a Python program to solve the given PDE using a numerical method. Do not use external "
-#                          "packages. Ensure the solution is stable by applying von Neumann stability analysis. Plot "
-#                          "the solution at key time steps: t = 0, t = T/4, t = T/2, and t = T in the same figure, "
-#                          "figure title is equation name + numerical method."
+# update_multiple_problems("/opt/CFD-Benchmark/MMS/data_1/cfd_problems.json", list(range(1, 7)), {
+#     "instructions": "Formulate a numerical scheme to solve the given PDE that ensures stability, consistency, "
+#                     "and convergence. Select the most appropriate finite difference method (e.g., First Order Upwind, "
+#                     "Lax-Wendroff, Crank-Nicolson, etc.) based on the nature of the PDE and the stability "
+#                     "requirements. Justify the choice of numerical scheme by considering the CFL condition, "
+#                     "von Neumann stability analysis, or other relevant stability criteria. Ensure the solution "
+#                     "remains stable under the chosen discretization parameters (e.g., time step size and spatial "
+#                     "resolution). Use only Python’s standard library (no external packages).Plot the solution at key "
+#                     "time steps: t = 0, t = T/4, t = T/2, t = T and display all plots in the same figure.The figure "
+#                     "title should be: 'equation name - numerical method'. Provide only the Python code without "
+#                     "additional explanations."
 # })
 
 # Example Usage:

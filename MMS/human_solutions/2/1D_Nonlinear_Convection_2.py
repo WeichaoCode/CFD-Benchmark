@@ -156,17 +156,23 @@ class solve_1D_unsteady_flow:
             # Set the boundary condition
             u[0, :], u[-1, :] = 0.0, 0.0
             # we use dt * source term for simplicity (avoid computation)
-            # we first use forward Euler to compute u[1, :] since j start from 2, has j - 2 term
-            # Time-stepping loop
-            for n in range(self.nt - 1):
-                u[1, n] = np.exp(t[n]) * np.sin(np.pi * x[1])
+            # First time step using Forward Euler (n=0 → n=1)
+            for i in range(1, self.nx - 1):
+                u[i, 1] = u[i, 0] - self.wave_speed * dt / dx * (u[i, 0] - u[i - 1, 0]) \
+                          + dt * (np.pi * self.wave_speed * np.exp(-t[0]) * np.cos(np.pi * x[i])
+                                  - np.exp(-t[0]) * np.sin(np.pi * x[i]))
+
+            # Time-stepping loop using Beam-Warming (n ≥ 1)
+            for n in range(1, self.nt - 1):
                 for i in range(2, self.nx - 1):  # Beam-Warming needs u[i-2]
+                    source_term = dt * (np.pi * self.wave_speed * np.exp(-t[n]) * np.cos(np.pi * x[i])
+                                        - np.exp(-t[n]) * np.sin(np.pi * x[i]))
+
                     u[i, n + 1] = u[i, n] - (3 / 2) * self.wave_speed * dt / dx * (u[i, n] - u[i - 1, n]) \
                                   + (1 / 2) * self.wave_speed * dt / dx * (u[i - 1, n] - u[i - 2, n]) \
                                   + (self.wave_speed ** 2 * dt ** 2) / (2 * dx ** 2) * (
                                               u[i, n] - 2 * u[i - 1, n] + u[i - 2, n]) \
-                                  + dt * (np.pi * self.wave_speed * np.exp(-t[0]) * np.cos(np.pi * x[i])
-                                  - np.exp(-t[0]) * np.sin(np.pi * x[i]))
+                                  + source_term  # Corrected source term
             self.u = u
         else:
             raise NotImplementedError(f"The numerical method '{self.method} is not implemented yet.")

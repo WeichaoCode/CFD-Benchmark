@@ -24,7 +24,7 @@ License: MIT License (if applicable)
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Define parameters
+# ---------------- PARAMETERS ----------------
 nx, ny = 50, 50  # Grid points
 nt = 200  # Time steps
 T = 0.2  # Final time
@@ -34,13 +34,19 @@ cx, cy = 1.0, 1.0  # Convection speeds
 dx = Lx / (nx - 1)
 dy = Ly / (ny - 1)
 dt = T / (nt - 1)
-
+# ---------------- ENSURE CFL CONDITION ----------------
+dt_max = min(dx ** 2, dy ** 2) / (4 * cx)
+if dt > dt_max:
+    print(f"Reducing dt from {dt:.6f} to {dt_max:.6f} for stability.")
+    dt = dt_max
 x = np.linspace(0, Lx, nx)
 y = np.linspace(0, Ly, ny)
 t = np.linspace(0, T, nt)
 
+X, Y = np.meshgrid(x, y, indexing="ij")  # 2D grid
 
-# source term
+
+# ---------------- SOURCE TERM FROM MMS ----------------
 def f_u(x_f, y_f, t_f):
     return (np.pi * np.cos(np.pi * x_f) + np.exp(t_f) * np.cos(np.pi * y_f)) * np.exp(-2 * t_f) * np.sin(np.pi * x_f)
 
@@ -49,46 +55,50 @@ def f_v(x_f, y_f, t_f):
     return (np.pi * np.cos(np.pi * y_f) + np.exp(t_f) * np.cos(np.pi * x_f)) * np.exp(-2 * t_f) * np.sin(np.pi * y_f)
 
 
-# set the initial conditions
+# ---------------- INITIAL AND BOUNDARY CONDITIONS FROM MMS ----------------
 u = np.zeros((nx, ny, nt))
+u[:, :, 0] = np.exp(-t[0]) * np.sin(np.pi * X) * np.cos(np.pi * Y)  # Initial condition
 v = np.zeros((nx, ny, nt))
+v[:, :, 0] = - np.exp(-t[0]) * np.cos(np.pi * X) * np.sin(np.pi * Y)  # Initial condition
 
-for i in range(nx):
-    for j in range(ny):
-        u[i, j, 0] = np.exp(-t[0]) * np.sin(np.pi * x[i]) * np.cos(np.pi * y[j])
-        v[i, j, 0] = - np.exp(-t[0]) * np.cos(np.pi * x[i]) * np.sin(np.pi * y[j])
-
-# set the boundary condition x = 0
-for j in range(ny):
-    for n in range(nt):
-        u[0, j, n] = np.exp(-t[n]) * np.sin(np.pi * x[0]) * np.cos(np.pi * y[j])
-        v[0, j, n] = - np.exp(-t[n]) * np.cos(np.pi * x[0]) * np.sin(np.pi * y[j])
-
-# set the boundary condition y = 0
-for i in range(nx):
-    for n in range(nt):
-        u[i, 0, n] = np.exp(-t[n]) * np.sin(np.pi * x[i]) * np.cos(np.pi * y[0])
-        v[i, 0, n] = - np.exp(-t[n]) * np.cos(np.pi * x[i]) * np.sin(np.pi * y[0])
-
-# main loop
+# ---------------- SOLVE USING FINITE DIFFERENCE ----------------
 for n in range(nt - 1):
+    # Compute source term at current time step
+    fu_t = f_u(X, Y, t[n])
+    fv_t = f_v(X, Y, t[n])
+    # Apply finite difference scheme (Explicit Euler)
+    u_new = np.copy(u[:, :, n])
+    v_new = np.copy(v[:, :, n])
+
     for i in range(1, nx):
         for j in range(1, ny):
-            u[i, j, n + 1] = (u[i, j, n] - u[i, j, n] * dt / dx * (u[i, j, n] - u[i - 1, j, n])
-                              - v[i, j, n] * dt / dx * (u[i, j, n] - u[i, j - 1, n]) + dt * f_u(x[i], y[j], t[n]))
-            v[i, j, n + 1] = (v[i, j, n] - u[i, j, n] * dt / dx * (v[i, j, n] - v[i - 1, j, n])
-                              - v[i, j, n] * dt / dx * (v[i, j, n] - v[i, j - 1, n]) + dt * f_v(x[i], y[j], t[n]))
+            u_new[i, j] = (u[i, j, n] - u[i, j, n] * dt / dx * (u[i, j, n] - u[i - 1, j, n])
+                           - v[i, j, n] * dt / dy * (u[i, j, n] - u[i, j - 1, n]) + dt * fu_t[i, j])
+            v_new[i, j] = (v[i, j, n] - u[i, j, n] * dt / dx * (v[i, j, n] - v[i - 1, j, n])
+                           - v[i, j, n] * dt / dy * (v[i, j, n] - v[i, j - 1, n]) + dt * fv_t[i, j])
 
-# compute the exact solution
+    # Apply MMS boundary conditions at next time step
+    u_new[0, :] = np.exp(-t[n + 1]) * np.sin(np.pi * x[0]) * np.cos(np.pi * y)  # x = 0
+    u_new[-1, :] = np.exp(-t[n + 1]) * np.sin(np.pi * x[-1]) * np.cos(np.pi * y)  # x = Lx
+    u_new[:, 0] = np.exp(-t[n + 1]) * np.sin(np.pi * x) * np.cos(np.pi * y[0])  # y = 0
+    u_new[:, -1] = np.exp(-t[n + 1]) * np.sin(np.pi * x) * np.cos(np.pi * y[-1])  # y = Ly
+    v_new[0, :] = - np.exp(-t[n + 1]) * np.cos(np.pi * x[0]) * np.sin(np.pi * y)  # x = 0
+    v_new[-1, :] = - np.exp(-t[n + 1]) * np.cos(np.pi * x[-1]) * np.sin(np.pi * y)  # x = Lx
+    v_new[:, 0] = - np.exp(-t[n + 1]) * np.cos(np.pi * x) * np.sin(np.pi * y[0])  # y = 0
+    v_new[:, -1] = - np.exp(-t[n + 1]) * np.cos(np.pi * x) * np.sin(np.pi * y[-1])  # y = Ly
+
+    # Store updated values
+    u[:, :, n + 1] = u_new
+    v[:, :, n + 1] = v_new
+
+# ---------------- COMPUTE EXACT SOLUTION FOR COMPARISON ----------------
 u_exact = np.zeros((nx, ny, nt))
 v_exact = np.zeros((nx, ny, nt))
 for n in range(nt):
-    for i in range(nx):
-        for j in range(ny):
-            u_exact[i, j, n] = np.exp(-t[n]) * np.sin(np.pi * x[i]) * np.cos(np.pi * y[j])
-            v_exact[i, j, n] = - np.exp(-t[n]) * np.cos(np.pi * x[i]) * np.sin(np.pi * y[j])
+    u_exact[:, :, n] = np.exp(-t[n]) * np.sin(np.pi * X) * np.cos(np.pi * Y)
+    v_exact[:, :, n] = - np.exp(-t[n]) * np.cos(np.pi * X) * np.sin(np.pi * Y)
 
-# plot the results
+# ---------------- ERROR ANALYSIS ----------------
 X, Y = np.meshgrid(x, y, indexing="ij")  # Generate meshgrid for plotting
 
 fig, axes = plt.subplots(1, 3, figsize=(18, 5))

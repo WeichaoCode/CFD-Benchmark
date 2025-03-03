@@ -38,7 +38,7 @@ u[:, 0] = np.sin(np.pi * x) * np.sin(np.pi * y[0])  # Bottom boundary
 u[:, -1] = np.sin(np.pi * x) * np.sin(np.pi * y[-1])  # Top boundary
 
 # ---------------- SOLVE USING ITERATIVE FINITE DIFFERENCE ----------------
-max_iter = 10000  # Maximum iterations
+max_iter = 200  # Maximum iterations
 tol = 1e-6  # Convergence tolerance
 
 for iteration in range(max_iter):

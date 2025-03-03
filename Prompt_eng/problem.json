@@ -1,0 +1,523 @@
+{
+  "1": {
+    "pde": {
+      "name": "2D Diffusion Equation",
+      "equation": "∂u/∂t = ν (∂²u/∂x² + ∂²u/∂y²) + f(x, y, t)",
+      "variables": {
+        "u": "Temperature",
+        "ν": 0.05,
+        "x": "Spatial coordinate",
+        "y": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "y_range": [0, 1],
+        "t_range": [0, 2]
+      }
+    },
+    "mms": {
+      "solution": "u(x, y, t) = exp(-t) * sin(pi * x) * sin(pi * y)"
+    },
+    "boundary_conditions": "Dirichlet from MMS",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "2": {
+    "pde": {
+      "name": "2D Advection-Diffusion Equation",
+      "equation": "∂u/∂t + a∂u/∂x + b∂u/∂y = ν (∂²u/∂x² + ∂²u/∂y²) + f(x, y, t)",
+      "variables": {
+        "u": "Concentration",
+        "a": 1.0,
+        "b": 1.0,
+        "ν": 0.01,
+        "x": "Spatial coordinate",
+        "y": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "y_range": [0, 1],
+        "t_range": [0, 1]
+      }
+    },
+    "mms": {
+      "solution": "u(x, y, t) = exp(-t) * sin(pi * x) * sin(pi * y)"
+    },
+    "boundary_conditions": "Periodic",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "3": {
+    "pde": {
+      "name": "2D Wave Equation",
+      "equation": "∂²u/∂t² = c² (∂²u/∂x² + ∂²u/∂y²) + f(x, y, t)",
+      "variables": {
+        "u": "Displacement",
+        "c": 1.0,
+        "x": "Spatial coordinate",
+        "y": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "y_range": [0, 1],
+        "t_range": [0, 1]
+      }
+    },
+    "mms": {
+      "solution": "u(x, y, t) = sin(pi * x) * sin(pi * y) * cos(pi * t)"
+    },
+    "boundary_conditions": "Dirichlet",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "4": {
+    "pde": {
+      "name": "2D Navier-Stokes Equation",
+      "equation": [
+        "∂u/∂t + u ∂u/∂x + v ∂u/∂y = - ∂p/∂x + ν (∂²u/∂x² + ∂²u/∂y²) + f_u",
+        "∂v/∂t + u ∂v/∂x + v ∂v/∂y = - ∂p/∂y + ν (∂²v/∂x² + ∂²v/∂y²) + f_v",
+        "∂u/∂x + ∂v/∂y = 0"
+      ],
+      "variables": {
+        "u": "Velocity in x-direction",
+        "v": "Velocity in y-direction",
+        "p": "Pressure",
+        "ν": 0.01,
+        "x": "Spatial coordinate",
+        "y": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "y_range": [0, 1],
+        "t_range": [0, 1]
+      }
+    },
+    "mms": {
+      "solution": {
+        "u": "exp(-t) * sin(pi * x) * cos(pi * y)",
+        "v": "-exp(-t) * cos(pi * x) * sin(pi * y)",
+        "p": "exp(-t) * cos(pi * x) * cos(pi * y)"
+      }
+    },
+    "boundary_conditions": "Dirichlet for u, v; Neumann for p",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "5": {
+    "pde": {
+      "name": "2D Burgers' Equation",
+      "equation": [
+        "∂u/∂t + u ∂u/∂x + v ∂u/∂y = ν (∂²u/∂x² + ∂²u/∂y²) + f_u",
+        "∂v/∂t + u ∂v/∂x + v ∂v/∂y = ν (∂²v/∂x² + ∂²v/∂y²) + f_v"
+      ],
+      "variables": {
+        "u": "Velocity in x-direction",
+        "v": "Velocity in y-direction",
+        "ν": 0.01,
+        "x": "Spatial coordinate",
+        "y": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "y_range": [0, 1],
+        "t_range": [0, 1]
+      }
+    },
+    "mms": {
+      "solution": {
+        "u": "exp(-t) * sin(pi * x) * cos(pi * y)",
+        "v": "-exp(-t) * cos(pi * x) * sin(pi * y)"
+      }
+    },
+    "boundary_conditions": "Dirichlet",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "6": {
+    "pde": {
+      "name": "2D Reaction-Diffusion Equation",
+      "equation": [
+        "∂u/∂t = D_u (∂²u/∂x² + ∂²u/∂y²) + f(u, v)",
+        "∂v/∂t = D_v (∂²v/∂x² + ∂²v/∂y²) + g(u, v)"
+      ],
+      "variables": {
+        "u": "Chemical species A",
+        "v": "Chemical species B",
+        "D_u": 0.1,
+        "D_v": 0.05,
+        "x": "Spatial coordinate",
+        "y": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "y_range": [0, 1],
+        "t_range": [0, 2]
+      }
+    },
+    "mms": {
+      "solution": {
+        "u": "exp(-t) * sin(pi * x) * sin(pi * y)",
+        "v": "exp(-t) * cos(pi * x) * cos(pi * y)"
+      }
+    },
+    "boundary_conditions": "Dirichlet",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "7": {
+    "pde": {
+      "name": "2D Heat Equation with Convection",
+      "equation": "∂T/∂t + u ∂T/∂x + v ∂T/∂y = α (∂²T/∂x² + ∂²T/∂y²) + f(x, y, t)",
+      "variables": {
+        "T": "Temperature",
+        "α": 0.05,
+        "u": 1.0,
+        "v": 1.0,
+        "x": "Spatial coordinate",
+        "y": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "y_range": [0, 1],
+        "t_range": [0, 1]
+      }
+    },
+    "mms": {
+      "solution": "T(x, y, t) = exp(-t) * sin(pi * x) * sin(pi * y)"
+    },
+    "boundary_conditions": "Dirichlet",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "8": {
+    "pde": {
+      "name": "2D Potential Flow Equation (Laplace's Equation)",
+      "equation": "∂²φ/∂x² + ∂²φ/∂y² = 0",
+      "variables": {
+        "φ": "Velocity potential",
+        "x": "Spatial coordinate",
+        "y": "Spatial coordinate"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "y_range": [0, 1]
+      }
+    },
+    "mms": {
+      "solution": "φ(x, y) = sin(pi * x) * cos(pi * y)"
+    },
+    "boundary_conditions": "Dirichlet from MMS",
+    "initial_conditions": "None (steady-state)",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": false
+    }
+  },
+  "9": {
+    "pde": {
+      "name": "2D Incompressible Vorticity-Streamfunction",
+      "equation": [
+        "∂ω/∂t + u ∂ω/∂x + v ∂ω/∂y = ν (∂²ω/∂x² + ∂²ω/∂y²)",
+        "∂²ψ/∂x² + ∂²ψ/∂y² = -ω"
+      ],
+      "variables": {
+        "ψ": "Streamfunction",
+        "ω": "Vorticity",
+        "ν": 0.01,
+        "x": "Spatial coordinate",
+        "y": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "y_range": [0, 1],
+        "t_range": [0, 1]
+      }
+    },
+    "mms": {
+      "solution": {
+        "ψ": "sin(pi * x) * sin(pi * y)",
+        "ω": "-2 * pi^2 * sin(pi * x) * sin(pi * y)"
+      }
+    },
+    "boundary_conditions": "Dirichlet",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "10": {
+    "pde": {
+      "name": "2D Stokes Flow (Creeping Flow)",
+      "equation": [
+        "-∂p/∂x + ν (∂²u/∂x² + ∂²u/∂y²) = 0",
+        "-∂p/∂y + ν (∂²v/∂x² + ∂²v/∂y²) = 0",
+        "∂u/∂x + ∂v/∂y = 0"
+      ],
+      "variables": {
+        "u": "Velocity in x-direction",
+        "v": "Velocity in y-direction",
+        "p": "Pressure",
+        "ν": 0.01,
+        "x": "Spatial coordinate",
+        "y": "Spatial coordinate"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "y_range": [0, 1]
+      }
+    },
+    "mms": {
+      "solution": {
+        "u": "sin(pi * x) * cos(pi * y)",
+        "v": "-cos(pi * x) * sin(pi * y)",
+        "p": "cos(pi * x) * cos(pi * y)"
+      }
+    },
+    "boundary_conditions": "Dirichlet",
+    "initial_conditions": "None (steady-state)",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": false
+    }
+  },
+  "11": {
+    "pde": {
+      "name": "1D Shock Tube Problem (Sod's Problem)",
+      "equation": [
+        "∂ρ/∂t + ∂(ρ u)/∂x = 0",
+        "∂(ρ u)/∂t + ∂(ρ u² + p)/∂x = 0",
+        "∂E/∂t + ∂((E + p) u)/∂x = 0"
+      ],
+      "variables": {
+        "ρ": "Density",
+        "u": "Velocity",
+        "p": "Pressure",
+        "E": "Total energy",
+        "γ": 1.4,
+        "x": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "t_range": [0, 0.2]
+      }
+    },
+    "mms": {
+      "solution": "Sod's initial conditions with left-right states"
+    },
+    "boundary_conditions": "None (shock tube initial condition)",
+    "initial_conditions": "Discontinuity at x=0.5",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "12": {
+    "pde": {
+      "name": "2D Unsteady Couette Flow",
+      "equation": "∂u/∂t = ν ∂²u/∂y²",
+      "variables": {
+        "u": "Velocity in x-direction",
+        "ν": 0.05,
+        "y": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "y_range": [0, 1],
+        "t_range": [0, 1]
+      }
+    },
+    "mms": {
+      "solution": "U_0 (1 - exp(-π² ν t) cos(π y))"
+    },
+    "boundary_conditions": "Dirichlet (no-slip at y=0, moving at y=H)",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "13": {
+    "pde": {
+      "name": "1D Inviscid Burgers' Equation",
+      "equation": "∂u/∂t + u ∂u/∂x = 0",
+      "variables": {
+        "u": "Velocity",
+        "x": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "t_range": [0, 2]
+      }
+    },
+    "mms": {
+      "solution": "u(x, t) = sin(pi x) e^{-t}"
+    },
+    "boundary_conditions": "Periodic",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "14": {
+    "pde": {
+      "name": "1D Advection-Diffusion Equation",
+      "equation": "∂u/∂t + a ∂u/∂x = ν ∂²u/∂x²",
+      "variables": {
+        "u": "Scalar quantity",
+        "a": 1.0,
+        "ν": 0.01,
+        "x": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "t_range": [0, 2]
+      }
+    },
+    "mms": {
+      "solution": "u(x, t) = e^{-t} sin(pi x)"
+    },
+    "boundary_conditions": "Dirichlet from MMS",
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "15": {
+    "pde": {
+      "name": "1D Shock Tube Problem (Sod's Problem)",
+      "equation": [
+        "∂ρ/∂t + ∂(ρ u)/∂x = 0",
+        "∂(ρ u)/∂t + ∂(ρ u² + p)/∂x = 0",
+        "∂E/∂t + ∂((E + p) u)/∂x = 0"
+      ],
+      "variables": {
+        "ρ": "Density",
+        "u": "Velocity",
+        "p": "Pressure",
+        "E": "Total energy",
+        "γ": 1.4,
+        "x": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "t_range": [0, 0.2]
+      }
+    },
+    "mms": {
+      "solution": "Sod's initial conditions with left-right states"
+    },
+    "boundary_conditions": "None (shock tube initial condition)",
+    "initial_conditions": {
+      "left_state": {
+        "ρ": 1.0,
+        "u": 0.0,
+        "p": 1.0
+      },
+      "right_state": {
+        "ρ": 0.125,
+        "u": 0.0,
+        "p": 0.1
+      },
+      "discontinuity": "At x=0.5"
+    },
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "16": {
+    "pde": {
+      "name": "1D Unsteady Couette Flow",
+      "equation": "∂u/∂t = ν ∂²u/∂y²",
+      "variables": {
+        "u": "Velocity in x-direction",
+        "ν": 0.05,
+        "y": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "y_range": [0, 1],
+        "t_range": [0, 1]
+      }
+    },
+    "mms": {
+      "solution": "U_0 (1 - exp(-π² ν t) cos(π y))"
+    },
+    "boundary_conditions": {
+      "bottom_wall": "u(0, t) = 0",
+      "top_wall": "u(H, t) = U_0"
+    },
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  },
+  "17": {
+    "pde": {
+      "name": "1D Heat Conduction Equation",
+      "equation": "∂T/∂t = α ∂²T/∂x²",
+      "variables": {
+        "T": "Temperature",
+        "α": 0.01,
+        "x": "Spatial coordinate",
+        "t": "Time"
+      },
+      "domain": {
+        "x_range": [0, 1],
+        "t_range": [0, 2]
+      }
+    },
+    "mms": {
+      "solution": "T(x, t) = e^{-t} sin(pi x)"
+    },
+    "boundary_conditions": {
+      "left": "T(0, t) = 0",
+      "right": "T(L, t) = 0"
+    },
+    "initial_conditions": "From MMS",
+    "numerical_requirements": {
+      "choose_grid_points": true,
+      "choose_time_steps": true
+    }
+  }
+}
+
+
+

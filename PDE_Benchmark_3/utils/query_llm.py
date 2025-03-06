@@ -11,7 +11,7 @@ client = OpenAI(api_key=api_key)
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
 PROMPTS_FILE = os.path.join(ROOT_DIR, "prompts", "PDE_TASK_PROMPT.json")
 OUTPUT_FOLDER = os.path.join(ROOT_DIR, "solver")
-USAGE_FILE = os.path.join(OUTPUT_FOLDER, "reports/token_usage_summary.json")
+USAGE_FILE = os.path.join(ROOT_DIR, "reports/token_usage_summary.json")
 
 # Ensure the output directory exists
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)

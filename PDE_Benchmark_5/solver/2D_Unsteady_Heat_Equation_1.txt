@@ -1,0 +1,45 @@
+Here is a sample implementation of the problem you described:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Set parameters
+nx, ny = 100, 100  # number of grid points
+dx, dy = 2.0/(nx-1), 2.0/(ny-1)  # grid spacing
+alpha = 1.0  # thermal diffusivity
+t_final = 0.5  # final time
+
+# Time step based on the CFL condition
+dt = 0.9 * min(dx*dx, dy*dy) / (4*alpha)
+
+# Initialize temperature and source term
+T = np.zeros((nx, ny))
+Q0, sigma = 200.0, 0.1
+q = Q0 * np.exp(-((dx*(np.arange(nx)-nx/2))**2 + (dy*(np.arange(ny)-ny/2))**2) / (2*sigma**2))
+q = q[np.newaxis,:]*q[:,np.newaxis]
+
+# Helper function to update temperature
+def update_T(T_old):
+    T_new = T_old + alpha * dt * (
+        (np.roll(T_old, -1, axis=0) - 2*T_old + np.roll(T_old, 1, axis=0)) / dx**2 +
+        (np.roll(T_old, -1, axis=1) - 2*T_old + np.roll(T_old, 1, axis=1)) / dy**2
+    ) + dt * q
+    T_new[0,:] = T_new[-1,:] = T_new[:,0] = T_new[:,-1] = 0.0  # boundary conditions
+    return T_new
+
+# Main time-stepping loop
+t = 0.0
+while t < t_final:
+    T = update_T(T)
+    t += dt
+
+# Plot the final temperature field
+plt.imshow(T, cmap='hot', extent=(-1, 1, -1, 1))
+plt.colorbar()
+plt.show()
+```
+
+This script initially creates a two-dimensional domain with given boundary conditions. It then updates the temperature field using the given heat equation with a specified heat source. The time-stepping loop continues until the final time is reached. Finally, the script visualizes the final temperature field with a heat map.
+
+Note that this simple scheme does not perform any under-relaxation, which might be necessary if you need to simulate longer times or use larger time steps. The boundary conditions are also only implemented in a very basic way. More complex boundary conditions would require additional logic. This code also assumes that the heat source does not change over time; if it does, you would need to update the `q` array within the time-stepping loop.

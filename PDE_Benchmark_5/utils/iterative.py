@@ -4,7 +4,7 @@ import re
 import subprocess
 from openai import OpenAI
 
-for iter in range(max_inter=10):
+for iteration in range(10):
     # === OpenAI API Configuration ===
     api_key = "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"
     client = OpenAI(api_key=api_key)
@@ -12,7 +12,7 @@ for iter in range(max_inter=10):
     # === Paths ===
     ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
     PROMPTS_FILE = os.path.join(ROOT_DIR, "prompts", "PDE_TASK_PROMPT.json")
-    OUTPUT_FOLDER = os.path.join(ROOT_DIR, f"solver_{iter}")
+    OUTPUT_FOLDER = os.path.join(ROOT_DIR, f"solver_{iteration}")
     LOG_FILE = os.path.join(OUTPUT_FOLDER, "execution_results.log")
     USAGE_FILE = os.path.join(ROOT_DIR, "reports/token_usage_summary.json")
 

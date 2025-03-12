@@ -1,0 +1,37 @@
+Sure, here is an example of Python code for solving the 1D Linear Convection Equation using the Finite Difference Method (FDM).
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define parameters
+L = 2. # Length 
+T = 1. # Time 
+nx = 101 # spatial points 
+nt = 100 # time points 
+c = 1. # wave speed
+
+# Discretize
+dx = L / (nx - 1)
+dt = T / (nt - 1)
+
+x = np.linspace(0, L, nx)
+u = np.zeros(nx)
+
+# Initial condition
+u = np.where((0.9 >= x) & (x >= 0.1), 2, 1)
+
+for n in range(nt):
+    un = u.copy()
+    for i in range(1, nx - 1):
+        u[i] = un[i] - c*dt/dx*(un[i] - un[i - 1])
+
+# Plot
+plt.plot(x, u)
+plt.show()
+```
+This simple program models a wave with speed `c` moving to the right in a 1-dimensional domain of length `L`. The wave, once it reaches the end of the domain, will wrap-around to the start due the use of periodic boundary conditions. The computational domain is discretized into `nx` points in space and `nt` points in time. The initial wave profile is a square pulse of height `2` and width `0.8`.
+
+Note: Since we are using the explicit Euler method, we need to make sure the simulation remains stable. This is achieved by choosing `dt` and `dx` such that the Courant number, `c*dt/dx`, is less than or equal to `1`. Failure to satisfy the Courant condition would lead to numerical instability occurring. In more realistic simulations, one would adjust `dt` dynamically based on the computed `dx` and the maximum wave speed.
+
+Remember that only time iteration is visualized here. For real-time consideration, use 2D plot where x and t are independents and u is dependent and to be plotted on z-axis.

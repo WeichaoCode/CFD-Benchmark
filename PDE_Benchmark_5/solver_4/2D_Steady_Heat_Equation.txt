@@ -1,0 +1,47 @@
+Here is how you could accomplish this using Python. The following solution will use the Gauss-Seidel method to solve for the temperature distribution.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define grid parameters
+lx, ly = 5, 4  # Length of domain in x and y directions
+nx, ny = 51, 41  # Number of points in x and y directions
+dx, dy = lx/(nx-1), ly/(ny-1)  # Step size
+
+# Define tolerance and maximum iterations for Gauss-Seidel method
+tol = 1E-4  # Convergence criterion
+max_iter = 500  # Maximum number of iterations
+
+# Initialize the solution array
+T = np.zeros((ny,nx))
+
+# Set the boundary conditions
+T[:,0] = 10  # Left boundary
+T[0,:] = 0  # Top boundary
+T[:,-1] = 40  # Right boundary
+T[-1,:] = 20  # Bottom boundary
+
+# Gauss-Seidel method
+for iter in range(max_iter):
+    T_old = T.copy()
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):  
+            T[j,i] = ((dy**2 * (T_old[j,i-1] + T_old[j,i+1]) +
+                       dx**2 * (T_old[j-1,i] + T_old[j+1,i])) /
+                      (2.0 * (dx**2 + dy**2)))
+
+    if np.abs(T-T_old).max() < tol:
+        print(f"Converged in {iter} iterations.")
+        break
+else:
+    print(f"Warning: Didn't converge after {max_iter} iterations.")
+
+# Plot the temperature field
+plt.contourf(T)  
+plt.title('Temperature Distribution')
+plt.colorbar(label='T (°C)')
+plt.show()
+```
+
+This code initializes and sets the boundary conditions of the temperature field, then iteratively updates the temperature at each interior point using the Gauss-Seidel method. It checks for convergence by comparing the maximum change in temperature values across all interior points between consecutive iterations, and stops when this change is below the set tolerance. After computing the steady-state solution, it visualizes the temperature distribution using a contour plot.

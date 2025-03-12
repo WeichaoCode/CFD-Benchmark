@@ -1,0 +1,56 @@
+Here, I can provide an implementation code for solving the given diffusion equation. However, keep in mind that the implementation is quite complex and below is a simple version of what your Python code could look like. You need to adjust each step according to your requirements:
+
+```python
+import numpy as np
+from matplotlib import pyplot as plt
+from scipy.sparse.linalg import spsolve
+from scipy.sparse import diags
+
+# Parameters
+h = 0.1
+mu = 1e-3
+dpdz = -3.2
+nx, ny = 100, 100
+dx, dy = h/nx, h/ny
+
+# Control volumes initialization
+x = np.linspace(-h/2, h/2, nx) 
+y = np.linspace(-h/2, h/2, ny)
+w = np.zeros((ny, nx)) 
+
+# Matrix assembly
+n = nx*ny
+main_diag = -2 * mu * (dx**-2 + dy**-2) * np.ones((n, 1)).ravel()
+off_diag = mu * dx**-2 * np.ones((n - 1, 1)).ravel()
+
+# Neumann boundary condition
+neumann_bc = dpdz * dy / mu
+
+# Main diagonal of the matrix
+a = main_diag.copy()
+a[ny-1::ny] = -1
+b = main_diag.copy()
+b[0::ny] = -1
+
+# Matrix A
+A = diags([a, main_diag, b, off_diag, off_diag], [-ny, 0, ny, -1, 1], shape=(n, n))
+
+# Right-side vector
+b = np.zeros((n, 1)).ravel()
+b[0::ny] = -neumann_bc
+b[ny-1::ny] = -neumann_bc
+
+# Solve w from Aw=b using sparse solver
+w = spsolve(A, b)
+
+# Plot
+w = np.reshape(w, (ny, nx))
+plt.contourf(x, y, w, 50, cmap='jet')
+plt.title('w-Velocity Distribution')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.colorbar(label="w-velocity")
+plt.show()
+```
+
+This Python code will create a contour plot of the w-velocity distribution in the square duct. It uses the finite volume method and second-order central difference scheme to solve the 2D diffusion equation. The resulting plot should show a velocity profile that decreases from the center of the duct towards the walls, in line with the expected results. However, an exact solution requires a more detailed implementation.

@@ -1,0 +1,53 @@
+Below is a Python script that applies the Finite Difference Method to solve the 2D Diffusion Equation:
+
+```Python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Step 1: Define parameters
+Lx, Ly = 1.0, 1.0  # domain dimensions
+T = 0.1  # total time
+nx, ny, nt = 50, 50, 100  # number of points in x, y and t
+ν = 0.1  # diffusion coefficient
+
+Δx, Δy = Lx / (nx - 1), Ly / (ny - 1)  # grid sizes
+Δt = T / (nt - 1)  # time step size
+
+# Ensure stability via the CFL condition
+assert Δt <= min(Δx, Δy)**2 / (4 * ν), "Time step too large!"
+
+# Step 2: Discretize space/time
+x = np.linspace(0.0, Lx, num=nx)
+y = np.linspace(0.0, Ly, num=ny)
+t = np.linspace(0.0, T, num=nt)
+
+# Step 3: Initialize the field
+u = np.zeros((nx, ny, nt))  # the scalar field
+
+# Initial condition
+u[int(.5 / Δx), int(.5 / Δy), 0] = 10
+
+# Step 4: FDM
+for n in range(nt - 1):
+    for j in range(1, nx - 1): 
+        for i in range(1, ny - 1): 
+            u[j, i, n + 1] = (u[j, i, n] +
+                             ν * Δt / Δx**2 * (u[j + 1, i, n] - 2 * u[j, i, n] + u[j - 1, i, n]) +
+                             ν * Δt / Δy**2 * (u[j, i + 1, n] - 2 * u[j, i, n] + u[j, i - 1, n]))
+
+# Step 5: Apply boundary conditions
+u[:, :, -1] = u[:, :, -2]  # at x = Lx
+u[:, :, 0] = u[:, :, 1]  # at x = 0
+u[0, :, :] = u[1, :, :]  # at y = 0
+u[-1, :, :] = u[-2, :, :]  # at y = Ly
+
+# Step 6: Visualize
+plt.figure(figsize=(8, 5))
+plt.contourf(x, y, u[:, :, -1], levels=50)
+plt.colorbar()
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.title('Heatmap of the Scalar Field at Final Time Step')
+plt.show()
+```
+In this program, we initially set up the parameters for the problem, and then reserve appropriate memory to store our solution. The central segment of the program involves iterating over the finite difference scheme, and then we follow this up with visualization of the result. The output should be a heatmap indicating the diffusion of the scalar field `u` over a 2D domain with time.

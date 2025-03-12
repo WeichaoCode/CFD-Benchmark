@@ -1,0 +1,20 @@
+The error seems to originate from an improper usage of Matplotlib's `gca()` method in your code to plot the 3D surface. This issue may be due to the version of Matplotlib installed in your system being outdated. You might not be able to use the `projection='3d'` in `gca()` method. Here is how you can do it the correct way:
+
+First, make sure you have properly imported the correct libraries:
+
+```python
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import numpy as np
+```
+
+Then when you plot in your code, use this format:
+
+```python
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+```
+
+Here `111` represents the position (rows, columns, index) of the subplot.
+
+Hope this helps to fix your error.

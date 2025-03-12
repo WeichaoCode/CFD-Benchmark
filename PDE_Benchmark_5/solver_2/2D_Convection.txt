@@ -1,0 +1,65 @@
+Sure, below is a sample program to solve the given convection equations using finite difference method in Python.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameter Definitions
+Lx, Ly = 2, 2
+nx, ny = 101, 101
+nt = 100
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+sigma = 0.2
+dt = sigma * dx
+
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+un = np.ones((ny, nx))
+vn = np.ones((ny, nx))
+                     
+u[int(.5 / dy):int(1 / dy + 1),int(.5 / dx):int(1 / dx + 1)] = 2
+v[int(.5 / dy):int(1 / dy + 1),int(.5 / dx):int(1 / dx + 1)] = 2
+
+# Plot Initial Condition
+fig = plt.figure(figsize=(7, 5), dpi=100)
+plt.quiver(x[::3], y[::3], u[::3, ::3], v[::3, ::3])
+
+# Function to Apply Finite Difference Scheme
+def convection(nt, u, v, dt, dx, dy):
+    un = u.copy()
+    vn = v.copy()
+    
+    for n in range(nt):
+        un = u.copy()
+        vn = v.copy()
+        
+        u[1:, 1:] = (un[1:, 1:] - 
+                     (un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1])) -
+                     vn[1:, 1:] * dt / dx * (un[1:, 1:] - un[:-1, 1:]))
+        
+        v[1:, 1:] = (vn[1:, 1:] -
+                     (un[1:, 1:] * dt / dx * (vn[1:, 1:] - vn[1:, :-1])) -
+                     vn[1:, 1:] * dt / dx * (vn[1:, 1:] - vn[:-1, 1:]))
+        
+        u[0, :] = 1
+        u[-1, :] = 1
+        u[:, 0] = 1
+        u[:, -1] = 1
+        
+        v[0, :] = 1
+        v[-1, :] = 1
+        v[:, 0] = 1
+        v[:, -1] = 1
+    return u, v
+
+u, v = convection(nt, u, v, dt, dx, dy)
+
+# Plot Final Condition
+fig = plt.figure(figsize=(7, 5), dpi=100)
+plt.quiver(x[::3], y[::3], u[::3, ::3], v[::3, ::3])
+plt.show()
+```
+The initial condition and the final condition both are plotted. The program advances the solution over time by applying the finite difference scheme, and the resulting quiver plot shows the evolution of the velocity field over time. Adjustment may be required according to specifics of the problem, but essentially this is the overall structure of the implementation.

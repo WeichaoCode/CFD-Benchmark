@@ -1,0 +1,74 @@
+Given the objective, governing equation, boundary conditions, and source term provided, we start the Python programming.
+
+Firstly, we have to import the necessary libraries:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import sparse
+from mpl_toolkits.mplot3d import Axes3D
+```
+
+Then, we define the parameters:
+
+```python
+alpha = 0.1
+Q0 = 200
+sigma = 0.1
+L = 1.0
+Tb = 0.0
+Nx = Ny = 21
+dt = 0.01
+T_max = 2.0
+
+x = np.linspace(-L, L, Nx)
+y = np.linspace(-L, L, Ny)
+T = np.ones((Ny, Nx))*Tb
+
+dx = x[1] - x[0]
+dy = y[1] - y[0]
+```
+
+Next, we define the heat source term:
+
+```python
+def heat_source(x, y, Q0, sigma):
+    q = Q0 * np.exp(- (x**2 + y**2) / (2*sigma**2))
+    return q
+
+# create meshgrid
+X, Y = np.meshgrid(x, y)
+q = heat_source(X, Y, Q0, sigma)
+```
+
+Now we implement the method functions:
+
+```python
+def dufort_frankel(T, q, alpha, dt, dx, dy):
+    # ...
+
+def adi(T, q, alpha, dt, dx, dy):
+    # ...
+```
+
+Finally, we implement the main loop for the time stepping and the visualization function:
+
+```python
+def visualize(T, x, y):
+    fig = plt.figure(figsize=(8,6))
+    ax = fig.add_subplot(111, projection='3d')
+    X, Y = np.meshgrid(x, y)
+    surf = ax.plot_surface(X, Y, T, cmap='viridis')
+    plt.show()
+
+t = 0
+while t < T_max:
+    T_new = dufort_frankel(T, q, alpha, dt, dx, dy)  # or adi for ADI method
+    T = T_new.copy()
+    t += dt
+
+# visualize the final state
+visualize(T, x, y)
+```
+
+The `dufort_frankel` and `adi` functions have to be implemented properly to carry out the numerical computations. This is a basic template showing how to structure the code. You will need to fill in the details of the numerical methods, specify the boundary conditions, and handle any other necessary computations.

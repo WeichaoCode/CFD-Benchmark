@@ -1,0 +1,36 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def solve_1d_nonlinear_conv():
+  # 1. Define Parameters
+  L = 2.0 # length of the 1D domain
+  T = 1.0 # time period
+  nx = 101 # number of spatial points in the domain
+  nt = 100 # number of time steps
+  dx = L / (nx - 1) # spatial resolution
+  dt = T / (nt - 1) # time step
+  cfl = 0.5 # Courant-Friedrichs-Lewy condition
+  dt = cfl * dx # adjust dt to satisfy the CFL condition
+
+  u = np.ones(nx) # 1D array of u at the current time step
+  u[int(.5 / dx):int(1 / dx + 1)] = 2  # set u = 2 between 0.5 and 1 as per our I.C.s
+
+  un = np.ones(nx) # 1D array of u at the next time step
+
+  # 2. Discretization and Iteration
+  for n in range(nt):
+    un = u.copy() 
+    for i in range(1, nx): 
+      u[i] = un[i] - un[i] * dt / dx * (un[i] - un[i-1]) 
+
+    if (n+1) % 20 == 0: # plot every 20 steps
+      plt.plot(np.linspace(0, L, nx), u)
+
+  # 3. Plot
+  plt.xlabel("Distance")
+  plt.ylabel("u")
+  plt.title("1D Nonlinear Convection")
+  plt.show()
+
+if __name__ == "__main__":
+  solve_1d_nonlinear_conv()

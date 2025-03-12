@@ -1,0 +1,57 @@
+Here is a program that uses the finite difference method to solve the Laplace equation:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Problem parameters
+Lx = 2
+Ly = 1
+nx = 100
+ny = 50
+
+# Grid spacing
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+# Initialize solution
+p = np.zeros((ny,nx))
+
+# Boundary conditions
+p[:,0] = 0              # p = 0 at x = 0 
+p[:,-1] = np.linspace(0, Ly, ny) # p = y at x = Lx 
+p[0,:] = p[1,:]                 # dp/dy = 0 at y = 0
+p[-1,:] = p[-2,:]               # dp/dy = 0 at y = Ly
+
+# Iterative solver
+while True:
+    pn = p.copy()
+    # Five-point difference operator
+    p[1:-1,1:-1] = ((dy**2 * (pn[1:-1,2:] + pn[1:-1,:-2]) +
+                     dx**2 * (pn[2:,1:-1] + pn[:-2,1:-1])) /
+                    (2 * (dx**2 + dy**2)))
+
+    # Enforce boundary conditions
+    p[:,0] = 0
+    p[:,-1] = np.linspace(0, Ly, ny)
+    p[0,:] = p[1,:]
+    p[-1,:] = p[-2,:]
+
+    # Check for convergence
+    if np.sqrt(np.sum((p - pn)**2)/np.sum(pn**2)) < 1e-6:
+        break
+
+# Plot the solution
+X, Y = np.meshgrid(np.linspace(0, Lx, nx), np.linspace(0, Ly, ny))
+plt.contourf(X, Y, p, cmap='inferno')
+plt.title('Distribution of p(x,y)')
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.colorbar(label='p')
+plt.show()
+```
+
+This code discretizes the 2D domain into a grid and then uses the finite difference method (FDM) to iteratively solve the Laplace equation. The initial guess for the solution is zero everywhere, which is updated in each iteration of the solver. The boundary conditions are enforced in each iteration as well.
+
+Finally, we check if the solution has converged by checking the relative change in the solution from the previous iteration. If this is less than a specified tolerance, we assume that the solution has converged, and we break out of the loop. This tolerance can be adjusted based on the required level of precision.
+The solution is visualized using a contour plot. The plot shows the steady-state distribution of p(x,y).

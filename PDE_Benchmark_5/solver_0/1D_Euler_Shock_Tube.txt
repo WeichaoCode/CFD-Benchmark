@@ -1,0 +1,84 @@
+Here is a simple Python program to solve the 1D Euler equations for compressible flow in a shock tube using the MacCormack method:
+
+```Python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def initialize(L, nx, nt, gamma, CFL):
+
+    dx = L / (nx - 1)
+    x = np.linspace(0, L, nx)
+    U = np.zeros((3, nx))
+    U_new = np.zeros_like(U)
+    U_star = np.zeros_like(U)
+
+    # left side
+    U[0, :int(nx/2)] = 1.0
+    U[1, :int(nx/2)] = 0.0
+    U[2, :int(nx/2)] = 1.0 / (gamma - 1)
+
+    # right side
+    U[0, int(nx/2):] = 0.125
+    U[1, int(nx/2):] = 0.0
+    U[2, int(nx/2):] = 0.1 / (gamma - 1)
+
+    # Max time step
+    dt_max = CFL * dx / np.max(np.sqrt(gamma * U[2, :] / U[0, :]))
+
+    return dx, x, U, U_new, U_star, dt_max
+
+
+def mac_cormack(U, U_new, U_star, nt, dt, dx, gamma, nx):
+
+    for t in range(nt):
+        F = compute_flux(U, gamma, nx)
+        U_star[:, :-1] = U[:, :-1] - dt / dx * (F[:, 1:] - F[:, :-1])
+        F_star = compute_flux(U_star, gamma, nx)
+        U_new[:, 1:] = 0.5 * (U[:, 1:] + U_star[:, 1:] - dt / dx * (F_star[:, 1:] - F_star[:, :-1]))
+        U[:, :] = U_new[:, :]
+
+
+def compute_flux(U, gamma, nx):
+
+    F = np.zeros_like(U)
+    F[0, :] = U[1, :]
+    F[1, :] = U[1, :] ** 2 / U[0, :] + (gamma - 1) * (U[2, :] - 0.5 * U[1, :] ** 2 / U[0, :])
+    F[2, :] = (U[2, :] + (gamma - 1) * (U[2, :] - 0.5 * U[1, :] ** 2 / U[0, :])) * U[1, :] / U[0, :]
+
+    return F
+
+if __name__ == "__main__":
+
+    L = 1.0
+    T = 0.25
+    nx = 81
+    nt = 125
+    gamma = 1.4
+    CFL = 0.1
+
+    dx, x, U, U_new, U_star, dt_max = initialize(L, nx, nt, gamma, CFL)
+    mac_cormack(U, U_new, U_star, nt, dt_max, dx, gamma, nx)
+    rho = U[0, :]
+    u = U[1, :] / rho
+    p = (gamma - 1) * (U[2, :] - 0.5 * rho * u ** 2)
+
+    plt.figure(figsize=(18, 6))
+    plt.subplot(1,3,1)
+    plt.plot(x, rho, label='Density')
+    plt.xlabel('Distance')
+    plt.ylabel('Density')
+    plt.grid(True)
+    plt.subplot(1,3,2)
+    plt.plot(x, u, label='Velocity')
+    plt.xlabel('Distance')
+    plt.ylabel('Velocity')
+    plt.grid(True)
+    plt.subplot(1,3,3)
+    plt.plot(x, p, label='Pressure')
+    plt.xlabel('Distance')
+    plt.ylabel('Pressure')
+    plt.grid(True)
+    plt.show()
+```
+This codes first initialize the domain and state variables. The main function to calculate and update the state variable U using the MacCormack method. The compute_flux function is used to return flux vector for each cell.
+This code ends by plotting the density, velocity, and pressure distribution at the final timestep.

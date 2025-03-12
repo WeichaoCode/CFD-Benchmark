@@ -1,0 +1,67 @@
+Sure, here is a Python code to solve your requirements using NumPy and Matplotlib for computation and visualization.
+
+First, we need to import the necessary libraries.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+Second, we need to define our heat source and initial conditions.
+
+```python
+Q_0 = 200
+sigma = 0.1
+alpha = 0.01
+T_boundary = 0
+
+
+def q(x, y):
+    return Q_0 * np.exp(- (x**2 + y**2) / (2 * sigma**2))
+
+
+x = np.linspace(-1, 1, 100)
+y = np.linspace(-1, 1, 100)
+dx = x[1] - x[0]
+dy = y[1] - y[0]
+dt = 0.5 * min(dx, dy)**2 / (4 * alpha)
+
+
+T = np.zeros((len(x), len(y)))
+for i in range(len(x)):
+    for j in range(len(y)):
+        T[i,j] = q(x[i], y[j])
+```
+
+Then, we need to describe the discretization strategy using the simple explicit method for time integration.
+
+```python
+def update_T(T):
+    T_new = T.copy()
+
+    for i in range(1, len(x)-1):
+        for j in range(1, len(y)-1):
+            T_new[i, j] = T[i, j] + dt * (q(x[i], j) + alpha * ((T[i - 1, j] - 2 * T[i, j] + T[i + 1, j]) / dx**2 + (T[i, j - 1] - 2 * T[i, j] + T[i, j + 1]) / dy**2))
+
+    # Boundary Conditions:
+    T_new[0, :] = T_new[-1, :] = T_boundary
+    T_new[:, 0] = T_new[:, -1] = T_boundary
+    return T_new
+```
+Lastly, let's compute and plot our solution.
+
+```python
+time = 0
+end_time = 0.1
+
+while time < end_time:
+    T = update_T(T)
+    time += dt
+
+plt.imshow(T, cmap='hot', interpolation='nearest')
+plt.show()
+```
+
+This code should give you a heatmap of the thermal distribution in our initial conditions. You can adjust the end_time to see the temperature evolution over time. You can also refer to the function q(x, y) to change the heat source distribution.
+
+Please note that you should handle the division by zero case when dx or dy is zero, and this code does not guarantee the stability of the solution. The selection of an appropriate timestep based on the CFL condition can ensure the numerical stability.

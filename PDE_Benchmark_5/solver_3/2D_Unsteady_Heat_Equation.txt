@@ -1,0 +1,58 @@
+Perfect, from your description, it seems you'd like to perform a 2D transient heat conduction analysis, we'll start by importing the required libraries:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import linalg
+```
+
+Code for Explicit Method:
+
+```python
+def explicit_heatsolver(T, alpha, dt, dx, dy, u):
+    n, m = T.shape
+    Tn = T.copy()
+    k = alpha*dt/dx/dy
+    for i in range(1, n-1):
+        for j in range(1, m-1):
+            Tn[i, j] = T[i, j] + k*(T[i+1][j] - 2*T[i][j] + T[i-1][j]) + k*(T[i][j+1] - 2*T[i][j] + T[i][j-1]) + u[i][j]*dt
+    return Tn
+```
+
+Code for Implicit Method:
+
+```python
+def implicit_heatsolver(T, alpha, dt, dx, dy, u):
+    n, m = T.shape
+    k = alpha*dt/dx/dy
+    A = np.zeros(((m-2)*(n-2), (m-2)*(n-2)))
+    b = np.zeros((m-2)*(n-2))
+    Tn = T[1:-1, 1:-1].copy().flatten()
+    
+    for j in range(m-2):
+        for i in range(n-2):
+            A[j*(n-2)+i][j*(n-2)+i] = 1 + 2*k
+            if i != 0:
+                A[j*(n-2)+i][j*(n-2)+i-1] = -k
+            if i != n-3:
+                A[j*(n-2)+i][j*(n-2)+i+1] = -k
+            if j != 0:
+                A[j*(n-2)+i][(j-1)*(n-2)+i] = -k
+            if j != m-3:
+                A[j*(n-2)+i][(j+1)*(n-2)+i] = -k
+            b[j*(n-2)+i] = Tn[j*(n-2)+i] + u[j+1][i+1] * dt
+    Tn = np.linalg.solve(A, b)
+    T[1:-1, 1:-1] = Tn.reshape(m-2, n-2)
+    return T
+```
+
+You can create a function to feed the heat source into the heat equation. This may look like:
+
+```python
+def src(x, y, Q_0, sig):
+    return Q_0 * np.exp(- (x**2 + y**2) / (2*sig**2))
+```
+
+You can then visualize the solutions using matplotlib's contourf function and compare the approaches.
+
+Please adjust the code as per your requirement or constraints.

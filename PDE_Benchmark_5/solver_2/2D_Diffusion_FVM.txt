@@ -1,0 +1,70 @@
+The steps will involve creating a mesh, applying boundary conditions, assembling the equations for each control volume and solving the system.
+
+Below is a template python script.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.sparse import csr_matrix, diags
+from scipy.sparse.linalg import spsolve
+
+# Define parameters 
+h = 0.1
+nx, ny = 50, 50
+grad_p = -3.2
+mu = 1e-3
+rho = 1
+
+dx = h / (nx - 1)
+dy = h / (ny - 1)
+
+# Generate structured Cartesian grid
+x = np.linspace(0, h, nx)
+y = np.linspace(0, h, ny)
+X, Y = np.meshgrid(x, y)
+
+# Create empty matrix and rhs vector
+A = csr_matrix((nx * ny, nx * ny))
+b = np.zeros(nx * ny)
+
+# Assemble linear system
+for i in range(nx):
+    for j in range(ny):
+        # linear index of the point we are considering
+        p = j * nx + i
+        
+        # Apply boundary conditions
+        if i == 0 or i == nx - 1 or j == 0 or j == ny - 1:  
+            A[p, p] = 1.0
+            b[p] = 0.0
+        
+        # Apply finite volume method for interior points
+        else:
+            A[p, p] = 2 * mu * (1 / dx**2 + 1 / dy**2)
+            A[p, p - 1] = -mu / dx**2
+            A[p, p + 1] = -mu / dx**2
+            A[p, p - nx] = -mu / dy**2
+            A[p, p + nx] = -mu / dy**2
+            
+            b[p] = rho * grad_p
+
+# Solve the linear system
+w = spsolve(A, b)
+
+# Reshape solution array to 2D grid
+W = w.reshape((ny, nx))
+
+# Plot
+plt.figure(figsize=(12, 8))
+plt.contourf(X, Y, W, levels=50)
+plt.colorbar(label='w-velocity')
+plt.streamplot(X, Y, np.zeros_like(W), W, color='black')
+plt.title('2D Diffusion Solution with Finite Volumes')
+plt.xlabel('x (m)')
+plt.ylabel('y (m)')
+plt.show()
+```
+
+This Python script generates a structured Cartesian grid, assembles the system of equations using the finite volume method, solves the system using an iterative solver, and visualizes the results using a contour plot. The solution is displayed in terms of w-velocity distribution across the square duct.
+
+Note that the use of 'spsolve' from scipy.sparse.linalg allows the solution of large, sparse systems.

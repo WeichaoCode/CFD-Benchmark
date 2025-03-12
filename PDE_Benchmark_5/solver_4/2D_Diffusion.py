@@ -1,0 +1,48 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Define parameters
+Lx, Ly, T = 2.0, 2.0, 1.0
+nx, ny, nt = 101, 101, 501
+ν = 0.1
+
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+# Stability condition (Δt ≤ min(Δx²/4ν, Δy²/4ν))
+dt = min(dx**2/(4*ν), dy**2/(4*ν))
+
+# Initialize solution array
+u = np.zeros((nt, ny, nx))
+
+# 3. Initialize condition
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+u[0, :, :] = np.sin(np.pi*x)*np.sin(np.pi*y) # Modify as needed
+
+# 4. Iterate using the Finite Difference Scheme
+for t in range(nt-1):
+    u[t+1, 1:-1, 1:-1] = u[t, 1:-1, 1:-1] + ν*dt/dx**2 * (u[t, 1:-1, 2:] - 2*u[t, 1:-1, 1:-1] + u[t, 1:-1, :-2]) \
+                                    + ν*dt/dy**2 * (u[t, 2:, 1:-1] - 2*u[t, 1:-1, 1:-1] + u[t, :-2, 1:-1])
+
+# 5. Boundary conditions
+    u[t+1, :, 0], u[t+1, :, -1] = u[t, :, 1], u[t, :, -2]  # x direction
+    u[t+1, 0, :], u[t+1, -1, :] = u[t, 1, :], u[t, -2, :]  # y direction
+
+# 6. Visualize a final frame
+plt.imshow(u[-1, :, :], cmap='hot', extent=[0, Lx, 0, Ly])
+plt.colorbar()
+plt.show()
+
+# If you want to animate the solution over time:
+# import matplotlib.animation as animation
+
+# fig = plt.figure()
+# ims = []
+
+# for t in range(nt):
+#     im = plt.imshow(u[t, :, :], animated=True, cmap='hot', extent=[0, Lx, 0, Ly])
+#     ims.append([im])
+
+# ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True)
+# plt.show()

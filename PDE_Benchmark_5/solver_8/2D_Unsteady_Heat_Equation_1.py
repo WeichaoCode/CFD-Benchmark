@@ -1,0 +1,51 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+# Define the grid
+lx, ly = 2.0, 2.0  # spatial domain
+nx, ny = 100, 100  # number of points
+dx, dy = lx/nx, ly/ny
+
+alpha = 0.1 # Thermal diffusivity
+dt = 0.001 # time step
+Q_0 = 200 
+sigma = 0.1
+
+x = np.linspace(-lx/2, lx/2, nx) # x points
+y = np.linspace(-ly/2, ly/2, ny) # y points
+X, Y = np.meshgrid(x, y) # create meshgrid
+
+# Initialize solution arrays
+T = np.zeros((nx, ny)) # initial temperatures
+
+# Define the heat source
+def q(X, Y):
+    return Q_0 * np.exp(-(X**2 + Y**2) / (2*sigma**2))
+
+# Time stepping function
+def step(T):
+    T_new = np.zeros((nx, ny))
+    for i in range(1, nx-1):
+        for j in range(1, ny-1):
+            T_new[i, j] = (T[i+1, j] - 2*T[i, j] + T[i-1, j]) / dx**2 + \
+               (T[i, j+1] - 2*T[i, j] + T[i, j-1]) / dy**2 
+
+    T_new = T_new * alpha * dt + T
+    # Set boundary conditions
+    T_new[0, :] = T_new[-1, :] = T_new[:, 0] = T_new[:, -1] = 0.0
+    return T_new + dt*q(X, Y)
+
+# Create animation
+fig = plt.figure()
+ims = []
+
+for t in range(100):
+    T = step(T)
+    if t % 10 == 0: # plot every 10 steps
+        im = plt.imshow(T, animated=True)
+        ims.append([im])
+
+ani = animation.ArtistAnimation(fig, ims, interval=200, blit=True)
+
+plt.show()

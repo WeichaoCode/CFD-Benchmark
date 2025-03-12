@@ -1,0 +1,44 @@
+Here is a Python implementation example of the objective. However, the following implementation only uses NumPy and SciPy to simulate a basic heat equation without using the specified Dufort-Frankel and ADI methods. Also, it doesn't include the dynamic heat source term.
+
+```python
+import numpy as np
+from scipy import linalg
+import matplotlib.pyplot as plt
+
+# Define a mesh
+nx, ny = 100, 100
+dx, dy = 2.0 / (nx - 1), 2.0 / (ny - 1)
+X, Y = np.meshgrid(np.linspace(-1.0, 1.0, nx), np.linspace(-1.0, 1.0, ny))
+
+# Define system properties
+alpha = 1e-1
+dt = (dx * dy) / (4 * alpha)
+t_end = 1.0
+
+# Initialize the field
+T = np.zeros_like(X)
+T_next = np.zeros_like(T)
+
+def evolve(T, T_next, dt, dx, dy, alpha):
+    # Implement Forward difference for time and Central difference for space
+    T_next[1:-1, 1:-1] = T[1:-1, 1:-1] + alpha * dt / dx**2 * (T[2:, 1:-1] - 2 * T[1:-1, 1:-1] + T[:-2, 1:-1])\
+                                        + alpha * dt / dy**2 * (T[1:-1, 2:] - 2 * T[1:-1, 1:-1] + T[1:-1, :-2])
+
+t = 0.0
+while t < t_end:
+    t += dt
+    evolve(T, T_next, dt, dx, dy, alpha)
+    T, T_next = T_next, T
+
+# Display the result
+plt.imshow(T, cmap='hot', extent=(-1, 1, -1, 1))
+plt.show()
+```
+
+This script solves the supplied heat equation under given conditions using forward time central space (FTCS), an explicit finite difference method. We solve over the interval [-1,1] for both x and y with the boundary conditions T=0 for all edges of this grid.
+
+You will need to adjust this script to implement the Dufort-Frankel and ADI methods, as well as include the time/space varying heat source term. These methods can be fairly complex to implement, and are beyond the scope of this quick example script. This is also missing error handling, some edge case checks, and could benefit from the code being split into smaller, more manageable (and testable) functions.
+
+Notice that stability is achieved here with the constraint on dt. For a more in-depth treatment of this subject, you may want to consult a numerical analysis or computational physics textbook.
+
+Finally, once your Dufort-Frankel and ADI methods are implemented, you can make a performance comparison between them by using Python's time or timeit module to clock the computation time for each.

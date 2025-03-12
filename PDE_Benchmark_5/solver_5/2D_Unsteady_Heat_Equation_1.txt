@@ -1,0 +1,67 @@
+The implementation starts with creating a Python script to solve the problem. It is divided into multiple pieces to describe the whole process.
+
+To start with, import the libraries.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
+```
+
+Next, define grid size, time steps, coefficients and other constants
+
+```python
+# Gridsize and time steps
+nx, ny = 100, 100
+nt = 500
+lx, ly = 2.0, 2.0
+dx, dy = lx/nx, ly/ny
+
+# Define coefficients
+alpha = 0.25
+dt = (dx*dy)**2 / (4*alpha*(dx**2+dy**2))
+
+# Prepare arrays
+T = np.zeros((nx, ny, nt))
+qx = np.zeros((nx, ny))
+qy = qx.copy()
+
+# Source term
+Q0 = 200
+x = np.linspace(-1, 1, nx)
+y = np.linspace(-1, 1, ny)
+X, Y = np.meshgrid(x, y)
+sigma = 0.1
+Q = Q0 * np.exp(- (X**2 + Y**2) / (2*sigma**2))
+```
+
+Now, define `unsteady_heat_equation` function for the simulation and visualization:
+
+```python
+def unsteady_heat_equation(T, Q, nt, alpha, dx, dy, dt):
+    for t in range(nt-1):
+        T[1:-1, 1:-1, t+1] = T[1:-1, 1:-1, t] + alpha * dt * (
+            (T[:-2, 1:-1, t] - 2*T[1:-1, 1:-1, t] + T[2:, 1:-1, t]) / dx**2 +
+            (T[1:-1, :-2, t] - 2*T[1:-1, 1:-1, t] + T[1:-1, 2:, t]) / dy**2 
+            ) + Q[1:-1, 1:-1] * dt
+        # Neumann boundary conditions
+        T[:, 0, t+1] = T[:, 1, t+1]
+        T[:, -1, t+1] = T[:, -2, t+1]
+        T[0, :, t+1] = T[1, :, t+1]
+        T[-1, :, t+1] = T[-2, :, t+1]
+    return T
+
+# Call the function
+T = unsteady_heat_equation(T, Q, nt, alpha, dx, dy, dt)
+
+# Visualize the result
+temp = T[:,:,nt-1]
+
+plt.figure(figsize=(8,8))
+plt.imshow(temp, cmap='hot', interpolation='nearest')
+plt.colorbar(label="Temperature (°C)")
+plt.show()
+```
+
+This will show the colored heatmap of the final state of temperature with an appropriate colorbar. Remember that we need to ensure the stability conditions while selecting the time step. The Courant–Friedrichs–Lewy (CFL) condition specifies that the time step should be proportional to the space step, which we've honored in the script.

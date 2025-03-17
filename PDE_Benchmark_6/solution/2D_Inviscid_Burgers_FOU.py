@@ -1,7 +1,7 @@
 """
 2D inviscid Burgers equation
 ---------------------------------------------------------------
-- Exercise 5 - Two-dimensional inviscid Burgers equation
+- Exercise 6 - Two-dimensional inviscid Burgers equation
 - First-order upwind
 - REF: https://github.com/okcfdlab/engr491
 ---------------------------------------------------------------

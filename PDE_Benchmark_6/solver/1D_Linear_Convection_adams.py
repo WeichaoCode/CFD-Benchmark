@@ -1,0 +1,45 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define parameters
+c = 1.0
+Nx = 101
+a = -5.0
+b = 5.0
+epsilon_values = [0.0, 5.0e-4]
+T = 1.0
+
+x = np.linspace(a, b, Nx)  # Spatial grid
+dx = x[1] - x[0]  # Spatial step size
+dt = dx / (2 * np.abs(c))  # Time step size using CFL condition
+Nt = int(T / dt)  # Number of time steps
+
+# Function to compute spatial derivative
+def spatial_derivative(u, dx, epsilon):
+    return -c * (np.roll(u, -1) - np.roll(u, 1)) / (2 * dx) + epsilon * (np.roll(u, -1) - 2 * u + np.roll(u, 1)) / dx**2
+
+# Initialize u and solve for each case
+for epsilon in epsilon_values:
+    u = np.zeros((Nt, Nx))  # Initialize u
+    u[0] = np.exp(-x**2)  # Set the initial condition
+    u[1] = u[0] + dt * spatial_derivative(u[0], dx, epsilon)  # First step with Euler method
+
+    # Time integration with the 2-step Adams-Bashforth method
+    for n in range(1, Nt-1):
+        u_n = u[n]
+        u_n_minus_1 = u[n-1]
+        f_n = spatial_derivative(u_n, dx, epsilon)
+        f_n_minus_1 = spatial_derivative(u_n_minus_1, dx, epsilon)
+        u[n+1] = u_n + dt / 2 * (3 * f_n - f_n_minus_1)  # 2-step Adams-Bashforth method
+
+    # Save the solution to a .npy file
+    np.save(f"u_epsilon_{epsilon}.npy", u)
+
+    # Plot the wave profile at different times
+    plt.figure(figsize=(9, 6))
+    for n in range(0, Nt, int(Nt / 10)):
+        plt.plot(x, u[n], label=f"t = {n * dt:.2f}")
+    plt.title(f"Wave profile over time, epsilon = {epsilon}")
+    plt.legend()
+    plt.grid(True)
+    plt.show()

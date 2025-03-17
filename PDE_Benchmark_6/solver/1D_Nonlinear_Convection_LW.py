@@ -1,0 +1,47 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Hyperparameters
+dt = 0.1
+dx = 0.1
+x = np.arange(0, 2*np.pi, dx)
+t_steps = 100
+
+# Initialise solution: u(x,0) = sin(x) + 0.5 sin(0.5x)
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+u_n = u.copy()
+
+# Save initial condition to a .npy file
+np.save("initial_condition.npy", u)
+
+# Flux function
+def F(u):
+    return 0.5 * u * u
+
+# Main simulation loop
+for n in range(t_steps):
+    u_n = u.copy()
+    F_n = F(u_n)
+
+    A_jph = 0.5 * (u_n[:-2]+u_n[1:-1])
+    A_jmh = 0.5 * (u_n[1:-1]+u_n[2:])
+
+    u[1:-1] = u_n[1:-1] - dt/(2*dx)*(F_n[2:] - F_n[:-2]) + \
+        dt**2 / (2*dx**2) * (A_jph*(F_n[2:] - F_n[1:-1]) - A_jmh*(F_n[1:-1] - F_n[:-2]))
+
+    # Apply periodic boundary conditions
+    u[0] = u[-2]
+    u[-1] = u[1]
+
+# Save final solution to a .npy file
+np.save(f"final_solution.npy", u)
+
+# Plot the solution
+plt.figure(figsize=(6,4))
+plt.plot(x, u, label = "u(x,t)")
+plt.legend()
+plt.xlabel("x")
+plt.ylabel("u")
+plt.title("Solution using Lax-Wendroff method")
+plt.grid(True)
+plt.show()

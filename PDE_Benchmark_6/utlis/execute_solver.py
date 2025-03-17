@@ -2,10 +2,10 @@ import os
 import subprocess
 # Define the directory where generated solver scripts are stored
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
-GENERATED_SOLVERS_DIR = os.path.join(ROOT_DIR, "solution")
+GENERATED_SOLVERS_DIR = os.path.join(ROOT_DIR, "prompt")
 GENERATED_SOLVERS_SAVE_DIR = os.path.join(ROOT_DIR, "report")
 # Define the log file for execution results
-LOG_FILE = os.path.join(GENERATED_SOLVERS_SAVE_DIR, "execution_solution_results.log")
+LOG_FILE = os.path.join(GENERATED_SOLVERS_SAVE_DIR, "execution_prompt_results.log")
 
 # Get all Python files in the solvers directory
 python_files = [f for f in os.listdir(GENERATED_SOLVERS_DIR) if f.endswith(".py")]

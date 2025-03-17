@@ -1,0 +1,50 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Constants
+c = 1.0  # Convection speed
+dx = 0.01  # Spatial resolution
+dt = 0.5 * dx**2  # Time step (stability condition for Dufort-Frankel)
+epsilon_vals = [0.0, 5e-4]  # Diffusion cases
+time_steps = 10000  # Number of time steps
+x = np.arange(-5, 5, dx)  # Computational domain
+
+# Initial condition
+initial_u = np.exp(-x**2)
+
+# Dufort-Frankel Method
+for epsilon in epsilon_vals:
+
+    # Initialize arrays
+    u_old = initial_u.copy()
+    u = initial_u.copy()
+    u_new = initial_u.copy()
+
+    # Time integration
+    for t in range(1, time_steps):
+        # Compute the diffusion term: r * (u^n_{i+1} + u^n_{i-1})
+        diffusion_term = dt/dx**2 * epsilon * (np.roll(u, -1) + np.roll(u, 1))
+
+        # Update u_new with Dufort-Frankel scheme
+        u_new = ((1 - 2 * dt/dx**2) * u_old + diffusion_term) / (1 + 2 * dt/dx**2 * epsilon)
+
+        # Implement periodic boundaries
+        u_new[0] = u_new[-2]
+        u_new[-1] = u_new[1]
+
+        # Update arrays for next time step
+        u_old = u.copy()
+        u = u_new.copy()
+  
+    # Save solution in .npy format
+    np.save(f'u_epsilon_{epsilon}.npy', u)
+
+    # Plot the solution over time
+    plt.plot(x, u_old, label='Initial condition')
+    plt.plot(x, u, label=f'After {time_steps} time steps, epsilon={epsilon}')
+    plt.xlabel('x')
+    plt.ylabel('u')
+    plt.title(f'Dufort-Frankel Method for 1D Linear Convection Equation, epsilon={epsilon}')
+    plt.legend()
+    plt.grid(True)
+    plt.show()

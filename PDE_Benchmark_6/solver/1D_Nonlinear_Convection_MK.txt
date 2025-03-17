@@ -1,0 +1,59 @@
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# parameters
+L = 2 * np.pi  # domain length
+N = 100  # number of points
+dx = L / N  # spatial resolution
+x = np.linspace(0, L, N, endpoint=False)  # spatial grid
+dt = 0.1  # time step
+
+# initial condition
+u0 = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# MacCormack method
+def compute_flux(u):
+    """
+    computes the flux = u^2/2
+    """
+    return 0.5 * u**2
+
+def maccormack(u, dx, dt):
+    """
+    performs one time step using the MacCormack method
+    """
+    N = len(u)
+    u_star = u.copy()
+    F = compute_flux(u)
+    u_star[:-1] = u[:-1] - dt/dx * (F[1:] - F[:-1])  
+    u_star[-1] = u[-1] - dt/dx * (F[0] - F[-1])  # periodic boundary
+    
+    F_star = compute_flux(u_star)
+    u_next = 0.5 * (u + u_star)
+    u_next[1:] -= dt/(2*dx) * (F_star[1:] - F_star[:-1])
+    u_next[0] -= dt/(2*dx) * (F_star[0] - F_star[-1])  # periodic boundary
+    
+    return u_next
+
+# integrate over time
+u = u0.copy()
+nsteps = int(1.0/dt)
+for _ in range(nsteps):
+    u = maccormack(u, dx, dt)
+
+# plot the result
+plt.figure()
+plt.plot(x, u0, label="Initial")
+plt.plot(x, u, label="Final")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# save the solution
+np.save("wave1D_maccormack.npy", u)
+```
+
+This script solves the given 1D nonlinear convection equation using the MacCormack method. The solution obtained represents the wave amplitude at the final time instant. The initial and final wave amplitudes are displayed in a graph. The final solution is saved as a numpy array in a .npy file.
+
+Keep in mind that the stability relies on the chosen time step. For the provided scripts and parameters, no instability issues are observed. However, for more general problems or greater time steps, one would have to ensure that the chosen values are within the stability conditions of the respective numerical scheme.

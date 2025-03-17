@@ -1,0 +1,61 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Computational parameters
+nx = 151
+ny = 151
+nt = 300
+sigma = 0.2
+Lx = 2.0
+Ly = 2.0
+
+# Discretization
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = sigma * min(dx, dy) / 2
+
+# Initialize the grid and allocate arrays for solution
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+
+# Define the initial condition
+u[np.intersect1d(np.where(y >= 0.5), np.where(y <= 1)), 
+  np.intersect1d(np.where(x >= 0.5), np.where(x <= 1))] = 2
+v[np.intersect1d(np.where(y >= 0.5), np.where(y <= 1)), 
+  np.intersect1d(np.where(x >= 0.5), np.where(x <= 1))] = 2
+
+# Time integration using first-order upwind method
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    u[1:, 1:] = (un[1:, 1:] - 
+                 un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1]) - 
+                 vn[1:, 1:] * dt / dy * (un[1:, 1:] - un[:-1, 1:]))
+    v[1:, 1:] = (vn[1:, 1:] - 
+                 un[1:, 1:] * dt / dx * (vn[1:, 1:] - vn[1:, :-1]) - 
+                 vn[1:, 1:] * dt / dy * (vn[1:, 1:] - vn[:-1, 1:]))
+
+# Boundary conditions
+u[0, :] = 1
+u[-1, :] = 1
+u[:, 0] = 1
+u[:, -1] = 1
+
+v[0, :] = 1
+v[-1, :] = 1
+v[:, 0] = 1
+v[:, -1] = 1
+
+# Visualize the final solution
+plt.figure(figsize=(8, 8))
+plt.quiver(x[::3], y[::3], u[::3, ::3], v[::3, ::3], scale=5)
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.title('Velocity Field at Final Time')
+plt.show()
+
+# Save the final velocity field
+np.save('u_velocity.npy', u)
+np.save('v_velocity.npy', v)

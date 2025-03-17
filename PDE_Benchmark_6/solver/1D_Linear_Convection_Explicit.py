@@ -1,0 +1,47 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Domain and Grid
+Lx = 10.0  # domain size
+Nx = 101   # number of grid points
+dx = Lx / (Nx - 1)  # grid step
+x = np.linspace(-Lx/2, Lx/2, Nx)  # grid points coordinates
+
+# Time Stepping
+CFL = 0.8  # CFL number
+c = 1.0  # convection speed
+dt = CFL * dx / c  # time step from CFL condition
+T = 2.0  # final time
+Nt = int(T/dt)  # number of time steps
+
+# Initial condition
+u = np.empty((Nt, Nx))  # solution array
+u[0] = np.exp(-x**2)  # apply the initial condition
+
+# Time evolution
+for n in range(Nt-1):
+    # Explicit scheme operator
+    F = c*(u[n] - np.roll(u[n],1)) / dx
+    # Periodic BCs
+    F[0] = F[-1]
+
+    # undamped
+    epsilon = 0  
+    Fd = epsilon * (np.roll(u[n],-1)  - 2*u[n] + np.roll(u[n],1)) / dx**2
+    u[n+1] = u[n] - dt * F + dt * Fd
+
+    # damped
+    epsilon = 5e-4
+    Fd = epsilon * (np.roll(u[n],-1)  - 2*u[n] + np.roll(u[n],1)) / dx**2
+    u[n+1] = u[n] - dt * F + dt * Fd
+
+# Saving the solution in a .npy file
+np.save('1D_Linear_Convection_Explicit.npy', u)
+
+# Plotting the solution
+for i in range(0, Nt, Nt//10): 
+    plt.plot(x, np.roll(u[i], Nx//2))
+plt.xlabel('x')
+plt.ylabel('u')
+plt.title('1D Linear Convective equation solved by Explicit Method')
+plt.show()

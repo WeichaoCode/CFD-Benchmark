@@ -1,0 +1,73 @@
+First, let's import the necessary libraries:
+
+```Python
+import numpy as np
+from matplotlib import pyplot as plt
+```
+
+We start by setting up the grid and defining the initial condition.
+
+```Python
+Lx = 2.
+Ly = 2.
+nx = 151
+ny = 151
+nt = 100
+sigma = 0.2
+
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = sigma * min(dx, dy) / 2
+
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+
+u[int(.5 / dy):int(1 / dy + 1), int(.5 / dx):int(1 / dx + 1)] = 2
+v[int(.5 / dy):int(1 / dy + 1), int(.5 / dx):int(1 / dx + 1)] = 2
+```
+
+Next, we setup the function `burgers` to implement the given numerical scheme.
+
+```Python
+def burgers(nt, u, v, dt, dx, dy):
+    for n in range(nt + 1): 
+        un = u.copy()
+        vn = v.copy()
+        
+        # Interior points
+        u[1:-1, 1:-1] = (un[1:-1, 1:-1] - un[1:-1, 1:-1] * dt / dx * 
+                         (un[1:-1, 1:-1] - un[1:-1, :-2]) - vn[1:-1, 1:-1] * dt / dy * 
+                         (un[1:-1, 1:-1] - un[:-2, 1:-1]))
+
+        v[1:-1, 1:-1] = (vn[1:-1, 1:-1] - un[1:-1, 1:-1] * dt / dx * 
+                         (vn[1:-1, 1:-1] - vn[1:-1, :-2]) - vn[1:-1, 1:-1] * dt / dy * 
+                         (vn[1:-1, 1:-1] - vn[:-2, 1:-1]))
+        
+        # Boundary conditions
+        u[0, :] = 1
+        u[-1, :] = 1
+        u[:, 0] = 1
+        u[:, -1] = 1
+        v[0, :] = 1
+        v[-1, :] = 1
+        v[:, 0] = 1
+        v[:, -1] = 1
+        
+    return u, v
+```
+
+Finally, we can call `burgers` and then plot the results. 
+
+```Python
+u, v = burgers(nt, u, v, dt, dx, dy)
+
+fig = plt.figure(figsize=(7, 5), dpi=100)
+plt.quiver(u[::3, ::3], v[::3, ::3])
+plt.show()
+```
+Lastly, we save the final velocity field in `.npy` format.
+
+```Python
+np.save('u.npy', u)
+np.save('v.npy', v)
+```

@@ -26,6 +26,12 @@ prompt_text = {
       u(x,0) = \\sin(x) + 0.5 \\sin(0.5x)
       \\]
     - The domain has **periodic boundary conditions**.
+    
+    ### Choose parameters
+    - CFL number: `nu = 0.5`
+    - Time step: `dt = 0.01`
+    - Maximum number of time steps: `T = 500`
+    - Space step: `dx = dt / nu`
 
     ### **Numerical Method**
     - Use the **Lax Method**, which replaces the time-centered term with the average of adjacent nodes:

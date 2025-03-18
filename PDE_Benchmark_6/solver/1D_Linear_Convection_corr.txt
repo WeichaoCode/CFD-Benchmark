@@ -1,60 +1,53 @@
-Below is your Python code:
+Here is a Python code that implements the solution:
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Parameters
+# Define parameters
 Nx = 101
-Nx = 101
+x = np.linspace(-5, 5, Nx)
+dx = x[1] - x[0]
 c = 1
+epsilon_values = [0, 5e-4]
+dt = 0.5 * dx / c  # CFL condition
+T = 1.0
+Nt = int(T / dt)
 
-# Damping factor: undamped and damped cases
-epsilons = [0, 5e-4]
+# Discretize the domain
+u = np.zeros((Nt, Nx, len(epsilon_values)))
+u[0, :, :] = np.exp(-x**2)[None, :, None]
 
-# Discretize spatial domain
-L = 10
-dx = L / (Nx - 1)
-x = np.linspace(-L/2, L/2, Nx)
+# Time integration using Predictor-Corrector method
+for n in range(Nt - 1):
+    for i, epsilon in enumerate(epsilon_values):
+        # Predictor step
+        u_star = np.roll(u[n, :, i], -1) - np.roll(u[n, :, i], 1)
+        u_star *= -c * dt / (2 * dx)
+        u_star += epsilon * dt / dx**2 * (np.roll(u[n, :, i], -1) - 2 * u[n, :, i] + np.roll(u[n, :, i], 1))
+        u_star += u[n, :, i]
 
-# Time step for numerical stability (CFL condition)
-dt = 0.8 * dx / c
+        # Corrector step
+        u[n+1, :, i] = np.roll(u_star, -1) - np.roll(u_star, 1)
+        u[n+1, :, i] *= -c * dt / (2 * dx)
+        u[n+1, :, i] += epsilon * dt / dx**2 * (np.roll(u_star, -1) - 2 * u_star + np.roll(u_star, 1))
+        u[n+1, :, i] += u[n, :, i]
 
-# Initialize solution: wave amplitude
-u_init = np.exp(-x**2)
+# Save the computed solution
+np.save('wave_solution.npy', u)
 
-def compute_rhs(u, dx, epsilon, c):
-    # Compute derivatives using centred differences
-    du_dx = (np.roll(u, -1) - np.roll(u, 1)) / (2 * dx)
-    d2u_dx2 = (np.roll(u, -1) - 2 * u + np.roll(u, 1)) / dx**2
-    # Compute right-hand-side of the equation
-    rhs = - c * du_dx + epsilon * d2u_dx2
-    return rhs
-
-# Time integration using predictor-corrector method
-for epsilon in epsilons:
-    u = u_init.copy()
-    u_hist = [u]
-    T = 4.0
-    Nt = int(T / dt)
-    for n in range(Nt):
-        u_star = u + dt * compute_rhs(u, dx, epsilon, c)
-        u_new = u + dt / 2 * (compute_rhs(u, dx, epsilon, c) + compute_rhs(u_star, dx, epsilon, c))
-        u = u_new
-        if n % 100 == 0 or n == Nt-1:
-            u_hist.append(u)
-    u_hist = np.array(u_hist)
-    # Save the solution to a .npy file
-    np.save(f'u_hist_eps_{epsilon}.npy', u_hist)
-    # Visualization: plot the wave profile at different times
-    plt.figure()
-    for uu in u_hist:
-        plt.plot(x, uu)
-    plt.title('Wave profile over time (eps={})'.format(epsilon))
+# Visualization
+for i, epsilon in enumerate(epsilon_values):
+    plt.figure(figsize=(8, 6))
+    plt.plot(x, u[0, :, i], label='Initial')
+    plt.plot(x, u[Nt//2, :, i], label='Midway')
+    plt.plot(x, u[-1, :, i], label='Final')
+    plt.legend()
+    plt.title(f'Wave profile (epsilon={epsilon})')
     plt.xlabel('x')
     plt.ylabel('u')
     plt.grid(True)
     plt.show()
-``` 
+```
 
-In this Python script, I used a loop over timesteps where each iteration consists of updating the state of the wave at the next timestep using the predictor-corrector method. Inside the method, I used the explicit Euler method as a predictor and then used the trapezoidal rule as corrector. I leveraged NumPy's built-in `roll` function to implement the periodic boundary condition efficiently. I also added output of our implementation into a NumPy file and plotted the waveforms for visualization.
+This code first initializes the parameters and the initial wave profile. It then performs time integration using the Predictor-Corrector method, with 2nd-order central differences for spatial discretization. The computed solution is saved in a `.npy` file. Finally, it visualizes the wave profile at different time steps for both the damped and undamped cases.

@@ -1,39 +1,42 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Step 1: Define Parameters
-L = 10.0  # size of the domain
-Nx = 101  # number of spatial grid points
-dx = L/(Nx-1)  # spatial grid size
-c = 1.0  # convection speed
-epsilon_values = [0.0, 0.0005]  # damping factor for undamped and damped cases
-dt = 0.5 * dx / c  # time step size based on CFL condition
+# Define the parameters
+c = 1.0
+epsilon = [0.0, 5e-4]
+x_start, x_end = -5.0, 5.0
+nx = 101
+dx = (x_end - x_start) / (nx - 1)
+dt = dx / c
+nt = 1001
+x = np.linspace(x_start, x_end, nx)
 
-# Step 2: Discretize the Domain
-x = np.linspace(-L/2, L/2, Nx)
+# Define the initial condition
+u0 = np.exp(-x**2)
 
-# Step 3: Initialize Variables
-u_initial = np.exp(-x**2)
-
-# Step 4: Time Integration using Explicit Euler Method
-for epsilon in epsilon_values:
-    u = u_initial.copy()
-    un = np.zeros_like(u)  # intermediate update variable
-    for n in range(100):
+# Define the explicit method
+def explicit_method(u, epsilon):
+    for n in range(nt - 1):
         un = u.copy()
-        # Apply central difference scheme for spatial derivatives and explicit Euler method for time stepping
-        for i in range(1, Nx-1):
-            u[i] = un[i] - c * dt / dx * (un[i] - un[i-1]) + epsilon * (dt / dx**2) * (un[i+1] - 2*un[i] + un[i-1])
-        # Apply periodic boundary conditions
-        u[0] = un[0] - c * dt / dx * (un[0] - un[-1]) + epsilon * (dt / dx**2) * (un[1] - 2*un[0] + un[-1])
-        u[-1] = un[-1] - c * dt / dx * (un[-1] - un[-2]) + epsilon * (dt / dx**2) * (un[0] - 2*un[-1] + un[-2])
-        
-    # Step 5: Visualization
-    plt.plot(x, u_initial, label = 'Initial', color='grey')
-    plt.plot(x, u, label = f"Damped epsilon={epsilon}")
-    plt.legend()
-    plt.xlim([-L/2, L/2])
-    plt.show()
-    
-    # Save the final solution
-    np.save(f"CFD_solution_e_{epsilon}.npy", u)
+        u[1:-1] = (un[1:-1] - c * dt / dx * (un[1:-1] - un[:-2]) +
+                   epsilon * dt / dx**2 * (un[2:] - 2 * un[1:-1] + un[:-2]))
+        u[0] = u[-2]  # Apply periodic boundary conditions
+        u[-1] = u[1]  # Apply periodic boundary conditions
+    return u
+
+# Solve the equation for each case
+for eps in epsilon:
+    u = u0.copy()
+    u = explicit_method(u, eps)
+    plt.plot(x, u, label=f'epsilon = {eps}')
+
+# Plot the solution
+plt.legend()
+plt.xlabel('x')
+plt.ylabel('u')
+plt.title('Solution of the 1D linear convection equation')
+plt.grid(True)
+plt.show()
+
+# Save the solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u_1D_Linear_Convection_explicit_euler.npy', u)

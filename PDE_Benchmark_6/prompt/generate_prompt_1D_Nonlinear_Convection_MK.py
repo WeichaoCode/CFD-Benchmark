@@ -27,6 +27,12 @@ prompt_text = {
       \\]
     - The domain has **periodic boundary conditions**.
 
+    ### Choose parameters
+    - CFL number: `nu = 0.5`
+    - Time step: `dt = 0.01`
+    - Maximum number of time steps: `T = 500`
+    - Space step: `dx = dt / nu`
+    
     ### **Numerical Method**
     - Use the **MacCormack Method**, a predictor-corrector scheme:
       - **Predictor Step**:

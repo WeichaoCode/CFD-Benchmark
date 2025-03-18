@@ -51,14 +51,6 @@ prompt_text = {
        - For each time step until \( t_{\text{final}} \):
          - Compute the temporary arrays \( u_{\text{temp}} \) and \( v_{\text{temp}} \) using the current values of \( u \) and \( v \).
          - Update \( u \) and \( v \) using the Explicit Euler formula:
-           \[
-           \begin{align*}
-           u^{n+1}_{i,j} &= u^n_{i,j} - \Delta t \left( u_{i,j} \frac{u_{i,j} - u_{i-1,j}}{\Delta x} + v_{i,j} \frac{u_{i,j} - u_{i,j-1}}{\Delta y} \right) \\
-           &+ \nu \Delta t \left( \frac{u_{i+1,j} - 2u_{i,j} + u_{i-1,j}}{\Delta x^2} + \frac{u_{i,j+1} - 2u_{i,j} + u_{i,j-1}}{\Delta y^2} \right) \\
-           v^{n+1}_{i,j} &= v^n_{i,j} - \Delta t \left( u_{i,j} \frac{v_{i,j} - v_{i-1,j}}{\Delta x} + v_{i,j} \frac{v_{i,j} - v_{i,j-1}}{\Delta y} \right) \\
-           &+ \nu \Delta t \left( \frac{v_{i+1,j} - 2v_{i,j} + v_{i-1,j}}{\Delta x^2} + \frac{v_{i,j+1} - 2v_{i,j} + v_{i,j-1}}{\Delta y^2} \right)
-           \end{align*}
-           \]
          - Apply boundary conditions to maintain \( u = 1 \) and \( v = 1 \) at the domain boundaries.
     4. **Visualization:**
        - Generate surface plots of \( u \) and \( v \) at selected time intervals to observe the evolution of the velocity fields.
@@ -67,6 +59,7 @@ prompt_text = {
     - Use **NumPy** for numerical computations.
     - Use **Matplotlib** for plotting and visualization.
     - Save the final velocity fields \( u \) and \( v \) in `.npy` files.
+    - avoid use this fig.gca(projection='3d') need to use fig.add_subplot(111, projection='3d')
 
     **Return only the Python code that implements this solution.**
     """

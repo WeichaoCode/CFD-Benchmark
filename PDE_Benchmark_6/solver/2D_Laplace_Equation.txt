@@ -1,52 +1,55 @@
-Here is a Python script that implements a finite difference solution of the 2D Laplace equation using the Jacobi iterative method:
+Here is a Python code that implements the solution using the Jacobi iterative method:
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Set numerical parameters
+# Define the grid parameters
+Lx, Ly = 2.0, 1.0
 nx, ny = 31, 31
-x = np.linspace(0, 2, nx)
-y = np.linspace(0, 1, ny)
-dx, dy = x[1]-x[0], y[1]-y[0]
+dx, dy = Lx / (nx - 1), Ly / (ny - 1)
 
-# Initialize solution array
+# Initialize the solution array
 p = np.zeros((ny, nx))
-pn = np.empty_like(p)  # Temp array to hold updated solution
 
-# Set boundary conditions
-p[:, 0] = 0    # p = 0 at x = 0
-p[:, -1] = y   # p = y at x = 2
-p[0, :] = p[1, :]  # dp/dy = 0 at y = 0
-p[-1, :] = p[-2, :]  # dp/dy = 0 at y = 1
+# Set the boundary conditions
+p[:, 0] = 0  # left boundary
+p[:, -1] = np.linspace(0, Ly, ny)  # right boundary
 
-tolerance = 1e-4  # Convergence criterion
-iter_diff = tolerance + 1.0  # Initial difference to start the loop
+# Define the tolerance for convergence
+tol = 1e-6
+max_diff = 1.0
+iterations = 0
 
-# Jacobi iteration loop
-while iter_diff > tolerance:
-    pn = p.copy()
-    p[1:-1, 1:-1] = ((dy**2 * (pn[1:-1, 2:] + pn[1:-1, :-2]) +
-                      dx**2 * (pn[2:, 1:-1] + pn[:-2, 1:-1])) /
-                     (2 * (dx**2 + dy**2)))
-                    
-    # Compute difference between iterations
-    iter_diff = (np.sum(np.abs(p[:]) - np.abs(pn[:])) /
-                 np.sum(np.abs(pn[:])))
+# Jacobi iterative solver
+while max_diff > tol:
+    p_old = p.copy()
+    p[1:-1, 1:-1] = ((dy**2 * (p_old[1:-1, 2:] + p_old[1:-1, :-2]) +
+                      dx**2 * (p_old[2:, 1:-1] + p_old[:-2, 1:-1])) /
+                     (2.0 * (dx**2 + dy**2)))
 
-# Save solution to .npy file
-np.save('laplace_solution.npy', p)
+    # Neumann conditions at the top and bottom boundaries
+    p[0, :] = p[1, :]
+    p[-1, :] = p[-2, :]
 
-# Plot solution
-plt.figure(figsize=(6,5))
-plt.contourf(x, y, p, cmap='viridis')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.colorbar(label='p')
-plt.title('Solution of Laplace equation by finite difference method')
+    max_diff = np.abs(p - p_old).max()
+    iterations += 1
+
+print(f"Jacobi method took {iterations} iterations to converge.")
+
+# Save the final solution
+np.save("p_solution.npy", p)
+
+# Plot the solution
+plt.figure(figsize=(8, 5))
+plt.contourf(p, levels=50, cmap='viridis')
+plt.colorbar()
+plt.title("Solution to 2D Laplace Equation")
+plt.xlabel("x")
+plt.ylabel("y")
 plt.show()
 ```
 
-This script first sets up the initial and boundary conditions and enters a loop that iteratively updates the solution according to the five-point difference operator. The loop continues until the maximum change between iterations falls below the specified tolerance. The computed solution is saved to a .npy file and visualized with a contour plot.
+This code first initializes the solution array and sets the boundary conditions. It then enters a while loop where it performs the Jacobi iteration until the solution converges (i.e., the maximum difference between two consecutive iterations is less than the tolerance). The solution is then saved and plotted.
 
-Please note that this script assumes that the necessary libraries and modules have been imported. Also, this script does not contain the comparison with the analytical solution. You can calculate the analytical solution using the analytical equation provided, compare it with the numerical solution and compute error metrics.
+Please note that this code does not include the comparison with the analytical solution. The analytical solution involves an infinite series, which would require a separate implementation to approximate.

@@ -2,35 +2,41 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Define the grid parameters
-nx, ny = 81, 81  # Grid resolution
-lx, ly = 2.0, 2.0  # Domain size
-dx, dy = lx / (nx - 1), ly / (ny - 1)  # Grid spacing
-c = 1.0  # Convection speed
-sigma = 0.2  # Stability parameter
-dt = sigma * min(dx, dy) / c  # Time step
-nt = 100  # Number of time steps
+nx = 81
+ny = 81
+nt = 100
+c = 1.0
+sigma = 0.2
+Lx = 2.0
+Ly = 2.0
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = sigma * min(dx, dy) / c
 
-# Initialize solution matrix
-u = np.ones([ny, nx])  # Initialize u with ones
-# Set initial condition
-u[int(0.5 / dy) : int(1 / dy + 1), int(0.5 / dx) : int(1 / dx + 1)] = 2
+# Initialize the solution array
+u = np.ones((ny, nx))
 
-# Apply numerical method
+# Set the initial condition
+u[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
+
+# Time-stepping loop
 for n in range(nt):
-    un = u.copy()  
-    # NB: boundary conditions are automatically handled by providing a slice of u where the respective boundary values are excluded
-    u[1:, 1:] = (un[1:, 1:] 
-                 - (c * dt / dx * (un[1:, 1:] - un[1:, :-1])) 
-                 - (c * dt / dy * (un[1:, 1:] - un[:-1, 1:])))
+    un = u.copy()
+    u[1:, 1:] = (un[1:, 1:] - (c * dt / dx * (un[1:, 1:] - un[1:, :-1])) -
+                 (c * dt / dy * (un[1:, 1:] - un[:-1, 1:])))
+    u[0, :] = 1
+    u[-1, :] = 1
+    u[:, 0] = 1
+    u[:, -1] = 1
 
-# Save the final result into .npy file
-np.save("solution.npy", u)
+# Save the solution in .npy format
+np.save('solution.npy', u)
 
-# Plot the result
-X, Y = np.meshgrid(np.linspace(0, lx, nx), np.linspace(0, ly, ny))
-plt.contourf(X, Y, u)
+# Plot the solution
+plt.figure(figsize=(8, 5))
+plt.contourf(u, cmap='viridis')
 plt.colorbar()
 plt.title('2D Linear Convection')
-plt.xlabel('X')
-plt.ylabel('Y')
+plt.xlabel('x')
+plt.ylabel('y')
 plt.show()

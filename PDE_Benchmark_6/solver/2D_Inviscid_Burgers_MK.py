@@ -1,61 +1,57 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Computational parameters
+# Define the computational domain
 nx = 151
 ny = 151
 nt = 300
+xmin = 0
+xmax = 2
+ymin = 0
+ymax = 2
 sigma = 0.2
-Lx = 2.0
-Ly = 2.0
 
-# Discretization
-dx = Lx / (nx - 1)
-dy = Ly / (ny - 1)
+dx = (xmax - xmin) / (nx - 1)
+dy = (ymax - ymin) / (ny - 1)
 dt = sigma * min(dx, dy) / 2
 
-# Initialize the grid and allocate arrays for solution
-x = np.linspace(0, Lx, nx)
-y = np.linspace(0, Ly, ny)
+# Initialize the velocity field
 u = np.ones((ny, nx))
 v = np.ones((ny, nx))
 
-# Define the initial condition
-u[np.intersect1d(np.where(y >= 0.5), np.where(y <= 1)), 
-  np.intersect1d(np.where(x >= 0.5), np.where(x <= 1))] = 2
-v[np.intersect1d(np.where(y >= 0.5), np.where(y <= 1)), 
-  np.intersect1d(np.where(x >= 0.5), np.where(x <= 1))] = 2
+# Set the initial condition
+u[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
+v[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
 
-# Time integration using first-order upwind method
+# Time-stepping loop
 for n in range(nt):
     un = u.copy()
     vn = v.copy()
+
+    # Update the interior points
     u[1:, 1:] = (un[1:, 1:] - 
-                 un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1]) - 
-                 vn[1:, 1:] * dt / dy * (un[1:, 1:] - un[:-1, 1:]))
+                 dt / dx * un[1:, 1:] * (un[1:, 1:] - un[1:, :-1]) - 
+                 dt / dy * vn[1:, 1:] * (un[1:, 1:] - un[:-1, 1:]))
     v[1:, 1:] = (vn[1:, 1:] - 
-                 un[1:, 1:] * dt / dx * (vn[1:, 1:] - vn[1:, :-1]) - 
-                 vn[1:, 1:] * dt / dy * (vn[1:, 1:] - vn[:-1, 1:]))
+                 dt / dx * un[1:, 1:] * (vn[1:, 1:] - vn[1:, :-1]) - 
+                 dt / dy * vn[1:, 1:] * (vn[1:, 1:] - vn[:-1, 1:]))
 
-# Boundary conditions
-u[0, :] = 1
-u[-1, :] = 1
-u[:, 0] = 1
-u[:, -1] = 1
+    # Apply the boundary conditions
+    u[0, :] = 1
+    u[-1, :] = 1
+    u[:, 0] = 1
+    u[:, -1] = 1
 
-v[0, :] = 1
-v[-1, :] = 1
-v[:, 0] = 1
-v[:, -1] = 1
-
-# Visualize the final solution
-plt.figure(figsize=(8, 8))
-plt.quiver(x[::3], y[::3], u[::3, ::3], v[::3, ::3], scale=5)
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Velocity Field at Final Time')
-plt.show()
+    v[0, :] = 1
+    v[-1, :] = 1
+    v[:, 0] = 1
+    v[:, -1] = 1
 
 # Save the final velocity field
-np.save('u_velocity.npy', u)
-np.save('v_velocity.npy', v)
+np.save('u.npy', u)
+np.save('v.npy', v)
+
+# Visualize the velocity field
+X, Y = np.meshgrid(np.linspace(xmin, xmax, nx), np.linspace(ymin, ymax, ny))
+plt.quiver(X[::3, ::3], Y[::3, ::3], u[::3, ::3], v[::3, ::3])
+plt.show()

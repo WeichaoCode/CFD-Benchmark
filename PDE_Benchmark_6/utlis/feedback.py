@@ -8,6 +8,9 @@ logging.basicConfig(
     filename="/opt/CFD-Benchmark/PDE_Benchmark_6/report/execution_results.log",
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s')
+
+logging.info("####################################################################################################")
+logging.info("Adjust the prompt adding 2D_Burgers_Equation")
 # === OpenAI API Configuration ===
 api_key = "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"
 client = OpenAI(api_key=api_key)
@@ -48,20 +51,25 @@ def execute_python_script(filepath):
 # === Function to Generate Code from LLM ===
 def generate_code(task_name, prompt, max_retries=10):
     """ Calls LLM API to generate Python code with feedback updates if errors occur. """
+    if task_name not in {"2D_Burgers_Equation"}:
+        return
     retries = 0
+    original_prompt = prompt  # Keep the original prompt unchanged
     while retries < max_retries:
         print(f"🔹 Generating code for: {task_name} (Attempt {retries + 1}/{max_retries})")
         logging.info(f"🔹 Generating code for: {task_name} (Attempt {retries + 1}/{max_retries})")
+        # Use a separate variable for modification
+        updated_prompt = original_prompt
         try:
             # Call OpenAI GPT-4 API
             response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": "You are an expert in CFD and Python."},
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": updated_prompt}
                 ],
                 max_tokens=7000,
-                temperature=1.0
+                temperature=0.0
             )
 
             # Extract model response
@@ -95,7 +103,8 @@ def generate_code(task_name, prompt, max_retries=10):
                 print(f"❌ Error detected in {task_name}, refining prompt...")
                 logging.info(f"❌ Error detected in {task_name}, refining prompt...")
                 logging.info(f"\n\n[Feedback]: The previous generated code had the following error:\n{execution_feedback}\nPlease correct it.")
-                prompt += f"\n\n[Feedback]: The previous generated code had the following error:\n{execution_feedback}\nPlease correct it."
+                # Temporarily modify the prompt for the next retry
+                updated_prompt = f"{original_prompt}\n\n[Feedback]: The previous generated code had the following error:\n{execution_feedback}\nPlease correct it."
 
             retries += 1
 

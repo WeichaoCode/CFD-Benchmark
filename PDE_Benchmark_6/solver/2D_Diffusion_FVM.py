@@ -1,47 +1,40 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Set the physical properties
-mu = 1.0e-3
-dPdz = -3.2
-
-# Set the grid resolution
-nx, ny = 51, 51
+# Constants
+mu = 1e-3
+rho = 1
+dpdz = -3.2
 h = 0.1
-dx = h / (nx - 1)
-dy = h / (ny - 1)
+nx = ny = 51
 
-# Create the grid
-x = np.linspace(0, h, nx)
-y = np.linspace(0, h, ny)
-X, Y = np.meshgrid(x, y)
+# Grid spacing
+dx = dy = h / (nx - 1)
 
-# Initialize the velocity field w
-w = np.zeros((ny, nx))
+# Initialize the velocity field
+w = np.zeros((nx, ny))
 
-# Set the coefficient values
+# Coefficients
 aE = aW = mu * dy / dx
 aN = aS = mu * dx / dy
 aP = aE + aW + aN + aS
-Su = dPdz * dx * dy
+Su = dpdz * dx * dy
 
-# Perform the Jacobi iteration
-iters = 100
-for it in range(iters):
+# Jacobi iteration
+for _ in range(5000):
     w_old = w.copy()
     for i in range(1, nx-1):
         for j in range(1, ny-1):
-            w[j, i] = (aE * w_old[j, i+1] + aW * w_old[j, i-1] +
-                       aN * w_old[j-1, i] + aS * w_old[j+1, i] - Su) / aP
+            w[i, j] = (aE * w_old[i+1, j] + aW * w_old[i-1, j] + aN * w_old[i, j+1] + aS * w_old[i, j-1] - Su) / aP
 
-# Save the velocity field as npy file
-np.save("velocity_field.npy", w)
-
-# Plot the velocity field
-plt.figure(figsize=(8, 8))
-plt.contourf(X, Y, w, levels=100)
-plt.colorbar(label='$w$')
-plt.title('Contour plot of velocity field')
-plt.xlabel('$x$')
-plt.ylabel('$y$')
+# Visualization
+plt.figure(figsize=(8, 6))
+plt.contourf(w, levels=50, cmap='jet')
+plt.colorbar(label='Velocity (m/s)')
+plt.title('Velocity distribution in a square duct')
+plt.xlabel('x')
+plt.ylabel('y')
 plt.show()
+
+# Save the velocity field
+np.save('velocity_field.npy', w)

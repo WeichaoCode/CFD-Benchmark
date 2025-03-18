@@ -1,41 +1,47 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Set the grid parameters
-nx, ny = 50, 40  # number of grid points in x and y directions
-dx, dy = 5.0/(nx-1), 4.0/(ny-1)  
-beta = dx / dy
+# Define the computational domain
+x_start, x_end = 0, 5
+y_start, y_end = 0, 4
 
-# Initialize the temperature grid and set the boundary conditions
+# Define the grid parameters
+nx, ny = 100, 80  # number of grid points
+dx = (x_end - x_start) / (nx - 1)  # grid size in x direction
+dy = (y_end - y_start) / (ny - 1)  # grid size in y direction
+beta = dx / dy  # grid aspect ratio
+
+# Initialize the temperature field and set the boundary conditions
 T = np.zeros((ny, nx))
-T[:, 0] = 10.0   # left boundary
-T[0, :] = 0.0    # top boundary
-T[:, -1] = 40.0  # right boundary
-T[-1, :] = 20.0  # bottom boundary
+T[:, 0] = 10  # left boundary
+T[0, :] = 0  # top boundary
+T[:, -1] = 40  # right boundary
+T[-1, :] = 20  # bottom boundary
 
-# Set the convergence criterion and maximum number of iterations
-eps = 1e-5
-max_iter = 500
+# Define the convergence parameters
+max_iter = 5000  # maximum number of iterations
+tol = 1e-6  # convergence tolerance
 
-# Gauss-Seidel iteration
-for k in range(max_iter):
+# Gauss-Seidel iterative solver
+for iter in range(max_iter):
     T_old = T.copy()
-	
-    for j in range(1, ny-1):
-        for i in range(1, nx-1):
-            T[j, i] = (T_old[j, i-1] + T_old[j, i+1] + beta**2 * (T_old[j-1, i] + T_old[j+1, i])) / (2 * (1 + beta**2))
-
-    # Check for convergence
-    if np.linalg.norm(T - T_old, np.inf) < eps: 
+    for j in range(1, ny - 1):
+        for i in range(1, nx - 1):
+            T[j, i] = (T_old[j, i - 1] + T_old[j, i + 1] + beta**2 * (T_old[j - 1, i] + T_old[j + 1, i])) / (2 * (1 + beta**2))
+    if np.abs(T - T_old).max() < tol:
         break
 
-# Generate the contour plot of the temperature field
-plt.figure(figsize=(7,6))
-plt.contourf(T, levels=15, cmap=plt.cm.jet)
-plt.colorbar(label='Temperature ($^{\circ}$C)')
-plt.title('Steady-state Temperature Distribution')
-
-# Save the computed temperature field
+# Save the final temperature field
 np.save('temperature.npy', T)
 
+# Visualize the steady-state temperature distribution
+x = np.linspace(x_start, x_end, nx)
+y = np.linspace(y_start, y_end, ny)
+X, Y = np.meshgrid(x, y)
+plt.figure(figsize=(6, 5))
+plt.contourf(X, Y, T, levels=50, cmap='jet')
+plt.title('Steady-State Temperature Distribution')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.colorbar(label='Temperature (°C)')
 plt.show()

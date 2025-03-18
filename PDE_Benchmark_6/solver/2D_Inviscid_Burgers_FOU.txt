@@ -1,73 +1,55 @@
-First, let's import the necessary libraries:
+Here is a Python code that implements the solution:
 
-```Python
+```python
 import numpy as np
-from matplotlib import pyplot as plt
-```
+import matplotlib.pyplot as plt
 
-We start by setting up the grid and defining the initial condition.
-
-```Python
-Lx = 2.
-Ly = 2.
+# Define the computational domain
+Lx = 2.0
+Ly = 2.0
 nx = 151
 ny = 151
-nt = 100
-sigma = 0.2
-
 dx = Lx / (nx - 1)
 dy = Ly / (ny - 1)
-dt = sigma * min(dx, dy) / 2
 
+# Define the time-stepping parameters
+nt = 300
+sigma = 0.2
+dt = sigma * min(dx, dy) / 2.0
+
+# Initialize the velocity field
 u = np.ones((ny, nx))
 v = np.ones((ny, nx))
+u[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
+v[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
 
-u[int(.5 / dy):int(1 / dy + 1), int(.5 / dx):int(1 / dx + 1)] = 2
-v[int(.5 / dy):int(1 / dy + 1), int(.5 / dx):int(1 / dx + 1)] = 2
-```
+# Time-stepping loop
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    u[1:, 1:] = (un[1:, 1:] - un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1]) -
+                 vn[1:, 1:] * dt / dy * (un[1:, 1:] - un[:-1, 1:]))
+    v[1:, 1:] = (vn[1:, 1:] - un[1:, 1:] * dt / dx * (vn[1:, 1:] - vn[1:, :-1]) -
+                 vn[1:, 1:] * dt / dy * (vn[1:, 1:] - vn[:-1, 1:]))
+    
+    # Apply the boundary conditions
+    u[0, :] = 1
+    u[-1, :] = 1
+    u[:, 0] = 1
+    u[:, -1] = 1
+    v[0, :] = 1
+    v[-1, :] = 1
+    v[:, 0] = 1
+    v[:, -1] = 1
 
-Next, we setup the function `burgers` to implement the given numerical scheme.
+# Save the final velocity field
+np.save('u_final.npy', u)
+np.save('v_final.npy', v)
 
-```Python
-def burgers(nt, u, v, dt, dx, dy):
-    for n in range(nt + 1): 
-        un = u.copy()
-        vn = v.copy()
-        
-        # Interior points
-        u[1:-1, 1:-1] = (un[1:-1, 1:-1] - un[1:-1, 1:-1] * dt / dx * 
-                         (un[1:-1, 1:-1] - un[1:-1, :-2]) - vn[1:-1, 1:-1] * dt / dy * 
-                         (un[1:-1, 1:-1] - un[:-2, 1:-1]))
-
-        v[1:-1, 1:-1] = (vn[1:-1, 1:-1] - un[1:-1, 1:-1] * dt / dx * 
-                         (vn[1:-1, 1:-1] - vn[1:-1, :-2]) - vn[1:-1, 1:-1] * dt / dy * 
-                         (vn[1:-1, 1:-1] - vn[:-2, 1:-1]))
-        
-        # Boundary conditions
-        u[0, :] = 1
-        u[-1, :] = 1
-        u[:, 0] = 1
-        u[:, -1] = 1
-        v[0, :] = 1
-        v[-1, :] = 1
-        v[:, 0] = 1
-        v[:, -1] = 1
-        
-    return u, v
-```
-
-Finally, we can call `burgers` and then plot the results. 
-
-```Python
-u, v = burgers(nt, u, v, dt, dx, dy)
-
-fig = plt.figure(figsize=(7, 5), dpi=100)
-plt.quiver(u[::3, ::3], v[::3, ::3])
+# Visualize the velocity field
+X, Y = np.meshgrid(np.linspace(0, Lx, nx), np.linspace(0, Ly, ny))
+plt.quiver(X[::3, ::3], Y[::3, ::3], u[::3, ::3], v[::3, ::3])
 plt.show()
 ```
-Lastly, we save the final velocity field in `.npy` format.
 
-```Python
-np.save('u.npy', u)
-np.save('v.npy', v)
-```
+This code first initializes the velocity field according to the given initial condition. It then enters a time-stepping loop, where it updates the velocity field using the First-Order Upwind Method. After each update, it applies the boundary conditions to ensure that the velocity remains fixed at 1 along the edges of the domain. Finally, it saves the final velocity field and visualizes it using a quiver plot.

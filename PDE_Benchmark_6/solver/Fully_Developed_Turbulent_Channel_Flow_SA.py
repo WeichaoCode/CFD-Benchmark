@@ -1,69 +1,69 @@
 import numpy as np
-from scipy.sparse import dia_matrix
-from scipy.sparse.linalg import spsolve
 import matplotlib.pyplot as plt
+from scipy.sparse import diags
+from scipy.sparse.linalg import spsolve
 
+# Constants
+mu = 1.0e-5  # molecular viscosity
+rho = 1.0  # density
+y_max = 1.0  # channel height
+n = 100  # number of grid points
+dy = y_max / (n - 1)  # grid resolution
 
-# Define physical properties
-mu = 1.0          # molecular viscosity
-
-# Define computational parameters
-N = 1000          # number of points in y-direction
-L = 1.0           # channel height
-dy = L / (N - 1)  # grid spacing in y-direction
-
-# Define mesh
-y = np.linspace(0, L, N)
-
-# Define turbulence model parameters
+# Turbulence model constants
 cv1 = 7.1
 cb1 = 0.1355
 cb2 = 0.622
-cb3 = 2.0/3
+cb3 = 2.0 / 3.0
 kappa = 0.41
-cw1 = cb1 / (kappa**2) + (1.0 + cb2) / cb3
+cw1 = cb1 / kappa**2 + (1.0 + cb2) / cb3
 
-# Define the turbulence model
-def fv1(nu_tilde, nu):
-    chi = nu_tilde / nu
-    return chi**3 / (chi**3 + cv1**3)
+# Grid
+y = np.linspace(0, y_max, n)
 
+# Initialize tilde_nu and u
+tilde_nu = np.zeros(n)
+u = np.zeros(n)
 
-def mu_t(rho, nu_tilde, nu):
-    return rho * nu_tilde * fv1(nu_tilde, nu)
+# Iteration parameters
+max_iter = 1000
+tol = 1e-6
 
+# Solve for tilde_nu and u
+for iter in range(max_iter):
+    # Compute eddy viscosity
+    chi = tilde_nu / mu
+    fv1 = chi**3 / (chi**3 + cv1**3)
+    mu_t = rho * tilde_nu * fv1
+    mu_eff = mu + mu_t
 
-# Define linear system
-d = np.ones(N)
-d[-1] = 0.0
-A = dia_matrix(([d, -d[:-1], -d[1:]], [0, -1, 1]), shape=(N, N))
-b = np.ones(N)
-b[0] = b[-1] = 0.0
+    # Discretize the RANS equation
+    a = mu_eff[:-2] / dy**2
+    b = -2.0 * mu_eff[1:-1] / dy**2
+    c = mu_eff[2:] / dy**2
+    A = diags([a, b, c], [-1, 0, 1], shape=(n-2, n-2)).tocsc()
+    rhs = -np.ones(n-2)
 
-# Solve for Nu_tilde
-nu_tilde = spsolve(A, b)
+    # Solve the linear system
+    u_new = np.zeros(n)
+    u_new[1:-1] = spsolve(A, rhs)
 
-# Compute eddy viscosity
-mu_turb = mu_t(1.0, nu_tilde, mu)
+    # Check convergence
+    if np.linalg.norm(u_new - u) < tol:
+        break
 
-# Compute effective viscosity
-mu_eff = mu + mu_turb
+    # Update tilde_nu and u
+    tilde_nu = mu_t / rho
+    u = u_new
 
-# Define linear system for velocity
-d = mu_eff[1:-1] / dy**2
-A = dia_matrix(([-d[:-1], d[:-1] + d[1:], -d[1:]], [-1, 0, 1]), shape=(N-2, N-2))
-b = -np.ones(N-2)
-
-# Solve for velocity
-u = np.zeros(N)
-u[1:-1] = spsolve(A, b)
-
-# Plot
+# Plot the velocity profile
+plt.figure()
 plt.plot(u, y)
-plt.xlabel('u')
+plt.xlabel('Velocity')
 plt.ylabel('y')
+plt.title('Velocity profile in a turbulent channel flow')
 plt.grid(True)
 plt.show()
 
-# Save results
-np.save('velocity.npy', u)
+# Save the velocity profile
+np.save('velocity_profile.npy', u)

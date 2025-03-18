@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Variable declarations
+# Variable Declarations
 nx = 41
 nt = 20
 nu = 0.3
@@ -9,32 +9,25 @@ sigma = 0.2
 dx = 2 / (nx - 1)
 dt = sigma * dx**2 / nu
 
-# Initialize u array
+# Initialization
 u = np.ones(nx)
-u[int(0.5 / dx) : int(1 / dx + 1)] = 2
+u[int(0.5 / dx):int(1 / dx + 1)] = 2
 
-# Initialize the array for storing the solution at each time step
-u_sol = np.empty((nt, nx))
-u_sol[0, :] = u
+un = np.ones(nx)
 
-# Time stepping loop
-for n in range(nt - 1):
-    # Central difference scheme
-    u[1:-1] = u[1:-1] + nu * dt / dx**2 * (u[2:] - 2 * u[1:-1] + u[:-2])
-    # Apply Dirichlet boundary conditions
-    u[0] = 1; u[-1] = 0
-    # Store solution
-    u_sol[n + 1, :] = u
+# Numerical Solution
+for n in range(nt):
+    un = u.copy()
+    for i in range(1, nx - 1):
+        u[i] = un[i] + nu * dt / dx**2 * (un[i+1] - 2 * un[i] + un[i-1])
 
-# Plot solution
-for i in range(nt):
-    plt.figure()
-    plt.plot(np.linspace(0, 2, nx), u_sol[i, :])
-    plt.title('1D Diffusion at t = {:.2f}'.format(i * dt))
-    plt.xlabel('x')
-    plt.ylabel('u')
-    plt.grid()
-    plt.show()
+# Boundary Conditions
+u[0] = 1
+u[-1] = 0
 
-# Save solution
-np.save('1D_diffusion_sol.npy', u_sol)
+# Save the solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u_1D_Diffusion.npy', u)
+
+# Visualization
+plt.plot(np.linspace(0, 2, nx), u)
+plt.show()

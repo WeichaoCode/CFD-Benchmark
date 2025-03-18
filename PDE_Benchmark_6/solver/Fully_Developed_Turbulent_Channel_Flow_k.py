@@ -1,42 +1,55 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.sparse import diags
 from scipy.sparse.linalg import spsolve
-import matplotlib.pyplot as plt
 
 # Constants
-N = 100  # number of grid points
-h = 1.0 / N  # grid space
-mu = 1.0  # molecular viscosity
-C_mu = 0.09  # turbulence model constant
-C_epsilon1 = 1.44  # turbulence model constant
-C_epsilon2 = 1.92  # turbulence model constant
-k = 0.41  # turbulence kinetic energy
-epsilon = 0.41  # turbulence dissipative rate
-rho = 1.0  # fluid density
-sigma_k = 1.0  # turbulence model constant
-sigma_epsilon = 1.0  # turbulence model constant
+mu = 1.0e-5  # molecular viscosity
+rho = 1.0  # density
+dy = 0.01  # grid resolution
+y = np.arange(0, 1+dy, dy)  # grid points
+n = len(y)  # number of grid points
 
-# Initialize variables
-y = np.linspace(0, 1, N+1)
-u = np.zeros(N+1)  # mean velocity
-mu_t = C_mu * rho * k**2 / epsilon  # eddy viscosity (turbulent)
+# Turbulence model constants
+C_mu = 0.09
+C_epsilon1 = 1.44
+C_epsilon2 = 1.92
+sigma_k = 1.0
+sigma_epsilon = 1.3
 
-# Discretize the equation
-mu_eff = mu + mu_t  # effective viscosity
-a = [mu_eff / h**2, -2 * mu_eff / h**2, mu_eff / h**2]  # coefficients for the linear system
-f = -np.ones(N)  # RHS vector
-f[0] = f[-1] = 0  # boundary condition
+# Initial conditions
+k = np.ones(n)  # turbulent kinetic energy
+epsilon = np.ones(n)  # turbulent dissipation rate
 
-# Solve the linear system
-u[1:-1] = spsolve(diags(a, offsets=[-1, 0, 1], shape=(N-1, N-1)), f)
+# Solve for turbulent quantities
+for _ in range(100):  # iterate until convergence
+    f_mu = np.tanh(np.power(y / 25, 2))  # damping function
+    mu_t = C_mu * f_mu * rho * np.power(k, 2) / epsilon  # eddy viscosity
+    mu_eff = mu + mu_t  # effective viscosity
 
-# Save results
-np.save('velocity_profile.npy', u)
+    # Solve for k
+    A = diags([mu_eff[:-1] / sigma_k / dy**2, -2 * mu_eff / sigma_k / dy**2, mu_eff[1:] / sigma_k / dy**2], [-1, 0, 1], shape=(n, n))
+    b = -rho * epsilon
+    k = spsolve(A, b)
 
-# Plot results
-plt.plot(y, u)
-plt.xlabel('y')
-plt.ylabel('u(y)')
-plt.title('Mean velocity profile in a turbulent channel flow')
+    # Solve for epsilon
+    A = diags([mu_eff[:-1] / sigma_epsilon / dy**2, -2 * mu_eff / sigma_epsilon / dy**2, mu_eff[1:] / sigma_epsilon / dy**2], [-1, 0, 1], shape=(n, n))
+    b = -rho * epsilon / k * (C_epsilon1 * f_mu * k - C_epsilon2 * epsilon)
+    epsilon = spsolve(A, b)
+
+# Solve for velocity
+A = diags([mu_eff[:-1] / dy**2, -2 * mu_eff / dy**2, mu_eff[1:] / dy**2], [-1, 0, 1], shape=(n, n))
+b = -np.ones(n)
+u = spsolve(A, b)
+
+# Save the velocity profile
+np.save('velocity.npy', u)
+
+# Plot the velocity profile
+plt.figure()
+plt.plot(u, y)
+plt.xlabel('Velocity')
+plt.ylabel('y')
+plt.title('Velocity profile in a turbulent channel flow')
 plt.grid(True)
 plt.show()

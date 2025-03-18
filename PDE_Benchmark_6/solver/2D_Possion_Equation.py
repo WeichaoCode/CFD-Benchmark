@@ -42,7 +42,7 @@ l2_target = 1e-6
 p, iterations = poisson_solver(p, b, dx, dy, l2_target)
 
 # Save the final pressure field
-np.save('pressure_field.npy', p)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/p_2D_Possion.npy', p)
 
 # Visualize the pressure field
 plt.figure(figsize=(8, 5))

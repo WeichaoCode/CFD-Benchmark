@@ -57,4 +57,4 @@ plt.colorbar(label='Pressure')
 plt.show()
 ```
 
-This code first initializes the domain and the solution. It then defines the source term and the Poisson solver function. The solver function iterates until the L2 norm of the solution change is less than a target value. After each iteration, it applies the Dirichlet boundary conditions. Finally, it saves the final pressure field and visualizes it using a contour plot.
+This code first initializes the domain and the solution. It then defines the source term and the Poisson solver function. The solver function iteratively updates the solution until the L2 norm of the difference between two consecutive solutions is less than a specified target. The Dirichlet boundary conditions are applied at each iteration. Finally, the code solves the Poisson equation, saves the final pressure field, and visualizes it using a contour plot.

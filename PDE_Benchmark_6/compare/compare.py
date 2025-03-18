@@ -164,5 +164,14 @@ def main_process(py_path, npy_path):
 # main_process('2D_Inviscid_Burgers_MK.py', 'u_2D_Inviscid_Burgers_MK.npy')
 # main_process('2D_Inviscid_Burgers_MK.py', 'v_2D_Inviscid_Burgers_MK.npy')
 
+# main_process('2D_Laplace_Equation.py', 'p_2D_Laplace_Equation.npy')
+
+# main_process('2D_Linear_Convection.py', 'u_2D_Linear_Convection.npy')
+
+# main_process('2D_Possion_Equation.py', 'p_2D_Possion.npy')
+
+
+
+
 
 

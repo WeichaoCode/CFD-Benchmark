@@ -10,7 +10,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s')
 
 logging.info("####################################################################################################")
-logging.info("Adjust the prompt adding 2D_Burgers_Equation")
+logging.info("Adjust the code to not accept warning in the generated code")
 # === OpenAI API Configuration ===
 api_key = "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"
 client = OpenAI(api_key=api_key)
@@ -34,24 +34,33 @@ with open(PROMPTS_FILE, "r") as file:
     pde_prompts = json.load(file)
 
 
-# === Function to Execute Python Script and Capture Errors ===
+# === Function to Execute Python Script and Capture Errors and Warnings ===
 def execute_python_script(filepath):
-    """ Runs the generated Python script and captures errors. """
+    """ Runs the generated Python script and captures errors and warnings. """
     try:
         result = subprocess.run(["python3", filepath], capture_output=True, text=True, timeout=60)
+        stderr_output = result.stderr.strip()
+
         if result.returncode == 0:
-            logging.info("Execution successful, no errors detected.")
-            return "Execution successful, no errors detected."
-        return result.stderr.strip()
+            if "warning" in stderr_output.lower():
+                logging.warning(f"Execution completed with warnings:\n{stderr_output}")
+                return f"⚠️ Execution completed with warnings:\n{stderr_output}"
+            else:
+                logging.info("Execution successful, no errors detected.")
+                return "Execution successful, no errors detected."
+
+        logging.error(f"Execution failed with errors:\n{stderr_output}")
+        return stderr_output
+
     except subprocess.TimeoutExpired:
-        logging.info("⚠️ Timeout Error: Script took too long to execute.")
+        logging.warning("⚠️ Timeout Error: Script took too long to execute.")
         return "⚠️ Timeout Error: Script took too long to execute."
 
 
 # === Function to Generate Code from LLM ===
 def generate_code(task_name, prompt, max_retries=10):
     """ Calls LLM API to generate Python code with feedback updates if errors occur. """
-    if task_name not in {"2D_Burgers_Equation"}:
+    if task_name not in {"2D_Poisson_Equation"}:
         return
     retries = 0
     original_prompt = prompt  # Keep the original prompt unchanged

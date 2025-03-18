@@ -35,7 +35,7 @@ while max_diff > tol:
 print(f"Jacobi method took {iterations} iterations to converge.")
 
 # Save the final solution
-np.save("p_solution.npy", p)
+np.save("/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/p_2D_Laplace_Equation.npy", p)
 
 # Plot the solution
 plt.figure(figsize=(8, 5))

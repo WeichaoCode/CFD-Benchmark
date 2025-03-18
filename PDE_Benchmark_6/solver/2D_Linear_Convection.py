@@ -30,7 +30,7 @@ for n in range(nt):
     u[:, -1] = 1
 
 # Save the solution in .npy format
-np.save('solution.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u_2D_Linear_Convection.npy', u)
 
 # Plot the solution
 plt.figure(figsize=(8, 5))

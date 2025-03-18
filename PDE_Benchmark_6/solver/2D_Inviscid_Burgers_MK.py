@@ -48,8 +48,8 @@ for n in range(nt):
     v[:, -1] = 1
 
 # Save the final velocity field
-np.save('u.npy', u)
-np.save('v.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u_2D_Inviscid_Burgers_MK.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/v_2D_Inviscid_Burgers_MK.npy', v)
 
 # Visualize the velocity field
 X, Y = np.meshgrid(np.linspace(xmin, xmax, nx), np.linspace(ymin, ymax, ny))

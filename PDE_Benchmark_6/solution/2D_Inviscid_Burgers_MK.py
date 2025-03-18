@@ -121,7 +121,7 @@ import os
 
 # === Paths ===
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
-OUTPUT_FOLDER = os.path.join(ROOT_DIR, "../results")
+OUTPUT_FOLDER = "/opt/CFD-Benchmark/PDE_Benchmark_6/results/ground_truth"
 
 # Ensure the output directory exists
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
@@ -134,5 +134,5 @@ output_file_v = os.path.join(OUTPUT_FOLDER, f"v_{python_filename}.npy")
 
 # Save the array u in the results folder
 np.save(output_file_u, u1)
-np.save(output_file_u, v1)
+np.save(output_file_v, v1)
 

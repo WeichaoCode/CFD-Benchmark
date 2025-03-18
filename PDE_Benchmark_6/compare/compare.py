@@ -50,6 +50,43 @@ def plot_results_1d(output1, output2, mse):
     plt.show()
 
 
+def plot_results_2d(output1, output2, mse):
+    """
+    Plots two 2D arrays (GT and PRED) and their absolute error.
+
+    Parameters:
+    - output1: Ground Truth 2D array
+    - output2: Predicted 2D array
+    - mse: Mean Squared Error
+    """
+
+    # Ensure output1 and output2 are 2D
+    if output1.ndim != 2 or output2.ndim != 2:
+        raise ValueError("Both output1 and output2 must be 2D arrays.")
+
+    error = np.abs(output1 - output2)  # Compute Absolute Error
+
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+    # Plot Ground Truth (GT)
+    im1 = axes[0].imshow(output1, cmap='jet', origin='lower')
+    axes[0].set_title("GT Output")
+    plt.colorbar(im1, ax=axes[0])
+
+    # Plot Predicted (PRED)
+    im2 = axes[1].imshow(output2, cmap='jet', origin='lower')
+    axes[1].set_title("PRED Output")
+    plt.colorbar(im2, ax=axes[1])
+
+    # Plot Absolute Error
+    im3 = axes[2].imshow(error, cmap='hot', origin='lower')
+    axes[2].set_title(f"Absolute Error (MSE: {mse:.5f})")
+    plt.colorbar(im3, ax=axes[2])
+
+    plt.tight_layout()
+    plt.show()
+
+
 def main_process(py_path, npy_path):
     # Paths to the two Python scripts that solve the PDE
     solver1 = os.path.join(SOLUTION_DIR, py_path)
@@ -86,7 +123,7 @@ def main_process(py_path, npy_path):
     print(f"Mean Squared Error: {mse:.5f}")
 
     # Example usage
-    plot_results_1d(output1, output2, mse)
+    plot_results_2d(output1, output2, mse)
 
 
 # flag = '1D_Burgers_Equation'
@@ -110,3 +147,22 @@ def main_process(py_path, npy_path):
 # main_process('1D_Nonlinear_Convection_LW.py', 'u_1D_Nonlinear_Convection_LW.npy')
 
 # main_process('1D_Nonlinear_Convection_Mk.py', 'u_1D_Nonlinear_Convection_Mk.npy')
+
+# main_process('2D_Burgers_Equation.py', 'u_2D_Burgers_Equation.npy')
+# main_process('2D_Burgers_Equation.py', 'v_2D_Burgers_Equation.npy')
+
+# main_process('2D_Convection.py', 'u_2D_Convection.npy')
+# main_process('2D_Convection.py', 'v_2D_Convection.npy')
+
+# main_process('2D_Diffusion.py', 'u_2D_Diffusion.npy')
+
+# main_process('2D_Diffusion_FVM.py', 'w_2D_Diffusion_FVM_SA.npy')
+
+# main_process('2D_Inviscid_Burgers_FOU.py', 'u_2D_Inviscid_Burgers_FOU.npy')
+# main_process('2D_Inviscid_Burgers_FOU.py', 'v_2D_Inviscid_Burgers_FOU.npy')
+
+# main_process('2D_Inviscid_Burgers_MK.py', 'u_2D_Inviscid_Burgers_MK.npy')
+# main_process('2D_Inviscid_Burgers_MK.py', 'v_2D_Inviscid_Burgers_MK.npy')
+
+
+

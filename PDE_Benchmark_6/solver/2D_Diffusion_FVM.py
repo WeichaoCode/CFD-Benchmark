@@ -6,7 +6,7 @@ mu = 1e-3
 rho = 1
 dpdz = -3.2
 h = 0.1
-nx = ny = 51
+nx = ny = 80
 
 # Grid spacing
 dx = dy = h / (nx - 1)
@@ -37,4 +37,4 @@ plt.ylabel('y')
 plt.show()
 
 # Save the velocity field
-np.save('velocity_field.npy', w)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/w_2D_Diffusion_FVM_SA.npy', w)

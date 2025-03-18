@@ -66,6 +66,7 @@ prompt_text = {
     ### **Implementation Steps**
     1. **Define the computational grid:**
        - Grid points: **nx × ny**
+       - nx = ny = 80
        - Grid spacing: **Δx = Δy = h / (nx - 1)**
     
     2. **Discretize the governing equation using the Finite Volume Method.**

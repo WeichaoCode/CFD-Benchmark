@@ -38,12 +38,12 @@ for n in range(nt + 1):
     v[:, -1] = 1
 
 # Save the final velocity fields
-np.save('u_final.npy', u)
-np.save('v_final.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u_2D_Convection.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/v_2D_Convection.npy', v)
 
 # Visualization
 fig = plt.figure(figsize=(11, 7), dpi=100)
-ax = fig.gca(projection='3d')
+ax = fig.add_subplot(111, projection='3d')
 X, Y = np.meshgrid(np.linspace(0, 2, nx), np.linspace(0, 2, ny))
 
 ax.plot_surface(X, Y, u, cmap='viridis')
@@ -52,7 +52,7 @@ ax.set_ylabel('$y$')
 plt.show()
 
 fig = plt.figure(figsize=(11, 7), dpi=100)
-ax = fig.gca(projection='3d')
+ax = fig.add_subplot(111, projection='3d')
 ax.plot_surface(X, Y, v, cmap='viridis')
 ax.set_xlabel('$x$')
 ax.set_ylabel('$y$')

@@ -37,4 +37,4 @@ plt.contour(x, y, u, cmap='viridis')
 plt.show()
 
 # Save the final solution
-np.save('final_solution.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u_2D_Diffusion.npy', u)

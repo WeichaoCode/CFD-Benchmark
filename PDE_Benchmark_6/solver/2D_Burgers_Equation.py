@@ -48,5 +48,5 @@ ax.set_ylabel('$y$')
 plt.show()
 
 # Save the final velocity fields
-np.save('u_final.npy', u)
-np.save('v_final.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u_2D_Burgers_Equation.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/v_2D_Burgers_Equation.npy', v)

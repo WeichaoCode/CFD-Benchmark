@@ -7,7 +7,7 @@ GENERATED_SOLVERS_DIR = os.path.join(ROOT_DIR, "prompt")
 SAVE_FILE = os.path.join(GENERATED_SOLVERS_DIR, "PDE_TASK_PROMPT.json")
 # Define the prompt as a string
 prompt_text = {
-    "2D_Channel_Flow_Navier_Stokes": """
+    "2D_Navier_Stokes_Channel": """
     You are given the **two-dimensional channel flow problem** governed by the **Navier-Stokes equations**. The flow is driven by a constant source term \( F \) in the \( u \)-momentum equation to mimic pressure-driven channel flow.
 
     ### **Governing Equations**

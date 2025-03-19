@@ -216,7 +216,9 @@ python_filename = os.path.splitext(os.path.basename(__file__))[0]
 # Define the file name dynamically
 output_file_u = os.path.join(OUTPUT_FOLDER, f"u_{python_filename}.npy")
 output_file_v = os.path.join(OUTPUT_FOLDER, f"v_{python_filename}.npy")
+output_file_p = os.path.join(OUTPUT_FOLDER, f"p_{python_filename}.npy")
 
 # Save the array u in the results folder
 numpy.save(output_file_u, u)
 numpy.save(output_file_v, v)
+numpy.save(output_file_p, p)

@@ -43,7 +43,7 @@ b = -np.ones(n)
 u = spsolve(A, b)
 
 # Save the velocity profile
-np.save('velocity.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u4_Fully_Developed_Turbulent_Channel_Flow_KE.npy', u)
 
 # Plot the velocity profile
 plt.figure()

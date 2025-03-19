@@ -145,9 +145,9 @@ def channel_flow(nt, u, v, dt, nx, ny, dx, dy, p, rho, nu):
 u, v, p = channel_flow(nt, u, v, dt, nx, ny, dx, dy, p, rho, nu)
 
 # Save the final velocity and pressure fields
-np.save('velocity_u.npy', u)
-np.save('velocity_v.npy', v)
-np.save('pressure_p.npy', p)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u_2D_Navier_Stokes_Channel.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/v_2D_Navier_Stokes_Channel.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/p_2D_Navier_Stokes_Channel.npy', p)
 
 # Plotting the velocity field
 X = np.linspace(0, 2, nx)

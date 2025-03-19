@@ -7,7 +7,7 @@ GENERATED_SOLVERS_DIR = os.path.join(ROOT_DIR, "prompt")
 SAVE_FILE = os.path.join(GENERATED_SOLVERS_DIR, "PDE_TASK_PROMPT.json")
 # Define the prompt as a string
 prompt_text = {
-    "2D_Cavity_Flow_Navier_Stokes": """
+    "2D_Navier_Stokes_Cavity": """
     You are given the **two-dimensional incompressible Navier-Stokes equations**, which describe the motion of a viscous fluid in a square cavity:
 
     \\[
@@ -52,8 +52,8 @@ prompt_text = {
     - Solve in a **square cavity** with:  
       - \\( x \\in [0,2] \\), \\( y \\in [0,2] \\)
     - Grid resolution:
-      - Number of grid points in \\( x \\)-direction: \\( nx = 41\\)  
-      - Number of grid points in \\( y \\)-direction: \\( ny = 41\\)  
+      - Number of grid points in \\( x \\)-direction: \\( nx = 51\\)  
+      - Number of grid points in \\( y \\)-direction: \\( ny = 51\\)  
     - Time-stepping:
       - Number of time steps: \\( nt = 500\\)  
       - Time step size: \\( \\Delta t = 0.001\\)  

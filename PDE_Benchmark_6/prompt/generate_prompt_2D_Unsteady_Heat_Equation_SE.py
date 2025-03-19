@@ -7,50 +7,69 @@ GENERATED_SOLVERS_DIR = os.path.join(ROOT_DIR, "prompt")
 SAVE_FILE = os.path.join(GENERATED_SOLVERS_DIR, "PDE_TASK_PROMPT.json")
 # Define the prompt as a string
 prompt_text = {
-    "1D_Linear_Convection_Explicit": """
-    You are given the **one-dimensional linear convection equation**:
-
-    \\[
-    \\frac{\\partial u}{\\partial t} + c \\frac{\\partial u}{\\partial x} = \\epsilon \\frac{\\partial^2 u}{\\partial x^2}
-    \\]
-
-    ### **Objective**
-    Solve the equation numerically using the **Simple Explicit Method**.
-
-    ### **Numerical Method**
-    - This method uses **forward differencing** for the time derivative.
-    - It applies **central differencing** for the second derivative in space.
-    - The discretized equation is:
-
-      \\[
-      \\frac{u_i^{n+1} - u_i^n}{\\Delta t} + c \\frac{u_i^n - u_{i-1}^n}{\\Delta x} = \\epsilon \\frac{u_{i+1}^n - 2u_i^n + u_{i-1}^n}{\\Delta x^2}
-      \\]
-
-    - Stability requires a **CFL condition**: \\( \\Delta t \\leq \\frac{\\Delta x}{c} \\).
-
-    ### **Computational Domain and Parameters**
-    - **Domain**: \\( x \\in (-5,5) \\).
-    - **Initial Condition**: \\( u_0 = e^{-x^2} \\).
-    - **Boundary Conditions**: Periodic boundaries.
-    - **Convection Speed**: \\( c = 1 \\).
-    - **Diffusion Cases**:
-      - **Undamped:** \\( \\epsilon = 0 \\)
-      - **Damped:** \\( \\epsilon = 5 \\times 10^{-4} \\).
-
-    ### **Tasks**
-    1. Implement the **Explicit Method** for solving the **1D linear convection equation**.
-    2. Ensure numerical stability using a CFL condition.
-    3. Apply periodic boundary conditions.
-    4. Visualize the solution over time.
-
-    ### **Requirements**
-    - Use **NumPy** for array computations.
-    - Use **Matplotlib** for visualization.
-    - Save the computed solution in `.npy` format.
-
-    **Return only the Python code that implements this solution.**
+    "2D_Unsteady_Heat_Equation_SE":
+    """
+        You are given the **two-dimensional unsteady heat equation** with a source term:
+        
+        \\[
+        \\frac{\\partial T}{\\partial t} - \\alpha \\left( \\frac{\\partial^2 T}{\\partial x^2} + \\frac{\\partial^2 T}{\\partial y^2} \\right) = q(x, y, t).
+        \\]
+        
+        where:
+        - \\( T(x, y, t) \\) represents the temperature field,
+        - \\( \\alpha \\) is the thermal diffusivity,
+        - \\( q(x, y, t) \\) is a heat source.
+        
+        ### **Objective**
+        Solve the equation numerically using the **Simple Explicit Method**.
+        
+        ### **Numerical Method**
+        - Use a **forward difference** for the time derivative.
+        - Use a **central difference** for the spatial derivatives.
+        - The explicit scheme is given by:
+        
+          \\[
+          T_{i,j}^{n+1} = r (T_{i+1,j}^{n} - 2T_{i,j}^{n} + T_{i-1,j}^{n}) + \\beta^2 r (T_{i,j+1}^{n} - 2T_{i,j}^{n} + T_{i,j-1}^{n}) + T_{i,j}^{n} + \\Delta t q
+          \\]
+        
+        - The stability condition requires: \\( (1 + \\beta^2) r \\leq \\frac{1}{2} \\).
+        
+        ### **Computational Domain and Parameters**
+        - The equation is solved on a rectangular domain: \\( x, y \\in [-1,1] \\).
+        - Boundary conditions: **Fixed at 0°C on all sides**.
+        - Source term:
+        
+          \\[
+          q(x,y) = Q_0 \\exp\\left(-\\frac{x^2 + y^2}{2\\sigma^2} \\right)
+          \\]
+        
+          where \\( \\sigma = 0.1 \\) and \\( Q_0 = 200°C/s \\).
+          
+        ### **Computational Domain and Parameters**
+        - Grid resolution: \\( nx = 41, ny = 41 \\) (41 points in the x and y directions).
+        - Maximum simulation time: \\( t_{max} = 3 \\) seconds.
+        - Thermal diffusivity coefficient: \\( \\alpha = 1 \\).
+        - Grid spacing relationships:
+          - \\( \\beta = \\frac{dx}{dy} \\) (ratio of grid spacing).
+          - \\( r = \\frac{r}{1 + \\beta^2} \\) (adjusted stability parameter).
+        - Time step size:
+          - \\( dt = r \\cdot \\frac{dx^2}{\\alpha} \\).
+          
+        ### **Tasks**
+        1. Implement the **Explicit Method** to solve the **2D unsteady heat equation**.
+        2. Use a structured grid with uniform spacing.
+        3. Apply **Dirichlet boundary conditions**.
+        4. Visualize the temperature evolution.
+        
+        ### **Requirements**
+        - Use **NumPy** for array computations.
+        - Use **Matplotlib** for visualization.
+        - Save the computed solution in `.npy` format.
+        
+        **Return only the Python code that implements this solution.**
     """
 }
+
 
 
 # Define the JSON file path

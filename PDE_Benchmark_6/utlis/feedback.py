@@ -10,7 +10,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s')
 
 logging.info("####################################################################################################")
-logging.info("Adjust the code to not accept warning in the generated code")
+logging.info("Adjust the prompt to add unsteady heat equation")
 # === OpenAI API Configuration ===
 api_key = "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"
 client = OpenAI(api_key=api_key)
@@ -60,7 +60,8 @@ def execute_python_script(filepath):
 # === Function to Generate Code from LLM ===
 def generate_code(task_name, prompt, max_retries=10):
     """ Calls LLM API to generate Python code with feedback updates if errors occur. """
-    if task_name not in {"2D_Poisson_Equation"}:
+    if task_name not in {"2D_Unsteady_Heat_Equation_DF", "2D_Unsteady_Heat_Equation_SE",
+                         "2D_Unsteady_Heat_Equation_ADI"}:
         return
     retries = 0
     original_prompt = prompt  # Keep the original prompt unchanged

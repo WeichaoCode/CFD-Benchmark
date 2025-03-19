@@ -78,8 +78,8 @@ def cavity_flow(nt, u, v, dt, dx, dy, p, rho, nu):
     return u, v, p
 
 # variable declarations
-nx = 41
-ny = 41
+nx = 51
+ny = 51
 nt = 500
 nit=50
 c = 1
@@ -101,9 +101,9 @@ b = np.zeros((ny, nx))
 u, v, p = cavity_flow(nt, u, v, dt, dx, dy, p, rho, nu)
 
 # Save the results
-np.save('velocity_u.npy', u)
-np.save('velocity_v.npy', v)
-np.save('pressure_p.npy', p)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u_2D_Navier_Stokes_Cavity.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/v_2D_Navier_Stokes_Cavity.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/p_2D_Navier_Stokes_Cavity.npy', p)
 
 # Plotting
 fig = pyplot.figure(figsize=(11,7), dpi=100)

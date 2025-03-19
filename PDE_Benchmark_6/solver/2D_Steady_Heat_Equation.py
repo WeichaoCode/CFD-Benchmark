@@ -6,7 +6,7 @@ x_start, x_end = 0, 5
 y_start, y_end = 0, 4
 
 # Define the grid parameters
-nx, ny = 100, 80  # number of grid points
+nx, ny = 101, 81  # number of grid points
 dx = (x_end - x_start) / (nx - 1)  # grid size in x direction
 dy = (y_end - y_start) / (ny - 1)  # grid size in y direction
 beta = dx / dy  # grid aspect ratio
@@ -32,7 +32,7 @@ for iter in range(max_iter):
         break
 
 # Save the final temperature field
-np.save('temperature.npy', T)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/T_2D_Steady_Heat_Equation.npy', T)
 
 # Visualize the steady-state temperature distribution
 x = np.linspace(x_start, x_end, nx)

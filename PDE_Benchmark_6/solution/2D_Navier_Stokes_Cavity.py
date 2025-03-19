@@ -212,5 +212,5 @@ output_file_p = os.path.join(OUTPUT_FOLDER, f"p_{python_filename}.npy")
 
 # Save the array u in the results folder
 np.save(output_file_u, u)
-np.save(output_file_u, v)
-np.save(output_file_u, p)
+np.save(output_file_v, v)
+np.save(output_file_p, p)

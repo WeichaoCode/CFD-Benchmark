@@ -59,11 +59,11 @@ for iter in range(max_iter):
 # Plot the velocity profile
 plt.figure()
 plt.plot(u, y)
-plt.xlabel('Velocity')
+plt.xlabel('x')
 plt.ylabel('y')
 plt.title('Velocity profile in a turbulent channel flow')
 plt.grid(True)
 plt.show()
 
 # Save the velocity profile
-np.save('velocity_profile.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u1_Fully_Developed_Turbulent_Channel_Flow_SA.npy', u)

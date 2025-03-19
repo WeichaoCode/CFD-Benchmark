@@ -26,6 +26,6 @@ Problem,Mean Squared Error
 2D_Navier_Stokes_Cavity,0.00269
 2D_Navier_Stokes_Cavity,0.00295
 2D_Navier_Stokes_Cavity,0.05409
-2D_Navier_Stokes_Cavity,6.25236
-2D_Navier_Stokes_Cavity,0.0
-2D_Navier_Stokes_Cavity,1.0
+2D_Navier_Stokes_Channel,6.25236
+2D_Navier_Stokes_Channel,0.0
+2D_Navier_Stokes_Channel,1.0

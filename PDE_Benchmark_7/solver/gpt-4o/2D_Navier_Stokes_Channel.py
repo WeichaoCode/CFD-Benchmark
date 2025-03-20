@@ -96,9 +96,9 @@ for n in range(nt):
     v[-1, :] = 0
 
 # Save results to .npy files
-np.save('u.npy', u)
-np.save('v.npy', v)
-np.save('p.npy', p)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_2D_Navier_Stokes_Channel.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/v_2D_Navier_Stokes_Channel.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/p_2D_Navier_Stokes_Channel.npy', p)
 
 # Visualization
 x = np.linspace(0, 2, nx)

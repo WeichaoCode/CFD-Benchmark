@@ -52,7 +52,7 @@ def jacobi_iteration(w, a_P, a_E, a_W, a_N, a_S, Su, max_iterations, tolerance):
 w = jacobi_iteration(w, a_P, a_E, a_W, a_N, a_S, Su, max_iterations, tolerance)
 
 # Save the result as a .npy file
-np.save('velocity_field.npy', w)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/w_2D_Diffusion_FVM_SA.npy', w)
 
 # Plotting the result
 X, Y = np.meshgrid(np.linspace(0, h, nx), np.linspace(0, h, ny))

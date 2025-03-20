@@ -42,4 +42,4 @@ plt.ylabel('y')
 plt.show()
 
 # Save final solution
-np.save('final_solution.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_2D_Diffusion.npy', u)

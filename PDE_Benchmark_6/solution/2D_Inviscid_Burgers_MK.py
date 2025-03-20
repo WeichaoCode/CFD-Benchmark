@@ -121,7 +121,7 @@ import os
 
 # === Paths ===
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
-OUTPUT_FOLDER = "/opt/CFD-Benchmark/PDE_Benchmark_6/results/ground_truth"
+OUTPUT_FOLDER = os.path.join(ROOT_DIR, "results")
 
 # Ensure the output directory exists
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)

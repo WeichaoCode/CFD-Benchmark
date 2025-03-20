@@ -57,8 +57,8 @@ def plot_velocity_field(u, v, dx, dy):
 
 def save_velocity_field(u, v):
     """Save the velocity fields to .npy files."""
-    np.save('velocity_u.npy', u)
-    np.save('velocity_v.npy', v)
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_2D_Inviscid_Burgers_FOU.npy', u)
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/v_2D_Inviscid_Burgers_FOU.npy', v)
 
 # Computational domain and parameters
 Lx = 2.0

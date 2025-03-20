@@ -75,5 +75,4 @@ x, u_final_damped, u_history_damped = simulate_convection(N_x, domain, T, c, eps
 plot_solution(x, u_history_damped, "Damped Wave Propagation")
 
 # Save final solutions
-np.save("u_final_undamped.npy", u_final_undamped)
-np.save("u_final_damped.npy", u_final_damped)
+np.save("/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Linear_Convection_adams.npy", u_final_undamped)

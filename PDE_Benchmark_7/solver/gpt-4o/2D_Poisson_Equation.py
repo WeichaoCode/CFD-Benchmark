@@ -68,7 +68,7 @@ ny = 50
 p = poisson_2d_solver(nx, ny, Lx, Ly)
 
 # Save the pressure field to a file
-np.save('pressure_field.npy', p)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/p_2D_Possion.npy', p)
 
 # Visualize the pressure field
 plot_pressure_field(p, Lx, Ly)

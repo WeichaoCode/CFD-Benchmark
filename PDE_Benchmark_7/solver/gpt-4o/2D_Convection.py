@@ -34,8 +34,8 @@ for n in range(nt + 1):
     v[0, :] = v[-1, :] = v[:, 0] = v[:, -1] = 1
 
 # Save final velocity fields
-np.save('u_field.npy', u)
-np.save('v_field.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_2D_Convection.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/v_2D_Convection.npy', v)
 
 # Visualization
 x = np.linspace(0, 2, nx)

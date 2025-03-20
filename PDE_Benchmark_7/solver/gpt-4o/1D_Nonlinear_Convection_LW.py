@@ -55,7 +55,7 @@ for n in range(T):
 u_storage = np.array(u_storage)
 
 # Save the solution
-np.save("lax_wendroff_solution.npy", u_storage)
+np.save("/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Nonlinear_Convection_LW.npy", u_storage)
 
 # Plot initial and final state
 plt.figure(figsize=(8, 4))

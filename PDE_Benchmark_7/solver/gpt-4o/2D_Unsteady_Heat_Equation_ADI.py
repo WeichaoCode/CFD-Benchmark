@@ -69,7 +69,7 @@ while time < t_max:
     time += dt
 
 # Save the computed solution
-np.save('temperature_solution.npy', T)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/T_2D_Unsteady_Heat_Equation_ADI.npy', T)
 
 # Visualize the temperature field
 plt.figure(figsize=(8, 6))

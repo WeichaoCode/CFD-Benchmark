@@ -38,8 +38,8 @@ for n in range(nt):
     v[-1, :], v[:, -1] = 1, 1
 
 # Save the final velocity fields
-np.save('u_velocity.npy', u)
-np.save('v_velocity.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_2D_Inviscid_Burgers_MK.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/v_2D_Inviscid_Burgers_MK.npy', v)
 
 # Visualization using quiver plot
 x = np.linspace(0, Lx, nx)

@@ -85,7 +85,7 @@ def main():
     plt.show()
 
     # Save to .npy file
-    np.save('velocity_profile.npy', u)
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.npy', u)
 
 if __name__ == "__main__":
     main()

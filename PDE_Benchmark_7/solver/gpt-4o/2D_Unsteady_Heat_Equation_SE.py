@@ -37,7 +37,7 @@ for n in range(nt):
     T[0, :] = T[-1, :] = T[:, 0] = T[:, -1] = 0
 
 # Save the final temperature distribution
-np.save('temperature_solution.npy', T)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/T_2D_Unsteady_Heat_Equation_SE.npy', T)
 
 # Visualization of the final temperature distribution
 plt.figure(figsize=(8, 6))

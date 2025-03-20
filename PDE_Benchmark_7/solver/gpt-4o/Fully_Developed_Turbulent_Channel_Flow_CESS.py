@@ -96,7 +96,7 @@ def main():
     u = solve_u(mesh, mu_eff, mu)
 
     # Save the velocity profile
-    np.save('velocity_profile.npy', u)
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_CESS.npy', u)
 
     # Plotting
     plt.figure()

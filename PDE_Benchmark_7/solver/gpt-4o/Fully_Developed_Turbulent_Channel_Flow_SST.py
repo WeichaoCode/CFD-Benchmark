@@ -83,4 +83,4 @@ plt.legend()
 plt.show()
 
 # Save profile data
-np.save('velocity_profile.npy', velocity)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_SST.npy', velocity)

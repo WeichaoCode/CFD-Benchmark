@@ -70,5 +70,4 @@ plt.savefig('convection_diffusion_plot.png')
 plt.show()
 
 # Save results to .npy files
-np.save('wave_undamped.npy', u_undamped)
-np.save('wave_damped.npy', u_damped)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Linear_Convection_explicit_euler.npy', u_damped)

@@ -38,7 +38,7 @@ for n in range(T):
     u = macCormack(u, dx, dt)
 
 # Save the final result
-np.save('macCormack_solution.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Nonlinear_Convection_Mk.npy', u)
 
 # Comparison plotting (not implemented here for Lax and Lax-Wendroff)
 plt.plot(x, u, label='MacCormack', color='r')

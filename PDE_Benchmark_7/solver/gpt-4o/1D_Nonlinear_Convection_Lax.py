@@ -39,7 +39,7 @@ for n in range(T):
     u[:] = unew[:]
 
 # Save the solution to a .npy file
-np.save('wave_solution.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Nonlinear_Convection_Lax.npy', u)
 
 # Plot the final solution
 plt.plot(x, u, label='t = {:.2f}'.format(T * dt))

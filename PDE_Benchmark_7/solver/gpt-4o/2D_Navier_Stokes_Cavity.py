@@ -96,6 +96,6 @@ plt.tight_layout()
 plt.show()
 
 # Save results
-np.save('velocity_u.npy', u)
-np.save('velocity_v.npy', v)
-np.save('pressure.npy', p)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_2D_Navier_Stokes_Cavity.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/v_2D_Navier_Stokes_Cavity.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/p_2D_Navier_Stokes_Cavity.npy', p)

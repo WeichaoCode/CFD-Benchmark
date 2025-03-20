@@ -68,5 +68,5 @@ def plot_field(X, Y, field, title):
     plt.show()
 
 # Plotting the fields
-plot_field(x_grid, y_grid, u, 'Velocity Field u')
-plot_field(x_grid, y_grid, v, 'Velocity Field v')
+plot_field(x_grid, y_grid, u, '/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_2D_Burgers_Equation.npy')
+plot_field(x_grid, y_grid, v, '/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/v_2D_Burgers_Equation.npy')

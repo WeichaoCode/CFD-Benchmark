@@ -49,7 +49,7 @@ plt.ylabel('y')
 plt.show()
 
 # Save the final p(x,y)
-np.save('laplace_solution.npy', p)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/p_2D_Laplace_Equation.npy', p)
 
 # Analytical solution comparison (truncated series)
 def analytical_solution(x, y, terms=50):

@@ -42,7 +42,7 @@ while time < t_max:
     time += dt
 
 # Save the final temperature distribution
-np.save("temperature_distribution.npy", T)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/T_2D_Unsteady_Heat_Equation_DF.npy', T)
 
 # Visualization
 plt.figure(figsize=(8, 6))

@@ -41,7 +41,7 @@ for n in range(nt):
     u[:, -1] = 1
 
 # Save the final solution
-np.save('convection_solution.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_2D_Linear_Convection.npy', u)
 
 # Plot the solution
 plt.figure(figsize=(8, 6))

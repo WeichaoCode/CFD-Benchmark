@@ -93,7 +93,7 @@ def main():
     u = solve_linear_system(mesh.D1, mesh.D2, mu_eff, mesh, b)
 
     # Save velocity profile
-    np.save('velocity_profile.npy', u)
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_SA.npy', u)
     
     # Plot velocity distribution
     plt.plot(u, mesh.y, label='Turbulent Profile')

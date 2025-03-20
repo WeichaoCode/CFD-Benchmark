@@ -54,4 +54,4 @@ u_initial[int(0.5 / dx):int(1 / dx + 1)] = 2
 plot_solution(x, u_initial, u_final)
 
 # Save the final solution to a .npy file
-np.save('diffusion_1d_solution.npy', u_final)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Diffusion.npy', u_final)

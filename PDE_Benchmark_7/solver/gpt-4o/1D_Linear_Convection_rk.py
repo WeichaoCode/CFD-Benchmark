@@ -56,7 +56,7 @@ for epsilon in epsilon_values:
     label = 'Damped' if epsilon > 0 else 'Undamped'
     
     # Save the final time step profile
-    np.save(f"wave_profile_{label}.npy", results[-1, :])
+    np.save("/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Linear_Convection_rk.npy", results[-1, :])
     
     # Plot results
     plt.figure(figsize=(10, 6))

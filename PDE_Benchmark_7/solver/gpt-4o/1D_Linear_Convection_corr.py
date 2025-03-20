@@ -80,5 +80,4 @@ def plot_results(results, title):
     plt.show()
 
 # Plot results
-plot_results(undamped_results, "Undamped Wave Propagation")
-plot_results(damped_results, "Damped Wave Propagation")
+plot_results(damped_results, "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Linear_Convection_pred_corr.npy")

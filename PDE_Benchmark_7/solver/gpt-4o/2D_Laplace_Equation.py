@@ -1,0 +1,73 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define domain and grid parameters
+Lx, Ly = 2.0, 1.0
+nx, ny = 31, 31
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+tolerance = 1e-5
+
+# Initialize the solution array
+p = np.zeros((ny, nx))
+
+# Apply boundary conditions
+p[:, 0] = 0  # Left boundary at x=0
+p[:, -1] = np.linspace(0, 1, ny)  # Right boundary at x=2
+
+# Convergence parameters
+max_diff = 1.0
+iteration = 0
+omega = 1.5  # Over-relaxation factor for SOR (optional for other methods)
+
+# Iterative solver (Gauss-Seidel method with SOR)
+while max_diff > tolerance:
+    max_diff = 0.0
+    
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            # Old value of p[i, j] for convergence check
+            p_old = p[j, i]
+            
+            # Implementing Gauss-Seidel formula with SOR
+            p_new = (dy**2 * (p[j, i+1] + p[j, i-1]) + dx**2 * (p[j+1, i] + p[j-1, i])) / (2 * (dx**2 + dy**2))
+            p[j, i] = (1 - omega) * p_old + omega * p_new
+            
+            # Update max_diff
+            max_diff = max(max_diff, abs(p[j, i] - p_old))
+    iteration += 1
+
+print(f"Converged after {iteration} iterations with maximum difference {max_diff}")
+
+# Visualization
+X, Y = np.meshgrid(np.linspace(0, Lx, nx), np.linspace(0, Ly, ny))
+plt.contourf(X, Y, p, 20, cmap='viridis')
+plt.colorbar()
+plt.title('Numeric Solution of 2D Laplace Equation')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
+
+# Save the final p(x,y)
+np.save('laplace_solution.npy', p)
+
+# Analytical solution comparison (truncated series)
+def analytical_solution(x, y, terms=50):
+    p_analytical = x / 4
+    for n in range(1, terms, 2):  # only odd n
+        p_analytical -= (4 / (np.pi * n)**2) * np.sinh(n * np.pi * x / 2) * np.cos(n * np.pi * y) / np.sinh(n * np.pi)
+    return p_analytical
+
+# Calculate analytical solution on the same grid
+p_analytical = np.zeros((ny, nx))
+for j in range(ny):
+    for i in range(nx):
+        p_analytical[j, i] = analytical_solution(X[j, i], Y[j, i])
+
+# Plot analytical vs numerical difference
+plt.contourf(X, Y, (p - p_analytical), 20, cmap='coolwarm')
+plt.colorbar()
+plt.title('Difference between Numeric and Analytical Solution')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()

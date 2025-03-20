@@ -1,0 +1,53 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define parameters
+nu = 0.5  # CFL number
+dt = 0.01  # Time step
+T = 500  # Maximum number of time steps
+dx = dt / nu
+x_start, x_end = 0, 2 * np.pi  # Periodic domain boundaries
+nx = int((x_end - x_start) / dx)  # Number of spatial grid points including boundary
+
+# Define the spatial grid
+x = np.linspace(x_start, x_end, nx, endpoint=False)  # Grid, excluding the endpoint for periodicity
+
+# Initial condition: u(x,0) = sin(x) + 0.5 * sin(0.5*x)
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# Create a storage array for the new time step
+unew = np.empty_like(u)
+
+# Main time-stepping loop using the Lax method
+for n in range(T):
+    # Apply the Lax method for interior nodes
+    for j in range(1, nx-1):
+        flux_j = 0.5 * u[j]**2
+        flux_jp1 = 0.5 * u[j+1]**2
+        flux_jm1 = 0.5 * u[j-1]**2
+        unew[j] = 0.5 * (u[j+1] + u[j-1]) - 0.5 * dt/dx * (flux_jp1 - flux_jm1)
+
+    # Apply periodic boundary conditions
+    flux_j = 0.5 * u[0]**2
+    flux_jp1 = 0.5 * u[1]**2
+    flux_jm1 = 0.5 * u[-1]**2
+    unew[0] = 0.5 * (u[1] + u[-1]) - 0.5 * dt/dx * (flux_jp1 - flux_jm1)
+
+    unew[-1] = unew[0]  # Periodic boundary condition
+
+    # Update the solution for the next time step
+    u[:] = unew[:]
+
+# Save the solution to a .npy file
+np.save('wave_solution.npy', u)
+
+# Plot the final solution
+plt.plot(x, u, label='t = {:.2f}'.format(T * dt))
+plt.xlim([x_start, x_end])
+plt.ylim([-1.5, 1.5])
+plt.title('1D Nonlinear Convection at t = {:.2f}'.format(T * dt))
+plt.xlabel('x')
+plt.ylabel('u(x)')
+plt.grid()
+plt.legend()
+plt.show()

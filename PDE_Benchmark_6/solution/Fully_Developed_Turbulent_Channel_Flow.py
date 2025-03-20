@@ -579,6 +579,9 @@ u3,mut1,k1,e1,om1 = solveRANS(rho,mu,mesh,turbModel,ReTau)
 turbModel          = "MK"    # turbulence model
 u4,mut1,k1,e1,om1 = solveRANS(rho,mu,mesh,turbModel,ReTau)
 
+turbModel          = "Cess"    # turbulence model
+u5,mut1,k1,e1,om1 = solveRANS(rho,mu,mesh,turbModel,ReTau)
+
 ypl1 = mesh.y * ReTau
 
 # analytic results for viscous sub-layer
@@ -632,13 +635,15 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 python_filename = os.path.splitext(os.path.basename(__file__))[0]
 
 # Define the file name dynamically
-output_file_u1 = os.path.join(OUTPUT_FOLDER, f"u1_{python_filename}_SA.npy")
-output_file_u2 = os.path.join(OUTPUT_FOLDER, f"u2_{python_filename}_SST.npy")
-output_file_u3 = os.path.join(OUTPUT_FOLDER, f"u3_{python_filename}_V2F.npy")
-output_file_u4 = os.path.join(OUTPUT_FOLDER, f"u4_{python_filename}_KE.npy")
+output_file_u1 = os.path.join(OUTPUT_FOLDER, f"{python_filename}_SA.npy")
+output_file_u2 = os.path.join(OUTPUT_FOLDER, f"{python_filename}_SST.npy")
+output_file_u3 = os.path.join(OUTPUT_FOLDER, f"{python_filename}_V2F.npy")
+output_file_u4 = os.path.join(OUTPUT_FOLDER, f"{python_filename}_KE.npy")
+output_file_u5 = os.path.join(OUTPUT_FOLDER, f"{python_filename}_CESS.npy")
 
 # Save the array u in the results folder
 np.save(output_file_u1, u1)
 np.save(output_file_u2, u2)
 np.save(output_file_u3, u3)
 np.save(output_file_u4, u4)
+np.save(output_file_u5, u5)

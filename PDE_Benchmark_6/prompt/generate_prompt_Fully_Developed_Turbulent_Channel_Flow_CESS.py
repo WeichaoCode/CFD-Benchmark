@@ -7,9 +7,9 @@ GENERATED_SOLVERS_DIR = os.path.join(ROOT_DIR, "prompt")
 SAVE_FILE = os.path.join(GENERATED_SOLVERS_DIR, "PDE_TASK_PROMPT.json")
 # Define the prompt as a string
 prompt_text = {
-    "Fully_Developed_Turbulent_Channel_Flow_SA": """
+    "Fully_Developed_Turbulent_Channel_Flow_CESS": """
     You are tasked with solving a **fully-developed turbulent flow in a channel** using the **Reynolds-Averaged Navier-Stokes (RANS) equations** 
-    and the **Spalart-Allmaras (SA) turbulence model**. The goal is to numerically compute the velocity profile using the **finite difference method (FDM)** and 
+    and the **Cess algebraic turbulence model**. The goal is to numerically compute the velocity profile using the **finite difference method (FDM)** and 
     solve the resulting system of equations.
     ---
     
@@ -22,7 +22,7 @@ prompt_text = {
     
     where:
     - \( \mu \) is the molecular viscosity.
-    - \( \mu_t \) is the turbulent eddy viscosity (computed using the Spalart-Allmaras turbulence model).
+    - \( \mu_t \) is the turbulent eddy viscosity (computed using the Cess turbulence model).
     - The effective viscosity is defined as \( \mu_{\text{eff}} = \mu + \mu_t \).
     
     By applying the product rule, we rewrite it as:
@@ -41,37 +41,6 @@ prompt_text = {
     
     ---
     
-    ### **Turbulence Model: Spalart-Allmaras**
-    Implement the **Spalart-Allmaras turbulence model**, which consists of a transport equation for an eddy viscosity-like variable \( \tilde{\nu} \):
-
-    \[
-    0 = c_{b1} \hat{S} \tilde{\nu} - c_{w1} f_w \left( \frac{\tilde{\nu}}{y} \right)^2 + \frac{1}{c_{b3}} \frac{d}{dy} \left[ \left( \nu + \tilde{\nu} \right) \frac{d \tilde{\nu}}{dy} \right] + \frac{c_{b2}}{c_{b3}} \left( \frac{d \tilde{\nu}}{dy} \right)^2
-    \]
-
-    where the eddy viscosity is given by:
-
-    \[
-    \mu_t = \rho \tilde{\nu} f_{\nu 1}
-    \]
-
-    with:
-
-    \[
-    f_{\nu 1} = \frac{\chi^3}{\chi^3 + c_{\nu 1}^3}, \quad \chi = \frac{\tilde{\nu}}{\nu}
-    \]
-
-    and the constants:
-
-    \[
-    c_{v1} = 7.1, \quad c_{b1} = 0.1355, \quad c_{b2} = 0.622, \quad c_{b3} = \frac{2}{3}
-    \]
-
-    \[
-    c_{w1} = \frac{c_{b1}}{\kappa^2} + \frac{1.0 + c_{b2}}{c_{b3}}, \quad c_{\nu 2} = 0.3, \quad c_{\nu 3} = 2.0, \quad \kappa = 0.41
-    \]
-
-    ---
-    
     ### **Tasks**
     #### **1️⃣ Generate a Non-Uniform Mesh**
     - Use a **MESH class** to compute **y-direction mesh points** and **finite difference matrices**:
@@ -84,10 +53,24 @@ prompt_text = {
       - Second derivative matrix \( d^2/dy^2 \).
     
     #### **2️⃣ Compute Effective Viscosity**
-    - Solve the **Spalart-Allmaras model** for \( \tilde{\nu} \) and compute \( \mu_t \).
+    - Implement the **Cess algebraic turbulence model**:
+    
+      \[
+      \frac{\mu_{\text{eff}}}{\mu} = \frac{1}{2} \left(1 + \frac{1}{9} \kappa^2 Re_{\tau}^2 (2y - y^2)^2 (3 - 4y + 2y^2)^2 \left[ 1 - \exp\left(-\frac{y^+}{A}\right) \right] \right)^{1/2} - \frac{1}{2}
+      \]
+    
+      where:
+      - \( \kappa = 0.42 \) (von Kármán constant).
+      - \( A = 25.4 \) (constant).
+      - \( y^+ = y Re_{\tau} \).
+      - \( Re_{\tau} = \frac{\rho u_{\tau} H}{\mu} \).
     
     #### **3️⃣ Discretize the Governing Equation Using Finite Difference Method**
-    - Use **central difference discretization** for \( d/dy \) and \( d^2/dy^2 \).
+    - Use **central difference discretization** for \( d/dy \) and \( d^2/dy^2 \):
+    
+      \[
+      \frac{1}{\Delta y} \left( \mu_{\text{eff},i+\frac{1}{2}} \frac{u_{i+1} - u_i}{\Delta y} - \mu_{\text{eff},i-\frac{1}{2}} \frac{u_i - u_{i-1}}{\Delta y} \right) = -1.
+      \]
     
     - Formulate the **linear system** \( A u = b \).
     

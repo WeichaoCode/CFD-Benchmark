@@ -152,6 +152,8 @@ def main_process(py_path, npy_path):
             print(f"❌ 1D plotting also failed: {e1}")
 
 
+main_process('1D_Burgers_Equation.py', 'u_1D_Burgers_Equation.npy')
+
 main_process('1D_Diffusion.py', 'u_1D_Diffusion.npy')
 
 main_process('1D_Euler_Shock_Tube.py', 'U_1D_Euler_Shock_Tube.npy')
@@ -205,3 +207,6 @@ main_process('2D_Navier_Stokes_Cavity.py', 'p_2D_Navier_Stokes_Cavity.npy')
 main_process('2D_Navier_Stokes_Channel.py', 'u_2D_Navier_Stokes_Channel.npy')
 main_process('2D_Navier_Stokes_Channel.py', 'v_2D_Navier_Stokes_Channel.npy')
 main_process('2D_Navier_Stokes_Channel.py', 'p_2D_Navier_Stokes_Channel.npy')
+
+# Fully developed turbulent code is missing, need to check and refine the prompt
+

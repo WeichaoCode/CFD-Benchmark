@@ -7,69 +7,43 @@ GENERATED_SOLVERS_DIR = os.path.join(ROOT_DIR, "prompt")
 SAVE_FILE = os.path.join(GENERATED_SOLVERS_DIR, "PDE_TASK_PROMPT.json")
 # Define the prompt as a string
 prompt_text = {
-    "Fully_Developed_Turbulent_Channel_Flow_SA": """
+    "Fully_Developed_Turbulent_Channel_Flow_KE": """
     You are tasked with solving a **fully-developed turbulent flow in a channel** using the **Reynolds-Averaged Navier-Stokes (RANS) equations** 
-    and the **Spalart-Allmaras (SA) turbulence model**. The goal is to numerically compute the velocity profile using the **finite difference method (FDM)** and 
-    solve the resulting system of equations.
+    and the **Myong and Kasagi k-ε turbulence model**. The goal is to numerically compute the velocity profile using the **finite difference method (FDM)** 
+    and solve the resulting system of equations.
+    
     ---
     
-    ### **Governing Equation**
+    ### **Governing Equations**
     The RANS equation for this problem simplifies to:
     
+    #### **Turbulent Kinetic Energy** \( k \):
+    
     \[
-    \frac{d}{dy} \left( (\mu + \mu_t) \frac{d\bar{u}}{dy} \right) = -1.
+    0 = P_k - \rho \epsilon + \frac{d}{dy} \left[ \left( \mu + \frac{\mu_t}{\sigma_k} \right) \frac{dk}{dy} \right]
+    \]
+    
+    where \( P_k \) is the turbulent production term, and \( \mu_t \) is the turbulent eddy viscosity.
+    
+    #### **Turbulent Dissipation** \( \epsilon \):
+    
+    \[
+    0 = \frac{\epsilon}{k} \left( C_{e1} f_1 P_k - C_{e2} f_2 \epsilon \right) + \frac{d}{dy} \left[ \left( \mu + \frac{\mu_t}{\sigma_\epsilon} \right) \frac{d \epsilon}{dy} \right]
     \]
     
     where:
-    - \( \mu \) is the molecular viscosity.
-    - \( \mu_t \) is the turbulent eddy viscosity (computed using the Spalart-Allmaras turbulence model).
-    - The effective viscosity is defined as \( \mu_{\text{eff}} = \mu + \mu_t \).
+    - \( C_{e1}, C_{e2} \) are model constants.
+    - \( f_1, f_2 \) are functions used to account for the near-wall effect.
     
-    By applying the product rule, we rewrite it as:
-    
-    \[
-    \left[ \frac{d\mu_{\text{eff}}}{dy} \frac{d}{dy} + \mu_{\text{eff}} \frac{d^2}{dy^2} \right] u = -1.
-    \]
-    
-    This can be expressed as a **linear system**:
+    #### **Eddy Viscosity** \( \mu_t \):
     
     \[
-    A u = b
+    \mu_t = C_{\mu} f_\mu \rho \frac{k^2}{\epsilon}
     \]
     
-    which will be solved numerically.
+    where:
+    - \( C_{\mu} \) and \( f_\mu \) are model constants.
     
-    ---
-    
-    ### **Turbulence Model: Spalart-Allmaras**
-    Implement the **Spalart-Allmaras turbulence model**, which consists of a transport equation for an eddy viscosity-like variable \( \tilde{\nu} \):
-
-    \[
-    0 = c_{b1} \hat{S} \tilde{\nu} - c_{w1} f_w \left( \frac{\tilde{\nu}}{y} \right)^2 + \frac{1}{c_{b3}} \frac{d}{dy} \left[ \left( \nu + \tilde{\nu} \right) \frac{d \tilde{\nu}}{dy} \right] + \frac{c_{b2}}{c_{b3}} \left( \frac{d \tilde{\nu}}{dy} \right)^2
-    \]
-
-    where the eddy viscosity is given by:
-
-    \[
-    \mu_t = \rho \tilde{\nu} f_{\nu 1}
-    \]
-
-    with:
-
-    \[
-    f_{\nu 1} = \frac{\chi^3}{\chi^3 + c_{\nu 1}^3}, \quad \chi = \frac{\tilde{\nu}}{\nu}
-    \]
-
-    and the constants:
-
-    \[
-    c_{v1} = 7.1, \quad c_{b1} = 0.1355, \quad c_{b2} = 0.622, \quad c_{b3} = \frac{2}{3}
-    \]
-
-    \[
-    c_{w1} = \frac{c_{b1}}{\kappa^2} + \frac{1.0 + c_{b2}}{c_{b3}}, \quad c_{\nu 2} = 0.3, \quad c_{\nu 3} = 2.0, \quad \kappa = 0.41
-    \]
-
     ---
     
     ### **Tasks**
@@ -83,8 +57,8 @@ prompt_text = {
       - First derivative matrix \( d/dy \).
       - Second derivative matrix \( d^2/dy^2 \).
     
-    #### **2️⃣ Compute Effective Viscosity**
-    - Solve the **Spalart-Allmaras model** for \( \tilde{\nu} \) and compute \( \mu_t \).
+    #### **2️⃣ Compute Turbulent Kinetic Energy and Dissipation**
+    - Implement the **Myong and Kasagi k-ε model** for computing \( k \) and \( \epsilon \).
     
     #### **3️⃣ Discretize the Governing Equation Using Finite Difference Method**
     - Use **central difference discretization** for \( d/dy \) and \( d^2/dy^2 \).
@@ -104,6 +78,7 @@ prompt_text = {
     - Reynolds number based on friction velocity: \\( Re_\\tau = 395 \\)
     - Density: \\( \\rho = 1.0 \\)
     - Dynamic viscosity: \\( \\mu = \\frac{1}{Re_\\tau} \\)
+    
     ---
     
     ### **Requirements**
@@ -115,6 +90,7 @@ prompt_text = {
       - A `Mesh` class for grid generation.
       - A function to compute turbulent viscosity.
       - A function to solve the linear system.
+    
     ---
     
     **Return only the Python code that implements this solution.**

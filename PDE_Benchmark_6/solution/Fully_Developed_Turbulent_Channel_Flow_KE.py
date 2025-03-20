@@ -559,7 +559,7 @@ mu = 1.0/ReTau
 ## ---------------------------
 
 height = 2      # channel height
-n = 101         # number of mesh points
+n = 100         # number of mesh points
 fact = 6        # streching factor and stencil for finite difference discretization
 mesh = Mesh(n, height, fact, 1)
 

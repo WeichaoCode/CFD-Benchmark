@@ -8,76 +8,93 @@ SAVE_FILE = os.path.join(GENERATED_SOLVERS_DIR, "PDE_TASK_PROMPT.json")
 # Define the prompt as a string
 prompt_text = {
     "Fully_Developed_Turbulent_Channel_Flow_SST": """
-    You are given the **fully-developed turbulent flow in a channel**, governed by the **Reynolds-averaged Navier-Stokes (RANS) equations**. The goal is to solve for the mean velocity profile in the channel by modeling the Reynolds shear stress using an **eddy viscosity model**.
-
-    ### **Governing Equations**
-    The RANS equation for fully-developed turbulent flow in a channel is:
-
-    \\[
-    \\frac{d}{dy} \\left( (\\mu + \\mu_t) \\frac{du}{dy} \\right) = -1
-    \\]
-
-    where:
-    - \\( u(y) \\) is the mean velocity,
-    - \\( \\mu \\) is the molecular viscosity,
-    - \\( \\mu_t \\) is the eddy viscosity, representing the effects of turbulence.
-
-    Using the **Boussinesq approximation**, the Reynolds stress is modeled as:
-
-    \\[
-    \\rho \\overline{u_i' u_j'} \\approx \\mu_t \\left( \\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i} \\right)
-    \\]
-
-    Defining an **effective viscosity** as \\( \\mu_{eff} = \\mu + \\mu_t \\), we can rewrite the equation as:
-
-    \\[
-    \\left[ \\frac{d \\mu_{eff}}{dy} \\frac{d}{dy} + \\mu_{eff} \\frac{d^2}{dy^2} \\right] u = -1
-    \\]
-
-    ### **Objective**
-    Solve for the mean velocity profile \\( u(y) \\) in a **fully-developed turbulent channel flow**.
-
-    ### **Numerical Method**
-    - Discretize the equation using **finite difference methods**.
-    - Solve the resulting **linear system** using an appropriate solver.
-    - Implement an **eddy viscosity model** to account for turbulence effects.
-
-    ### **Computational Domain and Parameters**
-    - The channel is **steady** and **fully-developed**.
-    - The mean velocity depends only on \\( y \\).
-    - Use an appropriate **grid resolution** in the \\( y \\)-direction.
+   You are tasked with solving a **fully-developed turbulent flow in a channel** using the **Reynolds-Averaged Navier-Stokes (RANS) equations** 
+    and the **Menter Shear-Stress Transport (SST) turbulence model**. The goal is to numerically compute the velocity profile using the **finite difference method (FDM)** 
+    and solve the resulting system of equations.
     
-    ### **Turbulence Model: Menter SST Model**
-    The turbulent kinetic energy equation:
-
+    ---
+    
+    ### **Governing Equations**
+    The RANS equation for this problem simplifies to:
+    
+    #### **Turbulent Kinetic Energy** \( k \):
+    
     \[
-    0 = P_k - \beta^* \rho k \omega + \frac{d}{dy} \left[ (\mu + \mu_t / \sigma_k) \frac{dk}{dy} \right]
+    0 = P_k - \beta^* \rho k \omega + \frac{d}{dy} \left[ \left( \mu + \frac{\mu_t}{\sigma_k} \right) \frac{d k}{dy} \right]
     \]
-
-    The specific turbulent dissipation equation:
-
+    
+    #### **Specific Turbulent Dissipation** \( \omega \):
+    
     \[
-    0 = \rho \alpha \frac{P_k}{\mu_t} - \beta \rho \omega^2 + \frac{d}{dy} \left[ (\mu + \mu_t \sigma_{\omega}) \frac{d\omega}{dy} \right] + (1 - F_1) C_{D \omega}
+    0 = \frac{\rho P_k}{\mu_t} - \beta \omega^2 + \frac{d}{dy} \left[ \left( \mu + \mu_t \omega \right) \frac{d \omega}{dy} \right] + (1 - F_1) C_D k \omega
     \]
-
-    The eddy viscosity is given by:
-
+    
+    where:
+    - \( P_k \) is the turbulent production term.
+    - \( \mu_t \) is the turbulent eddy viscosity.
+    - \( F_1 \) is a blending function.
+    - \( C_D \) is a constant.
+    
+    #### **Eddy Viscosity** \( \mu_t \):
+    
     \[
-    \mu_t = \rho k \min \left( \frac{1}{\omega}, \frac{a_1}{|S|F_2} \right)
+    \mu_t = \rho k \min \left( \frac{1}{\omega}, \frac{a_1}{\|S\| F_2} \right)
     \]
-
+    
+    where:
+    - \( S \) is the strain rate tensor.
+    - \( F_2 \) is another blending function.
+    - \( a_1 \) is a constant.
+    
+    ---
     
     ### **Tasks**
-    1. Implement the finite difference discretization for the governing equation.
-    2. Use an eddy viscosity model to define \\( \\mu_t \\).
-    3. Solve for the velocity profile \\( u(y) \\).
-    4. Visualize the velocity profile.
-
+    #### **1️⃣ Generate a Non-Uniform Mesh**
+    - Use a **MESH class** to compute **y-direction mesh points** and **finite difference matrices**:
+      - \( n = 100 \): Number of mesh points.
+      - \( H = 2 \): Channel height.
+      - **Cluster mesh points near the walls** using an appropriate stretching function.
+    - Implement the **MESH class**, including:
+      - \( y \) coordinates.
+      - First derivative matrix \( d/dy \).
+      - Second derivative matrix \( d^2/dy^2 \).
+    
+    #### **2️⃣ Compute Turbulent Kinetic Energy and Dissipation**
+    - Implement the **Menter SST model** to solve for \( k \) and \( \omega \).
+    
+    #### **3️⃣ Discretize the Governing Equation Using Finite Difference Method**
+    - Use **central difference discretization** for \( d/dy \) and \( d^2/dy^2 \).
+    
+    - Formulate the **linear system** \( A u = b \).
+    
+    #### **4️⃣ Solve the Linear System**
+    - Solve the system using:
+      - **Direct solvers** (e.g., LU decomposition).
+      - **Under-relaxation iterative solvers** (if needed).
+    
+    #### **5️⃣ Plot the Velocity Profile**
+    - Plot the velocity distribution \( u(y) \).
+    - Compare the **turbulent velocity profile** to a **laminar parabolic profile**.
+    
+    ### **User-Defined Inputs**
+    - Reynolds number based on friction velocity: \\( Re_\\tau = 395 \\)
+    - Density: \\( \\rho = 1.0 \\)
+    - Dynamic viscosity: \\( \\mu = \\frac{1}{Re_\\tau} \\)
+    
+    ---
+    
     ### **Requirements**
-    - Use **NumPy** for numerical computations.
+    - Implement the solution in **Python**.
+    - Use **NumPy** for numerical operations.
     - Use **Matplotlib** for visualization.
     - Save the computed velocity profile in `.npy` format.
-
+    - Structure the code modularly, including:
+      - A `Mesh` class for grid generation.
+      - A function to compute turbulent viscosity.
+      - A function to solve the linear system.
+    
+    ---
+    
     **Return only the Python code that implements this solution.**
     """
 }

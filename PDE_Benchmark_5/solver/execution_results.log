@@ -1,0 +1,464 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 2D_Unsteady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: Fully_Developed_Turbulent_Channel_Flow.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Unsteady_Heat_Equation_2.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:36: RuntimeWarning: overflow encountered in scalar add
+  u[t + 1, i, j] = (u[t][i][j]
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:37: RuntimeWarning: overflow encountered in scalar multiply
+  + nu * dt / dx**2 * (u[t][i+1][j] - 2*u[t][i][j] + u[t][i-1][j])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:38: RuntimeWarning: overflow encountered in scalar multiply
+  + nu * dt / dy**2 * (u[t][i][j+1] - 2*u[t][i][j] + u[t][i][j-1]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:37: RuntimeWarning: overflow encountered in scalar add
+  + nu * dt / dx**2 * (u[t][i+1][j] - 2*u[t][i][j] + u[t][i-1][j])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:38: RuntimeWarning: overflow encountered in scalar add
+  + nu * dt / dy**2 * (u[t][i][j+1] - 2*u[t][i][j] + u[t][i][j-1]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:37: RuntimeWarning: overflow encountered in scalar subtract
+  + nu * dt / dx**2 * (u[t][i+1][j] - 2*u[t][i][j] + u[t][i-1][j])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:38: RuntimeWarning: overflow encountered in scalar subtract
+  + nu * dt / dy**2 * (u[t][i][j+1] - 2*u[t][i][j] + u[t][i][j-1]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:36: RuntimeWarning: invalid value encountered in scalar add
+  u[t + 1, i, j] = (u[t][i][j]
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:38: RuntimeWarning: invalid value encountered in scalar subtract
+  + nu * dt / dy**2 * (u[t][i][j+1] - 2*u[t][i][j] + u[t][i][j-1]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:38: RuntimeWarning: invalid value encountered in scalar add
+  + nu * dt / dy**2 * (u[t][i][j+1] - 2*u[t][i][j] + u[t][i][j-1]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:37: RuntimeWarning: invalid value encountered in scalar subtract
+  + nu * dt / dx**2 * (u[t][i+1][j] - 2*u[t][i][j] + u[t][i-1][j])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Diffusion.py:37: RuntimeWarning: invalid value encountered in scalar add
+  + nu * dt / dx**2 * (u[t][i+1][j] - 2*u[t][i][j] + u[t][i-1][j])
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/colorbar.py:1114: RuntimeWarning: overflow encountered in add
+  self._values = 0.5 * (self._boundaries[:-1] + self._boundaries[1:])
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/image.py:455: RuntimeWarning: overflow encountered in scalar multiply
+  newmin = vmid - dv * fact
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/image.py:460: RuntimeWarning: overflow encountered in scalar multiply
+  newmax = vmid + dv * fact
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/image.py:491: RuntimeWarning: invalid value encountered in divide
+  A_scaled /= ((a_max - a_min) / frac)
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/image.py:505: RuntimeWarning: invalid value encountered in multiply
+  A_resampled *= ((a_max - a_min) / frac)
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/image.py:506: RuntimeWarning: invalid value encountered in multiply
+  vrange *= ((a_max - a_min) / frac)
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/ticker.py:2094: RuntimeWarning: overflow encountered in multiply
+  steps = self._extended_steps * scale
+
+--------------------------------------------------
+
+--- Running: 2D_Navier_Stokes_Cavity.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/quiver.py:646: RuntimeWarning: divide by zero encountered in scalar divide
+  length = a * (widthu_per_lenu / (self.scale * self.width))
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/quiver.py:646: RuntimeWarning: invalid value encountered in multiply
+  length = a * (widthu_per_lenu / (self.scale * self.width))
+
+--------------------------------------------------
+
+--- Running: 1D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Inviscid_Burgers.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Inviscid_Burgers.py:30: RuntimeWarning: overflow encountered in scalar multiply
+  - dt / dy * v[j, i, n] * (v[j, i, n] - v[j - 1, i, n]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Inviscid_Burgers.py:28: RuntimeWarning: invalid value encountered in scalar multiply
+  - dt / dy * v[j, i, n] * (u[j, i, n] - u[j - 1, i, n]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Inviscid_Burgers.py:30: RuntimeWarning: invalid value encountered in scalar subtract
+  - dt / dy * v[j, i, n] * (v[j, i, n] - v[j - 1, i, n]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Inviscid_Burgers.py:29: RuntimeWarning: invalid value encountered in scalar subtract
+  v[j, i, n + 1] = (v[j, i, n] - dt / dx * u[j, i, n] * (v[j, i, n] - v[j, i - 1, n])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Inviscid_Burgers.py:27: RuntimeWarning: overflow encountered in scalar multiply
+  u[j, i, n + 1] = (u[j, i, n] - dt / dx * u[j, i, n] * (u[j, i, n] - u[j, i - 1, n])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Inviscid_Burgers.py:28: RuntimeWarning: overflow encountered in scalar multiply
+  - dt / dy * v[j, i, n] * (u[j, i, n] - u[j - 1, i, n]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Inviscid_Burgers.py:27: RuntimeWarning: invalid value encountered in scalar subtract
+  u[j, i, n + 1] = (u[j, i, n] - dt / dx * u[j, i, n] * (u[j, i, n] - u[j, i - 1, n])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Inviscid_Burgers.py:29: RuntimeWarning: overflow encountered in scalar multiply
+  v[j, i, n + 1] = (v[j, i, n] - dt / dx * u[j, i, n] * (v[j, i, n] - v[j, i - 1, n])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Inviscid_Burgers.py:28: RuntimeWarning: invalid value encountered in scalar subtract
+  - dt / dy * v[j, i, n] * (u[j, i, n] - u[j - 1, i, n]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Inviscid_Burgers.py:29: RuntimeWarning: overflow encountered in scalar subtract
+  v[j, i, n + 1] = (v[j, i, n] - dt / dx * u[j, i, n] * (v[j, i, n] - v[j, i - 1, n])
+
+--------------------------------------------------
+
+--- Running: 2D_Steady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+Error: failed to send plot to http://127.0.0.1:63342
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 86, in _send_display_message
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 61, in try_empty_proxy
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+--------------------------------------------------
+
+--- Running: 2D_Unsteady_Heat_Equation_1.py ---
+Exit Code: 0
+Output:
+
+Errors:
+Error: failed to send plot to http://127.0.0.1:63342
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 86, in _send_display_message
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 61, in try_empty_proxy
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+--------------------------------------------------
+
+--- Running: 2D_Diffusion_FVM.py ---
+Exit Code: 0
+Output:
+
+Errors:
+Error: failed to send plot to http://127.0.0.1:63342
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 86, in _send_display_message
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 61, in try_empty_proxy
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+--------------------------------------------------
+
+--- Running: 2D_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Convection.py:34: RuntimeWarning: overflow encountered in multiply
+  un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1]) -
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Convection.py:35: RuntimeWarning: overflow encountered in multiply
+  vn[1:, 1:] * dt / dy * (un[1:, 1:] - un[:-1, 1:]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Convection.py:33: RuntimeWarning: invalid value encountered in subtract
+  u[1:, 1:] = (un[1:, 1:] -
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Convection.py:38: RuntimeWarning: overflow encountered in multiply
+  un[1:, 1:] * dt / dx * (vn[1:, 1:] - vn[1:, :-1]) -
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Convection.py:39: RuntimeWarning: overflow encountered in multiply
+  vn[1:, 1:] * dt / dy * (vn[1:, 1:] - vn[:-1, 1:]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Convection.py:37: RuntimeWarning: invalid value encountered in subtract
+  v[1:, 1:] = (vn[1:, 1:] -
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Convection.py:34: RuntimeWarning: invalid value encountered in subtract
+  un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1]) -
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Convection.py:35: RuntimeWarning: invalid value encountered in subtract
+  vn[1:, 1:] * dt / dy * (un[1:, 1:] - un[:-1, 1:]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Convection.py:38: RuntimeWarning: invalid value encountered in subtract
+  un[1:, 1:] * dt / dx * (vn[1:, 1:] - vn[1:, :-1]) -
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver/2D_Convection.py:39: RuntimeWarning: invalid value encountered in subtract
+  vn[1:, 1:] * dt / dy * (vn[1:, 1:] - vn[:-1, 1:]))
+Error: failed to send plot to http://127.0.0.1:63342
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 86, in _send_display_message
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 61, in try_empty_proxy
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+--------------------------------------------------
+
+--- Running: 1D_Nonlinear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+Error: failed to send plot to http://127.0.0.1:63342
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 86, in _send_display_message
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 61, in try_empty_proxy
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+--------------------------------------------------
+
+--- Running: 1D_Euler_Shock_Tube.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+Error: failed to send plot to http://127.0.0.1:63342
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 86, in _send_display_message
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 61, in try_empty_proxy
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+--------------------------------------------------
+
+--- Running: 2D_Laplace_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+Error: failed to send plot to http://127.0.0.1:63342
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 86, in _send_display_message
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/weichao/Downloads/pycharm-2023.2.1/plugins/python/helpers/pycharm_display/datalore/display/display_.py", line 61, in try_empty_proxy
+    urllib_request.urlopen(url, buffer)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 222, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 531, in open
+    response = meth(req, response)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 640, in http_response
+    response = self.parent.error(
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 569, in error
+    return self._call_chain(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 502, in _call_chain
+    result = func(*args)
+  File "/opt/Dino_parallel/lib/python3.8/urllib/request.py", line 649, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 429: Too Many Requests
+
+--------------------------------------------------
+
+--- Running: 1D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+

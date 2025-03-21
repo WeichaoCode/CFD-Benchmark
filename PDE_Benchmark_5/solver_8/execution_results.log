@@ -1,0 +1,134 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 2D_Unsteady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: Fully_Developed_Turbulent_Channel_Flow.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Unsteady_Heat_Equation_2.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Navier_Stokes_Cavity.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 1D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Inviscid_Burgers.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/2D_Inviscid_Burgers.py:35: RuntimeWarning: overflow encountered in multiply
+  - (Un[1:, 1:] * dt / dx * (Un[1:, 1:] - Un[1:, :-1]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/2D_Inviscid_Burgers.py:36: RuntimeWarning: overflow encountered in multiply
+  - (Vn[1:, 1:] * dt / dy * (Un[1:, 1:] - Un[:-1, 1:])))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/2D_Inviscid_Burgers.py:39: RuntimeWarning: overflow encountered in multiply
+  - (Un[1:, 1:] * dt / dx * (Vn[1:, 1:] - Vn[1:, :-1]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/2D_Inviscid_Burgers.py:40: RuntimeWarning: overflow encountered in multiply
+  - (Vn[1:, 1:] * dt / dy * (Vn[1:, 1:] - Vn[:-1, 1:])))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/2D_Inviscid_Burgers.py:35: RuntimeWarning: invalid value encountered in multiply
+  - (Un[1:, 1:] * dt / dx * (Un[1:, 1:] - Un[1:, :-1]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/2D_Inviscid_Burgers.py:36: RuntimeWarning: invalid value encountered in multiply
+  - (Vn[1:, 1:] * dt / dy * (Un[1:, 1:] - Un[:-1, 1:])))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/2D_Inviscid_Burgers.py:39: RuntimeWarning: invalid value encountered in multiply
+  - (Un[1:, 1:] * dt / dx * (Vn[1:, 1:] - Vn[1:, :-1]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/2D_Inviscid_Burgers.py:40: RuntimeWarning: invalid value encountered in multiply
+  - (Vn[1:, 1:] * dt / dy * (Vn[1:, 1:] - Vn[:-1, 1:])))
+
+--------------------------------------------------
+
+--- Running: 2D_Steady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Unsteady_Heat_Equation_1.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Diffusion_FVM.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 1D_Nonlinear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/1D_Nonlinear_Convection.py:26: RuntimeWarning: overflow encountered in scalar multiply
+  u[i] = un[i] - dt/dx * un[i] * (un[i] - un[i-1])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/1D_Nonlinear_Convection.py:26: RuntimeWarning: invalid value encountered in scalar subtract
+  u[i] = un[i] - dt/dx * un[i] * (un[i] - un[i-1])
+
+--------------------------------------------------
+
+--- Running: 1D_Euler_Shock_Tube.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/1D_Euler_Shock_Tube.py:30: RuntimeWarning: overflow encountered in multiply
+  F_new = np.array([U_new[1], U_new[1]**2 / U_new[0] + (gamma - 1) * (U_new[2] - 0.5 * U_new[1]**2 / U_new[0]), U_new[1] * (U_new[2] + (gamma - 1) * (U_new[2] - 0.5 * U_new[1]**2 / U_new[0])) / U_new[0]])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/1D_Euler_Shock_Tube.py:32: RuntimeWarning: invalid value encountered in subtract
+  U[:, 1:] = 0.5 * (U[:, 1:] + U_new[:, 1:] - dt / dx * (F_new[:, 1:] - F_new[:, :-1]))
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/1D_Euler_Shock_Tube.py:25: RuntimeWarning: overflow encountered in square
+  F = np.array([U[1], U[1]**2 / U[0] + (gamma - 1) * (U[2] - 0.5 * U[1]**2 / U[0]), U[1] * (U[2] + (gamma - 1) * (U[2] - 0.5 * U[1]**2 / U[0])) / U[0]])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/1D_Euler_Shock_Tube.py:25: RuntimeWarning: invalid value encountered in add
+  F = np.array([U[1], U[1]**2 / U[0] + (gamma - 1) * (U[2] - 0.5 * U[1]**2 / U[0]), U[1] * (U[2] + (gamma - 1) * (U[2] - 0.5 * U[1]**2 / U[0])) / U[0]])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/1D_Euler_Shock_Tube.py:25: RuntimeWarning: overflow encountered in multiply
+  F = np.array([U[1], U[1]**2 / U[0] + (gamma - 1) * (U[2] - 0.5 * U[1]**2 / U[0]), U[1] * (U[2] + (gamma - 1) * (U[2] - 0.5 * U[1]**2 / U[0])) / U[0]])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/1D_Euler_Shock_Tube.py:27: RuntimeWarning: invalid value encountered in subtract
+  U_new[:, :-1] = U[:, :-1] - dt / dx * (F[:, 1:] - F[:, :-1])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/1D_Euler_Shock_Tube.py:30: RuntimeWarning: overflow encountered in square
+  F_new = np.array([U_new[1], U_new[1]**2 / U_new[0] + (gamma - 1) * (U_new[2] - 0.5 * U_new[1]**2 / U_new[0]), U_new[1] * (U_new[2] + (gamma - 1) * (U_new[2] - 0.5 * U_new[1]**2 / U_new[0])) / U_new[0]])
+/opt/CFD-Benchmark/PDE_Benchmark_5/solver_8/1D_Euler_Shock_Tube.py:30: RuntimeWarning: invalid value encountered in add
+  F_new = np.array([U_new[1], U_new[1]**2 / U_new[0] + (gamma - 1) * (U_new[2] - 0.5 * U_new[1]**2 / U_new[0]), U_new[1] * (U_new[2] + (gamma - 1) * (U_new[2] - 0.5 * U_new[1]**2 / U_new[0])) / U_new[0]])
+
+--------------------------------------------------
+
+--- Running: 1D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+

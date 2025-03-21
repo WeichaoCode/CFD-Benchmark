@@ -1,0 +1,33 @@
+
+2025-03-19 14:23:36,541 - INFO - current problem is 1D_Diffusion, Mean Squared Error: 0.02439
+2025-03-19 14:23:36,566 - INFO - Note: NumExpr detected 20 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+2025-03-19 14:23:36,567 - INFO - NumExpr defaulting to 8 threads.
+2025-03-19 14:23:41,017 - INFO - current problem is 1D_Linear_Convection_adams, Mean Squared Error: 0.17046
+2025-03-19 14:23:42,716 - INFO - current problem is 1D_Linear_Convection_explicit_euler, Mean Squared Error: 0.07360
+2025-03-19 14:23:44,744 - INFO - current problem is 1D_Linear_Convection_pred_corr, Mean Squared Error: 0.05807
+2025-03-19 14:23:46,803 - INFO - current problem is 1D_Linear_Convection_rk, Mean Squared Error: 0.04210
+2025-03-19 14:23:48,660 - INFO - current problem is 1D_Nonlinear_Convection_Lax, Mean Squared Error: 0.00006
+2025-03-19 14:23:50,667 - INFO - current problem is 1D_Nonlinear_Convection_LW, Mean Squared Error: 0.00018
+2025-03-19 14:23:52,577 - INFO - current problem is 1D_Nonlinear_Convection_Mk, Mean Squared Error: 0.00008
+2025-03-19 14:23:54,684 - INFO - current problem is 2D_Burgers_Equation, Mean Squared Error: 0.00000
+2025-03-19 14:23:56,917 - INFO - current problem is 2D_Burgers_Equation, Mean Squared Error: 0.00000
+2025-03-19 14:23:59,359 - INFO - current problem is 2D_Convection, Mean Squared Error: 0.00000
+2025-03-19 14:24:01,835 - INFO - current problem is 2D_Convection, Mean Squared Error: 0.00000
+2025-03-19 14:24:03,678 - INFO - current problem is 2D_Diffusion, Mean Squared Error: 0.00000
+2025-03-19 14:24:33,494 - INFO - current problem is 2D_Diffusion_FVM, Mean Squared Error: 0.00053
+2025-03-19 14:24:36,012 - INFO - current problem is 2D_Inviscid_Burgers_FOU, Mean Squared Error: 0.00001
+2025-03-19 14:24:38,811 - INFO - current problem is 2D_Inviscid_Burgers_FOU, Mean Squared Error: 0.00001
+2025-03-19 14:24:41,653 - INFO - current problem is 2D_Inviscid_Burgers_MK, Mean Squared Error: 0.00862
+2025-03-19 14:24:44,452 - INFO - current problem is 2D_Inviscid_Burgers_MK, Mean Squared Error: 0.00862
+2025-03-19 14:24:46,718 - INFO - current problem is 2D_Laplace_Equation, Mean Squared Error: 0.00198
+2025-03-19 14:24:50,373 - INFO - current problem is 2D_Linear_Convection, Mean Squared Error: 0.00003
+2025-03-19 14:24:51,839 - INFO - current problem is 2D_Possion_Equation, Mean Squared Error: 0.00002
+2025-03-19 14:25:27,557 - INFO - current problem is 2D_Steady_Heat_Equation, Mean Squared Error: 98.59209
+2025-03-19 14:25:29,968 - INFO - current problem is 2D_Unsteady_Heat_Equation_SE, Mean Squared Error: 0.92028
+2025-03-19 14:25:56,576 - INFO - current problem is 2D_Unsteady_Heat_Equation_ADI, Mean Squared Error: 2.72433
+2025-03-19 14:26:05,526 - INFO - current problem is 2D_Navier_Stokes_Cavity, Mean Squared Error: 0.00269
+2025-03-19 14:26:14,564 - INFO - current problem is 2D_Navier_Stokes_Cavity, Mean Squared Error: 0.00295
+2025-03-19 14:26:23,479 - INFO - current problem is 2D_Navier_Stokes_Cavity, Mean Squared Error: 0.05409
+2025-03-19 14:26:32,376 - INFO - current problem is 2D_Navier_Stokes_Channel, Mean Squared Error: 6.25236
+2025-03-19 14:26:41,259 - INFO - current problem is 2D_Navier_Stokes_Channel, Mean Squared Error: 0.00000
+2025-03-19 14:26:50,652 - INFO - current problem is 2D_Navier_Stokes_Channel, Mean Squared Error: 1.00000

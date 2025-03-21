@@ -1,0 +1,189 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_Diffusion.py ---
+Exit Code: 0
+Output:
+Max error: 2.990084407157685e+275
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Nonlinear_Convection.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/2D_Nonlinear_Convection.py", line 56, in <module>
+    u, v = solve_2d_non_linear_convection(nx, ny, nt, T, Lx, Ly)
+NameError: name 'solve_2d_non_linear_convection' is not defined
+
+--------------------------------------------------
+
+--- Running: 2D_Diffusion.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/2D_Diffusion.py", line 67, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+
+--------------------------------------------------
+
+--- Running: 1D_Linear_Convection.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/1D_Linear_Convection.py", line 21, in <module>
+    F = -exp(-t) * pi * sin(pi*x) - c * exp(-t) * pi * cos(pi*x)  # source term
+ValueError: operands could not be broadcast together with shapes (800,) (81,) 
+
+--------------------------------------------------
+
+--- Running: 2D_Wave_Equation.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/2D_Wave_Equation.py", line 51, in <module>
+    ax.plot_surface(X, Y, error[..., -1], cmap='viridis')
+  File "/home/weichao/.local/lib/python3.8/site-packages/mpl_toolkits/mplot3d/axes3d.py", line 1572, in plot_surface
+    X, Y, Z = np.broadcast_arrays(X, Y, Z)
+  File "<__array_function__ internals>", line 200, in broadcast_arrays
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/stride_tricks.py", line 540, in broadcast_arrays
+    shape = _broadcast_shape(*args)
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/stride_tricks.py", line 422, in _broadcast_shape
+    b = np.broadcast(*args[:32])
+ValueError: shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between arg 0 with shape (50, 50, 100) and arg 2 with shape (50, 50).
+
+--------------------------------------------------
+
+--- Running: 2D_Navier_Stokes.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Euler_Equations.py ---
+Exit Code: 0
+Output:
+RMS error: 1.3939279595044469e-06
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 1D_Korteweg_de_Vries.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_3/solver/1D_Korteweg_de_Vries.py:33: RuntimeWarning: overflow encountered in multiply
+  dudt = -6*un*u_x - uxxx
+/opt/CFD-Benchmark/PDE_Benchmark_3/solver/1D_Korteweg_de_Vries.py:36: RuntimeWarning: invalid value encountered in multiply
+  u[:, n+1] = u[:, n] + dt*dudt
+/opt/CFD-Benchmark/PDE_Benchmark_3/solver/1D_Korteweg_de_Vries.py:26: RuntimeWarning: invalid value encountered in multiply
+  un = np.exp(-t[n+1]) * u[:,n]
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/image.py:455: RuntimeWarning: overflow encountered in scalar multiply
+  newmin = vmid - dv * fact
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/image.py:460: RuntimeWarning: overflow encountered in scalar multiply
+  newmax = vmid + dv * fact
+
+--------------------------------------------------
+
+--- Running: 1D_Nonlinear_Convection.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/1D_Nonlinear_Convection.py", line 61, in <module>
+    u = solve_1d_nonlinear_convection()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/1D_Nonlinear_Convection.py", line 25, in solve_1d_nonlinear_convection
+    assert dt <= dx ** 2, "Instability due to CFL condition violated"
+AssertionError: Instability due to CFL condition violated
+
+--------------------------------------------------
+
+--- Running: 2D_Linear_Convection.py ---
+Exit Code: 1
+Output:
+CFL condition satisfied:  0.08 < 1
+Maximum error:  0.12366567243476856
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/2D_Linear_Convection.py", line 72, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+
+--------------------------------------------------
+
+--- Running: 1D_Wave_Equation.py ---
+Exit Code: 0
+Output:
+Max error: 1.1444965160878594e+29
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 1D_Burgers_Equation.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/1D_Burgers_Equation.py", line 55, in <module>
+    solve_1d_burgers_equation()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/1D_Burgers_Equation.py", line 27, in solve_1d_burgers_equation
+    f[i] = 2.0 * nu * pi ** 2 * sin(pi * x[i]) * exp(-t) - pi * cos(pi * x[i]) * exp(-t)
+NameError: name 't' is not defined
+
+--------------------------------------------------
+
+--- Running: 1D_Kuramoto_Sivashinsky.py ---
+Exit Code: 0
+Output:
+maximum error: 9.067616928122085
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 1D_Euler_Equations.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/1D_Euler_Equations.py", line 46, in <module>
+    x, rho, u, p = solve_1d_euler_equations(nx, dt, tf)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/1D_Euler_Equations.py", line 33, in solve_1d_euler_equations
+    rho_new = rho - dt/dx*(rho*u)[1:] + (rho*u)[:-1] + dt*rho_src
+ValueError: operands could not be broadcast together with shapes (100,) (99,) 
+
+--------------------------------------------------
+
+--- Running: 2D_Burgers_Equation.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/2D_Burgers_Equation.py", line 86, in <module>
+    u, v, X, Y, err_u, err_v = solve_2d_burgers_equation(final_time=10, grid_points=101, nu=0.1)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_3/solver/2D_Burgers_Equation.py", line 24, in solve_2d_burgers_equation
+    raise Exception("CFL condition not satisfied")
+Exception: CFL condition not satisfied
+
+--------------------------------------------------
+

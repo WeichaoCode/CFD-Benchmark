@@ -90,15 +90,6 @@ Errors:
 
 --------------------------------------------------
 
---- Running: generate_prompt_2D_Steady_Heat_Equation.py ---
-Exit Code: 0
-Output:
-1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
-
-Errors:
-
---------------------------------------------------
-
 --- Running: generate_prompt_2D_Navier_Stokes_Channel.py ---
 Exit Code: 0
 Output:
@@ -117,6 +108,15 @@ Errors:
 
 --------------------------------------------------
 
+--- Running: generate_prompt_2D_Steady_Heat_Equation_Gauss.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
 --- Running: generate_prompt_1D_Euler_Shock_Tube.py ---
 Exit Code: 0
 Output:
@@ -127,6 +127,15 @@ Errors:
 --------------------------------------------------
 
 --- Running: generate_prompt_2D_Unsteady_Heat_Equation_SE.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Steady_Heat_Equation_Jac.py ---
 Exit Code: 0
 Output:
 1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
@@ -244,6 +253,15 @@ Errors:
 --------------------------------------------------
 
 --- Running: generate_prompt_2D_Possion.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Steady_Heat_Equation_SOR.py ---
 Exit Code: 0
 Output:
 1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json

@@ -7,7 +7,7 @@ GENERATED_SOLVERS_DIR = os.path.join(ROOT_DIR, "prompt")
 SAVE_FILE = os.path.join(GENERATED_SOLVERS_DIR, "PDE_TASK_PROMPT.json")
 # Define the prompt as a string
 prompt_text = {
-    "2D_Steady_Heat_Equation": """
+    "2D_Steady_Heat_Equation_Jac": """
     You are given the **steady two-dimensional heat equation**, which models heat distribution over a rectangular domain:
 
     \\[
@@ -15,9 +15,18 @@ prompt_text = {
     \\]
 
     ### **Computational Domain**
-    - The equation is solved in a **rectangular domain** with spatial coordinates:
-      - \( x \in [0, 5] \), \( y \in [0, 4] \)
-    - The domain is discretized using **finite difference methods** with a structured uniform grid.
+    The equation is solved in a **rectangular domain** with spatial coordinates:
+    - \( x \in [0, 5] \), \( y \in [0, 4] \)
+    
+    The domain is discretized using **finite difference methods** with a structured uniform grid:
+    - Grid spacing in the \( x \)-direction: \( \Delta x = 0.05 \)
+    - Grid spacing in the \( y \)-direction: \( \Delta y = 0.05 \)
+    
+    The number of grid points in each direction is computed as:
+    - Number of grid points in the \( x \)-direction: \( n_x = \frac{5.0}{0.05} + 1 = 101 \)
+    - Number of grid points in the \( y \)-direction: \( n_y = \frac{4.0}{0.05} + 1 = 81 \)
+    
+    Thus, the total grid consists of a uniform grid of **101 points** in the \( x \)-direction and **81 points** in the \( y \)-direction.
 
     ### **Boundary Conditions**
     The temperature values along the boundaries of the domain are fixed:
@@ -27,27 +36,14 @@ prompt_text = {
     - **Bottom boundary (G)**: \( T = 20^\circ C \)
 
     ### **Numerical Methods**
-    Solve the steady-state heat equation using one of the following iterative methods:
+    Solve the steady-state heat equation usingthe following iterative methods:
 
-    **1. Jacobi Method**  
+     Jacobi Method**  
     - Update the temperature at each grid point using the average of its four neighboring points:
       \\[
       T_{i,j}^{k+1} = \\frac{T_{i+1,j}^{k} + T_{i-1,j}^{k} + \\beta^2 (T_{i,j+1}^{k} + T_{i,j-1}^{k})}{2(1 + \\beta^2)}
       \\]
       where \( \\beta \) is the grid aspect ratio \( \\beta = \\frac{\\Delta x}{\\Delta y} \).
-
-    **2. Gauss-Seidel Method**  
-    - Similar to the Jacobi method but updates each point immediately using newly computed values:
-      \\[
-      T_{i,j}^{k+1} = \\frac{T_{i+1,j}^{k} + T_{i-1,j}^{k} + \\beta^2 (T_{i,j+1}^{k+1} + T_{i,j-1}^{k+1})}{2(1 + \\beta^2)}
-      \\]
-
-    **3. Successive Over-Relaxation (SOR) Method**  
-    - A modified version of Gauss-Seidel with an **acceleration factor** \( \\omega \) to speed up convergence:
-      \\[
-      T_{i,j}^{k+1} = \\omega \\frac{T_{i+1,j}^{k} + T_{i-1,j}^{k} + \\beta^2 (T_{i,j+1}^{k+1} + T_{i,j-1}^{k+1})}{2(1 + \\beta^2)} + (1 - \\omega)T_{i,j}^{k}
-      \\]
-      where \( 1 < \\omega < 2 \) (For \( \\omega = 1 \), this reduces to the Gauss-Seidel method).
 
     ### **Tasks**
     1. Implement the selected iterative method (Jacobi, Gauss-Seidel, or SOR) for solving the **2D steady heat equation**.

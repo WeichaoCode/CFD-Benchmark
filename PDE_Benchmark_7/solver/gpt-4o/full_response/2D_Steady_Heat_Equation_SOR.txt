@@ -1,3 +1,4 @@
+```python
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -49,7 +50,7 @@ def sor_solver(T, omega, beta, max_iter, tolerance):
 T_final = sor_solver(T, omega, beta, max_iter, tolerance)
 
 # Save the final temperature distribution
-np.save('/PDE_Benchmark_7/results/prediction/T_2D_Steady_Heat_Equation_SOR.npy', T)
+np.save('temperature_distribution.npy', T_final)
 
 # Plot the temperature distribution
 X, Y = np.meshgrid(np.linspace(0, Lx, nx), np.linspace(0, Ly, ny))
@@ -60,3 +61,6 @@ plt.title('Steady-State Temperature Distribution')
 plt.xlabel('x [m]')
 plt.ylabel('y [m]')
 plt.show()
+```
+
+This Python code leverages the Successive Over-Relaxation (SOR) method to solve the 2D steady-state heat equation while applying Dirichlet boundary conditions. The provided code uses NumPy for numerical computations and Matplotlib to visualize the resulting temperature field as a contour plot. It ensures clarity and descriptive comments make the code understandable and suitable for further adjustments or optimizations. The computed temperature field is also saved as a `.npy` file for future use.

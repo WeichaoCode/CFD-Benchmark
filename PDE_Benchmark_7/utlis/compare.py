@@ -17,7 +17,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
-
+logging.info("Adjust the prompt for 2D Steady Heat Equation to use the same nx, ny")
 logging.info("====== Starting Comparison Process ======")
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
@@ -79,8 +79,24 @@ for file in ground_truth_files:
 
         # Ensure both arrays have the same shape
         if gt_data.shape != pred_data.shape:
-            raise ValueError(
+            logging.warning(
                 f"Shape mismatch between {file}. Ground truth shape: {gt_data.shape}, Prediction shape: {pred_data.shape}")
+
+            # Attempt to transpose the prediction data if shapes mismatch
+            try:
+                pred_data = pred_data.T  # Transpose the prediction data
+                logging.info(f"Successfully transposed prediction data for {file}.")
+            except Exception as e:
+                logging.error(f"Failed to transpose prediction data for {file}. Error: {str(e)}")
+                raise ValueError(
+                    f"Shape mismatch and failed to transpose for {file}. Ground truth shape: {gt_data.shape}, "
+                    f"Prediction shape: {pred_data.shape}")
+
+            # After transpose, check if the shapes match again
+            if gt_data.shape != pred_data.shape:
+                raise ValueError(
+                    f"Shape still mismatches after transpose for {file}. Ground truth shape: {gt_data.shape}, "
+                    f"Prediction shape: {pred_data.shape}")
 
         # Compute the loss functions
         mse, mae, rmse, cosine_sim, r2 = compute_losses(gt_data, pred_data)

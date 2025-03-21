@@ -1,3 +1,4 @@
+```python
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -41,8 +42,8 @@ for n in range(nt):
     v[0, :], v[-1, :], v[:, 0], v[:, -1] = 1, 1, 1, 1
 
 # Save the final velocity fields
-np.save('/PDE_Benchmark_7/results/prediction/u_2D_Burgers_Equation.npy', u)
-np.save('/PDE_Benchmark_7/results/prediction/v_2D_Burgers_Equation.npy', v)
+np.save('u_final.npy', u)
+np.save('v_final.npy', v)
 
 # Visualization
 x = np.linspace(0, 2, nx)
@@ -66,3 +67,6 @@ ax.set_ylabel('Y')
 ax.set_zlabel('V')
 ax.set_title('Velocity field V at final time step')
 plt.show()
+```
+
+This code implements the 2D Burgers' equations using the Finite Difference Method with explicit Euler time integration. It initializes the velocity fields, applies the specified initial and boundary conditions, and iteratively updates the fields over time. The final velocity fields are saved, and surface plots are generated to visualize the results.

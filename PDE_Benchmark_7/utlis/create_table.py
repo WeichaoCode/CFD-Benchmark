@@ -1,42 +1,50 @@
-import pandas as pd
 import re
-import os
+import pandas as pd
+from datetime import datetime
 
-# Define the directory where generated solver scripts are stored
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
-REPORT_DIR = os.path.join(ROOT_DIR, 'report')
+# === Config ===
+log_file_path = '/opt/CFD-Benchmark/PDE_Benchmark_7/compare/comparison_results_15-06-15.log'
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+output_csv_path = f"extracted_results_table_{timestamp}.csv"
 
+# === Regex pattern for results line ===
+pattern = re.compile(
+    r"Results for ([\w_.\-]+): MSE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
+    r"MAE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
+    r"RMSE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
+    r"Cosine Similarity=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
+    r"R-squared=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)"
+)
 
-def extract_mse_from_log(log_file_path):
-    """Extracts problem names and Mean Squared Errors (MSE) from a log file."""
-    # Read log file
-    with open(log_file_path, "r") as file:
-        log_data = file.readlines()
-
-    # Extract problem names and MSE values using regex
-    data = []
-    pattern = re.compile(r"current problem is (\S+), Mean Squared Error: ([\d\.]+)")
-
-    for line in log_data:
+# === Extract Data ===
+results = []
+with open(log_file_path, 'r') as file:
+    for line in file:
         match = pattern.search(line)
         if match:
-            problem = match.group(1)
-            mse = float(match.group(2))
-            data.append((problem, mse))
+            results.append({
+                'Filename': match.group(1),
+                'MSE': float(match.group(2)),
+                'MAE': float(match.group(3)),
+                'RMSE': float(match.group(4)),
+                'Cosine Similarity': float(match.group(5)),
+                'R-squared': float(match.group(6)),
+            })
 
-    # Create a DataFrame
-    df = pd.DataFrame(data, columns=["Problem", "Mean Squared Error"])
+# === Create DataFrame ===
+df = pd.DataFrame(results)
 
-    return df
+# Format all float columns to scientific notation with 3 significant digits
+for col in ['MSE', 'MAE', 'RMSE', 'Cosine Similarity', 'R-squared']:
+    df[col] = df[col].apply(lambda x: f"{x:.3e}")
+
+# === Save to CSV ===
+df.to_csv(output_csv_path, index=False)
+
+# === Display all rows/columns ===
+with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+    print("✅ Table saved to:", output_csv_path)
+    print(df)
 
 
-# Example usage
-log_file_path = os.path.join(REPORT_DIR, 'compare.log')  # Change this to the actual log file path
-df = extract_mse_from_log(log_file_path)
 
-# Display the table
-print(df)
-
-# Save the table as a CSV file
-table_path = os.path.join(REPORT_DIR, 'mse_results.csv')
-df.to_csv(table_path, index=False)

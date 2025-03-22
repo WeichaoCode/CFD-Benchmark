@@ -18,8 +18,10 @@ files = [f for f in os.listdir(ground_truth_dir) if f.endswith('.npy')]
 def plot_1d(gt, pred, file_name):
     x = np.arange(len(gt))
     error = np.abs(gt - pred)
+    mse = np.mean((gt - pred) ** 2)
 
     plt.figure(figsize=(10, 6))
+    plt.suptitle(f"{file_name} MSE: {mse}")
     plt.subplot(3, 1, 1)
     plt.plot(x, gt, label='Ground Truth', color='blue')
     plt.title('Ground Truth')
@@ -43,8 +45,10 @@ def plot_1d(gt, pred, file_name):
 
 def plot_2d(gt, pred, file_name):
     error = np.abs(gt - pred)
+    mse = np.mean((gt - pred) ** 2)
 
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    plt.suptitle(f"{file_name} MSE: {mse}")
     im0 = axes[0].imshow(gt, cmap='viridis', origin='lower')
     axes[0].set_title('Ground Truth')
     plt.colorbar(im0, ax=axes[0])

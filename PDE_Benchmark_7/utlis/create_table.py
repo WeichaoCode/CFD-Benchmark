@@ -1,11 +1,15 @@
 import re
 import pandas as pd
 from datetime import datetime
+import os
 
 # === Config ===
-log_file_path = '/opt/CFD-Benchmark/PDE_Benchmark_7/compare/comparison_results_15-06-15.log'
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-output_csv_path = f"extracted_results_table_{timestamp}.csv"
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
+LOG_FILE_PATH = os.path.join(ROOT_DIR, 'compare/comparison_results_15-06-15.log')
+CSV_FILE_PATH = os.path.join(ROOT_DIR, f'table/extracted_results_table_{timestamp}.csv')
+log_file_path = LOG_FILE_PATH
+output_csv_path = CSV_FILE_PATH
 
 # === Regex pattern for results line ===
 pattern = re.compile(

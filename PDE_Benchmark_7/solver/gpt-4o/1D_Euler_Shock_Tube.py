@@ -67,8 +67,10 @@ E = U[2] / U[0]
 p = (gamma - 1) * (U[2] - 0.5 * U[1]**2 / U[0])
 
 # Save results in .npy format
-np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/U_1D_Euler_Shock_Tube.npy', U)
-np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/F_1D_Euler_Shock_Tube.npy', F)
+np.save('/PDE_Benchmark_7/results/prediction/rho_1D_Euler_Shock_Tube.npy', rho)
+np.save('/PDE_Benchmark_7/results/prediction/u_1D_Euler_Shock_Tube.npy', u)
+np.save('/PDE_Benchmark_7/results/prediction/E_1D_Euler_Shock_Tube.npy', E)
+# np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/F_1D_Euler_Shock_Tube.npy', F)
 
 # Visualization
 plt.figure(figsize=(15, 5))

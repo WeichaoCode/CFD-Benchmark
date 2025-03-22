@@ -138,11 +138,16 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 # Get the current Python file name without extension
 python_filename = os.path.splitext(os.path.basename(__file__))[0]
 
-# Define the file name dynamically
-output_file_u = os.path.join(OUTPUT_FOLDER, f"U_{python_filename}.npy")
-output_file_f = os.path.join(OUTPUT_FOLDER, f"F_{python_filename}.npy")
-
-# Save the array u in the results folder
-np.save(output_file_u, U)
-np.save(output_file_f, FF)
-
+# # Define the file name dynamically
+# output_file_u = os.path.join(OUTPUT_FOLDER, f"U_{python_filename}.npy")
+# output_file_f = os.path.join(OUTPUT_FOLDER, f"F_{python_filename}.npy")
+#
+# # Save the array u in the results folder
+# np.save(output_file_u, U)
+# np.save(output_file_f, FF)
+output_file_rho = os.path.join(OUTPUT_FOLDER, f"rho_{python_filename}.npy")
+output_file_u = os.path.join(OUTPUT_FOLDER, f"u_{python_filename}.npy")
+output_file_E = os.path.join(OUTPUT_FOLDER, f"E_{python_filename}.npy")
+np.save(output_file_rho, rho)
+np.save(output_file_u, u)
+np.save(output_file_E, E)

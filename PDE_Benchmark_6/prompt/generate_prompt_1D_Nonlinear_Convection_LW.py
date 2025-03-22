@@ -27,7 +27,15 @@ prompt_text = {
       \\]
     - The domain has **periodic boundary conditions**.
     
-        ### Choose parameters
+    ### **Space Discretization**
+    - Define the spatial vector \( x \) using the `linspace` function with the following formula:
+      \[
+      x = \text{np.linspace}(0, L, \text{math.ceil}(L / (dt / \nu)))
+      \]
+      Here, \( L \) is the length of the domain, and \( dt \) is the time step. The number of grid points \( n_x \) 
+      is computed as \( \text{math.ceil}(L / (dt / \nu)) \), where \( \nu \) is the CFL number.
+      
+    ### Choose parameters
     - CFL number: `nu = 0.5`
     - Time step: `dt = 0.01`
     - Maximum number of time steps: `T = 500`

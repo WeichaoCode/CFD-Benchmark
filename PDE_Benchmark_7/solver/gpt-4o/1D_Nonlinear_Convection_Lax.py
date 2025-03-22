@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 # Define parameters
 nu = 0.5  # CFL number
@@ -7,7 +8,7 @@ dt = 0.01  # Time step
 T = 500  # Maximum number of time steps
 dx = dt / nu
 x_start, x_end = 0, 2 * np.pi  # Periodic domain boundaries
-nx = int((x_end - x_start) / dx)  # Number of spatial grid points including boundary
+nx = math.ceil((x_end - x_start) / dx)  # Number of spatial grid points including boundary
 
 # Define the spatial grid
 x = np.linspace(x_start, x_end, nx, endpoint=False)  # Grid, excluding the endpoint for periodicity
@@ -39,7 +40,7 @@ for n in range(T):
     u[:] = unew[:]
 
 # Save the solution to a .npy file
-np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Nonlinear_Convection_Lax.npy', u)
+np.save('/PDE_Benchmark_7/results/prediction/u_1D_Nonlinear_Convection_Lax.npy', u)
 
 # Plot the final solution
 plt.plot(x, u, label='t = {:.2f}'.format(T * dt))

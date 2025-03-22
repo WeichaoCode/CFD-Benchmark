@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 # Define parameters
 nu = 0.5        # CFL number
@@ -7,7 +8,7 @@ dt = 0.01       # Time step
 dx = dt / nu    # Space step
 T = 500         # Maximum number of time steps
 L = 2 * np.pi   # Domain length
-nx = int(L / dx)  # Number of spatial grid points
+nx = math.ceil(L / dx)  # Number of spatial grid points
 x = np.linspace(0, L, nx, endpoint=False)  # Spatial grid
 
 # Initial condition
@@ -55,7 +56,7 @@ for n in range(T):
 u_storage = np.array(u_storage)
 
 # Save the solution
-np.save("/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Nonlinear_Convection_LW.npy", u_storage)
+np.save("/PDE_Benchmark_7/results/prediction/u_1D_Nonlinear_Convection_LW.npy", u_storage[-1])
 
 # Plot initial and final state
 plt.figure(figsize=(8, 4))

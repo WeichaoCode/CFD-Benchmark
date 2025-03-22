@@ -60,7 +60,7 @@ def run_simulation(epsilon, title, timesteps=200):
         results.append(u.copy())
 
     # Save results to a .npy file
-    np.save("/PDE_Benchmark_7/results/prediction/u_1D_Linear_Convection_pred_corr.npy", np.array(results))
+    np.save("/PDE_Benchmark_7/results/prediction/u_1D_Linear_Convection_pred_corr.npy", np.array(results[-1]))
 
     return results
 

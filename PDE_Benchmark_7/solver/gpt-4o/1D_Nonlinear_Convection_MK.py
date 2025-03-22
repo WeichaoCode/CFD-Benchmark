@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 # Define parameters
 nu = 0.5  # CFL number
@@ -7,7 +8,7 @@ dt = 0.01
 T = 500
 dx = dt / nu
 L = 2 * np.pi
-nx = int(L / dx)
+nx = math.ceil(L / dx)
 x = np.linspace(0, L, nx, endpoint=False)
 
 # Initial condition
@@ -38,7 +39,7 @@ for n in range(T):
     u = macCormack(u, dx, dt)
 
 # Save the final result
-np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Nonlinear_Convection_Mk.npy', u)
+np.save('/PDE_Benchmark_7/results/prediction/u_1D_Nonlinear_Convection_Mk.npy', u)
 
 # Comparison plotting (not implemented here for Lax and Lax-Wendroff)
 plt.plot(x, u, label='MacCormack', color='r')

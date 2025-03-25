@@ -1,0 +1,58 @@
+Here is a Python code that uses the Finite Difference Method to solve the Burgers' equation. It uses the forward difference for time, backward difference for space in the convection term, and central difference for the second spatial derivative in the diffusion term.
+
+```python
+import numpy as np
+from matplotlib import pyplot as plt
+
+# Function to calculate derivative of phi
+def dphi_dx(x, nu, t):
+    return -x / (2 * nu) * (np.exp(-(x - 4 * t)**2 / (4 * nu * (t + 1))) + np.exp(-(x - 4 * t - 2 * np.pi)**2 / (4 * nu * (t + 1))))
+
+# Function to calculate initial condition
+def initial_condition(x, nu):
+    phi = np.exp(-x**2 / (4 * nu)) + np.exp(-(x - 2 * np.pi)**2 / (4 * nu))
+    return -2 * nu / phi * dphi_dx(x, nu, 0) + 4
+
+# Function to calculate analytical solution
+def analytical_solution(x, nu, t):
+    phi = np.exp(-(x - 4 * t)**2 / (4 * nu * (t + 1))) + np.exp(-(x - 4 * t - 2 * np.pi)**2 / (4 * nu * (t + 1)))
+    return -2 * nu / phi * dphi_dx(x, nu, t) + 4
+
+# Set parameters
+nx = 101
+nt = 100
+nu = 0.07
+dx = 2 * np.pi / (nx - 1)
+dt = dx * nu
+
+# Initialize arrays
+x = np.linspace(0, 2 * np.pi, nx)
+u = np.empty([nt, nx])
+u_analytical = np.empty([nt, nx])
+
+# Set initial condition
+u[0, :] = initial_condition(x, nu)
+u_analytical[0, :] = initial_condition(x, nu)
+
+# Time stepping
+for n in range(nt - 1):
+    # Periodic boundary conditions
+    u[n, 0] = u[n, -1]
+    # Finite difference scheme
+    u[n + 1, 1:-1] = (u[n, 1:-1] - u[n, 1:-1] * dt / dx * (u[n, 1:-1] - u[n, :-2]) + 
+                       nu * dt / dx**2 * (u[n, 2:] - 2 * u[n, 1:-1] + u[n, :-2]))
+    # Update analytical solution
+    u_analytical[n + 1, :] = analytical_solution(x, nu, dt * (n + 1))
+
+# Save the velocity field at last time step
+np.save('velocity_field.npy', u[-1, :])
+
+# Plot the numerical and analytical solutions for comparison
+plt.figure()
+plt.plot(x, u[-1, :], label='Numerical')
+plt.plot(x, u_analytical[-1, :], label='Analytical')
+plt.legend()
+plt.show()
+```
+
+This code calculates the numerical solution of the Burgers' equation using the finite difference method, compares it with the analytical solution, and saves the velocity field at the last time step in a .npy file. It also plots the numerical and analytical solutions for comparison. The numerical solution is expected to agree well with the analytical solution.

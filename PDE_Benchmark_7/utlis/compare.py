@@ -24,7 +24,7 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Be
 
 # Define the directories for ground truth and predictions
 ground_truth_dir = os.path.join(ROOT_DIR, 'results/ground_truth')  # Replace with your ground truth directory
-prediction_dir = os.path.join(ROOT_DIR, 'results/prediction')  # Replace with your prediction directory
+prediction_dir = os.path.join(ROOT_DIR, 'results/prediction/o1-mini')  # Replace with your prediction directory
 
 # List all .npy files in the ground truth directory without sorting (in the order they appear)
 ground_truth_files = [f for f in os.listdir(ground_truth_dir) if f.endswith('.npy')]

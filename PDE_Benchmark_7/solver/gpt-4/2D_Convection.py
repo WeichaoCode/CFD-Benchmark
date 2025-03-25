@@ -1,0 +1,65 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Define parameters
+nx, ny = 101, 101  # number of grid points in x and y direction
+nt = 80  # number of time steps
+sigma = 0.2  # Courant number
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+dx = x[1] - x[0]  # grid spacing in x direction
+dy = y[1] - y[0]  # grid spacing in y direction
+dt = sigma * dx  # time step size
+
+# Initialize variables
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+u[int(.5 / dy):int(1 / dy + 1), int(.5 / dx):int(1 / dx + 1)] = 2  # set u = 2 between 0.5 and 1
+v[int(.5 / dy):int(1 / dy + 1), int(.5 / dx):int(1 / dx + 1)] = 2  # set v = 2 between 0.5 and 1
+
+# Time integration loop
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+
+    # Update u and v using Explicit Euler formula
+    u[1:, 1:] = (un[1:, 1:] -
+                 un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1]) -
+                 vn[1:, 1:] * dt / dy * (un[1:, 1:] - un[:-1, 1:]))
+    v[1:, 1:] = (vn[1:, 1:] -
+                 un[1:, 1:] * dt / dx * (vn[1:, 1:] - vn[1:, :-1]) -
+                 vn[1:, 1:] * dt / dy * (vn[1:, 1:] - vn[:-1, 1:]))
+
+    # Apply boundary conditions
+    u[0, :] = 1
+    u[-1, :] = 1
+    u[:, 0] = 1
+    u[:, -1] = 1
+
+    v[0, :] = 1
+    v[-1, :] = 1
+    v[:, 0] = 1
+    v[:, -1] = 1
+
+# Save the final velocity fields in .npy files
+np.save('u_final.npy', u)
+np.save('v_final.npy', v)
+
+# Visualization
+X, Y = np.meshgrid(x, y)
+fig = plt.figure(figsize=(11, 7), dpi=100)
+ax = fig.gca(projection='3d')
+ax.plot_surface(X, Y, u[:], cmap='viridis')
+ax.set_xlabel('$x$')
+ax.set_ylabel('$y$')
+ax.set_title('2D Nonlinear Convection - u')
+plt.show()
+
+fig = plt.figure(figsize=(11, 7), dpi=100)
+ax = fig.gca(projection='3d')
+ax.plot_surface(X, Y, v[:], cmap='viridis')
+ax.set_xlabel('$x$')
+ax.set_ylabel('$y$')
+ax.set_title('2D Nonlinear Convection - v')
+plt.show()

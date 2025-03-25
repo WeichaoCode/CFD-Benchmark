@@ -1,0 +1,103 @@
+2025-03-22 15:46:53,398 - INFO - ####################################################################################################
+2025-03-22 15:46:53,398 - INFO - Using the GPT-o1, change temperature to 0.5
+2025-03-22 15:46:53,420 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 1/5)
+2025-03-22 15:46:54,271 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,274 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_KE: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,274 - INFO - 🔹 Generating code for: 2D_Diffusion_FVM (Attempt 1/5)
+2025-03-22 15:46:54,323 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,325 - INFO - ❌ API Call Error for 2D_Diffusion_FVM: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,325 - INFO - 🔹 Generating code for: 1D_Linear_Convection_corr (Attempt 1/5)
+2025-03-22 15:46:54,397 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,399 - INFO - ❌ API Call Error for 1D_Linear_Convection_corr: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,399 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/5)
+2025-03-22 15:46:54,459 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,460 - INFO - ❌ API Call Error for 1D_Burgers_Equation: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,460 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_MK (Attempt 1/5)
+2025-03-22 15:46:54,534 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,536 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_MK: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,536 - INFO - 🔹 Generating code for: 2D_Laplace_Equation (Attempt 1/5)
+2025-03-22 15:46:54,609 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,609 - INFO - ❌ API Call Error for 2D_Laplace_Equation: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,609 - INFO - 🔹 Generating code for: 2D_Linear_Convection (Attempt 1/5)
+2025-03-22 15:46:54,657 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,657 - INFO - ❌ API Call Error for 2D_Linear_Convection: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,657 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_CESS (Attempt 1/5)
+2025-03-22 15:46:54,705 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,707 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_CESS: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,707 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_LW (Attempt 1/5)
+2025-03-22 15:46:54,771 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,773 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_LW: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,773 - INFO - 🔹 Generating code for: 1D_Linear_Convection_adams (Attempt 1/5)
+2025-03-22 15:46:54,833 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,835 - INFO - ❌ API Call Error for 1D_Linear_Convection_adams: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,835 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Channel (Attempt 1/5)
+2025-03-22 15:46:54,890 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,892 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Channel: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,892 - INFO - 🔹 Generating code for: 2D_Diffusion (Attempt 1/5)
+2025-03-22 15:46:54,956 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:54,958 - INFO - ❌ API Call Error for 2D_Diffusion: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:54,958 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Gauss (Attempt 1/5)
+2025-03-22 15:46:55,022 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,023 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_Gauss: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,023 - INFO - 🔹 Generating code for: 1D_Euler_Shock_Tube (Attempt 1/5)
+2025-03-22 15:46:55,071 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,071 - INFO - ❌ API Call Error for 1D_Euler_Shock_Tube: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,071 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_SE (Attempt 1/5)
+2025-03-22 15:46:55,117 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,118 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_SE: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,118 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Jac (Attempt 1/5)
+2025-03-22 15:46:55,163 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,164 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_Jac: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,164 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_FOU (Attempt 1/5)
+2025-03-22 15:46:55,220 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,222 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_FOU: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,222 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SA (Attempt 1/5)
+2025-03-22 15:46:55,276 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,276 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SA: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,276 - INFO - 🔹 Generating code for: 2D_Burgers_Equation (Attempt 1/5)
+2025-03-22 15:46:55,320 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,321 - INFO - ❌ API Call Error for 2D_Burgers_Equation: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,321 - INFO - 🔹 Generating code for: 1D_Linear_Convection_explicit_euler (Attempt 1/5)
+2025-03-22 15:46:55,368 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,369 - INFO - ❌ API Call Error for 1D_Linear_Convection_explicit_euler: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,369 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Cavity (Attempt 1/5)
+2025-03-22 15:46:55,429 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,430 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Cavity: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,430 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_MK (Attempt 1/5)
+2025-03-22 15:46:55,481 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,483 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_MK: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,483 - INFO - 🔹 Generating code for: 1D_Diffusion (Attempt 1/5)
+2025-03-22 15:46:55,544 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,545 - INFO - ❌ API Call Error for 1D_Diffusion: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,545 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_ADI (Attempt 1/5)
+2025-03-22 15:46:55,593 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,595 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_ADI: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,595 - INFO - 🔹 Generating code for: 1D_Linear_Convection_rk (Attempt 1/5)
+2025-03-22 15:46:55,652 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,652 - INFO - ❌ API Call Error for 1D_Linear_Convection_rk: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,652 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_Lax (Attempt 1/5)
+2025-03-22 15:46:55,701 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,703 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_Lax: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,703 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_DF (Attempt 1/5)
+2025-03-22 15:46:55,761 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,762 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_DF: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,762 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 1/5)
+2025-03-22 15:46:55,878 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,879 - INFO - ❌ API Call Error for 2D_Convection: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,880 - INFO - 🔹 Generating code for: 2D_Poisson_Equation (Attempt 1/5)
+2025-03-22 15:46:55,937 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:55,939 - INFO - ❌ API Call Error for 2D_Poisson_Equation: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:55,939 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_SOR (Attempt 1/5)
+2025-03-22 15:46:56,011 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:56,013 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_SOR: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:56,013 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SST (Attempt 1/5)
+2025-03-22 15:46:56,078 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:56,079 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SST: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:56,080 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_V2F (Attempt 1/5)
+2025-03-22 15:46:56,139 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-03-22 15:46:56,141 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_V2F: Error code: 404 - {'error': {'message': 'The model `gpt-o1` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}
+2025-03-22 15:46:56,141 - INFO - 
+🎯 Execution completed. Check the solver directory for generated files.
+2025-03-22 15:46:56,141 - INFO - Total Input Tokens: 0
+2025-03-22 15:46:56,141 - INFO - Total Output Tokens: 0
+2025-03-22 15:46:56,142 - INFO - Total Estimated Cost: $0.000000

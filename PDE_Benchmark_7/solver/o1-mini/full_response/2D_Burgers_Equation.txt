@@ -1,0 +1,92 @@
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Define parameters
+nx, ny = 41, 41
+nt = 120
+sigma = 0.0009
+nu = 0.01
+dx = 2 / (nx - 1)
+dy = 2 / (ny - 1)
+dt = sigma * dx * dy / nu
+
+# Create the grid
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize velocity fields
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+
+# Apply initial conditions: u and v = 2 in the region 0.5 <= x,y <= 1
+indices = np.where((X >= 0.5) & (X <= 1) & (Y >= 0.5) & (Y <= 1))
+u[indices] = 2
+v[indices] = 2
+
+# Time integration loop
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    
+    # Compute derivatives for u
+    u_x = (un[1:-1, 2:] - un[1:-1, :-2]) / (2 * dx)
+    u_y = (un[2:, 1:-1] - un[:-2, 1:-1]) / (2 * dy)
+    u_xx = (un[1:-1, 2:] - 2 * un[1:-1, 1:-1] + un[1:-1, :-2]) / dx**2
+    u_yy = (un[2:, 1:-1] - 2 * un[1:-1, 1:-1] + un[:-2, 1:-1]) / dy**2
+    
+    # Update u
+    u[1:-1, 1:-1] = (un[1:-1, 1:-1] 
+                      - un[1:-1, 1:-1] * dt * u_x 
+                      - vn[1:-1, 1:-1] * dt * u_y 
+                      + nu * dt * (u_xx + u_yy))
+    
+    # Compute derivatives for v
+    v_x = (vn[1:-1, 2:] - vn[1:-1, :-2]) / (2 * dx)
+    v_y = (vn[2:, 1:-1] - vn[:-2, 1:-1]) / (2 * dy)
+    v_xx = (vn[1:-1, 2:] - 2 * vn[1:-1, 1:-1] + vn[1:-1, :-2]) / dx**2
+    v_yy = (vn[2:, 1:-1] - 2 * vn[1:-1, 1:-1] + vn[:-2, 1:-1]) / dy**2
+    
+    # Update v
+    v[1:-1, 1:-1] = (vn[1:-1, 1:-1] 
+                      - un[1:-1, 1:-1] * dt * v_x 
+                      - vn[1:-1, 1:-1] * dt * v_y 
+                      + nu * dt * (v_xx + v_yy))
+    
+    # Apply boundary conditions: u = v = 1 on all boundaries
+    u[0, :] = 1
+    u[-1, :] = 1
+    u[:, 0] = 1
+    u[:, -1] = 1
+    
+    v[0, :] = 1
+    v[-1, :] = 1
+    v[:, 0] = 1
+    v[:, -1] = 1
+
+# Visualization of the final velocity field u
+fig1 = plt.figure(figsize=(11,7), dpi=100)
+ax1 = fig1.add_subplot(111, projection='3d')
+surf1 = ax1.plot_surface(X, Y, u, cmap='viridis')
+ax1.set_xlabel('X')
+ax1.set_ylabel('Y')
+ax1.set_zlabel('U')
+ax1.set_title('Velocity Field U at Final Time Step')
+plt.show()
+
+# Visualization of the final velocity field v
+fig2 = plt.figure(figsize=(11,7), dpi=100)
+ax2 = fig2.add_subplot(111, projection='3d')
+surf2 = ax2.plot_surface(X, Y, v, cmap='inferno')
+ax2.set_xlabel('X')
+ax2.set_ylabel('Y')
+ax2.set_zlabel('V')
+ax2.set_title('Velocity Field V at Final Time Step')
+plt.show()
+
+# Save the final velocity fields
+np.save('u_final.npy', u)
+np.save('v_final.npy', v)
+```

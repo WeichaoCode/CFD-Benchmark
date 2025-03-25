@@ -1,0 +1,181 @@
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from numpy.linalg import solve
+
+class Mesh:
+    def __init__(self, n, H, beta=1.5):
+        self.n = n
+        self.H = H
+        self.beta = beta
+        self.y = self.generate_mesh()
+        self.d1 = self.first_derivative_matrix()
+        self.d2 = self.second_derivative_matrix()
+
+    def generate_mesh(self):
+        xi = np.linspace(0, 1, self.n)
+        y = self.H / 2 * (1 - np.tanh(self.beta * (1 - 2 * xi)) / np.tanh(self.beta))
+        return y
+
+    def first_derivative_matrix(self):
+        d1 = np.zeros((self.n, self.n))
+        dy = np.diff(self.y)
+        
+        # Interior points
+        for i in range(1, self.n-1):
+            dy_forward = self.y[i+1] - self.y[i]
+            dy_backward = self.y[i] - self.y[i-1]
+            d1[i, i-1] = -1 / dy_backward
+            d1[i, i+1] = 1 / dy_forward
+            d1[i, i] = (1 / dy_forward + 1 / dy_backward)
+        
+        # Boundary points (one-sided differences)
+        d1[0,0] = -3/2 / dy[0]
+        d1[0,1] = 2 / dy[0]
+        d1[0,2] = -1/2 / dy[0]
+        
+        d1[-1,-1] = 3/2 / dy[-1]
+        d1[-1,-2] = -2 / dy[-1]
+        d1[-1,-3] = 1/2 / dy[-1]
+        
+        return d1
+
+    def second_derivative_matrix(self):
+        d2 = np.zeros((self.n, self.n))
+        dy = np.diff(self.y)
+        
+        # Interior points
+        for i in range(1, self.n-1):
+            dy_forward = self.y[i+1] - self.y[i]
+            dy_backward = self.y[i] - self.y[i-1]
+            a = 2 / (dy_backward * (dy_backward + dy_forward))
+            b = -2 / (dy_backward * dy_forward)
+            c = 2 / (dy_forward * (dy_backward + dy_forward))
+            d2[i, i-1] = a
+            d2[i, i] = b
+            d2[i, i+1] = c
+        
+        # Boundary points (Neumann BC: d2u/dy2 = 0)
+        d2[0,0] = 1
+        d2[-1,-1] = 1
+        
+        return d2
+
+def compute_mu_tilde(mesh, u, constants, tol=1e-6, max_iter=1000):
+    # Initialize tilde_u
+    tilde_u = np.ones(mesh.n) * 1e-5
+    tilde_u[0] = 0.0
+    tilde_u[-1] = 0.0
+
+    for iteration in range(max_iter):
+        tilde_u_old = tilde_u.copy()
+        
+        # Compute derivatives
+        d_tildeu_dy = mesh.d1 @ tilde_u
+        d2_tildeu_dy2 = mesh.d2 @ tilde_u
+        
+        # Compute f_w and f_u1
+        chi = tilde_u / u
+        f_u1 = chi**3 / (chi**3 + constants['c_u1']**3)
+        
+        # Source terms
+        S = np.abs(mesh.d1 @ u)
+        F1 = constants['c_b1'] * S * tilde_u
+        F2 = constants['c_w1'] * f_u1 * (tilde_u / mesh.y)**2
+        F3 = (1 / constants['c_b3']) * (u + tilde_u) * d2_tildeu_dy2
+        F4 = (constants['c_b2'] / constants['c_b3']) * (d_tildeu_dy)**2
+        
+        # Residual
+        F = F1 - F2 + F3 + F4
+        
+        # Update tilde_u using simple relaxation
+        tilde_u = tilde_u - 0.001 * F  # Relaxation factor
+        
+        # Apply boundary conditions
+        tilde_u[0] = 0.0
+        tilde_u[-1] = 0.0
+        
+        # Ensure positivity
+        tilde_u = np.maximum(tilde_u, 1e-8)
+        
+        # Check convergence
+        if np.linalg.norm(tilde_u - tilde_u_old, ord=np.inf) < tol:
+            break
+    
+    return tilde_u
+
+def solve_rans(mesh, mu_eff):
+    A = mesh.d2 * mu_eff[:, np.newaxis]
+    A = A - mesh.d1.T @ mu_eff[:, np.newaxis]
+    
+    # Apply boundary conditions (u=0 at walls)
+    A[0, :] = 0
+    A[0,0] = 1
+    A[-1, :] = 0
+    A[-1,-1] = 1
+    
+    b = -np.ones(mesh.n)
+    b[0] = 0
+    b[-1] = 0
+    
+    u = solve(A, b)
+    return u
+
+def main():
+    # User-Defined Inputs
+    Re_tau = 395
+    rho = 1.0
+    mu = 1.0 / Re_tau
+    H = 2.0
+    n = 100
+
+    # Spalart-Allmaras constants
+    constants = {
+        'c_b1': 0.1355,
+        'c_b2': 0.622,
+        'c_b3': 2.0/3.0,
+        'c_w1': 0.1,  # Assuming c_w1 value
+        'c_u1': 7.1,
+        'kappa': 0.41
+    }
+    
+    mesh = Mesh(n, H)
+    u = np.ones(n)  # Initial guess for velocity
+
+    for iteration in range(1000):
+        # Solve RANS equation
+        tilde_u = compute_mu_tilde(mesh, u, constants)
+        mu_t = rho * tilde_u * (tilde_u)**constants['c_u1']  # Assuming relation
+        mu_eff = mu + mu_t
+        
+        u_new = solve_rans(mesh, mu_eff)
+        
+        # Check convergence
+        if np.linalg.norm(u_new - u, ord=np.inf) < 1e-6:
+            u = u_new
+            break
+        u = u_new
+
+    # Save velocity profile
+    np.save('velocity_profile.npy', u)
+
+    # Plotting
+    y = mesh.y
+    plt.figure(figsize=(8,6))
+    plt.plot(u, y, label='Turbulent Profile')
+    
+    # Laminar parabolic profile
+    u_lam = (1 - (y / H)**2) * (2 * mu * Re_tau)
+    plt.plot(u_lam, y, label='Laminar Profile', linestyle='--')
+    
+    plt.xlabel('Velocity u')
+    plt.ylabel('y')
+    plt.title('Velocity Profile in Channel')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('velocity_profile.png')
+    plt.show()
+
+if __name__ == "__main__":
+    main()
+```

@@ -24,8 +24,8 @@ timestamp = datetime.now().strftime("%H-%M-%S-%f")  # %f gives microseconds
 # === Paths ===
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
 PROMPTS_FILE = os.path.join(ROOT_DIR, "prompt", "PDE_TASK_PROMPT.json")
-OUTPUT_FOLDER = os.path.join(ROOT_DIR, "solver/gpt-4o")
-LOG_FILE = os.path.join(ROOT_DIR, f"report/execution_gpt-4o_results_{timestamp}.log")
+OUTPUT_FOLDER = os.path.join(ROOT_DIR, "solver/o1-mini")
+LOG_FILE = os.path.join(ROOT_DIR, f"report/execution_o1-mini_results_{timestamp}.log")
 # LOG_FILE = os.path.join(ROOT_DIR, f"report/execution_gpt-4o_results_{timestamp}.log")
 # USAGE_FILE = os.path.join(ROOT_DIR, f"report/token_usage_summary_gpt-4o_{timestamp}.log")
 
@@ -39,7 +39,7 @@ logging.basicConfig(
 )
 
 logging.info("####################################################################################################")
-logging.info("Using the GPT-4o, change temperature to 1.0, run 2D_Steady_Heat again since nx, ny is not set correctly")
+logging.info("Using the o1-mini, change temperature to 1.0, remove max_tokens")
 
 # === OpenAI API Configuration ===
 api_key = "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"  # Replace this with your OpenAI API key
@@ -81,8 +81,8 @@ def execute_python_script(filepath):
 # === Function to Generate Code from LLM ===
 def generate_code(task_name, prompt, max_retries=5):
     """ Calls LLM API to generate Python code with feedback updates if errors occur. """
-    if task_name not in {"2D_Steady_Heat_Equation_Gauss"}:
-        return
+    # if task_name not in {"2D_Steady_Heat_Equation_Gauss"}:
+    #     return
     retries = 0
     original_prompt = prompt  # Keep the original prompt unchanged
     while retries < max_retries:
@@ -92,20 +92,14 @@ def generate_code(task_name, prompt, max_retries=5):
         try:
             # Call OpenAI GPT-4o API
             response = client.chat.completions.create(
-                model="gpt-4o",  # Specify the model
+                model="o1-mini",  # Specify the model
                 messages=[
-                    {"role": "system", "content": "You are an expert in Computational Fluid Dynamics (CFD) and Python "
-                                                  "programming, specializing in solving problems using the Finite "
-                                                  "Difference Method (FDM). Your task is to assist in developing "
-                                                  "efficient Python code for solving CFD problems using FDM. You "
-                                                  "should focus on writing clear, modular, and optimized code for "
-                                                  "numerical simulations, including proper discretization of partial "
-                                                  "differential equations (PDEs). Prioritize best practices in "
-                                                  "scientific computing, ensuring that the code is well-commented and "
-                                                  "easy to understand for implementation and future improvements."},
-                    {"role": "user", "content": updated_prompt}
+                    {"role": "user", "content": updated_prompt +
+                     "If it is an unsteady problem, only save the solution at the final time step "
+                     "If the problem is 1D, the saved array should be 1D. "
+                     "If the problem is 2D, the saved array should be 2D. "
+                     }
                 ],
-                max_tokens=7000,
                 temperature=1.0
             )
 

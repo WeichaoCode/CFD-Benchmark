@@ -6,7 +6,7 @@ from datetime import datetime
 timestamp = datetime.now().strftime("%H-%M-%S-%f")  # %f gives microseconds
 # Define the directory where generated solver scripts are stored
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
-GENERATED_SOLVERS_DIR = os.path.join(ROOT_DIR, "solver/gpt-4o")
+GENERATED_SOLVERS_DIR = os.path.join(ROOT_DIR, "solver/o1-mini")
 GENERATED_SOLVERS_SAVE_DIR = os.path.join(ROOT_DIR, "report")
 # Define the log file for execution results
 LOG_FILE = os.path.join(GENERATED_SOLVERS_SAVE_DIR, f"execution_prompt_results_{timestamp}.log")

@@ -1,0 +1,67 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.sparse import diags
+from scipy.sparse.linalg import spsolve
+
+class Mesh:
+    def __init__(self, n, H):
+        self.n = n
+        self.H = H
+        self.y = self.generate_mesh()
+        self.dy, self.dyy = self.compute_derivatives()
+        
+    def generate_mesh(self):
+        y = np.linspace(-self.H/2, self.H/2, self.n)
+        return y
+
+    def compute_derivatives(self):
+        dy = diags([-1, 0, 1], [-1, 0, 1], shape=(self.n, self.n)).toarray()
+        dyy = diags([1, -2, 1], [-1, 0, 1], shape=(self.n, self.n)).toarray()
+        return dy, dyy
+
+def compute_turbulent_viscosity(rho, k, epsilon, C_mu):
+    mu_t = C_mu * rho * k**2 / epsilon
+    return mu_t
+
+def solve_linear_system(A, b):
+    u = spsolve(A, b)
+    return u
+
+def main():
+    # User-defined inputs
+    Re_tau = 395
+    rho = 1.0
+    mu = 1 / Re_tau
+    C_mu = 0.09
+
+    # Mesh parameters
+    n = 100
+    H = 2
+    mesh = Mesh(n, H)
+
+    # Turbulent kinetic energy and dissipation
+    k = np.ones(n) # initial guess
+    epsilon = np.ones(n) # initial guess
+    mu_t = compute_turbulent_viscosity(rho, k, epsilon, C_mu)
+
+    # Discretize the governing equation
+    A = mu * mesh.dyy + (mu_t / mesh.dy)
+    b = np.zeros(n)
+
+    # Solve the linear system
+    u = solve_linear_system(A, b)
+
+    # Plot the velocity profile
+    plt.figure()
+    plt.plot(u, mesh.y)
+    plt.xlabel('u')
+    plt.ylabel('y')
+    plt.title('Velocity Profile')
+    plt.grid(True)
+    plt.show()
+
+    # Save the velocity profile
+    np.save('velocity_profile.npy', u)
+
+if __name__ == "__main__":
+    main()

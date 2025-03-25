@@ -1,0 +1,36 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def initial_condition(x):
+    return np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+def lax_method(u, nu, dt, dx):
+    F = 0.5 * u**2
+    u_new = np.empty_like(u)
+    u_new[1:-1] = 0.5 * (u[:-2] + u[2:]) - dt / (2*dx) * (F[2:] - F[:-2])
+    return u_new
+
+def apply_periodic_boundary(u):
+    u[0] = u[-2]
+    u[-1] = u[1]
+    return u
+
+def solve_nonlinear_convection(nu=0.5, dt=0.01, T=500):
+    dx = dt / nu
+    x = np.arange(0, 2*np.pi, dx)
+    u = initial_condition(x)
+    for _ in range(T):
+        u = lax_method(u, nu, dt, dx)
+        u = apply_periodic_boundary(u)
+
+    np.save('solution.npy', u)
+    return x, u
+
+x, u = solve_nonlinear_convection()
+plt.figure(figsize=(12, 6))
+plt.plot(x, u, label='Numerical Solution')
+plt.title('Solution to the 1D Nonlinear Convection Equation')
+plt.xlabel('x')
+plt.ylabel('u')
+plt.legend()
+plt.show()

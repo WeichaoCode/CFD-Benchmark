@@ -1,0 +1,36 @@
+Below is the complete and runnable Python code to solve the given PDE problem using the Lax method. The code computes the solution at the final time step and saves it as a `.npy` file.
+
+```python
+import numpy as np
+
+# Parameters
+L = 2 * np.pi
+nu = 0.5
+dt = 0.01
+dx = dt / nu
+T = 500  # number of time steps
+
+# Discretize the spatial domain
+x = np.linspace(0, L, int(np.ceil(L / dx)), endpoint=False)
+nx = len(x)
+
+# Initial condition
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# Lax method for time integration
+for n in range(T):
+    u_next = np.zeros_like(u)
+    for i in range(nx):
+        u_next[i] = 0.5 * (u[i-1] + u[(i+1) % nx]) - (dt / (2 * dx)) * (u[(i+1) % nx]**2 / 2 - u[i-1]**2 / 2)
+    u = u_next
+
+# Save the final solution
+np.save('final_solution.npy', u)
+```
+
+### Explanation:
+- **Parameters**: The spatial domain is discretized using `np.linspace` with the calculated number of points based on `dx`.
+- **Initial Condition**: The initial condition is set as given.
+- **Lax Method**: The Lax method is used for time integration, iterating over the number of time steps `T`.
+- **Periodic Boundary Conditions**: The periodic boundary condition is handled using modulo indexing.
+- **Saving the Solution**: The final solution is saved as a `.npy` file using `np.save`.

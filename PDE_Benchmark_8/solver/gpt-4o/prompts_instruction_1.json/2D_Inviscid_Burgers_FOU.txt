@@ -1,0 +1,53 @@
+Below is the complete Python code to solve the given 2D unsteady PDE problem using the specified numerical method. The code uses the finite difference method with a first-order upwind scheme to update the velocity fields \( u \) and \( v \). The final solution is saved as a `.npy` file.
+
+```python
+import numpy as np
+
+# Parameters
+nx, ny = 151, 151
+nt = 300
+Lx, Ly = 2.0, 2.0
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+sigma = 0.2
+dt = sigma * min(dx, dy) / 2
+
+# Initialize the velocity fields
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+
+# Initial conditions
+u[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
+v[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
+
+# Time-stepping loop
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    
+    # Update u and v using the first-order upwind scheme
+    u[1:, 1:] = (un[1:, 1:] - dt * (un[1:, 1:] * (un[1:, 1:] - un[1:, :-1]) / dx +
+                                    vn[1:, 1:] * (un[1:, 1:] - un[:-1, 1:]) / dy))
+    v[1:, 1:] = (vn[1:, 1:] - dt * (un[1:, 1:] * (vn[1:, 1:] - vn[1:, :-1]) / dx +
+                                    vn[1:, 1:] * (vn[1:, 1:] - vn[:-1, 1:]) / dy))
+    
+    # Apply Dirichlet boundary conditions
+    u[0, :] = 1
+    u[-1, :] = 1
+    u[:, 0] = 1
+    u[:, -1] = 1
+    v[0, :] = 1
+    v[-1, :] = 1
+    v[:, 0] = 1
+    v[:, -1] = 1
+
+# Save the final solution
+np.save('final_solution_u.npy', u)
+np.save('final_solution_v.npy', v)
+```
+
+### Explanation:
+- **Initialization**: The velocity fields \( u \) and \( v \) are initialized to 1 everywhere, with a region set to 2 as per the initial conditions.
+- **Time-stepping**: The loop iterates over the number of time steps, updating the velocity fields using the first-order upwind scheme.
+- **Boundary Conditions**: Dirichlet boundary conditions are applied at each time step to ensure \( u = v = 1 \) on all boundaries.
+- **Saving the Solution**: The final velocity fields \( u \) and \( v \) are saved as `.npy` files using NumPy's `save` function.

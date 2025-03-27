@@ -1,0 +1,52 @@
+Below is the Python code to solve the given steady-state heat equation using the Successive Over-Relaxation (SOR) method. The code will compute the temperature distribution over the specified domain and save the final solution as a `.npy` file.
+
+```python
+import numpy as np
+
+# Parameters
+Lx, Ly = 5.0, 4.0  # Domain size
+dx, dy = 0.05, 0.05  # Grid spacing
+nx, ny = int(Lx/dx) + 1, int(Ly/dy) + 1  # Number of grid points
+omega = 1.5  # Relaxation factor
+tolerance = 1e-4  # Convergence criterion
+
+# Initialize temperature field
+T = np.zeros((ny, nx))
+
+# Apply boundary conditions
+T[:, 0] = 10.0  # Left boundary
+T[:, -1] = 40.0  # Right boundary
+T[0, :] = 0.0  # Top boundary
+T[-1, :] = 20.0  # Bottom boundary
+
+# SOR method
+beta = dx / dy
+converged = False
+
+while not converged:
+    T_old = T.copy()
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            T[j, i] = omega * (T_old[j, i+1] + T[j, i-1] + beta**2 * (T_old[j+1, i] + T[j-1, i])) / (2 * (1 + beta**2)) + (1 - omega) * T_old[j, i]
+    
+    # Enforce boundary conditions
+    T[:, 0] = 10.0
+    T[:, -1] = 40.0
+    T[0, :] = 0.0
+    T[-1, :] = 20.0
+    
+    # Check for convergence
+    max_diff = np.max(np.abs(T - T_old))
+    if max_diff < tolerance:
+        converged = True
+
+# Save the final solution
+np.save('temperature_distribution.npy', T)
+```
+
+### Explanation:
+- **Domain and Grid**: The domain is discretized into a grid with spacing `dx` and `dy`. The number of grid points `nx` and `ny` are calculated based on the domain size and grid spacing.
+- **Boundary Conditions**: The temperature values are set according to the given Dirichlet boundary conditions.
+- **SOR Method**: The temperature field is updated iteratively using the SOR method until the maximum change in temperature between iterations is below the specified tolerance.
+- **Convergence Check**: The loop continues until the solution converges, i.e., the maximum difference between successive iterations is less than the tolerance.
+- **Output**: The final temperature distribution is saved as a `.npy` file using NumPy's `save` function.

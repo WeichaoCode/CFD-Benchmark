@@ -1,0 +1,57 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+Lx, Ly = 5.0, 4.0  # Domain size
+dx, dy = 0.05, 0.05  # Grid spacing
+nx, ny = int(Lx/dx) + 1, int(Ly/dy) + 1  # Number of grid points
+beta = dx / dy  # Ratio of grid spacings
+
+# Initialize temperature field
+T = np.zeros((ny, nx))
+
+# Apply Dirichlet boundary conditions
+T[:, 0] = 10.0  # Left boundary
+T[:, -1] = 40.0  # Right boundary
+T[0, :] = 0.0  # Top boundary
+T[-1, :] = 20.0  # Bottom boundary
+
+# Jacobi iteration
+T_new = np.copy(T)
+tolerance = 1e-4
+max_iterations = 10000
+iteration = 0
+converged = False
+
+while not converged and iteration < max_iterations:
+    # Update temperature field using Jacobi method
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            T_new[j, i] = (T[j, i+1] + T[j, i-1] + beta**2 * (T[j+1, i] + T[j-1, i])) / (2 * (1 + beta**2))
+    
+    # Enforce Dirichlet boundary conditions
+    T_new[:, 0] = 10.0
+    T_new[:, -1] = 40.0
+    T_new[0, :] = 0.0
+    T_new[-1, :] = 20.0
+    
+    # Check for convergence
+    residual = np.max(np.abs(T_new - T))
+    if residual < tolerance:
+        converged = True
+    
+    # Update temperature field
+    T[:, :] = T_new[:, :]
+    iteration += 1
+
+# Save the final temperature field to a .npy file
+np.save('temperature_distribution.npy', T)
+
+# Plot the temperature distribution
+plt.figure(figsize=(8, 6))
+plt.contourf(np.linspace(0, Lx, nx), np.linspace(0, Ly, ny), T, 20, cmap='hot')
+plt.colorbar(label='Temperature (°C)')
+plt.title('Steady-State Temperature Distribution')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()

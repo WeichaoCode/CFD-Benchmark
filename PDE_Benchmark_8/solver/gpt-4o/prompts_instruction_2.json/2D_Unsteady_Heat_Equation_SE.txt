@@ -1,0 +1,70 @@
+Below is the Python code to solve the given 2D heat equation problem using the explicit method. The code initializes the temperature field, applies the source term, updates the temperature using the explicit scheme, applies the boundary conditions, and finally saves the temperature field at the final time step to a `.npy` file.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+alpha = 0.01  # thermal diffusivity
+Q0 = 200.0  # source term strength
+sigma = 0.1  # source term spread
+nx, ny = 41, 41  # grid resolution
+x_min, x_max = -1.0, 1.0
+y_min, y_max = -1.0, 1.0
+t_max = 3.0  # maximum time
+r = 0.25  # stability factor
+
+# Grid setup
+dx = (x_max - x_min) / (nx - 1)
+dy = (y_max - y_min) / (ny - 1)
+x = np.linspace(x_min, x_max, nx)
+y = np.linspace(y_min, y_max, ny)
+X, Y = np.meshgrid(x, y)
+
+# Time step
+dt = r * dx**2 / alpha
+nt = int(t_max / dt)  # number of time steps
+
+# Initialize temperature field
+T = np.zeros((ny, nx))
+
+# Source term
+q = Q0 * np.exp(-(X**2 + Y**2) / (2 * sigma**2))
+
+# Time-stepping loop
+for n in range(nt):
+    Tn = T.copy()
+    T[1:-1, 1:-1] = (Tn[1:-1, 1:-1] +
+                     alpha * dt / dx**2 * (Tn[1:-1, 2:] - 2 * Tn[1:-1, 1:-1] + Tn[1:-1, :-2]) +
+                     alpha * dt / dy**2 * (Tn[2:, 1:-1] - 2 * Tn[1:-1, 1:-1] + Tn[:-2, 1:-1]) +
+                     dt * q[1:-1, 1:-1])
+
+    # Apply Dirichlet boundary conditions
+    T[:, 0] = 0
+    T[:, -1] = 0
+    T[0, :] = 0
+    T[-1, :] = 0
+
+# Save the final temperature field
+np.save('temperature_field.npy', T)
+
+# Visualization
+plt.figure(figsize=(8, 6))
+plt.contourf(X, Y, T, 20, cmap='hot')
+plt.colorbar(label='Temperature (°C)')
+plt.title('Temperature Field at t = {:.2f} s'.format(t_max))
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
+```
+
+### Explanation:
+1. **Parameters and Grid Setup**: The code sets up the parameters, grid, and initial conditions. The grid is defined over the domain \([-1, 1]\) for both \(x\) and \(y\) with 41 points in each direction.
+
+2. **Source Term**: The source term \(q(x, y, t)\) is defined as a Gaussian function centered at the origin.
+
+3. **Time-stepping Loop**: The explicit method is used to update the temperature field over time. The loop iterates over the number of time steps calculated from the maximum time and time step size.
+
+4. **Boundary Conditions**: Dirichlet boundary conditions are applied at each time step to ensure the temperature at the boundaries remains zero.
+
+5. **Saving and Visualization**: The final temperature field is saved to a `.npy` file, and a contour plot is generated to visualize the temperature distribution at the final time step.

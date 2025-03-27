@@ -23,9 +23,9 @@ timestamp = datetime.now().strftime("%H-%M-%S-%f")  # %f gives microseconds
 
 # === Paths ===
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
-PROMPTS_FILE = os.path.join(ROOT_DIR, "prompt", "PDE_TASK_PROMPT.json")
-OUTPUT_FOLDER = os.path.join(ROOT_DIR, "solver/o1-mini")
-LOG_FILE = os.path.join(ROOT_DIR, f"report/execution_o1-mini_results_{timestamp}.log")
+PROMPTS_FILE = os.path.join(ROOT_DIR, "prompt", "prompts_both_instructions.json")
+OUTPUT_FOLDER = os.path.join(ROOT_DIR, "solver/gpt-4o")
+LOG_FILE = os.path.join(ROOT_DIR, f"report/execution_gpt-4o_results_{timestamp}.log")
 # LOG_FILE = os.path.join(ROOT_DIR, f"report/execution_gpt-4o_results_{timestamp}.log")
 # USAGE_FILE = os.path.join(ROOT_DIR, f"report/token_usage_summary_gpt-4o_{timestamp}.log")
 
@@ -85,6 +85,10 @@ def generate_code(task_name, prompt, max_retries=5):
     #     return
     retries = 0
     original_prompt = prompt  # Keep the original prompt unchanged
+    # Initialize an empty list to store the conversation history
+    conversation_history = [
+        {"role": "user", "content": original_prompt},  # Add the initial user prompt
+    ]
     while retries < max_retries:
         print(f"🔹 Generating code for: {task_name} (Attempt {retries + 1}/{max_retries})")
         logging.info(f"🔹 Generating code for: {task_name} (Attempt {retries + 1}/{max_retries})")
@@ -92,19 +96,22 @@ def generate_code(task_name, prompt, max_retries=5):
         try:
             # Call OpenAI GPT-4o API
             response = client.chat.completions.create(
-                model="o1-mini",  # Specify the model
-                messages=[
+                model="gpt-4o",  # Specify the model
+                messages=conversation_history + [
                     {"role": "user", "content": updated_prompt +
                      "If it is an unsteady problem, only save the solution at the final time step "
                      "If the problem is 1D, the saved array should be 1D. "
                      "If the problem is 2D, the saved array should be 2D. "
                      }
                 ],
-                temperature=1.0
+                temperature=0.0
             )
 
             # Extract model response
             model_response = response.choices[0].message.content.strip()
+
+            # Add the assistant's response to the conversation history
+            conversation_history.append({"role": "assistant", "content": model_response})
 
             # Extract token usage from the response
             total_tokens = response.usage.total_tokens  # Get the total tokens used for this request

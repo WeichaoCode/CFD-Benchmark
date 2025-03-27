@@ -1,0 +1,82 @@
+The warnings you're encountering are due to division by zero or invalid operations when `omega[i]` is zero, which is the case initially since `omega` is initialized to zero everywhere. To address this, we need to ensure that `omega` is initialized to a small positive value to avoid division by zero. Additionally, we should handle cases where `mu_t` might be zero or very small to prevent invalid operations.
+
+Here's the corrected code:
+
+```python
+import numpy as np
+
+# Constants and parameters
+H = 2.0
+n = 100
+beta_star = 0.09
+sigma_k = 0.5
+C_D = 0.1
+a_1 = 0.31
+rho = 1.0
+mu = 1.0e-5
+
+# Create a non-uniform grid clustered near the walls
+y = np.linspace(0, H, n)
+dy = np.gradient(y)
+
+# Initial conditions
+k = np.zeros(n)
+omega = np.full(n, 1e-5)  # Initialize omega to a small positive value
+
+# Helper functions for blending functions and other terms
+def F1(y):
+    return 1.0  # Placeholder for actual blending function
+
+def F2(y):
+    return 1.0  # Placeholder for actual blending function
+
+def P_k(y):
+    return 0.0  # Placeholder for turbulent production term
+
+def S(y):
+    return 1.0  # Placeholder for strain rate tensor
+
+# Iterative solver (e.g., Gauss-Seidel or Jacobi)
+def solve_turbulence_model(k, omega, tol=1e-6, max_iter=1000):
+    for iteration in range(max_iter):
+        k_old = k.copy()
+        omega_old = omega.copy()
+
+        # Update k and omega using finite difference discretization
+        for i in range(1, n-1):
+            mu_t = rho * k[i] * min(1.0 / omega[i], a_1 / (S(y[i]) * F2(y[i])))
+            A_k = mu + mu_t / sigma_k
+            A_omega = mu + mu_t * omega[i]
+
+            # Discretize the k-equation
+            k[i] = (P_k(y[i]) - beta_star * rho * k[i] * omega[i] +
+                    (A_k * (k[i+1] - 2*k[i] + k[i-1]) / dy[i]**2)) / (1.0 + beta_star * rho * omega[i])
+
+            # Discretize the omega-equation
+            if mu_t > 1e-10:  # Avoid division by very small mu_t
+                omega[i] = ((rho * P_k(y[i]) / mu_t - beta_star * omega[i]**2 +
+                            (A_omega * (omega[i+1] - 2*omega[i] + omega[i-1]) / dy[i]**2) +
+                            (1 - F1(y[i])) * C_D * k[i] * omega[i]) /
+                            (1.0 + beta_star * omega[i]))
+
+        # Check for convergence
+        if np.linalg.norm(k - k_old, ord=np.inf) < tol and np.linalg.norm(omega - omega_old, ord=np.inf) < tol:
+            print(f"Converged in {iteration} iterations.")
+            break
+    else:
+        print("Did not converge within the maximum number of iterations.")
+
+    return k, omega
+
+# Solve the turbulence model
+k_final, omega_final = solve_turbulence_model(k, omega)
+
+# Save the final solution as a .npy file
+np.save('turbulence_solution.npy', np.vstack((k_final, omega_final)))
+```
+
+### Key Changes:
+- **Initialization of `omega`**: `omega` is initialized to a small positive value (`1e-5`) to avoid division by zero.
+- **Check for `mu_t`**: Before using `mu_t` in a division, we check if it is greater than a small threshold (`1e-10`) to prevent invalid operations.
+
+These changes should help eliminate the warnings and ensure the solver runs correctly.

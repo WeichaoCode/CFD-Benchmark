@@ -1,0 +1,70 @@
+Below is the Python code to numerically solve the given 1D diffusion equation using a finite difference scheme. The code applies the specified initial and boundary conditions, computes the solution over the defined spatial and temporal domain, and saves the final solution at the last time step as a `.npy` file.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+nx = 41
+nt = 20
+nu = 0.3
+sigma = 0.2
+
+# Spatial and temporal discretization
+dx = 2 / (nx - 1)
+dt = sigma * dx**2 / nu
+
+# Initialize the solution array
+u = np.ones(nx)
+x = np.linspace(0, 1, nx)
+
+# Apply initial conditions
+u[int(0.5 / dx):] = 2
+
+# Time-stepping loop
+for n in range(nt):
+    un = u.copy()
+    for i in range(1, nx - 1):
+        u[i] = un[i] + nu * dt / dx**2 * (un[i+1] - 2*un[i] + un[i-1])
+    
+    # Apply Dirichlet boundary conditions
+    u[0] = 1
+    u[-1] = 0
+
+# Save the final solution
+np.save('final_solution.npy', u)
+
+# Plot the final solution
+plt.plot(x, u, label='Final Solution')
+plt.xlabel('Spatial coordinate x')
+plt.ylabel('u(x, t)')
+plt.title('1D Diffusion Equation Solution at Final Time Step')
+plt.legend()
+plt.show()
+```
+
+### Explanation:
+1. **Parameters and Discretization:**
+   - `nx` is the number of spatial grid points.
+   - `nt` is the number of time steps.
+   - `nu` is the diffusion coefficient.
+   - `sigma` is a stability parameter for the time step calculation.
+   - `dx` is the spatial resolution.
+   - `dt` is the time step size, calculated using the stability condition.
+
+2. **Initialization:**
+   - The solution array `u` is initialized to 1 everywhere.
+   - The spatial grid `x` is created using `np.linspace`.
+   - The initial condition is applied such that `u` is set to 2 for `x >= 0.5`.
+
+3. **Time-stepping Loop:**
+   - The loop iterates over each time step.
+   - A copy of the current solution `un` is made to update `u` using the finite difference scheme.
+   - The finite difference scheme updates the interior points of `u`.
+   - Dirichlet boundary conditions are applied at each time step.
+
+4. **Saving and Plotting:**
+   - The final solution is saved as a `.npy` file using `np.save`.
+   - The final solution is plotted for visualization.
+
+This code will compute the solution to the diffusion equation and save the final state after all time steps have been completed.

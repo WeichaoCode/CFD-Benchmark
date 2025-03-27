@@ -1,0 +1,42 @@
+Below is the complete and runnable Python code to solve the given PDE problem using the Lax-Wendroff method. The code computes the solution at the final time step and saves it as a `.npy` file.
+
+```python
+import numpy as np
+
+# Parameters
+L = 2 * np.pi
+nu = 0.5
+dt = 0.01
+dx = dt / nu
+T = 500  # number of time steps
+
+# Discretize the spatial domain
+x = np.linspace(0, L, int(np.ceil(L / dx)), endpoint=False)
+nx = len(x)
+
+# Initial condition
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# Lax-Wendroff method
+for n in range(T):
+    u_next = np.zeros_like(u)
+    for i in range(nx):
+        # Periodic boundary conditions
+        ip1 = (i + 1) % nx
+        im1 = (i - 1) % nx
+        
+        # Lax-Wendroff scheme
+        u_next[i] = (u[i] - 0.5 * dt / dx * u[i] * (u[ip1] - u[im1]) +
+                     0.5 * (dt / dx)**2 * u[i]**2 * (u[ip1] - 2 * u[i] + u[im1]))
+    
+    u = u_next
+
+# Save the final solution
+np.save('final_solution.npy', u)
+```
+
+### Explanation:
+- **Parameters**: The spatial domain is discretized using `np.linspace` with periodic boundary conditions. The time step `dt` and spatial step `dx` are defined based on the given parameters.
+- **Initial Condition**: The initial condition is set as a combination of sine functions.
+- **Lax-Wendroff Method**: The method is implemented in a loop over time steps. For each spatial point, the next time step value is computed using the Lax-Wendroff scheme, considering periodic boundary conditions.
+- **Saving the Solution**: After completing the time integration, the final solution is saved as a `.npy` file using `np.save`.

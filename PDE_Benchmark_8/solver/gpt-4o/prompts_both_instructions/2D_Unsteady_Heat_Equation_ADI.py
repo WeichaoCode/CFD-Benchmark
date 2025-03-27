@@ -1,0 +1,68 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+alpha = 0.01  # Thermal diffusivity
+Q0 = 200.0  # Source term strength
+sigma = 0.1  # Source term spread
+nx, ny = 41, 41  # Grid resolution
+x = np.linspace(-1, 1, nx)
+y = np.linspace(-1, 1, ny)
+dx = x[1] - x[0]
+dy = y[1] - y[0]
+r = 0.25  # Stability parameter
+dt = r * dx**2 / alpha
+t_max = 3.0
+nt = int(t_max / dt)
+
+# Initialize temperature field
+T = np.zeros((nx, ny))
+
+# Source term
+X, Y = np.meshgrid(x, y, indexing='ij')
+q = Q0 * np.exp(-(X**2 + Y**2) / (2 * sigma**2))
+
+# ADI method
+for n in range(nt):
+    # Intermediate step: Implicit in x, explicit in y
+    T_half = np.copy(T)
+    for j in range(1, ny-1):
+        A = np.zeros((nx, nx))
+        B = np.zeros(nx)
+        for i in range(1, nx-1):
+            A[i, i-1] = -0.5 * r
+            A[i, i] = 1 + r
+            A[i, i+1] = -0.5 * r
+            B[i] = 0.5 * r * (T[i+1, j] - 2*T[i, j] + T[i-1, j]) + \
+                   0.5 * r * (T[i, j+1] - 2*T[i, j] + T[i, j-1]) + \
+                   T[i, j] + 0.5 * dt * q[i, j]
+        A[0, 0] = A[-1, -1] = 1  # Dirichlet boundary conditions
+        T_half[:, j] = np.linalg.solve(A, B)
+
+    # Final step: Implicit in y, explicit in x
+    for i in range(1, nx-1):
+        A = np.zeros((ny, ny))
+        B = np.zeros(ny)
+        for j in range(1, ny-1):
+            A[j, j-1] = -0.5 * r
+            A[j, j] = 1 + r
+            A[j, j+1] = -0.5 * r
+            B[j] = 0.5 * r * (T_half[i, j+1] - 2*T_half[i, j] + T_half[i, j-1]) + \
+                   0.5 * r * (T_half[i+1, j] - 2*T_half[i, j] + T_half[i-1, j]) + \
+                   T_half[i, j] + 0.5 * dt * q[i, j]
+        A[0, 0] = A[-1, -1] = 1  # Dirichlet boundary conditions
+        T[i, :] = np.linalg.solve(A, B)
+
+    # Apply Dirichlet boundary conditions
+    T[0, :] = T[-1, :] = T[:, 0] = T[:, -1] = 0
+
+# Save the final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_both_instructions/T_2D_Unsteady_Heat_Equation_ADI.npy', T)
+
+# Visualization
+plt.contourf(X, Y, T, 20, cmap='hot')
+plt.colorbar(label='Temperature (°C)')
+plt.title('Temperature Distribution at t = {:.2f} s'.format(t_max))
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()

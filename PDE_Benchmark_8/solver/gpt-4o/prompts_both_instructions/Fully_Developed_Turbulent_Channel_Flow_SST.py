@@ -1,0 +1,97 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.sparse import diags, csr_matrix
+from scipy.sparse.linalg import spsolve
+
+# Constants and parameters
+H = 2.0
+n = 100
+rho = 1.0  # Density
+mu = 1.0e-3  # Dynamic viscosity
+beta_star = 0.09
+beta = 0.075
+a1 = 0.31
+C_D = 0.0  # Assuming a constant for simplicity
+F1 = 1.0  # Assuming a constant for simplicity
+F2 = 1.0  # Assuming a constant for simplicity
+
+# Create a non-uniform mesh clustered near the walls
+y = np.linspace(0, H, n)
+dy = np.gradient(y)
+
+# Initial conditions
+k = np.zeros(n)
+omega = np.full(n, 1e-5)  # Initialize omega to a small non-zero value
+
+# Helper function to compute turbulent viscosity
+def compute_mu_t(k, omega, S):
+    with np.errstate(divide='ignore', invalid='ignore'):
+        mu_t = rho * k * np.minimum(1.0 / omega, a1 / (np.abs(S) * F2))
+        mu_t[np.isnan(mu_t)] = 0  # Handle NaNs resulting from division by zero
+    return mu_t
+
+# Discretize the equations using finite differences
+def discretize_and_solve(k, omega):
+    # Compute strain rate S (assuming a simple shear flow for demonstration)
+    S = np.gradient(k) / dy
+
+    # Compute turbulent viscosity
+    mu_t = compute_mu_t(k, omega, S)
+
+    # Discretize the equations
+    A_k = diags([-1, 2, -1], [-1, 0, 1], shape=(n, n))
+    A_k = csr_matrix(A_k)  # Convert to CSR format
+    b_k = np.zeros(n)
+
+    A_omega = diags([-1, 2, -1], [-1, 0, 1], shape=(n, n))
+    A_omega = csr_matrix(A_omega)  # Convert to CSR format
+    b_omega = np.zeros(n)
+
+    # Apply Dirichlet boundary conditions
+    A_k[0, 0] = A_k[-1, -1] = 1
+    b_k[0] = b_k[-1] = 0  # Assuming zero boundary conditions for k
+
+    A_omega[0, 0] = A_omega[-1, -1] = 1
+    b_omega[0] = b_omega[-1] = 1e-5  # Small non-zero boundary condition for omega
+
+    # Solve the linear systems
+    try:
+        k_new = spsolve(A_k, b_k)
+        omega_new = spsolve(A_omega, b_omega)
+    except np.linalg.LinAlgError:
+        print("Matrix is singular, check boundary conditions and setup.")
+        return k, omega
+
+    return k_new, omega_new
+
+# Iteratively solve for k and omega
+tolerance = 1e-6
+max_iterations = 1000
+for iteration in range(max_iterations):
+    k_new, omega_new = discretize_and_solve(k, omega)
+    if np.linalg.norm(k_new - k) < tolerance and np.linalg.norm(omega_new - omega) < tolerance:
+        break
+    k, omega = k_new, omega_new
+
+# Save the final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_both_instructions/k_Fully_Developed_Turbulent_Channel_Flow_SST.npy', k)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_both_instructions/omega_Fully_Developed_Turbulent_Channel_Flow_SST.npy', omega)
+
+# Plot the results
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.plot(k, y, label='Turbulent Kinetic Energy k')
+plt.xlabel('k')
+plt.ylabel('y')
+plt.title('Turbulent Kinetic Energy Profile')
+plt.grid(True)
+
+plt.subplot(1, 2, 2)
+plt.plot(omega, y, label='Specific Dissipation Rate ω')
+plt.xlabel('ω')
+plt.ylabel('y')
+plt.title('Specific Dissipation Rate Profile')
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()

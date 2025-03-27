@@ -1,0 +1,58 @@
+import numpy as np
+
+# Parameters
+c = 1.0
+epsilon = 5e-4  # Change to 0 for the undamped case
+x_start, x_end = -5, 5
+N_x = 101
+dx = (x_end - x_start) / (N_x - 1)
+x = np.linspace(x_start, x_end, N_x)
+
+# Initial condition
+u_initial = np.exp(-x**2)
+
+# CFL condition for stability
+CFL = 0.5
+dt = CFL * dx / c
+
+# Time integration parameters
+t_final = 2.0  # Final time
+n_steps = int(t_final / dt)
+
+# Initialize solution
+u = u_initial.copy()
+
+# Function to apply periodic boundary conditions
+def apply_periodic_boundary(u):
+    u[0] = u[-2]
+    u[-1] = u[1]
+
+# Time-stepping loop
+for n in range(n_steps):
+    # Compute spatial derivatives
+    u_x = (np.roll(u, -1) - np.roll(u, 1)) / (2 * dx)
+    u_xx = (np.roll(u, -1) - 2 * u + np.roll(u, 1)) / (dx**2)
+    
+    # First step using Explicit Euler
+    if n == 0:
+        u_new = u - dt * (c * u_x - epsilon * u_xx)
+    else:
+        # Adams-Bashforth method
+        u_new = u + dt * (-1.5 * c * u_x + 0.5 * c * u_x_prev - 1.5 * epsilon * u_xx + 0.5 * epsilon * u_xx_prev)
+    
+    # Apply periodic boundary conditions
+    apply_periodic_boundary(u_new)
+    
+    # Update previous derivatives
+    if n > 0:
+        u_x_prev = u_x.copy()
+        u_xx_prev = u_xx.copy()
+    else:
+        u_x_prev = u_x.copy()
+        u_xx_prev = u_xx.copy()
+    
+    # Update solution
+    u = u_new.copy()
+
+# Save the final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/u_1D_Linear_Convection_adams.npy', u)

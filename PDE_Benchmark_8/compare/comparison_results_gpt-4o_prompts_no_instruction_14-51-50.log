@@ -1,0 +1,63 @@
+2025-03-28 14:51:50,623 - INFO - ====== Starting Comparison of Common Files ======
+2025-03-28 14:51:50,623 - INFO - Found 29 common files to compare.
+2025-03-28 14:51:50,626 - WARNING - Shape mismatch in T_2D_Steady_Heat_Equation_Gauss.npy — tried transpose. New shape: (101, 81)
+2025-03-28 14:51:50,627 - INFO - ✅ T_2D_Steady_Heat_Equation_Gauss.npy comparison completed.
+2025-03-28 14:51:50,627 - INFO - Results for T_2D_Steady_Heat_Equation_Gauss.npy: MSE=111.50177998318505, MAE=8.62248198859705, RMSE=10.559440325281688, Cosine Similarity=0.8265755539125268, R-squared=-3.0586920903192096
+2025-03-28 14:51:50,627 - WARNING - Shape mismatch in T_2D_Steady_Heat_Equation_Jac.npy — tried transpose. New shape: (101, 81)
+2025-03-28 14:51:50,628 - INFO - ✅ T_2D_Steady_Heat_Equation_Jac.npy comparison completed.
+2025-03-28 14:51:50,628 - INFO - Results for T_2D_Steady_Heat_Equation_Jac.npy: MSE=98.9822455779836, MAE=7.893695560229291, RMSE=9.948982137785936, Cosine Similarity=0.8561788895413786, R-squared=-3.182562292059412
+2025-03-28 14:51:50,630 - INFO - ✅ T_2D_Unsteady_Heat_Equation_ADI.npy comparison completed.
+2025-03-28 14:51:50,630 - INFO - Results for T_2D_Unsteady_Heat_Equation_ADI.npy: MSE=2908.535605271359, MAE=17.518386063031013, RMSE=53.93084094719235, Cosine Similarity=0.6358841023173822, R-squared=-2161.467902400101
+2025-03-28 14:51:50,631 - INFO - ✅ T_2D_Unsteady_Heat_Equation_DF.npy comparison completed.
+2025-03-28 14:51:50,631 - INFO - Results for T_2D_Unsteady_Heat_Equation_DF.npy: MSE=1.4116156367645424e+21, MAE=15314451842.122612, RMSE=37571473710.310356, Cosine Similarity=0.7313941032581778, R-squared=-1.2581067111650018e+21
+2025-03-28 14:51:50,632 - INFO - ✅ T_2D_Unsteady_Heat_Equation_SE.npy comparison completed.
+2025-03-28 14:51:50,632 - INFO - Results for T_2D_Unsteady_Heat_Equation_SE.npy: MSE=700.6436614269983, MAE=8.814468470613345, RMSE=26.469674373270976, Cosine Similarity=0.6345636035243959, R-squared=-557.5551723027761
+2025-03-28 14:51:50,634 - INFO - ✅ p_2D_Laplace_Equation.npy comparison completed.
+2025-03-28 14:51:50,634 - INFO - Results for p_2D_Laplace_Equation.npy: MSE=9.574931600682938e-05, MAE=0.008658126601456212, RMSE=0.009785157944909698, Cosine Similarity=0.9997454589662057, R-squared=0.8827482579750746
+2025-03-28 14:51:50,635 - INFO - ✅ p_2D_Navier_Stokes_Cavity.npy comparison completed.
+2025-03-28 14:51:50,635 - INFO - Results for p_2D_Navier_Stokes_Cavity.npy: MSE=0.04425833068098105, MAE=0.10232559379613229, RMSE=0.21037664005535656, Cosine Similarity=0.8401495011846697, R-squared=-36.66857377223798
+2025-03-28 14:51:50,636 - INFO - ✅ p_2D_Navier_Stokes_Channel.npy comparison completed.
+2025-03-28 14:51:50,636 - INFO - Results for p_2D_Navier_Stokes_Channel.npy: MSE=1.0176521245960704, MAE=1.0005469766307111, RMSE=1.0087874526361191, Cosine Similarity=-0.004250720854024522, R-squared=0.0
+2025-03-28 14:51:50,638 - INFO - ✅ p_2D_Poisson_Equation.npy comparison completed.
+2025-03-28 14:51:50,638 - INFO - Results for p_2D_Poisson_Equation.npy: MSE=1.9416356787209154e-05, MAE=0.0032892945409473445, RMSE=0.004406399526507912, Cosine Similarity=0.8852151721815726, R-squared=-259.0132946578893
+2025-03-28 14:51:50,639 - INFO - ✅ u_1D_Burgers_Equation.npy comparison completed.
+2025-03-28 14:51:50,639 - INFO - Results for u_1D_Burgers_Equation.npy: MSE=4.771883952006088, MAE=1.9284966295134496, RMSE=2.184464225389395, Cosine Similarity=0.8664600503776336, R-squared=-0.5310260313615487
+2025-03-28 14:51:50,640 - INFO - ✅ u_1D_Diffusion.npy comparison completed.
+2025-03-28 14:51:50,640 - INFO - Results for u_1D_Diffusion.npy: MSE=0.35925802188119416, MAE=0.4218812282398176, RMSE=0.599381365977617, Cosine Similarity=0.9514748470268335, R-squared=-2.018912876618197
+2025-03-28 14:51:50,641 - INFO - ✅ u_1D_Nonlinear_Convection_LW.npy comparison completed.
+2025-03-28 14:51:50,642 - INFO - Results for u_1D_Nonlinear_Convection_LW.npy: MSE=0.2340555839116847, MAE=0.2259513081829879, RMSE=0.4837929142842883, Cosine Similarity=0.22211528854995752, R-squared=-1.4768256285494306
+2025-03-28 14:51:50,643 - INFO - ✅ u_1D_Nonlinear_Convection_Lax.npy comparison completed.
+2025-03-28 14:51:50,643 - INFO - Results for u_1D_Nonlinear_Convection_Lax.npy: MSE=5.4015661932391444e-05, MAE=0.004050068993438146, RMSE=0.0073495348106115835, Cosine Similarity=0.9998560770657895, R-squared=0.9993588341123685
+2025-03-28 14:51:50,644 - INFO - ✅ u_1D_Nonlinear_Convection_MK.npy comparison completed.
+2025-03-28 14:51:50,644 - INFO - Results for u_1D_Nonlinear_Convection_MK.npy: MSE=0.23693895919213454, MAE=0.22420995684331066, RMSE=0.48676376117387227, Cosine Similarity=0.21628716442216592, R-squared=-1.5099472458543746
+2025-03-28 14:51:50,645 - INFO - ✅ u_2D_Burgers_Equation.npy comparison completed.
+2025-03-28 14:51:50,645 - INFO - Results for u_2D_Burgers_Equation.npy: MSE=3.4587749700166823e-07, MAE=0.00015869899565395444, RMSE=0.0005881135069029347, Cosine Similarity=0.999999855979657, R-squared=0.996254822357978
+2025-03-28 14:51:50,647 - INFO - ✅ u_2D_Convection.npy comparison completed.
+2025-03-28 14:51:50,647 - INFO - Results for u_2D_Convection.npy: MSE=6.918205909184602e-05, MAE=0.002086818432768849, RMSE=0.00831757531326564, Cosine Similarity=0.9999697431375509, R-squared=0.9480148262560444
+2025-03-28 14:51:50,649 - INFO - ✅ u_2D_Diffusion.npy comparison completed.
+2025-03-28 14:51:50,649 - INFO - Results for u_2D_Diffusion.npy: MSE=0.0005784435516174148, MAE=0.01382486099376838, RMSE=0.02405085344883659, Cosine Similarity=0.9998499673154867, R-squared=0.9113906115733021
+2025-03-28 14:51:50,651 - INFO - ✅ u_2D_Inviscid_Burgers_FOU.npy comparison completed.
+2025-03-28 14:51:50,651 - INFO - Results for u_2D_Inviscid_Burgers_FOU.npy: MSE=7.823941663491447e-06, MAE=0.0006700967887997238, RMSE=0.002797130970028298, Cosine Similarity=0.9999965890363427, R-squared=0.9938851001392355
+2025-03-28 14:51:50,653 - INFO - ✅ u_2D_Inviscid_Burgers_MK.npy comparison completed.
+2025-03-28 14:51:50,653 - INFO - Results for u_2D_Inviscid_Burgers_MK.npy: MSE=0.011067536287152248, MAE=0.019329222111255047, RMSE=0.10520235875279721, Cosine Similarity=0.9953307307918244, R-squared=0.6894200153463202
+2025-03-28 14:51:50,655 - INFO - ✅ u_2D_Linear_Convection.npy comparison completed.
+2025-03-28 14:51:50,655 - INFO - Results for u_2D_Linear_Convection.npy: MSE=0.04147172820228667, MAE=0.0672153155242158, RMSE=0.20364608565422188, Cosine Similarity=0.98416160579221, R-squared=-0.10335942099697432
+2025-03-28 14:51:50,657 - INFO - ✅ u_2D_Navier_Stokes_Cavity.npy comparison completed.
+2025-03-28 14:51:50,657 - INFO - Results for u_2D_Navier_Stokes_Cavity.npy: MSE=0.0035610086841809958, MAE=0.04140297322643294, RMSE=0.05967418775468163, Cosine Similarity=0.9688538039788298, R-squared=0.9473067453528807
+2025-03-28 14:51:50,659 - INFO - ✅ u_2D_Navier_Stokes_Channel.npy comparison completed.
+2025-03-28 14:51:50,659 - INFO - Results for u_2D_Navier_Stokes_Channel.npy: MSE=6.16294447775513, MAE=2.240785725703023, RMSE=2.4825278402779554, Cosine Similarity=0.9328608254380901, R-squared=-4.251498880287947
+2025-03-28 14:51:50,661 - INFO - ✅ v_2D_Burgers_Equation.npy comparison completed.
+2025-03-28 14:51:50,661 - INFO - Results for v_2D_Burgers_Equation.npy: MSE=3.4587749700166823e-07, MAE=0.00015869899565395444, RMSE=0.0005881135069029347, Cosine Similarity=0.999999855979657, R-squared=0.996254822357978
+2025-03-28 14:51:50,663 - INFO - ✅ v_2D_Convection.npy comparison completed.
+2025-03-28 14:51:50,663 - INFO - Results for v_2D_Convection.npy: MSE=6.918205909184602e-05, MAE=0.002086818432768849, RMSE=0.00831757531326564, Cosine Similarity=0.9999697431375509, R-squared=0.9480148262560444
+2025-03-28 14:51:50,665 - INFO - ✅ v_2D_Inviscid_Burgers_FOU.npy comparison completed.
+2025-03-28 14:51:50,665 - INFO - Results for v_2D_Inviscid_Burgers_FOU.npy: MSE=7.823941663491447e-06, MAE=0.0006700967887997238, RMSE=0.002797130970028298, Cosine Similarity=0.9999965890363427, R-squared=0.9938851001392355
+2025-03-28 14:51:50,667 - INFO - ✅ v_2D_Inviscid_Burgers_MK.npy comparison completed.
+2025-03-28 14:51:50,667 - INFO - Results for v_2D_Inviscid_Burgers_MK.npy: MSE=0.011067536287152248, MAE=0.019329222111255047, RMSE=0.10520235875279721, Cosine Similarity=0.9953307307918244, R-squared=0.6894200153463202
+2025-03-28 14:51:50,669 - INFO - ✅ v_2D_Navier_Stokes_Cavity.npy comparison completed.
+2025-03-28 14:51:50,669 - INFO - Results for v_2D_Navier_Stokes_Cavity.npy: MSE=0.0023677766138034927, MAE=0.0337111158136471, RMSE=0.048659804909221456, Cosine Similarity=0.9219002606300285, R-squared=0.269920547627842
+2025-03-28 14:51:50,671 - INFO - ✅ v_2D_Navier_Stokes_Channel.npy comparison completed.
+2025-03-28 14:51:50,671 - INFO - Results for v_2D_Navier_Stokes_Channel.npy: MSE=8.700530561830322e-07, MAE=0.0004890219278105944, RMSE=0.0009327663459747206, Cosine Similarity=0.0, R-squared=0.04878048780487805
+2025-03-28 14:51:50,673 - INFO - ✅ w_2D_Diffusion_FVM.npy comparison completed.
+2025-03-28 14:51:50,673 - INFO - Results for w_2D_Diffusion_FVM.npy: MSE=0.0010991009982730792, MAE=0.02753573307831688, RMSE=0.03315269217232711, Cosine Similarity=0.9998249581147026, R-squared=0.42852093740925457
+2025-03-28 14:51:50,673 - INFO - ====== Comparison Completed ======

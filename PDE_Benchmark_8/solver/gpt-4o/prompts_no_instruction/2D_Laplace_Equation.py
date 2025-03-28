@@ -1,6 +1,6 @@
 import numpy as np
 
-# Define the grid
+# Domain parameters
 nx, ny = 31, 31
 dx = 2 / (nx - 1)
 dy = 1 / (ny - 1)
@@ -9,10 +9,16 @@ dy = 1 / (ny - 1)
 p = np.zeros((ny, nx))
 
 # Boundary conditions
-p[:, 0] = 0  # Left boundary
-p[:, -1] = np.linspace(0, 1, ny)  # Right boundary
+# Left boundary (x = 0): p = 0
+p[:, 0] = 0
 
-# Iterative solver parameters
+# Right boundary (x = 2): p = y
+p[:, -1] = np.linspace(0, 1, ny)
+
+# Neumann boundary conditions for top and bottom (y = 0, y = 1)
+# These will be handled in the iteration loop
+
+# Iteration parameters
 tolerance = 1e-5
 max_iterations = 10000
 
@@ -21,12 +27,13 @@ for iteration in range(max_iterations):
     p_old = p.copy()
     
     # Update the interior points
-    p[1:-1, 1:-1] = ((p_old[1:-1, 2:] + p_old[1:-1, :-2]) * dy**2 +
-                     (p_old[2:, 1:-1] + p_old[:-2, 1:-1]) * dx**2) / (2 * (dx**2 + dy**2))
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            p[j, i] = 0.25 * (p_old[j, i+1] + p_old[j, i-1] + p_old[j+1, i] + p_old[j-1, i])
     
-    # Neumann boundary conditions (top and bottom)
-    p[0, :] = p[1, :]  # Top boundary
-    p[-1, :] = p[-2, :]  # Bottom boundary
+    # Apply Neumann boundary conditions (zero gradient) for top and bottom
+    p[0, :] = p[1, :]  # Bottom boundary (y = 0)
+    p[-1, :] = p[-2, :]  # Top boundary (y = 1)
     
     # Check for convergence
     if np.linalg.norm(p - p_old, ord=np.inf) < tolerance:

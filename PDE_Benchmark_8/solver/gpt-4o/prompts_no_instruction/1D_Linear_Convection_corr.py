@@ -2,7 +2,7 @@ import numpy as np
 
 # Parameters
 c = 1.0  # Convection speed
-epsilon = 5e-4  # Damping factor
+epsilon_values = [0, 5e-4]  # Damping factors
 x_start, x_end = -5, 5  # Spatial domain
 N_x = 101  # Number of spatial grid points
 dx = (x_end - x_start) / (N_x - 1)  # Spatial step size
@@ -15,31 +15,38 @@ u_initial = np.exp(-x**2)
 CFL = 0.5  # CFL number
 dt = CFL * dx / c  # Time step size
 t_final = 2.0  # Final time
-N_t = int(t_final / dt)  # Number of time steps
+n_steps = int(t_final / dt)  # Number of time steps
 
-# Initialize solution
-u = u_initial.copy()
-
-# Predictor-Corrector method
-for n in range(N_t):
-    # Predictor step
-    u_pred = u.copy()
-    for i in range(1, N_x - 1):
-        u_pred[i] = u[i] - dt * c * (u[i+1] - u[i-1]) / (2 * dx) + \
-                    dt * epsilon * (u[i+1] - 2*u[i] + u[i-1]) / (dx**2)
-    
-    # Periodic boundary conditions
-    u_pred[0] = u_pred[-2]
-    u_pred[-1] = u_pred[1]
-    
-    # Corrector step
-    for i in range(1, N_x - 1):
-        u[i] = 0.5 * (u[i] + u_pred[i] - dt * c * (u_pred[i+1] - u_pred[i-1]) / (2 * dx) + \
-                      dt * epsilon * (u_pred[i+1] - 2*u_pred[i] + u_pred[i-1]) / (dx**2))
-    
-    # Periodic boundary conditions
+# Function to apply periodic boundary conditions
+def apply_periodic_bc(u):
     u[0] = u[-2]
     u[-1] = u[1]
 
-# Save the final solution
-np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/u_1D_Linear_Convection_corr.npy', u)
+# Predictor-Corrector method
+def predictor_corrector(u, epsilon):
+    u_new = np.copy(u)
+    for _ in range(n_steps):
+        # Predictor step
+        u_star = np.copy(u)
+        for i in range(1, N_x - 1):
+            u_star[i] = u[i] - 0.5 * dt * c * (u[i+1] - u[i-1]) / (2 * dx) + \
+                        0.5 * dt * epsilon * (u[i+1] - 2*u[i] + u[i-1]) / (dx**2)
+        apply_periodic_bc(u_star)
+
+        # Corrector step
+        for i in range(1, N_x - 1):
+            u_new[i] = u[i] - dt * c * (u_star[i+1] - u_star[i-1]) / (2 * dx) + \
+                       dt * epsilon * (u_star[i+1] - 2*u_star[i] + u_star[i-1]) / (dx**2)
+        apply_periodic_bc(u_new)
+
+        # Update solution
+        u[:] = u_new[:]
+
+    return u
+
+# Solve for each epsilon value and save the final solution
+for epsilon in epsilon_values:
+    u = np.copy(u_initial)
+    u_final = predictor_corrector(u, epsilon)
+    filename = f'u_final_epsilon_{epsilon}.npy'
+    np.save(filename, u_final)

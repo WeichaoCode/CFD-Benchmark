@@ -45,16 +45,24 @@ def generate_prompt(data, include_1=False, include_2=False):
                      "Follow this expert-provided step-by-step instruction to implement the solver in Python:\n" +
                      data.get("expert instruction group 2", "") + "\n")
 
+    # Check for 'save_values' and add to task description
+    save_values = data.get("save_values", [])
+    save_values_str = ", ".join(save_values) if save_values else "the relevant variables specified for the problem"
     # Always end with task specification for the code
     parts.append(
         "### Task:\n"
         "- Write Python code to numerically solve the above CFD problem using the specified numerical method.\n"
         "- If the problem is **unsteady**, only compute and save the **solution at the final time step**.\n"
-        "- Save the final solution as a `.npy` file using NumPy:\n"
-        "  - For **1D problems**, save a 1D NumPy array.\n"
-        "  - For **2D problems**, save a 2D NumPy array.\n"
-        "- The output `.npy` file should contain only the final solution field (not intermediate steps).\n"
-        "- Return only the complete and runnable Python code that performs this task."
+        "- Save the final solution for each specified variable as a separate `.npy` file using NumPy:\n"
+        "  - For **1D problems**, save a 1D NumPy array for each variable.\n"
+        "  - For **2D problems**, save a 2D NumPy array for each variable.\n"
+        "- The output `.npy` files should contain only the final solution field (not intermediate steps) for each of "
+        "the specified variables.\n"
+        "- **Save the following variables** at the final time step:\n"
+        + save_values_str + "\n"
+                            "(Each variable should be saved separately in its own `.npy` file, ensuring the saved "
+                            "variables use the same name as provided in `save_values`).\n"
+                            "- Return only the complete and runnable Python code that performs this task."
     )
 
     return "\n".join(parts)

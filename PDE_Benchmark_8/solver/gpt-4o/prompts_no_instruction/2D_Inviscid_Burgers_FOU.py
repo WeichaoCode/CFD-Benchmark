@@ -2,13 +2,13 @@ import numpy as np
 
 # Parameters
 nx, ny = 151, 151
-nt = 300
 x = np.linspace(0, 2, nx)
 y = np.linspace(0, 2, ny)
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)
 sigma = 0.2
 dt = sigma * min(dx, dy) / 2
+nt = 300
 
 # Initialize u and v
 u = np.ones((ny, nx))

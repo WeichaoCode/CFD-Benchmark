@@ -72,10 +72,10 @@ def call_execute_solver(llm_model, prompt_json):
     print(f"\n🎯 Execution completed. Results saved in: {LOG_FILE}")
 
 
-call_execute_solver('gpt-4o', 'prompts_both_instructions')
-
-call_execute_solver('gpt-4o', 'prompts_instruction_1')
-
-call_execute_solver('gpt-4o', 'prompts_instruction_2')
+# call_execute_solver('gpt-4o', 'prompts_both_instructions')
+#
+# call_execute_solver('gpt-4o', 'prompts_instruction_1')
+#
+# call_execute_solver('gpt-4o', 'prompts_instruction_2')
 
 call_execute_solver('gpt-4o', 'prompts_no_instruction')

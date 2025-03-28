@@ -1,24 +1,24 @@
 import numpy as np
 
-# Define the domain and grid
+# Parameters
 nx, ny = 151, 151
-nt = 300
 x = np.linspace(0, 2, nx)
 y = np.linspace(0, 2, ny)
-dx = 2 / (nx - 1)
-dy = 2 / (ny - 1)
+dx = x[1] - x[0]
+dy = y[1] - y[0]
 sigma = 0.2
 dt = sigma * min(dx, dy) / 2
+nt = 300
 
-# Initialize the velocity fields
+# Initialize u and v
 u = np.ones((ny, nx))
 v = np.ones((ny, nx))
 
-# Set initial conditions
+# Initial conditions
 u[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
 v[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
 
-# MacCormack method
+# Time-stepping using MacCormack method
 for n in range(nt):
     # Predictor step
     u_star = u.copy()
@@ -41,7 +41,7 @@ for n in range(nt):
                             dt / dx * u_star[1:-1, 1:-1] * (v_star[1:-1, 2:] - v_star[1:-1, 1:-1]) - 
                             dt / dy * v_star[1:-1, 1:-1] * (v_star[2:, 1:-1] - v_star[1:-1, 1:-1])))
     
-    # Apply Dirichlet boundary conditions
+    # Apply boundary conditions
     u[:, 0] = 1
     u[:, -1] = 1
     u[0, :] = 1

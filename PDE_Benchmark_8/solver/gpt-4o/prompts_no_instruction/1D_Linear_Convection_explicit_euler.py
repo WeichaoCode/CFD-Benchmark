@@ -2,9 +2,8 @@ import numpy as np
 
 # Parameters
 c = 1.0  # Convection speed
-epsilon_undamped = 0.0  # Damping factor for undamped case
-epsilon_damped = 5e-4  # Damping factor for damped case
-x_start, x_end = -5.0, 5.0  # Spatial domain
+epsilon_values = [0, 5e-4]  # Damping factors
+x_start, x_end = -5, 5  # Spatial domain
 N_x = 101  # Number of spatial grid points
 dx = (x_end - x_start) / (N_x - 1)  # Spatial step size
 x = np.linspace(x_start, x_end, N_x)  # Spatial grid
@@ -12,34 +11,30 @@ x = np.linspace(x_start, x_end, N_x)  # Spatial grid
 # Initial condition
 u_initial = np.exp(-x**2)
 
-# Time step based on CFL condition
-CFL = 0.5  # CFL number
-dt = CFL * dx / c  # Time step size
+# Time-stepping parameters
+CFL = 0.5  # CFL number for stability
+dt = CFL * dx / c  # Time step size based on CFL condition
+t_final = 2.0  # Final time
+n_steps = int(t_final / dt)  # Number of time steps
 
-# Total time and number of time steps
-T_final = 2.0  # Final time
-N_t = int(T_final / dt)  # Number of time steps
-
-def solve_pde(epsilon, filename):
-    # Initialize solution
+# Function to perform the time-stepping
+def solve_convection_diffusion(epsilon):
     u = u_initial.copy()
-
-    # Time integration using explicit Euler method
-    for n in range(N_t):
+    for _ in range(n_steps):
         # Compute spatial derivatives
         u_x = np.roll(u, -1) - np.roll(u, 1)
         u_xx = np.roll(u, -1) - 2 * u + np.roll(u, 1)
-
-        # Update solution
-        u_new = u - (c * dt / (2 * dx)) * u_x + (epsilon * dt / dx**2) * u_xx
-
+        
+        # Update using explicit Euler method
+        u = u - dt * c * u_x / (2 * dx) + dt * epsilon * u_xx / (dx**2)
+        
         # Apply periodic boundary conditions
-        u_new[0] = u_new[-1]
-        u = u_new
+        u[0] = u[-1]
+    
+    return u
 
-    # Save the final solution
-    np.save(filename, u)
-
-# Solve for both undamped and damped cases
-solve_pde(epsilon_undamped, 'solution_undamped.npy')
-solve_pde(epsilon_damped, 'solution_damped.npy')
+# Solve for each epsilon value and save the results
+for epsilon in epsilon_values:
+    u_final = solve_convection_diffusion(epsilon)
+    filename = f'u_final_epsilon_{epsilon:.0e}.npy'
+    np.save(filename, u_final)

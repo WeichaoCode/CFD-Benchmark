@@ -37,10 +37,10 @@ def call_post_process(llm_model, prompt_json):
                 print(f"ℹ️ No np.save calls updated in {filename}")
 
 
-call_post_process('gpt-4o', 'prompts_both_instructions')
-
-call_post_process('gpt-4o', 'prompts_instruction_1')
-
-call_post_process('gpt-4o', 'prompts_instruction_2')
+# call_post_process('gpt-4o', 'prompts_both_instructions')
+#
+# call_post_process('gpt-4o', 'prompts_instruction_1')
+#
+# call_post_process('gpt-4o', 'prompts_instruction_2')
 
 call_post_process('gpt-4o', 'prompts_no_instruction')

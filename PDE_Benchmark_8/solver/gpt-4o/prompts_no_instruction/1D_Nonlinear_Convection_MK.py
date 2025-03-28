@@ -1,14 +1,15 @@
 import numpy as np
+import math
 
 # Parameters
 L = 2 * np.pi
 nu = 0.5
 dt = 0.01
 dx = dt / nu
-T = 500  # number of time steps
+T = 500
 
 # Discretize the spatial domain
-x = np.linspace(0, L, int(np.ceil(L / dx)), endpoint=False)
+x = np.linspace(0, L, math.ceil(L / dx))
 nx = len(x)
 
 # Initial condition
@@ -17,17 +18,19 @@ u = np.sin(x) + 0.5 * np.sin(0.5 * x)
 # MacCormack method
 for n in range(T):
     # Predictor step
-    u_pred = np.empty_like(u)
-    for i in range(nx):
-        u_pred[i] = u[i] - dt * u[i] * (u[(i + 1) % nx] - u[i]) / dx
+    u_pred = np.copy(u)
+    for i in range(nx - 1):
+        u_pred[i] = u[i] - dt / dx * u[i] * (u[i+1] - u[i])
+    u_pred[-1] = u[-1] - dt / dx * u[-1] * (u[0] - u[-1])  # Periodic BC
 
     # Corrector step
-    u_corr = np.empty_like(u)
-    for i in range(nx):
-        u_corr[i] = 0.5 * (u[i] + u_pred[i] - dt * u_pred[i] * (u_pred[i] - u_pred[i - 1]) / dx)
+    u_corr = np.copy(u_pred)
+    for i in range(1, nx):
+        u_corr[i] = 0.5 * (u[i] + u_pred[i] - dt / dx * u_pred[i] * (u_pred[i] - u_pred[i-1]))
+    u_corr[0] = 0.5 * (u[0] + u_pred[0] - dt / dx * u_pred[0] * (u_pred[0] - u_pred[-1]))  # Periodic BC
 
     # Update solution
-    u = u_corr
+    u = np.copy(u_corr)
 
 # Save the final solution
 np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/u_1D_Nonlinear_Convection_MK.npy', u)

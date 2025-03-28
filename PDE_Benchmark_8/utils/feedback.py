@@ -87,6 +87,17 @@ def call_api(llm_model, prompt_json, temperature=0.0):
         original_prompt = prompt  # Keep the original prompt unchanged
         # Initialize an empty list to store the conversation history
         conversation_history = [
+            {"role": "system",
+             "content": "You are a helpful assistant designed to generate Python code for solving CFD problems using "
+                        "finite difference methods."
+                        "The user will provide the details of the problem, and you need to generate code based on the "
+                        "numerical method, boundary conditions, and other relevant information provided."
+                        "For unsteady problems, only save the solution at the final time step. For 1D problems, "
+                        "save a 1D array, and for 2D problems, save a 2D array."
+                        "The generated code should follow the specifications and save variables exactly as requested "
+                        "by the user."
+             },  # System prompt to guide the LLM
+
             {"role": "user",
              "content": original_prompt +
                         "If it is an unsteady problem, only save the solution at the final time step "
@@ -203,18 +214,18 @@ def call_api(llm_model, prompt_json, temperature=0.0):
 # use o1-mini reasoning model
 # the following from easy to difficult
 # the following from instruction follows to reasoning
-call_api("gpt-4o", "prompts_both_instructions.json")
+# call_api("gpt-4o", "prompts_both_instructions.json")
 
-call_api("gpt-4o", "prompts_instruction_1.json")
-
-call_api("gpt-4o", "prompts_instruction_2.json")
-
+# call_api("gpt-4o", "prompts_instruction_1.json")
+#
+# call_api("gpt-4o", "prompts_instruction_2.json")
+#
 call_api("gpt-4o", "prompts_no_instruction.json")
-
-call_api("o1-mini", "prompts_both_instructions.json")
-
-call_api("o1-mini", "prompts_instruction_1.json")
-
-call_api("o1-mini", "prompts_instruction_2.json")
-
-call_api("o1-mini", "prompts_no_instruction.json")
+#
+# call_api("o1-mini", "prompts_both_instructions.json")
+#
+# call_api("o1-mini", "prompts_instruction_1.json")
+#
+# call_api("o1-mini", "prompts_instruction_2.json")
+#
+# call_api("o1-mini", "prompts_no_instruction.json")

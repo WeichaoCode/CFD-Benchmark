@@ -3,8 +3,8 @@ import numpy as np
 # Parameters
 nx, ny = 51, 51
 nt = 500
-dx = dy = 2.0 / (nx - 1)
 dt = 0.001
+dx = dy = 2.0 / (nx - 1)
 rho = 1.0
 nu = 0.1
 
@@ -17,7 +17,7 @@ b = np.zeros((ny, nx))
 # Boundary conditions
 u[-1, :] = 1  # Lid-driven top boundary
 
-def build_up_b(b, u, v, dx, dy, dt, rho):
+def build_up_b(b, u, v, dx, dy, dt):
     b[1:-1, 1:-1] = (rho * (1 / dt *
                             ((u[1:-1, 2:] - u[1:-1, 0:-2]) / (2 * dx) +
                              (v[2:, 1:-1] - v[0:-2, 1:-1]) / (2 * dy)) -
@@ -26,9 +26,9 @@ def build_up_b(b, u, v, dx, dy, dt, rho):
                                  (v[1:-1, 2:] - v[1:-1, 0:-2]) / (2 * dx)) -
                             ((v[2:, 1:-1] - v[0:-2, 1:-1]) / (2 * dy))**2))
 
-def pressure_poisson(p, dx, dy, b):
+def pressure_poisson(p, dx, dy):
     pn = np.empty_like(p)
-    for q in range(50):  # Iterations for pressure Poisson equation
+    for q in range(50):
         pn = p.copy()
         p[1:-1, 1:-1] = (((pn[1:-1, 2:] + pn[1:-1, 0:-2]) * dy**2 +
                           (pn[2:, 1:-1] + pn[0:-2, 1:-1]) * dx**2) /
@@ -44,36 +44,35 @@ def pressure_poisson(p, dx, dy, b):
 def cavity_flow(nt, u, v, dt, dx, dy, p, rho, nu):
     un = np.empty_like(u)
     vn = np.empty_like(v)
-    b = np.zeros((ny, nx))
-
+    
     for n in range(nt):
         un = u.copy()
         vn = v.copy()
-
-        build_up_b(b, u, v, dx, dy, dt, rho)
-        pressure_poisson(p, dx, dy, b)
-
+        
+        build_up_b(b, u, v, dx, dy, dt)
+        pressure_poisson(p, dx, dy)
+        
         u[1:-1, 1:-1] = (un[1:-1, 1:-1] -
                          un[1:-1, 1:-1] * dt / dx *
-                         (un[1:-1, 1:-1] - un[1:-1, 0:-2]) -
+                        (un[1:-1, 1:-1] - un[1:-1, 0:-2]) -
                          vn[1:-1, 1:-1] * dt / dy *
-                         (un[1:-1, 1:-1] - un[0:-2, 1:-1]) -
+                        (un[1:-1, 1:-1] - un[0:-2, 1:-1]) -
                          dt / (2 * rho * dx) * (p[1:-1, 2:] - p[1:-1, 0:-2]) +
                          nu * (dt / dx**2 *
-                               (un[1:-1, 2:] - 2 * un[1:-1, 1:-1] + un[1:-1, 0:-2]) +
-                               dt / dy**2 *
-                               (un[2:, 1:-1] - 2 * un[1:-1, 1:-1] + un[0:-2, 1:-1])))
+                        (un[1:-1, 2:] - 2 * un[1:-1, 1:-1] + un[1:-1, 0:-2]) +
+                         dt / dy**2 *
+                        (un[2:, 1:-1] - 2 * un[1:-1, 1:-1] + un[0:-2, 1:-1])))
 
         v[1:-1, 1:-1] = (vn[1:-1, 1:-1] -
                          un[1:-1, 1:-1] * dt / dx *
-                         (vn[1:-1, 1:-1] - vn[1:-1, 0:-2]) -
+                        (vn[1:-1, 1:-1] - vn[1:-1, 0:-2]) -
                          vn[1:-1, 1:-1] * dt / dy *
-                         (vn[1:-1, 1:-1] - vn[0:-2, 1:-1]) -
+                        (vn[1:-1, 1:-1] - vn[0:-2, 1:-1]) -
                          dt / (2 * rho * dy) * (p[2:, 1:-1] - p[0:-2, 1:-1]) +
                          nu * (dt / dx**2 *
-                               (vn[1:-1, 2:] - 2 * vn[1:-1, 1:-1] + vn[1:-1, 0:-2]) +
-                               dt / dy**2 *
-                               (vn[2:, 1:-1] - 2 * vn[1:-1, 1:-1] + vn[0:-2, 1:-1])))
+                        (vn[1:-1, 2:] - 2 * vn[1:-1, 1:-1] + vn[1:-1, 0:-2]) +
+                         dt / dy**2 *
+                        (vn[2:, 1:-1] - 2 * vn[1:-1, 1:-1] + vn[0:-2, 1:-1])))
 
         # Boundary conditions for velocity
         u[0, :] = 0
@@ -87,8 +86,10 @@ def cavity_flow(nt, u, v, dt, dx, dy, p, rho, nu):
 
     return u, v, p
 
-# Solve the cavity flow problem
+# Run the simulation
 u, v, p = cavity_flow(nt, u, v, dt, dx, dy, p, rho, nu)
 
 # Save the final solution
-np.save('final_solution.npy', np.array([u, v, p]))
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/u_2D_Navier_Stokes_Cavity.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/v_2D_Navier_Stokes_Cavity.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/p_2D_Navier_Stokes_Cavity.npy', p)

@@ -14,7 +14,6 @@ r = 0.25  # Stability factor
 dx = (x_max - x_min) / (nx - 1)
 dy = (y_max - y_min) / (ny - 1)
 dt = r * dx**2 / alpha
-nt = int(t_max / dt)  # Number of time steps
 
 # Create grid
 x = np.linspace(x_min, x_max, nx)
@@ -25,19 +24,27 @@ X, Y = np.meshgrid(x, y)
 T = np.zeros((ny, nx))
 
 # Time-stepping loop
-for n in range(nt):
-    Tn = T.copy()
-    # Update the temperature field
-    T[1:-1, 1:-1] = (Tn[1:-1, 1:-1] +
-                     alpha * dt / dx**2 * (Tn[1:-1, 2:] - 2 * Tn[1:-1, 1:-1] + Tn[1:-1, :-2]) +
-                     alpha * dt / dy**2 * (Tn[2:, 1:-1] - 2 * Tn[1:-1, 1:-1] + Tn[:-2, 1:-1]) +
-                     dt * Q0 * np.exp(-((X[1:-1, 1:-1]**2 + Y[1:-1, 1:-1]**2) / (2 * sigma**2))))
-
+t = 0.0
+while t < t_max:
+    T_new = np.copy(T)
+    
+    # Update interior points
+    for i in range(1, nx-1):
+        for j in range(1, ny-1):
+            d2T_dx2 = (T[j, i+1] - 2*T[j, i] + T[j, i-1]) / dx**2
+            d2T_dy2 = (T[j+1, i] - 2*T[j, i] + T[j-1, i]) / dy**2
+            q = Q0 * np.exp(-(x[i]**2 + y[j]**2) / (2 * sigma**2))
+            T_new[j, i] = T[j, i] + dt * (alpha * (d2T_dx2 + d2T_dy2) + q)
+    
     # Apply Dirichlet boundary conditions
-    T[:, 0] = 0
-    T[:, -1] = 0
-    T[0, :] = 0
-    T[-1, :] = 0
+    T_new[0, :] = 0.0
+    T_new[-1, :] = 0.0
+    T_new[:, 0] = 0.0
+    T_new[:, -1] = 0.0
+    
+    # Update time and temperature field
+    T = T_new
+    t += dt
 
-# Save the final solution
+# Save the final temperature field
 np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/T_2D_Unsteady_Heat_Equation_SE.npy', T)

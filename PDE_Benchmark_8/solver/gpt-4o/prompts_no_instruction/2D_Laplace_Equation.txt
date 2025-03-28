@@ -1,9 +1,7 @@
-Below is the Python code to solve the given 2D Laplace equation using the finite difference method. The code sets up the grid, applies the boundary conditions, and iteratively solves the equation until convergence. The final solution is saved as a `.npy` file.
-
 ```python
 import numpy as np
 
-# Define the grid
+# Domain parameters
 nx, ny = 31, 31
 dx = 2 / (nx - 1)
 dy = 1 / (ny - 1)
@@ -12,10 +10,16 @@ dy = 1 / (ny - 1)
 p = np.zeros((ny, nx))
 
 # Boundary conditions
-p[:, 0] = 0  # Left boundary
-p[:, -1] = np.linspace(0, 1, ny)  # Right boundary
+# Left boundary (x = 0): p = 0
+p[:, 0] = 0
 
-# Iterative solver parameters
+# Right boundary (x = 2): p = y
+p[:, -1] = np.linspace(0, 1, ny)
+
+# Neumann boundary conditions for top and bottom (y = 0, y = 1)
+# These will be handled in the iteration loop
+
+# Iteration parameters
 tolerance = 1e-5
 max_iterations = 10000
 
@@ -24,12 +28,13 @@ for iteration in range(max_iterations):
     p_old = p.copy()
     
     # Update the interior points
-    p[1:-1, 1:-1] = ((p_old[1:-1, 2:] + p_old[1:-1, :-2]) * dy**2 +
-                     (p_old[2:, 1:-1] + p_old[:-2, 1:-1]) * dx**2) / (2 * (dx**2 + dy**2))
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            p[j, i] = 0.25 * (p_old[j, i+1] + p_old[j, i-1] + p_old[j+1, i] + p_old[j-1, i])
     
-    # Neumann boundary conditions (top and bottom)
-    p[0, :] = p[1, :]  # Top boundary
-    p[-1, :] = p[-2, :]  # Bottom boundary
+    # Apply Neumann boundary conditions (zero gradient) for top and bottom
+    p[0, :] = p[1, :]  # Bottom boundary (y = 0)
+    p[-1, :] = p[-2, :]  # Top boundary (y = 1)
     
     # Check for convergence
     if np.linalg.norm(p - p_old, ord=np.inf) < tolerance:
@@ -39,7 +44,7 @@ else:
     print("Did not converge within the maximum number of iterations.")
 
 # Save the final solution
-np.save('solution.npy', p)
+np.save('p.npy', p)
 ```
 
-This code initializes the potential field `p` and applies the specified boundary conditions. It then iteratively updates the field using the finite difference method until the solution converges to within a specified tolerance. The final solution is saved to a file named `solution.npy`.
+This code sets up and solves the given PDE problem using the finite difference method. It applies the specified boundary conditions and iteratively solves for the potential field `p` until convergence. The final solution is saved as a `.npy` file.

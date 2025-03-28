@@ -1,38 +1,43 @@
 import numpy as np
 
-# Define the domain and grid
+# Domain parameters
 Lx, Ly = 5.0, 4.0
 dx, dy = 0.05, 0.05
-nx, ny = int(Lx/dx) + 1, int(Ly/dy) + 1
+nx, ny = 101, 81
 
-# Initialize the temperature field
+# Create grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+# Initialize temperature field
 T = np.zeros((ny, nx))
 
-# Set boundary conditions
+# Boundary conditions
 T[:, 0] = 10.0  # Left boundary
 T[:, -1] = 40.0  # Right boundary
 T[0, :] = 0.0  # Top boundary
 T[-1, :] = 20.0  # Bottom boundary
 
-# Parameters for the Jacobi iteration
-tolerance = 1e-5
+# Jacobi iteration parameters
+tolerance = 1e-6
 max_iterations = 10000
 
-# Perform the Jacobi iteration
+# Jacobi iteration
 for iteration in range(max_iterations):
     T_new = T.copy()
     
-    # Update the temperature field using the finite difference method
+    # Update the interior points
     for j in range(1, ny-1):
         for i in range(1, nx-1):
             T_new[j, i] = 0.25 * (T[j+1, i] + T[j-1, i] + T[j, i+1] + T[j, i-1])
     
     # Check for convergence
-    if np.linalg.norm(T_new - T, ord=np.inf) < tolerance:
+    diff = np.linalg.norm(T_new - T, ord=np.inf)
+    if diff < tolerance:
         print(f"Converged after {iteration} iterations.")
         break
     
     T = T_new
 
-# Save the final solution to a .npy file
+# Save the final temperature field
 np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/T_2D_Steady_Heat_Equation_Jac.npy', T)

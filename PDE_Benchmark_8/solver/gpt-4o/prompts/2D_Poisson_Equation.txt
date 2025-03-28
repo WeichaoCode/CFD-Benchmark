@@ -1,0 +1,48 @@
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Domain parameters
+Lx, Ly = 2.0, 1.0
+nx, ny = 101, 51
+dx, dy = Lx / (nx - 1), Ly / (ny - 1)
+
+# Create grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+# Initialize p and b
+p = np.zeros((ny, nx))
+b = np.zeros((ny, nx))
+
+# Set source term b
+b[int(ny/4), int(nx/4)] = 100
+b[int(3*ny/4), int(3*nx/4)] = -100
+
+# Iteration parameters
+tolerance = 1e-5
+max_iter = 10000
+
+# Gauss-Seidel iteration
+for it in range(max_iter):
+    p_old = p.copy()
+    
+    # Update p using Gauss-Seidel method
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            p[j, i] = 0.25 * (p[j+1, i] + p[j-1, i] + p[j, i+1] + p[j, i-1] - dx*dy*b[j, i])
+    
+    # Apply boundary conditions
+    p[0, :] = 0
+    p[-1, :] = 0
+    p[:, 0] = 0
+    p[:, -1] = 0
+    
+    # Check for convergence
+    if np.linalg.norm(p - p_old, ord=np.inf) < tolerance:
+        print(f'Converged after {it} iterations')
+        break
+
+# Save the final solution
+np.save('p.npy', p)
+```

@@ -106,4 +106,5 @@ def call_compare_common(llm_model, prompt_json):
     print(f"\n🎯 Comparison completed. Log saved to: {log_file}")
 
 
-call_compare_common('gpt-4o', 'prompts_no_instruction')
+# call_compare_common('gpt-4o', 'prompts_no_instruction')
+call_compare_common('gpt-4o', 'prompts_both_instructions')

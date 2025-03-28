@@ -52,4 +52,5 @@ def call_compare_output(llm_model, prompt_json):
     print(f"  Only B:    {len(only_in_b)}")
 
 
-call_compare_output('gpt-4o', 'prompts_no_instruction')
+# call_compare_output('gpt-4o', 'prompts_no_instruction')
+call_compare_output('gpt-4o', 'prompts_both_instructions')

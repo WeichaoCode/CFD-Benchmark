@@ -1,0 +1,58 @@
+import numpy as np
+
+# Parameters
+c = 1.0  # Convection speed
+epsilon_undamped = 0.0
+epsilon_damped = 5e-4
+x_start, x_end = -5.0, 5.0
+Nx = 101
+dx = (x_end - x_start) / (Nx - 1)
+x = np.linspace(x_start, x_end, Nx)
+
+# Initial condition
+u_initial = np.exp(-x**2)
+
+# Time stepping parameters
+CFL = 0.5  # CFL number for stability
+dt = CFL * dx / c
+t_final = 2.0  # Final time
+Nt = int(t_final / dt)
+
+# Function to compute spatial derivatives
+def compute_derivatives(u, dx, epsilon):
+    # Central difference for first derivative
+    du_dx = np.roll(u, -1) - np.roll(u, 1)
+    du_dx = du_dx / (2 * dx)
+    
+    # Central difference for second derivative
+    d2u_dx2 = np.roll(u, -1) - 2 * u + np.roll(u, 1)
+    d2u_dx2 = d2u_dx2 / (dx**2)
+    
+    return -c * du_dx + epsilon * d2u_dx2
+
+# Predictor-Corrector method
+def predictor_corrector(u, dt, dx, epsilon):
+    for _ in range(Nt):
+        # Predictor step
+        f_n = compute_derivatives(u, dx, epsilon)
+        u_star = u + dt * f_n
+        
+        # Corrector step
+        f_star = compute_derivatives(u_star, dx, epsilon)
+        u = u + (dt / 2) * (f_n + f_star)
+        
+        # Apply periodic boundary conditions
+        u[0] = u[-1]
+        u[-1] = u[0]
+    
+    return u
+
+# Solve for undamped case
+u_undamped = predictor_corrector(u_initial.copy(), dt, dx, epsilon_undamped)
+
+# Solve for damped case
+u_damped = predictor_corrector(u_initial.copy(), dt, dx, epsilon_damped)
+
+# Save final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_both_instructions/u_undamped_1D_Linear_Convection_corr.npy', u_undamped)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_both_instructions/u_damped_1D_Linear_Convection_corr.npy', u_damped)

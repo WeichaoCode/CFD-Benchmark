@@ -214,13 +214,13 @@ def call_api(llm_model, prompt_json, temperature=0.0):
 # use o1-mini reasoning model
 # the following from easy to difficult
 # the following from instruction follows to reasoning
-# call_api("gpt-4o", "prompts_both_instructions.json")
+call_api("gpt-4o", "prompts_both_instructions.json")
 
 # call_api("gpt-4o", "prompts_instruction_1.json")
 #
 # call_api("gpt-4o", "prompts_instruction_2.json")
 #
-call_api("gpt-4o", "prompts_no_instruction.json")
+# call_api("gpt-4o", "prompts_no_instruction.json")
 #
 # call_api("o1-mini", "prompts_both_instructions.json")
 #

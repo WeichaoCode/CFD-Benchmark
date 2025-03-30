@@ -1,0 +1,75 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Parameters
+n_x = n_y = 101
+x_start, x_end = 0, 2
+y_start, y_end = 0, 2
+dx = (x_end - x_start) / (n_x - 1)
+dy = (y_end - y_start) / (n_y - 1)
+sigma = 0.2
+dt = sigma * dx
+nt = 80
+
+# Grid
+x = np.linspace(x_start, x_end, n_x)
+y = np.linspace(y_start, y_end, n_y)
+X, Y = np.meshgrid(x, y)
+
+# Initial Conditions
+u = np.ones((n_y, n_x))
+v = np.ones((n_y, n_x))
+# Set u and v to 2 in the square 0.5 <= x, y <=1
+u[np.logical_and(X >= 0.5, X <=1) & np.logical_and(Y >=0.5, Y <=1)] = 2
+v[np.logical_and(X >= 0.5, X <=1) & np.logical_and(Y >=0.5, Y <=1)] = 2
+
+# Time-stepping
+for _ in range(nt):
+    u_old = u.copy()
+    v_old = v.copy()
+    
+    # Compute derivatives using upwind scheme
+    u_x = (u_old[1:-1,1:-1] - u_old[1:-1,0:-2]) / dx
+    u_y = (u_old[1:-1,1:-1] - u_old[0:-2,1:-1]) / dy
+    v_x = (v_old[1:-1,1:-1] - v_old[1:-1,0:-2]) / dx
+    v_y = (v_old[1:-1,1:-1] - v_old[0:-2,1:-1]) / dy
+    
+    # Update interior points
+    u[1:-1,1:-1] = u_old[1:-1,1:-1] - dt * (u_old[1:-1,1:-1] * u_x + v_old[1:-1,1:-1] * u_y)
+    v[1:-1,1:-1] = v_old[1:-1,1:-1] - dt * (u_old[1:-1,1:-1] * v_x + v_old[1:-1,1:-1] * v_y)
+    
+    # Apply Dirichlet boundary conditions
+    u[0,:] = 1
+    u[-1,:] = 1
+    u[:,0] = 1
+    u[:,-1] = 1
+    
+    v[0,:] = 1
+    v[-1,:] = 1
+    v[:,0] = 1
+    v[:,-1] = 1
+
+# Visualization for u
+fig = plt.figure(figsize=(12,6))
+ax1 = fig.add_subplot(121, projection='3d')
+ax1.plot_surface(X, Y, u, cmap='viridis')
+ax1.set_title('Final u')
+ax1.set_xlabel('X')
+ax1.set_ylabel('Y')
+ax1.set_zlabel('u')
+
+# Visualization for v
+ax2 = fig.add_subplot(122, projection='3d')
+ax2.plot_surface(X, Y, v, cmap='plasma')
+ax2.set_title('Final v')
+ax2.set_xlabel('X')
+ax2.set_ylabel('Y')
+ax2.set_zlabel('v')
+
+plt.tight_layout()
+plt.show()
+
+# Save final results
+np.save('u.npy', u)
+np.save('v.npy', v)

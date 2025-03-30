@@ -1,0 +1,58 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Domain parameters
+nx, ny = 101, 81
+dx, dy = 0.05, 0.05
+x = np.linspace(0, 5, nx)
+y = np.linspace(0, 4, ny)
+beta = dx / dy
+
+# Initialize temperature field
+T = np.zeros((ny, nx))
+
+# Apply Dirichlet boundary conditions
+T[:, 0] = 10.0   # Left boundary
+T[:, -1] = 40.0  # Right boundary
+T[0, :] = 0.0    # Top boundary
+T[-1, :] = 20.0  # Bottom boundary
+
+# Initialize variables for iteration
+T_new = T.copy()
+convergence = False
+threshold = 1e-4
+iterations = 0
+max_iterations = 10000
+
+while not convergence and iterations < max_iterations:
+    # Update interior points
+    T_new[1:-1,1:-1] = (T[1:-1,2:] + T[1:-1,0:-2] + beta**2 * (T[2:,1:-1] + T[0:-2,1:-1])) / (2 * (1 + beta**2))
+    
+    # Re-apply Dirichlet boundary conditions
+    T_new[:, 0] = 10.0
+    T_new[:, -1] = 40.0
+    T_new[0, :] = 0.0
+    T_new[-1, :] = 20.0
+    
+    # Compute the maximum difference
+    diff = np.max(np.abs(T_new - T))
+    
+    # Check for convergence
+    if diff < threshold:
+        convergence = True
+    
+    # Prepare for next iteration
+    T, T_new = T_new, T
+    iterations += 1
+
+# Save the final temperature field
+np.save('T.npy', T)
+
+# Generate contour plot
+X, Y = np.meshgrid(x, y)
+plt.contourf(X, Y, T, 50, cmap='hot')
+plt.colorbar(label='Temperature (°C)')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Steady-State Temperature Distribution')
+plt.show()

@@ -1,0 +1,60 @@
+import numpy as np
+
+def main():
+    # Parameters
+    c = 1.0
+    epsilons = [0.0, 5e-4]
+    x_start = -5.0
+    x_end = 5.0
+    N_x = 101
+    t_final = 1.0
+
+    # Spatial grid
+    x = np.linspace(x_start, x_end, N_x)
+    dx = x[1] - x[0]
+
+    for epsilon in epsilons:
+        # CFL condition for convection
+        dt_conv = dx / c
+        # Stability condition for diffusion
+        if epsilon > 0:
+            dt_diff = dx**2 / (4 * epsilon)
+        else:
+            dt_diff = np.inf
+        # Time step
+        dt = min(dt_conv, dt_diff) * 0.5
+
+        # Number of time steps
+        N_t = int(np.ceil(t_final / dt))
+        dt = t_final / N_t  # Adjust dt to reach t_final exactly
+
+        # Initial condition
+        u = np.exp(-x**2)
+
+        for _ in range(N_t):
+            # RK4 stages
+            k1 = rhs(u, c, epsilon, dx)
+            k2 = rhs(u + 0.5 * dt * k1, c, epsilon, dx)
+            k3 = rhs(u + 0.5 * dt * k2, c, epsilon, dx)
+            k4 = rhs(u + dt * k3, c, epsilon, dx)
+            u = u + (dt / 6.0) * (k1 + 2*k2 + 2*k3 + k4)
+
+        # Save the final solution
+        if epsilon == 0.0:
+            filename = 'u_e0.npy'
+        else:
+            filename = f'u_e{epsilon:.0e}.npy'
+        np.save(filename, u)
+
+def rhs(u, c, epsilon, dx):
+    # Periodic boundary conditions
+    u_plus = np.roll(u, -1)
+    u_minus = np.roll(u, 1)
+    # First derivative (central difference)
+    du_dx = (u_plus - u_minus) / (2 * dx)
+    # Second derivative (central difference)
+    d2u_dx2 = (u_plus - 2 * u + u_minus) / dx**2
+    return -c * du_dx + epsilon * d2u_dx2
+
+if __name__ == "__main__":
+    main()

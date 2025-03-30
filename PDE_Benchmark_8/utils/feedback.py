@@ -86,37 +86,67 @@ def call_api(llm_model, prompt_json, temperature=0.0):
         retries = 0
         original_prompt = prompt  # Keep the original prompt unchanged
         # Initialize an empty list to store the conversation history
-        conversation_history = [
-            {"role": "system",
-             "content": "You are a highly skilled assistant capable of generating Python code to solve CFD problems "
-                        "using appropriate numerical methods."
-                        "Given the problem description, you should reason through the problem and determine the best "
-                        "approach for discretizing and solving it,"
-                        "while respecting the specified boundary conditions, initial conditions, and domain.\n"
-                        "For unsteady problems, save only the solution at the final time step. For 1D problems, "
-                        "save a 1D array; for 2D problems, save a 2D array.\n"
-                        "Ensure the code follows the user's specifications and saves the requested variables exactly "
-                        "as named in `save_values`.\n"
-                        "Your task is to generate the correct, fully runnable Python code for solving the problem "
-                        "without additional explanations."
-             },  # System prompt to guide the LLM
+        if llm_model == "o1-mini":
+            conversation_history = [
+                {"role": "user",
+                 "content": "You are a highly skilled assistant capable of generating Python code to solve CFD problems "
+                            "using appropriate numerical methods."
+                            "Given the problem description, you should reason through the problem and determine the best "
+                            "approach for discretizing and solving it,"
+                            "while respecting the specified boundary conditions, initial conditions, and domain.\n"
+                            "For unsteady problems, save only the solution at the final time step. For 1D problems, "
+                            "save a 1D array; for 2D problems, save a 2D array.\n"
+                            "Ensure the code follows the user's specifications and saves the requested variables exactly "
+                            "as named in `save_values`.\n"
+                            "Your task is to generate the correct, fully runnable Python code for solving the problem "
+                            "without additional explanations."
+                 },  # System prompt to guide the LLM
 
-            {"role": "user",
-             "content": original_prompt +
-                        "If it is an unsteady problem, only save the solution at the final time step "
-                        "If the problem is 1D, the saved array should be 1D. "
-                        "If the problem is 2D, the saved array should be 2D."},  # Add the initial user prompt
-        ]
+                {"role": "user",
+                 "content": original_prompt +
+                            "If it is an unsteady problem, only save the solution at the final time step "
+                            "If the problem is 1D, the saved array should be 1D. "
+                            "If the problem is 2D, the saved array should be 2D."},  # Add the initial user prompt
+            ]
+        else:
+            conversation_history = [
+                {"role": "system",
+                 "content": "You are a highly skilled assistant capable of generating Python code to solve CFD problems "
+                            "using appropriate numerical methods."
+                            "Given the problem description, you should reason through the problem and determine the best "
+                            "approach for discretizing and solving it,"
+                            "while respecting the specified boundary conditions, initial conditions, and domain.\n"
+                            "For unsteady problems, save only the solution at the final time step. For 1D problems, "
+                            "save a 1D array; for 2D problems, save a 2D array.\n"
+                            "Ensure the code follows the user's specifications and saves the requested variables exactly "
+                            "as named in `save_values`.\n"
+                            "Your task is to generate the correct, fully runnable Python code for solving the problem "
+                            "without additional explanations."
+                 },  # System prompt to guide the LLM
+
+                {"role": "user",
+                 "content": original_prompt +
+                            "If it is an unsteady problem, only save the solution at the final time step "
+                            "If the problem is 1D, the saved array should be 1D. "
+                            "If the problem is 2D, the saved array should be 2D."},  # Add the initial user prompt
+            ]
         while retries < max_retries:
             print(f"🔹 Generating code for: {task_name} (Attempt {retries + 1}/{max_retries})")
             logging.info(f"🔹 Generating code for: {task_name} (Attempt {retries + 1}/{max_retries})")
             try:
-                # Call OpenAI GPT-4o API
-                response = client.chat.completions.create(
-                    model=llm_model,  # Specify the model
-                    messages=conversation_history,
-                    temperature=temperature
-                )
+                if llm_model == "o1-mini":
+                    # Call OpenAI o1-mini API
+                    response = client.chat.completions.create(
+                        model=llm_model,  # Specify the model
+                        messages=conversation_history
+                    )
+                else:
+                    # Call OpenAI GPT-4o API
+                    response = client.chat.completions.create(
+                        model=llm_model,  # Specify the model
+                        messages=conversation_history,
+                        temperature=temperature
+                    )
                 # log the input message
                 logging.info(
                     "---------------------------------INPUT TO LLM FIRST-----------------------------------------")
@@ -225,12 +255,14 @@ def call_api(llm_model, prompt_json, temperature=0.0):
 #
 # call_api("gpt-4o", "prompts_no_instruction.json")
 
-call_api("gpt-4o", "prompts.json")
+# call_api("gpt-4o", "prompts.json")
 #
-# call_api("o1-mini", "prompts_both_instructions.json")
+call_api("o1-mini", "prompts_both_instructions.json")
 #
 # call_api("o1-mini", "prompts_instruction_1.json")
 #
 # call_api("o1-mini", "prompts_instruction_2.json")
 #
-# call_api("o1-mini", "prompts_no_instruction.json")
+call_api("o1-mini", "prompts_no_instruction.json")
+
+# call_api("gpt-4o", "prompts.json")

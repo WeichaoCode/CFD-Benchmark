@@ -1,0 +1,35 @@
+import numpy as np
+
+# Domain parameters
+x_start, x_end, dx = 0.0, 5.0, 0.05
+y_start, y_end, dy = 0.0, 4.0, 0.05
+nx, ny = 101, 81
+
+# Initialize temperature grid
+T = np.zeros((ny, nx))
+
+# Apply boundary conditions
+T[:, 0] = 10.0    # Left boundary
+T[:, -1] = 40.0    # Right boundary
+T[0, :] = 20.0     # Bottom boundary
+T[-1, :] = 0.0     # Top boundary
+
+# Gauss-Seidel parameters
+tolerance = 1e-4
+max_iterations = 10000
+iteration = 0
+error = 1.0
+
+while error > tolerance and iteration < max_iterations:
+    error = 0.0
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            T_new = 0.25 * (T[j+1, i] + T[j-1, i] + T[j, i+1] + T[j, i-1])
+            diff = abs(T_new - T[j, i])
+            if diff > error:
+                error = diff
+            T[j, i] = T_new
+    iteration += 1
+
+# Save the final temperature distribution
+np.save('T.npy', T)

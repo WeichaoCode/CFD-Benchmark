@@ -45,7 +45,7 @@ print('------------')
 for k in range(max_k):
     for i in range(1, nx - 1):
         for j in range(1, ny - 1):
-            # Point Successive Over-relaxation
+            # Point Gauss-Seidel method
             Tkp1[i, j] = 0.5 / (1.0 + beta ** 2) * (T[i + 1, j] + Tkp1[i - 1, j]) + (0.5 * beta ** 2) / (
                         1.0 + beta ** 2) * (T[i, j + 1] + Tkp1[i, j - 1])
 

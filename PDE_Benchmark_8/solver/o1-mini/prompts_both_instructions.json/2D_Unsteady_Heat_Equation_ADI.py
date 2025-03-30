@@ -1,0 +1,93 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def solve_tri_diag(a, b, c, d):
+    """
+    Solves a tridiagonal system using the Thomas algorithm.
+    a, b, c are the sub-diagonal, main diagonal, and super-diagonal coefficients.
+    d is the right-hand side vector.
+    """
+    n = len(d)
+    c_prime = np.zeros(n-1)
+    d_prime = np.zeros(n)
+
+    # Forward sweep
+    c_prime[0] = c[0] / b[0]
+    d_prime[0] = d[0] / b[0]
+    for i in range(1, n-1):
+        temp = b[i] - a[i-1] * c_prime[i-1]
+        c_prime[i] = c[i] / temp
+        d_prime[i] = (d[i] - a[i-1] * d_prime[i-1]) / temp
+    d_prime[-1] = (d[-1] - a[-1] * d_prime[-2]) / (b[-1] - a[-1] * c_prime[-2])
+
+    # Back substitution
+    x = np.zeros(n)
+    x[-1] = d_prime[-1]
+    for i in range(n-2, -1, -1):
+        x[i] = d_prime[i] - c_prime[i] * x[i+1]
+    return x
+
+# Parameters
+Q0 = 200.0  # °C/s
+sigma = 0.1
+alpha = 0.01  # Thermal diffusivity
+nx, ny = 41, 41
+x = np.linspace(-1, 1, nx)
+y = np.linspace(-1, 1, ny)
+dx = x[1] - x[0]
+dy = y[1] - y[0]
+r = 0.5
+dt = r * dx**2 / alpha
+t_max = 3.0
+nt = int(t_max / dt)
+X, Y = np.meshgrid(x, y, indexing='ij')
+q = Q0 * np.exp(- (X**2 + Y**2) / (2 * sigma**2))
+
+# Initialize temperature field
+T = np.zeros((nx, ny))
+
+# Coefficients for tridiagonal matrix (implicit in x and y)
+a_x = -r / 2.0 * np.ones(nx-2)
+b_x = (1 + r) * np.ones(nx-2)
+c_x = -r / 2.0 * np.ones(nx-2)
+
+a_y = -r / 2.0 * np.ones(ny-2)
+b_y = (1 + r) * np.ones(ny-2)
+c_y = -r / 2.0 * np.ones(ny-2)
+
+# Time-stepping using ADI method
+for n in range(nt):
+    # Half step: implicit in x, explicit in y
+    T_half = np.copy(T)
+    for i in range(1, nx-1):
+        d = (r/2.0 * T[i, 2:] + 
+             r/2.0 * T[i, :-2] +
+             r/2.0 * (T[i+1,1:-1] - 2*T[i,1:-1] + T[i-1,1:-1]) +
+             0.5 * dt * q[i,1:-1])
+        T_half[i,1:-1] = solve_tri_diag(a_x, b_x, c_x, d)
+    
+    # Apply Dirichlet boundary conditions
+    T_half[0, :] = 0.0
+    T_half[-1, :] = 0.0
+    T_half[:, 0] = 0.0
+    T_half[:, -1] = 0.0
+
+    # Full step: implicit in y, explicit in x
+    T_new = np.copy(T_half)
+    for j in range(1, ny-1):
+        d = (r/2.0 * T_half[2:, j] + 
+             r/2.0 * T_half[:-2, j] +
+             r/2.0 * (T_half[1:-1, j+1] - 2*T_half[1:-1, j] + T_half[1:-1, j-1]) +
+             0.5 * dt * q[1:-1,j])
+        T_new[1:-1, j] = solve_tri_diag(a_y, b_y, c_y, d)
+    
+    # Apply Dirichlet boundary conditions
+    T_new[0, :] = 0.0
+    T_new[-1, :] = 0.0
+    T_new[:, 0] = 0.0
+    T_new[:, -1] = 0.0
+
+    T = T_new.copy()
+
+# Save the final temperature field
+np.save('T.npy', T)

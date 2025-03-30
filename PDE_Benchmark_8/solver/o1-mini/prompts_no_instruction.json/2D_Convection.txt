@@ -1,0 +1,72 @@
+```python
+import numpy as np
+
+# Grid parameters
+nx, ny = 101, 101
+lx, ly = 2.0, 2.0
+dx = lx / (nx - 1)
+dy = ly / (ny - 1)
+
+# Time parameters
+nt = 80
+sigma = 0.2
+dt = sigma * min(dx, dy)
+
+# Create grid
+x = np.linspace(0, lx, nx)
+y = np.linspace(0, ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize u and v
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+
+# Apply initial condition: u = v = 2 for 0.5 <= x, y <= 1
+initial_condition = (X >= 0.5) & (X <= 1.0) & (Y >= 0.5) & (Y <= 1.0)
+u[initial_condition] = 2.0
+v[initial_condition] = 2.0
+
+# Time-stepping loop
+for _ in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    
+    # Upwind scheme for du/dx
+    du_dx = np.zeros_like(u)
+    du_dx[:, 1:-1] = (un[:, 1:-1] - un[:, 0:-2]) / dx
+    
+    # Upwind scheme for du/dy
+    du_dy = np.zeros_like(u)
+    du_dy[1:-1, :] = (un[1:-1, :] - un[0:-2, :]) / dy
+    
+    # Upwind scheme for dv/dx
+    dv_dx = np.zeros_like(v)
+    dv_dx[:, 1:-1] = (vn[:, 1:-1] - vn[:, 0:-2]) / dx
+    
+    # Upwind scheme for dv/dy
+    dv_dy = np.zeros_like(v)
+    dv_dy[1:-1, :] = (vn[1:-1, :] - vn[0:-2, :]) / dy
+    
+    # Update interior points
+    u[1:-1, 1:-1] = un[1:-1, 1:-1] - dt * (un[1:-1, 1:-1] * du_dx[1:-1, 1:-1] + vn[1:-1, 1:-1] * du_dy[1:-1, 1:-1])
+    v[1:-1, 1:-1] = vn[1:-1, 1:-1] - dt * (un[1:-1, 1:-1] * dv_dx[1:-1, 1:-1] + vn[1:-1, 1:-1] * dv_dy[1:-1, 1:-1])
+    
+    # Apply Dirichlet boundary conditions: u = v = 1 on all boundaries
+    u[0, :] = 1.0
+    u[-1, :] = 1.0
+    u[:, 0] = 1.0
+    u[:, -1] = 1.0
+    
+    v[0, :] = 1.0
+    v[-1, :] = 1.0
+    v[:, 0] = 1.0
+    v[:, -1] = 1.0
+
+# Replace any NaNs or Infs with boundary conditions
+u = np.nan_to_num(u, nan=1.0, posinf=1.0, neginf=1.0)
+v = np.nan_to_num(v, nan=1.0, posinf=1.0, neginf=1.0)
+
+# Save the final solutions
+np.save('u.npy', u)
+np.save('v.npy', v)
+```

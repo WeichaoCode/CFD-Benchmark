@@ -1,0 +1,52 @@
+```python
+import numpy as np
+
+# Parameters
+alpha = 1.0          # Thermal diffusivity
+Q0 = 200.0           # Source term coefficient (°C/s)
+sigma = 0.1          # Standard deviation for the source term
+nx, ny = 41, 41      # Number of grid points in x and y
+x = np.linspace(-1, 1, nx)
+y = np.linspace(-1, 1, ny)
+dx = x[1] - x[0]
+dy = y[1] - y[0]
+r = 0.05             # Reduced parameter for DuFort-Frankel method to ensure stability
+dt = r * dx**2 / alpha
+t_max = 3.0
+nt = int(t_max / dt)
+
+# Create meshgrid
+X, Y = np.meshgrid(x, y)
+
+# Source term (constant in time)
+q = Q0 * np.exp(- (X**2 + Y**2) / (2 * sigma**2))
+
+# Initialize temperature fields
+T_prev = np.zeros((ny, nx))
+T_current = np.zeros((ny, nx))
+T_next = np.zeros((ny, nx))
+
+# Time-stepping loop
+for _ in range(nt):
+    # Update internal points using DuFort-Frankel scheme for 2D
+    T_next[1:-1,1:-1] = (
+        (1 - 4 * r) * T_prev[1:-1,1:-1] +
+        2 * r * (
+            T_current[2:,1:-1] + T_current[0:-2,1:-1] +
+            T_current[1:-1,2:] + T_current[1:-1,0:-2]
+        ) +
+        2 * dt * q[1:-1,1:-1]
+    ) / (1 + 4 * r)
+    
+    # Apply Dirichlet boundary conditions (T=0)
+    T_next[0, :] = 0
+    T_next[-1, :] = 0
+    T_next[:, 0] = 0
+    T_next[:, -1] = 0
+    
+    # Prepare for next time step
+    T_prev, T_current, T_next = T_current, T_next, T_prev
+
+# Save the final temperature field
+np.save('T.npy', T_current)
+```

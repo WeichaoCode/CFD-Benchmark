@@ -1,0 +1,28 @@
+import numpy as np
+import math
+
+# Parameters
+L = 2 * np.pi
+nu = 0.5
+dt = 0.01
+dx = dt / nu
+N = math.ceil(L / dx)
+x = np.linspace(0, L, N, endpoint=False)
+T = 500
+
+# Initial condition
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# Time integration using Lax-Wendroff method
+for _ in range(T):
+    F = u**2 / 2
+    A = u
+    A_half_plus = 0.5 * (A + np.roll(A, -1))
+    A_half_minus = 0.5 * (A + np.roll(A, 1))
+    term1 = A_half_plus * (np.roll(F, -1) - F)
+    term2 = A_half_minus * (F - np.roll(F, 1))
+    u_new = u - (dt / (2 * dx)) * (np.roll(F, -1) - np.roll(F, 1)) + (dt**2 / (2 * dx**2)) * (term1 - term2)
+    u = u_new
+
+# Save the final solution
+np.save('u.npy', u)

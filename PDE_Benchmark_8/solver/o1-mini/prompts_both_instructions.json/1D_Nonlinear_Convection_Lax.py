@@ -1,0 +1,23 @@
+import numpy as np
+import math
+
+# Parameters
+L = 2 * np.pi
+nu = 0.5
+dt = 0.01
+dx = dt / nu
+N = math.ceil(L / dx)
+x = np.linspace(0, L, N, endpoint=False)
+T = 500
+
+# Initial condition
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# Time integration using Lax method
+for _ in range(T):
+    F = 0.5 * u**2
+    u_new = (np.roll(u, -1) + np.roll(u, 1)) / 2 - (dt / (2 * dx)) * (np.roll(F, -1) - np.roll(F, 1))
+    u = u_new
+
+# Save the final solution
+np.save('u.npy', u)

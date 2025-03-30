@@ -1,0 +1,89 @@
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.sparse import diags
+from scipy.sparse.linalg import spsolve
+
+# Parameters
+H = 2.0          # Domain length
+n = 100          # Number of grid points
+mu = 1.0         # Molecular viscosity
+kappa = 0.41     # von Karman constant
+Re_tau = 180.0   # Friction Reynolds number
+A = 26.0         # Cess model parameter
+
+# Generate non-uniform mesh clustered near the walls using cosine spacing
+xi = np.linspace(0, 1, n)
+y = H * 0.5 * (1 - np.cos(np.pi * xi))  # y ranges from 0 to H
+
+# Compute y_plus, avoid division by zero at y=0 by setting a small value
+y_plus = np.copy(y)
+y_plus[y_plus == 0] = 1e-10  # Prevent division by zero
+
+# Compute mu_eff using the Cess algebraic turbulence model
+term = (2 * y / H - (y / H)**2)**2 * (3 - 4 * y / H + 2 * (y / H)**2)**2 * (1 - np.exp(-y_plus / A))
+sqrt_term = np.sqrt((1/9) * kappa**2 * Re_tau**2 * term)
+inner_sqrt = np.sqrt(0.5 * (1 + sqrt_term))
+mu_eff_over_mu = 0.5 * (inner_sqrt) - 0.5
+mu_eff = mu * (1 + mu_eff_over_mu)
+
+# Finite Difference Method setup
+n_interior = n - 2  # Exclude boundary points
+
+# Calculate the distances between points
+dy = np.diff(y)  # dy has length n-1
+
+# Calculate mu_eff at interfaces using arithmetic mean
+mu_eff_interface = (mu_eff[:-1] + mu_eff[1:]) / 2  # Length n-1
+
+# Compute coefficients A_i and C_i for the tridiagonal matrix
+A_coeff = mu_eff_interface[:-1] / dy[:-1]  # Length n_interior
+C_coeff = mu_eff_interface[1:] / dy[1:]    # Length n_interior
+
+# Main diagonal
+main_diag = A_coeff + C_coeff  # Length n_interior
+
+# Lower diagonal (A_i)
+lower_diag = A_coeff[:-1]  # Length n_interior -1
+
+# Upper diagonal (C_i)
+upper_diag = C_coeff[1:]  # Length n_interior -1
+
+# Construct the sparse tridiagonal matrix
+diagonals = [
+    lower_diag,      # Lower diagonal (offset -1)
+    main_diag,       # Main diagonal (offset 0)
+    upper_diag       # Upper diagonal (offset +1)
+]
+A_matrix = diags(diagonals, offsets=[-1, 0, 1], format="csr")
+
+# Right-hand side
+b = -np.ones(n_interior)
+
+# Solve the linear system
+u_interior = spsolve(A_matrix, b)
+
+# Construct the full solution including boundary conditions
+u = np.zeros(n)
+u[1:-1] = u_interior
+
+# Compute laminar velocity profile for comparison
+u_lam = (1 / (2 * mu)) * y * (H - y)
+
+# Plotting the velocity profiles
+plt.figure(figsize=(8,6))
+plt.plot(u, y, label='Turbulent Velocity Profile')
+plt.plot(u_lam, y, label='Laminar Velocity Profile', linestyle='--')
+plt.xlabel('Velocity u')
+plt.ylabel('y')
+plt.title('Velocity Profiles')
+plt.legend()
+plt.grid(True)
+plt.savefig('velocity_profiles.png')  # Save the plot as an image
+plt.close()
+
+# Save variables as .npy files
+save_values = ['y', 'u', 'mu_eff']
+for var in save_values:
+    np.save(f'{var}.npy', locals()[var])
+```

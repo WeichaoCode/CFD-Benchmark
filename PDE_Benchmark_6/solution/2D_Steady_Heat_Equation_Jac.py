@@ -45,9 +45,9 @@ print('------------')
 for k in range(max_k):
     for i in range(1, nx - 1):
         for j in range(1, ny - 1):
-            Tkp1[i, j] = omega * 0.5 / (1.0 + beta ** 2) * (T[i + 1, j] + Tkp1[i - 1, j]) + (
-                        omega * 0.5 * beta ** 2) / (1.0 + beta ** 2) * (T[i, j + 1] + Tkp1[i, j - 1]) + (1 - omega) * T[
-                             i, j]
+            # Point Jacobi method
+            Tkp1[i, j] = 0.5 / (1.0 + beta ** 2) * (T[i + 1, j] + T[i - 1, j]) + (0.5 * beta ** 2) / (
+                        1.0 + beta ** 2) * (T[i, j + 1] + T[i, j - 1])
 
     # Define residual error as the maximum absolute difference between subsequent iterates
     eps = np.append(eps, np.amax(np.absolute(np.subtract(Tkp1, T))))

@@ -1,0 +1,93 @@
+```python
+import numpy as np
+
+# Constants
+gamma = 1.4
+
+# Domain parameters
+x_start = -1.0
+x_end = 1.0
+N_x = 81
+L = x_end - x_start
+dx = L / (N_x - 1)
+x = np.linspace(x_start, x_end, N_x)
+
+# Time parameters
+T_final = 0.25
+CFL = 1.0
+t = 0.0
+
+# Initial conditions
+rho = np.where(x < 0, 1.0, 0.125)
+u = np.zeros(N_x)
+p = np.where(x < 0, 1.0, 0.1)
+E = p / ((gamma - 1) * rho) + 0.5 * u**2
+
+# Conservative variables: U = [rho, rho*u, rho*E]
+U = np.array([rho, rho * u, rho * E])
+
+def compute_flux(U):
+    rho = U[0]
+    u = U[1] / rho
+    E = U[2] / rho
+    p = (gamma - 1) * rho * (E - 0.5 * u**2)
+    
+    F = np.zeros_like(U)
+    F[0] = rho * u
+    F[1] = rho * u**2 + p
+    F[2] = u * (rho * E + p)
+    return F
+
+while t < T_final:
+    # Compute primitive variables
+    rho = U[0]
+    u = U[1] / rho
+    E = U[2] / rho
+    p = (gamma - 1) * rho * (E - 0.5 * u**2)
+    
+    # Compute fluxes
+    F = compute_flux(U)
+    
+    # Compute maximum wave speed for CFL condition
+    a = np.sqrt(gamma * p / rho)
+    max_speed = np.max(np.abs(u) + a)
+    dt = CFL * dx / max_speed
+    if t + dt > T_final:
+        dt = T_final - t
+    
+    # Predictor step
+    F_pred = compute_flux(U)
+    U_pred = np.copy(U)
+    U_pred[:, :-1] = U[:, :-1] - (dt / dx) * (F[:, 1:] - F[:, :-1])
+    
+    # Apply reflective boundary conditions
+    U_pred[:, 0] = U_pred[:, 1]
+    U_pred[:, -1] = U_pred[:, -2]
+    
+    # Compute fluxes for predictor step
+    F_pred = compute_flux(U_pred)
+    
+    # Corrector step
+    U_new = np.copy(U)
+    U_new[:, 1:-1] = 0.5 * (U[:, 1:-1] + U_pred[:, 1:-1] - 
+                             (dt / dx) * (F_pred[:, 1:-1] - F_pred[:, :-2]))
+    
+    # Apply reflective boundary conditions
+    U_new[:, 0] = U_new[:, 1]
+    U_new[:, -1] = U_new[:, -2]
+    
+    # Update variables
+    U = U_new
+    t += dt
+
+# Extract final primitive variables
+rho_final = U[0]
+u_final = U[1] / rho_final
+E_final = U[2] / rho_final
+p_final = (gamma - 1) * rho_final * (E_final - 0.5 * u_final**2)
+
+# Save the final solution
+np.save('rho.npy', rho_final)
+np.save('u.npy', u_final)
+np.save('p.npy', p_final)
+```

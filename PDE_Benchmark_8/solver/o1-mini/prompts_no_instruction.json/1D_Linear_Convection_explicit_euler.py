@@ -1,0 +1,57 @@
+import numpy as np
+
+def solve_pde(c, epsilon, x_start, x_end, N_x, t_end, CFL, filename):
+    # Spatial discretization
+    x = np.linspace(x_start, x_end, N_x)
+    dx = x[1] - x[0]
+    
+    # Initial condition
+    u = np.exp(-x**2)
+    
+    # Determine time step based on CFL condition
+    if epsilon == 0:
+        dt = CFL * dx / abs(c)
+    else:
+        dt_adv = dx / abs(c)
+        dt_diff = dx**2 / (2 * epsilon)
+        dt = CFL * min(dt_adv, dt_diff)
+    
+    # Number of time steps
+    n_steps = int(t_end / dt) + 1
+    
+    # Time integration using Explicit Euler
+    for _ in range(n_steps):
+        # Periodic boundary conditions using np.roll
+        u_plus = np.roll(u, -1)
+        u_minus = np.roll(u, 1)
+        
+        # Compute derivatives
+        du_dx = (u_plus - u_minus) / (2 * dx)
+        d2u_dx2 = (u_plus - 2 * u + u_minus) / dx**2
+        
+        # Update solution
+        u = u - c * dt * du_dx + epsilon * dt * d2u_dx2
+    
+    # Save the final solution
+    np.save(filename, u)
+
+def main():
+    # Parameters
+    c = 1
+    x_start = -5
+    x_end = 5
+    N_x = 101
+    t_end = 1.0
+    CFL = 0.8
+    
+    # Damping cases: (epsilon, filename)
+    damping_cases = [
+        (0, 'u_undamped.npy'),
+        (5e-4, 'u_damped.npy')
+    ]
+    
+    for epsilon, filename in damping_cases:
+        solve_pde(c, epsilon, x_start, x_end, N_x, t_end, CFL, filename)
+
+if __name__ == "__main__":
+    main()

@@ -1,8 +1,8 @@
 import os
 import cv2
 import numpy as np
-from skimage.metrics import structural_similarity as ssim
 import pandas as pd
+from skimage.metrics import structural_similarity as ssim
 
 # === Configuration ===
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -10,54 +10,72 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 save_dir_gt = os.path.join(ROOT_DIR, 'compare_images/ground_truth')
 save_dir_pred = os.path.join(ROOT_DIR, 'compare_images/prediction')
 save_csv_path = os.path.join(ROOT_DIR, 'compare_images/table')
-
-# Initialize an empty list to store the SSIM results
-ssim_results = []
+os.makedirs(save_csv_path, exist_ok=True)
 
 
-# Function to extract the problem name by ignoring the last part after the last '_'
+# === Helper Functions ===
 def get_problem_name_pred(filename):
-    return filename.rsplit('_', 1)[0]  # Split from the right at the last '_'
+    return filename.rsplit('_', 1)[0]
 
 
 def get_problem_name_gt(filename):
-    return filename.rsplit('_', 2)[0]  # Split from the right at the last '_'
+    return filename.rsplit('_', 2)[0]
 
 
-# Get the list of files in both folders
-files1 = {get_problem_name_gt(f) for f in os.listdir(save_dir_gt) if f.endswith('.png')}
-files2 = {get_problem_name_pred(f) for f in os.listdir(save_dir_pred) if f.endswith('.png')}
+def calculate_metrics(img1, img2):
+    # Resize img2 to match img1
+    img2_resized = cv2.resize(img2, (img1.shape[1], img1.shape[0]))
 
-# Find common files between the two folders
-common_files = files1.intersection(files2)
+    # Convert to grayscale
+    gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    gray2 = cv2.cvtColor(img2_resized, cv2.COLOR_BGR2GRAY)
 
-# Loop over each common file and calculate SSIM
-for file_name in common_files:
-    # Get the full filenames by appending the suffixes
-    gt_file_name = file_name + '_ground_truth.png'
-    pred_file_name = file_name + '_prediction.png'
+    # SSIM
+    ssim_index, _ = ssim(gray1, gray2, full=True)
 
-    # Load the images using the full file names
-    image1 = cv2.imread(os.path.join(save_dir_gt, gt_file_name))
-    image2 = cv2.imread(os.path.join(save_dir_pred, pred_file_name))
+    # MSE
+    mse = np.mean((gray1.astype("float") - gray2.astype("float")) ** 2)
 
-    # Resize image2 to the size of image1
-    image2_resized = cv2.resize(image2, (image1.shape[1], image1.shape[0]))
+    # MAE
+    mae = np.mean(np.abs(gray1.astype("float") - gray2.astype("float")))
 
-    # Convert images to grayscale for SSIM
-    image1_gray = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
-    image2_gray = cv2.cvtColor(image2_resized, cv2.COLOR_BGR2GRAY)
+    # PSNR
+    psnr = cv2.PSNR(gray1, gray2)
 
-    # Compute SSIM
-    ssim_index, _ = ssim(image1_gray, image2_gray, full=True)
+    return ssim_index, psnr, mse, mae
 
-    # Store the result in the list
-    ssim_results.append([file_name, ssim_index])
 
-# Convert the results into a pandas DataFrame
-ssim_df = pd.DataFrame(ssim_results, columns=['File Name', 'SSIM'])
+# === Find common files ===
+gt_files = {get_problem_name_gt(f): f for f in os.listdir(save_dir_gt) if f.endswith('.png')}
+pred_files = {get_problem_name_pred(f): f for f in os.listdir(save_dir_pred) if f.endswith('.png')}
 
-# Save the DataFrame to a CSV file
-ssim_df.to_csv(f'{save_csv_path}/ssim_results.csv', index=False)
+common_keys = gt_files.keys() & pred_files.keys()
 
-print("SSIM results saved to ssim_results.csv")
+# === Compute Metrics for Common Files ===
+results = []
+for problem_name in sorted(common_keys):
+    gt_path = os.path.join(save_dir_gt, gt_files[problem_name])
+    pred_path = os.path.join(save_dir_pred, pred_files[problem_name])
+
+    try:
+        img_gt = cv2.imread(gt_path)
+        img_pred = cv2.imread(pred_path)
+
+        ssim_score, psnr_score, mse_score, mae_score = calculate_metrics(img_gt, img_pred)
+
+        results.append({
+            "Problem Name": problem_name,
+            "SSIM": round(ssim_score, 4),
+            "PSNR": round(psnr_score, 2),
+            "MSE": round(mse_score, 4),
+            "MAE": round(mae_score, 4)
+        })
+    except Exception as e:
+        print(f"❌ Error comparing {problem_name}: {str(e)}")
+
+# === Save to CSV ===
+df = pd.DataFrame(results)
+csv_file = os.path.join(save_csv_path, 'image_similarity_scores.csv')
+df.to_csv(csv_file, index=False)
+
+print(f"✅ Image comparison complete. Table saved to:\n{csv_file}")

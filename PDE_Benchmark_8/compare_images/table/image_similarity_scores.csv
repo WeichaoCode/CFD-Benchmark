@@ -1,0 +1,21 @@
+Problem Name,SSIM,PSNR,MSE,MAE
+p_2D_Laplace_Equation,0.9609,23.61,283.0648,3.912
+p_2D_Navier_Stokes_Cavity,0.961,22.51,365.0207,7.1001
+p_2D_Navier_Stokes_Channel,0.9291,19.2,781.048,12.9864
+p_2D_Poisson_Equation,0.809,9.86,6718.6593,45.6156
+rho_1D_Euler_Shock_Tube,0.8686,20.79,542.6676,4.0645
+u_1D_Burgers_Equation,0.7836,19.14,793.1882,5.6658
+u_1D_Euler_Shock_Tube,0.7518,18.97,824.0549,6.3888
+u_2D_Burgers_Equation,0.9907,27.18,124.4016,0.6594
+u_2D_Convection,0.9911,27.95,104.2641,0.7177
+u_2D_Diffusion,0.8581,16.94,1315.5407,18.5519
+u_2D_Inviscid_Burgers,0.9649,23.81,270.1384,1.8886
+u_2D_Linear_Convection,0.9542,23.41,296.5076,2.6148
+u_2D_Navier_Stokes_Cavity,0.9289,22.4,373.8364,5.9556
+u_2D_Navier_Stokes_Channel,0.8914,16.55,1440.4763,20.3765
+u_Fully_Developed_Turbulent_Channel_Flow,0.7833,18.56,906.0836,6.0862
+v_2D_Burgers_Equation,0.9907,27.26,122.1706,0.6473
+v_2D_Convection,0.9911,27.96,103.954,0.7152
+v_2D_Inviscid_Burgers,0.9647,23.76,273.8116,1.9117
+v_2D_Navier_Stokes_Cavity,0.923,19.57,717.1067,13.3798
+v_2D_Navier_Stokes_Channel,0.9601,22.71,348.397,4.1808

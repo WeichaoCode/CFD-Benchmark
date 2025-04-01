@@ -1,0 +1,53 @@
+import numpy as np
+from scipy.sparse import diags, kron, identity
+from scipy.sparse.linalg import spsolve
+
+# Grid parameters
+nx, ny = 50, 50
+Lx, Ly = 2.0, 1.0
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+# Initialize source term b
+b = np.zeros((nx, ny))
+
+# Source locations
+i1 = int(round(0.5 / dx))
+j1 = int(round(0.25 / dy))
+i2 = int(round(1.5 / dx))
+j2 = int(round(0.75 / dy))
+
+# Assign source values
+b[i1, j1] = 100
+b[i2, j2] = -100
+
+# Number of unknowns
+N = (nx - 2) * (ny - 2)
+
+# Create diagonals for the sparse matrix
+main_diag = (2.0 / dx**2) + (2.0 / dy**2)
+off_diag_x = -1.0 / dx**2
+off_diag_y = -1.0 / dy**2
+
+# 1D Laplacian in x
+Tx = diags([-1.0 / dx**2, 2.0 / dx**2 + 2.0 / dy**2, -1.0 / dx**2], offsets=[-1, 0, 1], shape=(nx-2, nx-2))
+# 1D Laplacian in y
+Ty = diags([-1.0 / dy**2, 2.0 / dy**2 + 2.0 / dx**2, -1.0 / dy**2], offsets=[-1, 0, 1], shape=(ny-2, ny-2))
+
+# Construct 2D Laplacian using Kronecker product
+A = kron(identity(ny-2), Tx) + kron(Ty, identity(nx-2))
+
+# Flatten the source term for interior points
+b_interior = b[1:-1, 1:-1].flatten()
+
+# Solve the linear system
+p_interior = spsolve(A, b_interior)
+
+# Reshape the solution and add boundary conditions
+p = np.zeros((nx, ny))
+p[1:-1, 1:-1] = p_interior.reshape((nx-2, ny-2))
+
+# Save the final solution
+np.save('p', p)

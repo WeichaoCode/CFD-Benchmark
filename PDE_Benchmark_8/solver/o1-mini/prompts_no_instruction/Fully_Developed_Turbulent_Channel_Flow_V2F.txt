@@ -1,0 +1,155 @@
+```python
+import numpy as np
+from scipy.sparse import lil_matrix
+from scipy.sparse.linalg import spsolve
+
+# Constants
+C1 = 1.0
+C2 = 1.0
+C_e1 = 1.0
+C_e2 = 1.0
+sigma_k = 1.0
+sigma_epsilon = 1.0
+C_mu = 0.09
+T_const = 1.0
+L = 1.0
+H = 2.0
+n = 100
+rho = 1.0
+mu = 1.0
+T_t = 1.0
+
+# Generate non-uniform grid clustered near the walls
+eta = np.linspace(0, 1, n)
+beta = 0.5
+y = H * (eta**beta) / ((eta**beta) + (1 - eta)**beta)
+dy = np.diff(y)
+dy = np.concatenate(([dy[0]], dy))  # To make dy have length n
+
+# Initialize variables
+k = np.zeros(n)
+epsilon = np.zeros(n)
+v2 = np.zeros(n)
+f = np.zeros(n)
+
+# Initial guess for mu_t and P_k
+mu_t = np.zeros(n)
+P_k = np.zeros(n)
+
+# Maximum number of iterations
+max_iter = 1000
+tolerance = 1e-6
+
+for iteration in range(max_iter):
+    k_old = k.copy()
+    epsilon_old = epsilon.copy()
+    v2_old = v2.copy()
+    f_old = f.copy()
+    
+    # Update mu_t
+    mu_t = C_mu * rho * np.sqrt(epsilon / (k + 1e-12)) * T_t  # Added small number to avoid division by zero
+    
+    # Update P_k (Assuming P_k is proportional to mu_total * (du/dy)^2)
+    # Here we assume du/dy = 1 for simplicity
+    du_dy = 1.0
+    P_k = (mu + mu_t / sigma_k) * du_dy**2
+    
+    # Assemble the linear system
+    N = 4 * n
+    A = lil_matrix((N, N))
+    b = np.zeros(N)
+    
+    for i in range(n):
+        idx_k = 4 * i
+        idx_epsilon = 4 * i + 1
+        idx_v2 = 4 * i + 2
+        idx_f = 4 * i + 3
+
+        if i == 0 or i == n - 1:
+            # Boundary conditions (Dirichlet)
+            A[idx_k, idx_k] = 1
+            b[idx_k] = 0
+            A[idx_epsilon, idx_epsilon] = 1
+            b[idx_epsilon] = 0
+            A[idx_v2, idx_v2] = 1
+            b[idx_v2] = 0
+            A[idx_f, idx_f] = 1
+            b[idx_f] = 0
+        else:
+            dy_minus = dy[i]
+            dy_plus = dy[i + 1] if i < n - 1 else dy[i]
+            
+            # Compute mu_total for each equation
+            mu_total_k = mu + mu_t[i] / sigma_k
+            mu_total_epsilon = mu + mu_t[i] / sigma_epsilon
+            mu_total_v2 = mu + mu_t[i] / sigma_k
+            mu_total_f = L**2
+
+            # Coefficients for finite differences
+            A_k_i_minus = mu_total_k / dy_minus**2
+            A_k_i = -2 * mu_total_k / dy_minus**2
+            A_k_i_plus = mu_total_k / dy_plus**2
+
+            A_epsilon_i_minus = mu_total_epsilon / dy_minus**2
+            A_epsilon_i = -2 * mu_total_epsilon / dy_minus**2
+            A_epsilon_i_plus = mu_total_epsilon / dy_plus**2
+
+            A_v2_i_minus = mu_total_v2 / dy_minus**2
+            A_v2_i = -2 * mu_total_v2 / dy_minus**2
+            A_v2_i_plus = mu_total_v2 / dy_plus**2
+
+            A_f_i_minus = mu_total_f / dy_minus**2
+            A_f_i = -2 * mu_total_f / dy_minus**2 - 1
+            A_f_i_plus = mu_total_f / dy_plus**2
+
+            # Populate A matrix for k
+            A[idx_k, 4*(i-1)] = A_k_i_minus
+            A[idx_k, idx_k] = A_k_i
+            A[idx_k, 4*(i+1)] = A_k_i_plus
+            b[idx_k] = rho * epsilon[i] - P_k[i]
+
+            # Populate A matrix for epsilon
+            A[idx_epsilon, 4*(i-1)+1] = A_epsilon_i_minus
+            A[idx_epsilon, idx_epsilon] = A_epsilon_i
+            A[idx_epsilon, 4*(i+1)+1] = A_epsilon_i_plus
+            b[idx_epsilon] = (C_e2 * rho * epsilon[i] - C_e1 * P_k[i]) / T_const
+
+            # Populate A matrix for v2
+            A[idx_v2, 4*(i-1)+2] = A_v2_i_minus
+            A[idx_v2, idx_v2] = A_v2_i
+            A[idx_v2, 4*(i+1)+2] = A_v2_i_plus
+            b[idx_v2] = (6 * rho * v2[i] * epsilon[i] / (k[i] + 1e-12) - rho * k[i] * f[i])
+
+            # Populate A matrix for f
+            A[idx_f, 4*(i-1)+3] = A_f_i_minus
+            A[idx_f, idx_f] = A_f_i
+            A[idx_f, 4*(i+1)+3] = A_f_i_plus
+            b[idx_f] = (C1 * (6 - v2[i]) - (2/3) * (C1 - 1)) / T_const - C2 * P_k[i]
+
+    # Solve the linear system
+    A = A.tocsr()
+    x = spsolve(A, b)
+
+    # Extract solutions
+    k_new = x[0::4]
+    epsilon_new = x[1::4]
+    v2_new = x[2::4]
+    f_new = x[3::4]
+
+    # Check for convergence
+    if (np.linalg.norm(k_new - k, ord=np.inf) < tolerance and
+        np.linalg.norm(epsilon_new - epsilon, ord=np.inf) < tolerance and
+        np.linalg.norm(v2_new - v2, ord=np.inf) < tolerance and
+        np.linalg.norm(f_new - f, ord=np.inf) < tolerance):
+        k, epsilon, v2, f = k_new, epsilon_new, v2_new, f_new
+        break
+
+    k, epsilon, v2, f = k_new, epsilon_new, v2_new, f_new
+
+# Save the final solutions
+save_values = ['k', 'epsilon', 'v2', 'f']
+np.save('k.npy', k)
+np.save('epsilon.npy', epsilon)
+np.save('v2.npy', v2)
+np.save('f.npy', f)
+```

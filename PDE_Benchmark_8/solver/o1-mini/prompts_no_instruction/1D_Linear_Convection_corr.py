@@ -1,0 +1,44 @@
+import numpy as np
+
+# Parameters
+c = 1.0
+epsilon = 5e-4
+
+# Domain
+x_start = -5.0
+x_end = 5.0
+N_x = 101
+x = np.linspace(x_start, x_end, N_x)
+dx = x[1] - x[0]
+
+# Initial condition
+u = np.exp(-x**2)
+
+# Time parameters
+CFL_conv = 0.4
+CFL_diff = 0.4
+dt_conv = CFL_conv * dx / c
+dt_diff = CFL_diff * dx**2 / epsilon
+dt = min(dt_conv, dt_diff)
+t_final = 1.0
+n_steps = int(t_final / dt) + 1
+
+# Save values
+save_values = ['u']
+
+# Function to compute RHS
+def compute_RHS(u):
+    du_dx = (np.roll(u, -1) - np.roll(u, 1)) / (2 * dx)
+    d2u_dx2 = (np.roll(u, -1) - 2 * u + np.roll(u, 1)) / dx**2
+    return -c * du_dx + epsilon * d2u_dx2
+
+# Time integration using Predictor-Corrector (Heun's method)
+for _ in range(n_steps):
+    F_n = compute_RHS(u)
+    u_p = u + dt * F_n
+    F_p = compute_RHS(u_p)
+    u = u + dt * 0.5 * (F_n + F_p)
+
+# Save the final solution
+for var in save_values:
+    np.save(f'{var}.npy', locals()[var])

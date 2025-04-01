@@ -4,71 +4,79 @@ from mpl_toolkits.mplot3d import Axes3D
 
 # Parameters
 nx, ny = 41, 41
-dx = 2 / (nx - 1)
-dy = 2 / (ny - 1)
 nt = 120
 sigma = 0.0009
 nu = 0.01
+dx = 2 / (nx - 1)
+dy = 2 / (ny - 1)
 dt = sigma * dx * dy / nu
+
+# Create mesh
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+X, Y = np.meshgrid(x, y)
 
 # Initialize velocity fields
 u = np.ones((ny, nx))
 v = np.ones((ny, nx))
 
-# Set initial condition: u = v = 2 for 0.5 <= x, y <=1
-x = np.linspace(0, 2, nx)
-y = np.linspace(0, 2, ny)
-X, Y = np.meshgrid(x, y)
-mask = (X >= 0.5) & (X <=1) & (Y >=0.5) & (Y <=1)
-u[mask] = 2
-v[mask] = 2
+# Apply initial conditions
+u_initial_condition = np.where((X >= 0.5) & (X <=1) & (Y >=0.5) & (Y <=1), 2, 1)
+v_initial_condition = np.where((X >= 0.5) & (X <=1) & (Y >=0.5) & (Y <=1), 2, 1)
+u = u_initial_condition.copy()
+v = v_initial_condition.copy()
 
-# Time-stepping
+# Time-stepping loop
 for _ in range(nt):
     un = u.copy()
     vn = v.copy()
     
-    u[1:-1,1:-1] = (un[1:-1,1:-1] 
-                    - un[1:-1,1:-1] * dt / dx * (un[1:-1,1:-1] - un[1:-1,0:-2]) 
-                    - vn[1:-1,1:-1] * dt / dy * (un[1:-1,1:-1] - un[0:-2,1:-1])
-                    + nu * dt / dx**2 * (un[1:-1,2:] - 2*un[1:-1,1:-1] + un[1:-1,0:-2])
-                    + nu * dt / dy**2 * (un[2:,1:-1] - 2*un[1:-1,1:-1] + un[0:-2,1:-1]))
+    # Compute derivatives
+    du_dx = (un[1:-1, 2:] - un[1:-1, :-2]) / (2 * dx)
+    du_dy = (un[2:, 1:-1] - un[:-2, 1:-1]) / (2 * dy)
+    d2u_dx2 = (un[1:-1, 2:] - 2 * un[1:-1, 1:-1] + un[1:-1, :-2]) / dx**2
+    d2u_dy2 = (un[2:, 1:-1] - 2 * un[1:-1, 1:-1] + un[:-2, 1:-1]) / dy**2
     
-    v[1:-1,1:-1] = (vn[1:-1,1:-1] 
-                    - un[1:-1,1:-1] * dt / dx * (vn[1:-1,1:-1] - vn[1:-1,0:-2]) 
-                    - vn[1:-1,1:-1] * dt / dy * (vn[1:-1,1:-1] - vn[0:-2,1:-1])
-                    + nu * dt / dx**2 * (vn[1:-1,2:] - 2*vn[1:-1,1:-1] + vn[1:-1,0:-2])
-                    + nu * dt / dy**2 * (vn[2:,1:-1] - 2*vn[1:-1,1:-1] + vn[0:-2,1:-1]))
+    dv_dx = (vn[1:-1, 2:] - vn[1:-1, :-2]) / (2 * dx)
+    dv_dy = (vn[2:, 1:-1] - vn[:-2, 1:-1]) / (2 * dy)
+    d2v_dx2 = (vn[1:-1, 2:] - 2 * vn[1:-1, 1:-1] + vn[1:-1, :-2]) / dx**2
+    d2v_dy2 = (vn[2:, 1:-1] - 2 * vn[1:-1, 1:-1] + vn[:-2, 1:-1]) / dy**2
+    
+    # Update velocity fields
+    u[1:-1,1:-1] = un[1:-1,1:-1] + dt * (-un[1:-1,1:-1] * du_dx - vn[1:-1,1:-1] * du_dy + nu * (d2u_dx2 + d2u_dy2))
+    v[1:-1,1:-1] = vn[1:-1,1:-1] + dt * (-un[1:-1,1:-1] * dv_dx - vn[1:-1,1:-1] * dv_dy + nu * (d2v_dx2 + d2v_dy2))
     
     # Apply Dirichlet boundary conditions
-    u[:,0] = 1
-    u[:,-1] = 1
     u[0,:] = 1
     u[-1,:] = 1
+    u[:,0] = 1
+    u[:,-1] = 1
     
-    v[:,0] = 1
-    v[:,-1] = 1
     v[0,:] = 1
     v[-1,:] = 1
+    v[:,0] = 1
+    v[:,-1] = 1
 
 # Plotting u
-fig = plt.figure(figsize=(11,7), dpi=100)
-ax = fig.add_subplot(111, projection='3d')
-ax.plot_surface(X, Y, u, cmap='viridis')
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('u')
-plt.show()
+fig1 = plt.figure()
+ax1 = fig1.add_subplot(111, projection='3d')
+ax1.plot_surface(X, Y, u, cmap='viridis')
+ax1.set_xlabel('X')
+ax1.set_ylabel('Y')
+ax1.set_zlabel('u')
+plt.title('Velocity Field u at Final Time Step')
+plt.savefig('u_plot.png')
 
 # Plotting v
-fig = plt.figure(figsize=(11,7), dpi=100)
-ax = fig.add_subplot(111, projection='3d')
-ax.plot_surface(X, Y, v, cmap='viridis')
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('v')
-plt.show()
+fig2 = plt.figure()
+ax2 = fig2.add_subplot(111, projection='3d')
+ax2.plot_surface(X, Y, v, cmap='viridis')
+ax2.set_xlabel('X')
+ax2.set_ylabel('Y')
+ax2.set_zlabel('v')
+plt.title('Velocity Field v at Final Time Step')
+plt.savefig('v_plot.png')
 
-# Save the final velocity fields
+# Save final velocity fields
 np.save('u.npy', u)
 np.save('v.npy', v)

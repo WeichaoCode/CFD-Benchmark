@@ -2,52 +2,57 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Parameters
-mu = 1e-3  # Dynamic viscosity (Pa·s)
-dP_dz = -3.2  # Pressure gradient (Pa/m)
-h = 0.1  # Domain size (m)
-nx = ny = 80  # Number of grid points
-dx = dy = h / (nx - 1)  # Grid spacing
+h = 0.1
+n_x = 80
+n_y = 80
+dx = h / (n_x - 1)
+dy = h / (n_y - 1)
+mu = 1e-3
+dP_dz = -3.2
 
-# Coefficients
-a_E = a_W = mu * dy / dx
-a_N = a_S = mu * dx / dy
+a_E = mu * dy / dx
+a_W = a_E
+a_N = mu * dx / dy
+a_S = a_N
 a_P = a_E + a_W + a_N + a_S
 S_u = dP_dz * dx * dy
 
-# Initialize velocity field
-w = np.zeros((ny, nx))
-w_new = np.zeros_like(w)
+# Initialize w
+w_old = np.zeros((n_x, n_y))
+w_new = np.zeros_like(w_old)
 
 # Iteration parameters
-tolerance = 1e-6
-max_iterations = 10000
+tol = 1e-6
+max_iters = 10000
 iteration = 0
-diff = tolerance + 1
 
-# Jacobi Iteration
-while diff > tolerance and iteration < max_iterations:
-    w_new[1:-1, 1:-1] = (a_E * w[1:-1, 2:] +
-                          a_W * w[1:-1, :-2] +
-                          a_N * w[:-2, 1:-1] +
-                          a_S * w[2:, 1:-1] +
-                          S_u) / a_P
-    diff = np.max(np.abs(w_new - w))
-    w[:,:] = w_new
+# Jacobi iteration
+while iteration < max_iters:
+    w_new[1:-1, 1:-1] = (
+        a_E * w_old[2:, 1:-1] +
+        a_W * w_old[0:-2, 1:-1] +
+        a_N * w_old[1:-1, 2:] +
+        a_S * w_old[1:-1, 0:-2] +
+        S_u
+    ) / a_P
+    diff = np.max(np.abs(w_new - w_old))
+    if diff < tol:
+        break
+    w_old[:, :] = w_new[:, :]
     iteration += 1
 
-# Create grid for plotting
-x = np.linspace(0, h, nx)
-y = np.linspace(0, h, ny)
-X, Y = np.meshgrid(x, y)
+w = w_new
 
-# Plot contour
-plt.figure(figsize=(8,6))
-contour = plt.contourf(X, Y, w, levels=50, cmap='viridis')
-plt.colorbar(contour, label='w (m/s)')
+# Contour plot
+X = np.linspace(0, h, n_x)
+Y = np.linspace(0, h, n_y)
+X, Y = np.meshgrid(X, Y)
+plt.contourf(X, Y, w.T, 50, cmap='jet')
+plt.colorbar(label='w (m/s)')
 plt.xlabel('x (m)')
 plt.ylabel('y (m)')
-plt.title('Velocity Component w')
+plt.title('Velocity distribution w')
 plt.show()
 
-# Save the final velocity field
-np.save('w.npy', w)
+# Save the final solution
+np.save('w', w)

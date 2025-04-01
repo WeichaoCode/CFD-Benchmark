@@ -8,8 +8,18 @@ C_e2 = 1.92
 C_mu = 0.09
 sigma_k = 1.0
 sigma_epsilon = 1.3
+rho = 1.0
+mu = 1.0
 
-# Functions for near-wall effects (placeholders, should be defined based on the model)
+# Non-uniform grid clustering near the walls
+y = np.linspace(0, 1, n)
+y = H * (np.sinh(3 * y) / np.sinh(3))
+
+# Initial conditions
+k = np.ones(n) * 1e-5  # Small non-zero initial value to avoid division by zero
+epsilon = np.ones(n) * 1e-5  # Small non-zero initial value to avoid division by zero
+
+# Functions for near-wall effects
 def f_1(y):
     return 1.0
 
@@ -19,75 +29,41 @@ def f_2(y):
 def f_mu(y):
     return 1.0
 
-# Grid generation (non-uniform mesh clustered near the walls)
-y = np.linspace(0, H, n)
-dy = np.gradient(y)
+# Discretization parameters
+dy = np.diff(y)
+dy = np.append(dy, dy[-1])  # To handle the last point
 
-# Initial conditions with more realistic small non-zero values
-k = np.full(n, 0.01)
-epsilon = np.full(n, 0.01)
+# Iterative solver parameters
+tolerance = 1e-6
+max_iterations = 10000
 
-# Placeholder for turbulent production term (should be defined based on the problem)
-P_k = np.zeros(n)
+# Solver loop
+for iteration in range(max_iterations):
+    k_old = k.copy()
+    epsilon_old = epsilon.copy()
 
-# Material properties (placeholders, should be defined based on the problem)
-rho = 1.0
-mu = 1.0
+    # Calculate turbulent viscosity
+    mu_t = C_mu * f_mu(y) * rho * k**2 / epsilon
 
-# Small threshold to prevent division by zero
-epsilon_threshold = 1e-10
-
-# Solver loop (steady-state assumption)
-for iteration in range(1000):  # Arbitrary number of iterations for steady-state convergence
-    # Compute turbulent viscosity
-    mu_t = C_mu * f_mu(y) * rho * np.clip(k**2 / (epsilon + epsilon_threshold), 0, 1e5)
-
-    # Solve for k using finite difference method
-    A_k = np.zeros((n, n))
-    b_k = np.zeros(n)
-    
+    # Solve for k
     for i in range(1, n-1):
-        A_k[i, i-1] = (mu + mu_t[i-1] / sigma_k) / dy[i-1]**2
-        A_k[i, i] = -2 * (mu + mu_t[i] / sigma_k) / dy[i]**2 + 1e-8  # Regularization term
-        A_k[i, i+1] = (mu + mu_t[i+1] / sigma_k) / dy[i+1]**2
-        b_k[i] = P_k[i] - rho * epsilon[i]
-    
-    # Apply boundary conditions for k
-    A_k[0, 0] = 1.0
-    A_k[-1, -1] = 1.0
-    b_k[0] = 0.0
-    b_k[-1] = 0.0
+        P_k = mu_t[i] * ((k[i+1] - k[i-1]) / (2 * dy[i]))**2
+        A = (mu + mu_t[i] / sigma_k) / dy[i]**2
+        B = (mu + mu_t[i] / sigma_k) / dy[i]**2
+        C = -2 * (mu + mu_t[i] / sigma_k) / dy[i]**2 - rho * epsilon[i]
+        k[i] = (A * k[i-1] + B * k[i+1] - P_k) / C
 
-    # Solve the linear system for k
-    k_new = np.linalg.solve(A_k, b_k)
-
-    # Solve for epsilon using finite difference method
-    A_epsilon = np.zeros((n, n))
-    b_epsilon = np.zeros(n)
-    
+    # Solve for epsilon
     for i in range(1, n-1):
-        A_epsilon[i, i-1] = (mu + mu_t[i-1] / sigma_epsilon) / dy[i-1]**2
-        A_epsilon[i, i] = -2 * (mu + mu_t[i] / sigma_epsilon) / dy[i]**2 + 1e-8  # Regularization term
-        A_epsilon[i, i+1] = (mu + mu_t[i+1] / sigma_epsilon) / dy[i+1]**2
-        b_epsilon[i] = (epsilon[i] / (k[i] + epsilon_threshold)) * (C_e1 * f_1(y[i]) * P_k[i] - C_e2 * f_2(y[i]) * epsilon[i])
-    
-    # Apply boundary conditions for epsilon
-    A_epsilon[0, 0] = 1.0
-    A_epsilon[-1, -1] = 1.0
-    b_epsilon[0] = 0.0
-    b_epsilon[-1] = 0.0
+        A = (mu + mu_t[i] / sigma_epsilon) / dy[i]**2
+        B = (mu + mu_t[i] / sigma_epsilon) / dy[i]**2
+        C = -2 * (mu + mu_t[i] / sigma_epsilon) / dy[i]**2 - C_e2 * f_2(y[i]) * epsilon[i] / k[i]
+        epsilon[i] = (A * epsilon[i-1] + B * epsilon[i+1] + C_e1 * f_1(y[i]) * P_k * epsilon[i] / k[i]) / C
 
-    # Solve the linear system for epsilon
-    epsilon_new = np.linalg.solve(A_epsilon, b_epsilon)
-
-    # Check for convergence (simple check, can be improved)
-    if np.linalg.norm(k_new - k) < 1e-6 and np.linalg.norm(epsilon_new - epsilon) < 1e-6:
+    # Check for convergence
+    if np.linalg.norm(k - k_old, ord=np.inf) < tolerance and np.linalg.norm(epsilon - epsilon_old, ord=np.inf) < tolerance:
         break
 
-    # Update k and epsilon, with clipping to prevent overflow
-    k = np.clip(k_new, 1e-6, 1e3)
-    epsilon = np.clip(epsilon_new, 1e-6, 1e3)
-
-# Save the final solution
+# Save the final solutions
 np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/k_Fully_Developed_Turbulent_Channel_Flow_KE.npy', k)
 np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/epsilon_Fully_Developed_Turbulent_Channel_Flow_KE.npy', epsilon)

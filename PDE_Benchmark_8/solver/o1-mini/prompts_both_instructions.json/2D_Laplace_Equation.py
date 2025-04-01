@@ -1,60 +1,56 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Domain parameters
+# Parameters
 nx, ny = 31, 31
-x_start, x_end = 0, 2
-y_start, y_end = 0, 1
-dx = (x_end - x_start) / (nx - 1)
-dy = (y_end - y_start) / (ny - 1)
+lx, ly = 2.0, 1.0
+dx, dy = lx / (nx - 1), ly / (ny - 1)
+tolerance = 1e-6
+max_iterations = 10000
+
+# Grid
+x = np.linspace(0, lx, nx)
+y = np.linspace(0, ly, ny)
 
 # Initialize potential field
 p = np.zeros((ny, nx))
 
-# Boundary conditions
-p[:, -1] = np.linspace(y_start, y_end, ny)  # Right boundary p = y
+# Apply Dirichlet boundary conditions
+p[:, 0] = 0.0        # Left boundary (x=0)
+p[:, -1] = y         # Right boundary (x=2)
 
-# Iterative solver parameters
-tolerance = 1e-4
-max_iterations = 10000
-diff = tolerance + 1
-iterations = 0
-
-while diff > tolerance and iterations < max_iterations:
-    p_old = p.copy()
+# Iterative solver (Jacobi)
+for iteration in range(max_iterations):
+    p_new = p.copy()
     
     # Update interior points
-    p[1:-1,1:-1] = (
-        dy**2 * (p_old[1:-1,2:] + p_old[1:-1,0:-2]) +
-        dx**2 * (p_old[2:,1:-1] + p_old[0:-2,1:-1])
-    ) / (2 * (dx**2 + dy**2))
+    p_new[1:-1, 1:-1] = ((dy**2 * (p[1:-1, 2:] + p[1:-1, 0:-2]) +
+                            dx**2 * (p[2:, 1:-1] + p[0:-2, 1:-1])) /
+                           (2 * (dx**2 + dy**2)))
+    
+    # Apply Neumann boundary conditions (top and bottom)
+    p_new[0, 1:-1] = p_new[1, 1:-1]      # Top boundary (y=0)
+    p_new[-1, 1:-1] = p_new[-2, 1:-1]    # Bottom boundary (y=1)
     
     # Apply Dirichlet boundary conditions
-    p[:,0] = 0  # Left boundary p = 0
-    p[:,-1] = np.linspace(y_start, y_end, ny)  # Right boundary p = y
+    p_new[:, 0] = 0.0                    # Left boundary (x=0)
+    p_new[:, -1] = y                      # Right boundary (x=2)
     
-    # Apply Neumann boundary conditions
-    p[0,:] = p[1,:]     # Bottom boundary ∂p/∂y = 0
-    p[-1,:] = p[-2,:]   # Top boundary ∂p/∂y = 0
-    
-    # Compute the maximum difference from the old values
-    diff = np.max(np.abs(p - p_old))
-    iterations += 1
-
-print(f'Converged after {iterations} iterations with a difference of {diff}')
+    # Check for convergence
+    delta = np.max(np.abs(p_new - p))
+    if delta < tolerance:
+        break
+    p = p_new
 
 # Save the final solution
+save_values = ['p']
 np.save('p.npy', p)
 
-# Plot the potential field
-X = np.linspace(x_start, x_end, nx)
-Y = np.linspace(y_start, y_end, ny)
-X, Y = np.meshgrid(X, Y)
-
-plt.figure(figsize=(8,6))
-cp = plt.contourf(X, Y, p, 50, cmap='viridis')
-plt.colorbar(cp)
-plt.title('Potential Field p(x,y)')
+# Visualization
+X, Y = np.meshgrid(x, y)
+plt.contourf(X, Y, p, 50, cmap='viridis')
+plt.colorbar(label='Potential p')
 plt.xlabel('x')
 plt.ylabel('y')
+plt.title('Potential Contour')
 plt.show()

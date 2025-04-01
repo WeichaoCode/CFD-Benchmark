@@ -8,80 +8,68 @@ x = np.linspace(-1, 1, nx)
 y = np.linspace(-1, 1, ny)
 dx = x[1] - x[0]
 dy = y[1] - y[0]
-alpha = 0.01  # Reduced alpha to ensure stability
-Q0 = 200.0
+alpha = 1.0
 sigma = 0.1
-beta = dy / dx  # Assuming dx = dy, so beta = 1.0
-r = 0.001  # Further reduced r to ensure stability
+Q0 = 200.0
+r = 0.0001  # Further reduced r to enhance numerical stability
 dt = r * dx**2 / alpha
 t_max = 3.0
+n_steps = int(t_max / dt)
 
-# Create meshgrid
 X, Y = np.meshgrid(x, y)
+q = Q0 * np.exp(-(X**2 + Y**2) / (2 * sigma**2))
 
-# Source term
-q = Q0 * np.exp(- (X**2 + Y**2) / (2 * sigma**2))
+# Initial condition
+T_initial = 1.0 + Q0 * np.exp(-(X**2 + Y**2) / (2 * sigma**2))
+T_prev = T_initial.copy()
 
-# Initialize temperature fields
-T_prev = np.zeros((ny, nx))
-T_current = np.zeros((ny, nx))
-T_new = np.zeros((ny, nx))
-
-# Function to apply Dirichlet boundary conditions
-def apply_boundary(T):
-    T[0, :] = 0
-    T[-1, :] = 0
-    T[:, 0] = 0
-    T[:, -1] = 0
-    return T
-
-# Apply boundary conditions to initial fields
-T_prev = apply_boundary(T_prev)
-T_current = apply_boundary(T_current)
-
-# First time step using Forward Euler method
-T_current[1:-1,1:-1] = T_prev[1:-1,1:-1] + dt * (
-    alpha * (
-        (T_prev[2:,1:-1] - 2*T_prev[1:-1,1:-1] + T_prev[:-2,1:-1]) / dx**2 +
-        (T_prev[1:-1,2:] - 2*T_prev[1:-1,1:-1] + T_prev[1:-1,:-2]) / dy**2
-    ) + q[1:-1,1:-1]
+# Compute T_current using Forward Euler for the first time step
+laplacian = (
+    (np.roll(T_prev, 1, axis=0) + np.roll(T_prev, -1, axis=0) +
+     np.roll(T_prev, 1, axis=1) + np.roll(T_prev, -1, axis=1) -
+     4 * T_prev) / dx**2
 )
+T_current = T_prev + dt * (alpha * laplacian + q)
 
-# Apply boundary conditions
-T_current = apply_boundary(T_current)
+# Apply Dirichlet boundary conditions
+T_current[0, :] = 1.0
+T_current[-1, :] = 1.0
+T_current[:, 0] = 1.0
+T_current[:, -1] = 1.0
 
-# Time stepping using DuFort-Frankel method
-t = dt
-while t < t_max:
-    T_new[1:-1,1:-1] = (
+# Time-stepping using DuFort-Frankel method
+for step in range(1, n_steps):
+    T_new = np.empty_like(T_current)
+    T_new[1:-1, 1:-1] = (
         2 * r * (
-            T_current[2:,1:-1] + T_current[:-2,1:-1] +
-            T_current[1:-1,2:] + T_current[1:-1,:-2]
-        ) + 
-        T_prev[1:-1,1:-1] + 
-        2 * dt * q[1:-1,1:-1]
+            T_current[2:, 1:-1] + T_current[:-2, 1:-1] +
+            T_current[1:-1, 2:] + T_current[1:-1, :-2]
+        ) +
+        T_prev[1:-1, 1:-1] +
+        2 * dt * q[1:-1, 1:-1]
     ) / (1 + 4 * r)
     
     # Apply Dirichlet boundary conditions
-    T_new = apply_boundary(T_new)
+    T_new[0, :] = 1.0
+    T_new[-1, :] = 1.0
+    T_new[:, 0] = 1.0
+    T_new[:, -1] = 1.0
     
     # Update for next time step
-    T_prev, T_current = T_current, T_new.copy()
-    t += dt
+    T_prev, T_current = T_current, T_new
 
 # Final temperature field
-T = T_current
+T = T_current.copy()
 
 # Save the final temperature field
+save_values = ['T']
 np.save('T.npy', T)
 
 # Visualization
-plt.figure(figsize=(6,5))
-contour = plt.contourf(X, Y, T, 50, cmap='hot')
-plt.colorbar(contour)
-plt.title(f'Temperature Distribution at t = {t_max:.2f} s')
+plt.contourf(X, Y, T, levels=50, cmap='hot')
+plt.colorbar(label='Temperature')
 plt.xlabel('x')
 plt.ylabel('y')
-plt.tight_layout()
+plt.title('Final Temperature Field')
 plt.show()
 ```

@@ -78,6 +78,6 @@ def call_execute_solver(llm_model, prompt_json):
 #
 # call_execute_solver('gpt-4o', 'prompts_instruction_2')
 
-# call_execute_solver('gpt-4o', 'prompts_no_instruction')
+call_execute_solver('gpt-4o', 'prompts_no_instruction')
 
-call_execute_solver('gpt-4o', 'prompts')
+# call_execute_solver('gpt-4o', 'prompts')

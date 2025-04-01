@@ -2,15 +2,19 @@ import numpy as np
 
 # Parameters
 nx, ny = 151, 151
-x = np.linspace(0, 2, nx)
-y = np.linspace(0, 2, ny)
-dx = x[1] - x[0]
-dy = y[1] - y[0]
-sigma = 0.2
-dt = sigma * min(dx, dy) / 2
 nt = 300
+x_start, x_end = 0, 2
+y_start, y_end = 0, 2
+sigma = 0.2
 
-# Initialize u and v
+# Grid spacing
+dx = (x_end - x_start) / (nx - 1)
+dy = (y_end - y_start) / (ny - 1)
+dt = sigma * min(dx, dy) / 2
+
+# Initialize the grid
+x = np.linspace(x_start, x_end, nx)
+y = np.linspace(y_start, y_end, ny)
 u = np.ones((ny, nx))
 v = np.ones((ny, nx))
 
@@ -18,7 +22,7 @@ v = np.ones((ny, nx))
 u[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
 v[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
 
-# Time-stepping using MacCormack method
+# MacCormack method
 for n in range(nt):
     # Predictor step
     u_star = u.copy()
@@ -31,6 +35,17 @@ for n in range(nt):
     v_star[1:-1, 1:-1] = (v[1:-1, 1:-1] - 
                           dt / dx * u[1:-1, 1:-1] * (v[1:-1, 1:-1] - v[1:-1, :-2]) - 
                           dt / dy * v[1:-1, 1:-1] * (v[1:-1, 1:-1] - v[:-2, 1:-1]))
+    
+    # Apply boundary conditions
+    u_star[:, 0] = 1
+    u_star[:, -1] = 1
+    u_star[0, :] = 1
+    u_star[-1, :] = 1
+    
+    v_star[:, 0] = 1
+    v_star[:, -1] = 1
+    v_star[0, :] = 1
+    v_star[-1, :] = 1
     
     # Corrector step
     u[1:-1, 1:-1] = (0.5 * (u[1:-1, 1:-1] + u_star[1:-1, 1:-1] - 

@@ -1,58 +1,46 @@
 import numpy as np
-import matplotlib.pyplot as plt
+from scipy.sparse import diags
+from scipy.sparse.linalg import spsolve
 
 # Parameters
 H = 2.0
 n = 100
 rho = 1.0
-mu = 0.01  # molecular viscosity
-C = 0.1    # turbulence model constant for mu_t
-
-# Create non-uniform mesh clustered near walls
-beta = 1.5
-xi = np.linspace(0, 1, n)
-y = H * (xi**beta) / (xi**beta + (1 - xi)**beta)
-
-# Compute turbulent viscosity using a simple model
-mu_t = C * y * (H - y)
+tilde_nu = 1.0
+f_nu1 = 1.0
+mu = 1.0
+mu_t = rho * tilde_nu * f_nu1
 mu_eff = mu + mu_t
 
-# Finite Difference Method for d/dy(mu_eff * du/dy) = -1
-A = np.zeros((n, n))
-b = -np.ones(n)
+# Mesh generation - non-uniform grid clustered near walls
+s = np.linspace(0, 1, n)
+y = (1 - np.cos(np.pi * s)) / 2 * H
 
-# Boundary conditions: u=0 at y=0 and y=H
-A[0,0] = 1
-b[0] = 0
-A[-1,-1] = 1
-b[-1] = 0
+# Compute grid spacings
+h = np.diff(y)  # h_i = y_{i+1} - y_i, length n-1
 
-# Interior points
-for i in range(1, n-1):
-    dy_up = y[i] - y[i-1]
-    dy_down = y[i+1] - y[i]
-    A[i, i-1] = mu_eff[i-1] / dy_up**2
-    A[i, i] = - (mu_eff[i-1] + mu_eff[i]) / dy_up**2 - (mu_eff[i] + mu_eff[i+1]) / dy_down**2
-    A[i, i+1] = mu_eff[i+1] / dy_down**2
-    b[i] = -1
+# Number of internal nodes
+N = n - 2
+
+# Coefficients for the tridiagonal matrix
+a = mu_eff / (h[:-1] * (h[1:] + h[:-1]))  # Lower diagonal (length N-1)
+c = mu_eff / (h[1:] * (h[1:] + h[:-1]))   # Upper diagonal (length N-1)
+b = -mu_eff * (1/h[:-1] + 1/h[1:]) / (h[1:] + h[:-1])  # Main diagonal (length N)
+
+# Assemble the sparse matrix
+diagonals = [a, b, c]
+offsets = [-1, 0, 1]
+A = diags(diagonals, offsets, shape=(N, N), format='csc')
+
+# Right-hand side
+b_rhs = -np.ones(N)
 
 # Solve the linear system
-u = np.linalg.solve(A, b)
+u_interior = spsolve(A, b_rhs)
 
-# Laminar parabolic profile
-u_laminar = (1 / (2 * mu)) * y * (H - y)
+# Assemble the full solution with boundary conditions
+u = np.zeros(n)
+u[1:-1] = u_interior
 
-# Plotting
-plt.figure(figsize=(8,6))
-plt.plot(u, y, label='Turbulent Profile')
-plt.plot(u_laminar, y, label='Laminar Profile', linestyle='--')
-plt.xlabel('Velocity u(y)')
-plt.ylabel('y')
-plt.title('Velocity Profile Comparison')
-plt.legend()
-plt.grid()
-plt.savefig('velocity_profile.png')
-
-# Save variables
-np.save('y.npy', y)
+# Save the solution
 np.save('u.npy', u)

@@ -22,11 +22,11 @@ b[int(3*ny/4), int(3*nx/4)] = -100
 tolerance = 1e-5
 max_iterations = 10000
 
-# Iterative solver (Gauss-Seidel)
+# Iterative solver (Gauss-Seidel method)
 for it in range(max_iterations):
     p_old = p.copy()
     
-    # Update p using finite difference
+    # Update p using finite difference method
     for j in range(1, ny-1):
         for i in range(1, nx-1):
             p[j, i] = ((p_old[j, i+1] + p[j, i-1]) * dy**2 +
@@ -41,10 +41,8 @@ for it in range(max_iterations):
     
     # Check for convergence
     if np.linalg.norm(p - p_old, ord=np.inf) < tolerance:
-        print(f'Converged after {it+1} iterations')
         break
-else:
-    print('Did not converge')
 
 # Save the final solution
+save_values = ['p']
 np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/p_2D_Poisson_Equation.npy', p)

@@ -1,140 +1,97 @@
 import numpy as np
-from scipy.sparse import diags
-from scipy.sparse.linalg import spsolve
-import matplotlib.pyplot as plt
+from scipy.linalg import solve
 
 # Parameters
 H = 2.0
 n = 100
 rho = 1.0
-beta_star = 0.09
-beta = 0.075
-mu = 1e-5
+mu = 1.0
 sigma_k = 1.0
-C_D = 1.0
-F_1 = 0.5
-F_2 = 0.5
-a_1 = 1.0
+sigma_omega = 1.0
+beta = 0.09
+beta_star = 0.075
+a1 = 0.31
+F1 = 0.4
+F2 = 0.5
+C_D = 0.6
+max_iter = 1000
+tol = 1e-6
+relaxation = 0.3
 
-# Create non-uniform mesh clustered near walls
-eta = np.linspace(0, 1, n)
-stretch = 0.5  # Adjusted stretch for clustering
-y = H * (eta**stretch) / (eta**stretch + (1 - eta)**stretch)
-
+# Mesh generation with clustering near walls
+y_lin = np.linspace(0, 1, n)
+y = H * (np.tanh(3 * (y_lin - 0.5)) / np.tanh(1.5) + 1) / 2
 dy = np.diff(y)
-dy = np.concatenate(([dy[0]], dy))  # Ensure dy has length n
+dy = np.append(dy, dy[-1])
 
-# Initial conditions with small positive values to avoid division by zero
-k = np.ones(n) * 1e-6
-omega = np.ones(n) * 1e-6
+# Initialize k and omega with small positive values
+k = 1e-6 * np.ones(n)
+omega = 1e-6 * np.ones(n)
 
 # Boundary conditions for velocity (Dirichlet)
-u_left = 0.0
-u_right = 1.0
-S = (u_right - u_left) / H  # Strain rate
-S_mag = np.abs(S)
+u_wall = 0.0
+u_center = 1.0
+u = np.linspace(u_wall, u_center, n)
 
-# Iterative solver parameters
-max_iter = 10000
-tol = 1e-6
-relax = 0.3  # Under-relaxation factor
-
+# Iterative solver
 for it in range(max_iter):
     k_old = k.copy()
     omega_old = omega.copy()
-    
-    # Compute mu_t
-    inv_omega = 1.0 / (omega + 1e-6)
-    mu_t = rho * k * np.minimum(inv_omega, a_1 / (S_mag * F_2))
-    
-    # Compute P_k
-    P_k = mu_t * S**2
-    
-    # Assemble A and b for k equation
-    D_k = mu + mu_t / sigma_k
-    lower_k = D_k[:-1] / dy[:-1]**2
-    main_k = -(D_k[:-1] + D_k[1:]) / dy[:-1]**2
-    upper_k = D_k[1:] / dy[:-1]**2
-    
-    A_k = diags(
-        diagonals=[lower_k, main_k, upper_k],
-        offsets=[-1, 0, 1],
-        shape=(n, n),
-        format='csr'
-    )
-    
-    b_k = beta_star * rho * k + P_k
-    # Apply Dirichlet boundary conditions for k
-    b_k[0] = 0.0
-    b_k[-1] = 0.0
-    A_k = A_k.tolil()
-    A_k[0, :] = 0
-    A_k[0, 0] = 1.0
-    A_k[-1, :] = 0
-    A_k[-1, -1] = 1.0
-    A_k = A_k.tocsr()
-    
-    # Assemble A and b for omega equation
-    D_omega = mu + mu_t * omega
-    lower_omega = D_omega[:-1] / dy[:-1]**2
-    main_omega = -(D_omega[:-1] + D_omega[1:]) / dy[:-1]**2
-    upper_omega = D_omega[1:] / dy[:-1]**2
-    
-    A_omega = diags(
-        diagonals=[lower_omega, main_omega, upper_omega],
-        offsets=[-1, 0, 1],
-        shape=(n, n),
-        format='csr'
-    )
-    
-    b_omega = (rho * beta_star * P_k) / (mu_t + 1e-6) - beta * omega**2 - (1 - F_1) * C_D * k * omega
-    # Apply Dirichlet boundary conditions for omega
-    b_omega[0] = 0.0
-    b_omega[-1] = 0.0
-    A_omega = A_omega.tolil()
-    A_omega[0, :] = 0
-    A_omega[0, 0] = 1.0
-    A_omega[-1, :] = 0
-    A_omega[-1, -1] = 1.0
-    A_omega = A_omega.tocsr()
-    
-    # Solve linear systems with under-relaxation
-    try:
-        k_new = spsolve(A_k, b_k)
-        omega_new = spsolve(A_omega, b_omega)
-    except Exception as e:
-        print(f"Solving failed at iteration {it+1}: {e}")
-        break
-    
-    # Apply under-relaxation
-    k = relax * k_new + (1 - relax) * k_old
-    omega = relax * omega_new + (1 - relax) * omega_old
-    
-    # Ensure variables remain positive
-    k = np.maximum(k, 1e-8)
-    omega = np.maximum(omega, 1e-8)
-    
-    # Check convergence
-    res_k = np.linalg.norm(k - k_old, ord=np.inf)
-    res_omega = np.linalg.norm(omega - omega_old, ord=np.inf)
-    if res_k < tol and res_omega < tol:
-        print(f'Converged in {it+1} iterations')
-        break
-else:
-    print('Did not converge within the maximum number of iterations')
 
-# Compute final mu_t
-mu_t = rho * k * np.minimum(1.0 / (omega + 1e-6), a_1 / (S_mag * F_2))
+    # Compute strain rate |S|
+    du_dy = np.gradient(u, y)
+    S = np.abs(du_dy) + 1e-8  # Avoid division by zero
+
+    # Compute mu_t
+    mu_t_1 = 1.0 / omega
+    mu_t_2 = a1 / (S * F2)
+    mu_t = rho * k * np.minimum(mu_t_1, mu_t_2 + 1e-8)
+
+    # Assemble equations for k
+    Pk = mu_t * S**2
+    A_k = np.zeros((n, n))
+    b_k = beta_star * rho * k * omega - Pk
+
+    for i in range(1, n-1):
+        A_k[i, i-1] = (mu + mu_t[i]) / dy[i-1]**2
+        A_k[i, i] = -2 * (mu + mu_t[i]) * (1 / dy[i-1]**2 + 1 / dy[i]**2)
+        A_k[i, i+1] = (mu + mu_t[i]) / dy[i]**2
+
+    # Boundary conditions for k
+    A_k[0, 0] = 1
+    b_k[0] = 0
+    A_k[-1, -1] = 1
+    b_k[-1] = 0
+
+    # Solve for k
+    k_new = solve(A_k, b_k)
+    k = relaxation * k_new + (1 - relaxation) * k_old
+
+    # Assemble equations for omega
+    P_omega = (rho * Pk) / (mu_t + 1e-8)
+    A_omega = np.zeros((n, n))
+    b_omega = beta * omega**2 - P_omega - (1 - F1) * C_D * k * omega
+
+    for i in range(1, n-1):
+        A_omega[i, i-1] = (mu + mu_t[i] * omega[i]) / dy[i-1]**2
+        A_omega[i, i] = -2 * (mu + mu_t[i] * omega[i]) * (1 / dy[i-1]**2 + 1 / dy[i]**2) - beta * omega[i]
+        A_omega[i, i+1] = (mu + mu_t[i] * omega[i]) / dy[i]**2
+
+    # Boundary conditions for omega
+    A_omega[0, 0] = 1
+    b_omega[0] = 0
+    A_omega[-1, -1] = 1
+    b_omega[-1] = 0
+
+    # Solve for omega
+    omega_new = solve(A_omega, b_omega)
+    omega = relaxation * omega_new + (1 - relaxation) * omega_old
+
+    # Check convergence
+    if np.linalg.norm(k - k_old, ord=2) < tol and np.linalg.norm(omega - omega_old, ord=2) < tol:
+        break
 
 # Save the final solutions
 np.save('k.npy', k)
 np.save('omega.npy', omega)
-np.save('mu_t.npy', mu_t)
-
-# Plot velocity profile (assuming laminar for comparison)
-u_laminar = u_left + S * y
-plt.plot(u_laminar, y, label='Laminar')
-plt.xlabel('Velocity u')
-plt.ylabel('y')
-plt.legend()
-plt.savefig('velocity_profile.png')
+np.save('u.npy', u)

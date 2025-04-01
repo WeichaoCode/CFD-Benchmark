@@ -53,16 +53,13 @@ def generate_prompt(data, include_1=False, include_2=False):
         "### Task:\n"
         "- Write Python code to numerically solve the above CFD problem using the specified numerical method.\n"
         "- If the problem is **unsteady**, only compute and save the **solution at the final time step**.\n"
-        "- Save the final solution for each specified variable as a separate `.npy` file using NumPy:\n"
-        "  - For **1D problems**, save a 1D NumPy array for each variable.\n"
-        "  - For **2D problems**, save a 2D NumPy array for each variable.\n"
-        "- The output `.npy` files should contain only the final solution field (not intermediate steps) for each of "
-        "the specified variables.\n"
-        "- **Save the following variables** at the final time step:\n"
-        + save_values_str + "\n"
-                            "(Each variable should be saved separately in its own `.npy` file, ensuring the saved "
-                            "variables use the same name as provided in `save_values`).\n"
-                            "- Return only the complete and runnable Python code that performs this task."
+        "- Save the final solution for each specified variable as a separate `.npy` file using NumPy.\n"
+        "- For **1D problems**, save a 1D NumPy array for each variable. For **2D problems**, save a 2D array.\n"
+        "- The output `.npy` files **must contain only the final solution** (not intermediate steps).\n"
+        "- ✅ **IMPORTANT**: You **must save each variable using exactly the same name as listed in `save_values`.**\n"
+        "- ✅ Example: if `save_values = ['u', 'p']`, then save files as `u.npy` and `p.npy`, and use variable names "
+        "`u` and `p` in your code.\n"
+        "- Do not include extra print statements or explanations — return only the complete, runnable Python code."
     )
 
     return "\n".join(parts)

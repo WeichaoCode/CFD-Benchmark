@@ -1,50 +1,53 @@
 import numpy as np
 
 # Parameters
-alpha = 0.01  # Thermal diffusivity
-Q0 = 200.0  # Source term coefficient
-sigma = 0.1  # Source term spread
-nx, ny = 41, 41  # Grid resolution
-x_min, x_max = -1.0, 1.0
-y_min, y_max = -1.0, 1.0
-t_max = 3.0  # Maximum time
-r = 0.25  # Stability parameter for DuFort-Frankel
+alpha = 0.01  # thermal diffusivity
+Q0 = 200.0  # source term strength
+sigma = 0.1  # source term spread
+r = 0.25  # stability parameter for DuFort-Frankel
+t_max = 3.0  # maximum time
 
-# Derived parameters
-dx = (x_max - x_min) / (nx - 1)
-dy = (y_max - y_min) / (ny - 1)
+# Domain
+nx, ny = 41, 41
+x = np.linspace(-1, 1, nx)
+y = np.linspace(-1, 1, ny)
+dx = x[1] - x[0]
+dy = y[1] - y[0]
 dt = r * dx**2 / alpha
 
-# Create grid
-x = np.linspace(x_min, x_max, nx)
-y = np.linspace(y_min, y_max, ny)
-X, Y = np.meshgrid(x, y)
-
 # Initial condition
-T = np.zeros((ny, nx))
-T_new = np.zeros((ny, nx))
-T_old = np.zeros((ny, nx))
+X, Y = np.meshgrid(x, y)
+T_initial = 1 + 200 * np.exp(-(X**2 + Y**2) / (2 * sigma**2))
 
-# Time-stepping loop
-t = 0.0
-while t < t_max:
-    # Update source term
-    q = Q0 * np.exp(-(X**2 + Y**2) / (2 * sigma**2))
-    
-    # DuFort-Frankel update
-    T_new[1:-1, 1:-1] = ((1 - 2 * r) * T_old[1:-1, 1:-1] +
-                         2 * r * (T[1:-1, 2:] + T[1:-1, :-2] + T[2:, 1:-1] + T[:-2, 1:-1]) +
-                         2 * dt * q[1:-1, 1:-1]) / (1 + 2 * r)
-    
-    # Apply boundary conditions (Dirichlet)
-    T_new[0, :] = 0
-    T_new[-1, :] = 0
-    T_new[:, 0] = 0
-    T_new[:, -1] = 0
-    
-    # Update time and arrays
-    T_old, T = T, T_new
-    t += dt
+# Boundary condition
+T_boundary = 1
+
+# Time stepping
+nt = int(t_max / dt) + 1
+T_old = T_initial.copy()
+T_new = T_initial.copy()
+
+# Source term
+q = Q0 * np.exp(-(X**2 + Y**2) / (2 * sigma**2))
+
+# DuFort-Frankel method
+for n in range(1, nt):
+    T_new[1:-1, 1:-1] = (
+        (1 - 2 * r) * T_old[1:-1, 1:-1]
+        + 2 * r * (T_old[2:, 1:-1] + T_old[:-2, 1:-1] + T_old[1:-1, 2:] + T_old[1:-1, :-2])
+        - T_new[1:-1, 1:-1]
+        + 2 * dt * q[1:-1, 1:-1] / alpha
+    ) / (1 + 2 * r)
+
+    # Apply boundary conditions
+    T_new[0, :] = T_boundary
+    T_new[-1, :] = T_boundary
+    T_new[:, 0] = T_boundary
+    T_new[:, -1] = T_boundary
+
+    # Update old temperature
+    T_old, T_new = T_new, T_old
 
 # Save the final temperature field
-np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/T_2D_Unsteady_Heat_Equation_DF.npy', T)
+save_values = ['T']
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts_no_instruction/T_old_2D_Unsteady_Heat_Equation_DF.npy', T_old)

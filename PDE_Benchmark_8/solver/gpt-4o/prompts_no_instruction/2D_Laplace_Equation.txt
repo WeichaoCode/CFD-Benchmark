@@ -1,50 +1,46 @@
 ```python
 import numpy as np
 
-# Domain parameters
+# Parameters
 nx, ny = 31, 31
 dx = 2 / (nx - 1)
 dy = 1 / (ny - 1)
+tolerance = 1e-5
 
 # Initialize the potential field
 p = np.zeros((ny, nx))
 
 # Boundary conditions
-# Left boundary (x = 0): p = 0
-p[:, 0] = 0
+p[:, 0] = 0  # Left boundary
+p[:, -1] = np.linspace(0, 1, ny)  # Right boundary
 
-# Right boundary (x = 2): p = y
-p[:, -1] = np.linspace(0, 1, ny)
-
-# Neumann boundary conditions for top and bottom (y = 0, y = 1)
-# These will be handled in the iteration loop
-
-# Iteration parameters
-tolerance = 1e-5
-max_iterations = 10000
-
-# Iterative solver using the finite difference method
-for iteration in range(max_iterations):
-    p_old = p.copy()
+# Iterative solver using the Gauss-Seidel method
+def solve_poisson(p, dx, dy, tolerance):
+    pn = np.empty_like(p)
+    error = 1
+    while error > tolerance:
+        pn[:] = p[:]
+        # Update the potential field
+        p[1:-1, 1:-1] = ((pn[1:-1, 2:] + pn[1:-1, :-2]) * dy**2 +
+                         (pn[2:, 1:-1] + pn[:-2, 1:-1]) * dx**2) / (2 * (dx**2 + dy**2))
+        
+        # Neumann boundary conditions (top and bottom)
+        p[0, :] = p[1, :]  # Bottom boundary
+        p[-1, :] = p[-2, :]  # Top boundary
+        
+        # Reapply Dirichlet boundary conditions
+        p[:, 0] = 0  # Left boundary
+        p[:, -1] = np.linspace(0, 1, ny)  # Right boundary
+        
+        # Calculate the error
+        error = np.linalg.norm(p - pn, ord=np.inf)
     
-    # Update the interior points
-    for j in range(1, ny-1):
-        for i in range(1, nx-1):
-            p[j, i] = 0.25 * (p_old[j, i+1] + p_old[j, i-1] + p_old[j+1, i] + p_old[j-1, i])
-    
-    # Apply Neumann boundary conditions (zero gradient) for top and bottom
-    p[0, :] = p[1, :]  # Bottom boundary (y = 0)
-    p[-1, :] = p[-2, :]  # Top boundary (y = 1)
-    
-    # Check for convergence
-    if np.linalg.norm(p - p_old, ord=np.inf) < tolerance:
-        print(f"Converged after {iteration} iterations.")
-        break
-else:
-    print("Did not converge within the maximum number of iterations.")
+    return p
+
+# Solve the Poisson equation
+p = solve_poisson(p, dx, dy, tolerance)
 
 # Save the final solution
+save_values = ['p']
 np.save('p.npy', p)
 ```
-
-This code sets up and solves the given PDE problem using the finite difference method. It applies the specified boundary conditions and iteratively solves for the potential field `p` until convergence. The final solution is saved as a `.npy` file.

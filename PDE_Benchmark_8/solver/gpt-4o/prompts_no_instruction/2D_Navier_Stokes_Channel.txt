@@ -4,12 +4,11 @@ import numpy as np
 # Parameters
 nx, ny = 41, 41
 nt = 10
-Lx, Ly = 2.0, 2.0
-dx, dy = Lx / (nx - 1), Ly / (ny - 1)
+dx = dy = 2 / (nx - 1)
+dt = 0.01
+rho = 1
 nu = 0.1
-F = 1.0
-rho = 1.0
-dt = 0.01  # Time step size
+F = 1
 
 # Initialize fields
 u = np.zeros((ny, nx))
@@ -17,22 +16,20 @@ v = np.zeros((ny, nx))
 p = np.zeros((ny, nx))
 b = np.zeros((ny, nx))
 
-# Helper function to build the pressure Poisson RHS
-def build_up_b(b, u, v, dx, dy, rho):
+# Helper function to build the pressure Poisson equation right-hand side
+def build_up_b(b, u, v, dx, dy, rho, dt):
     b[1:-1, 1:-1] = (rho * (1 / dt * 
-                   ((u[1:-1, 2:] - u[1:-1, 0:-2]) / (2 * dx) +
+                   ((u[1:-1, 2:] - u[1:-1, 0:-2]) / (2 * dx) + 
                     (v[2:, 1:-1] - v[0:-2, 1:-1]) / (2 * dy)) -
                    ((u[1:-1, 2:] - u[1:-1, 0:-2]) / (2 * dx))**2 -
                      2 * ((u[2:, 1:-1] - u[0:-2, 1:-1]) / (2 * dy) *
                           (v[1:-1, 2:] - v[1:-1, 0:-2]) / (2 * dx)) -
                      ((v[2:, 1:-1] - v[0:-2, 1:-1]) / (2 * dy))**2))
 
-    return b
-
 # Pressure Poisson equation solver
 def pressure_poisson(p, dx, dy, b):
     pn = np.empty_like(p)
-    for q in range(50):  # Iterations for convergence
+    for _ in range(50):
         pn = p.copy()
         p[1:-1, 1:-1] = (((pn[1:-1, 2:] + pn[1:-1, 0:-2]) * dy**2 +
                           (pn[2:, 1:-1] + pn[0:-2, 1:-1]) * dx**2) /
@@ -47,15 +44,13 @@ def pressure_poisson(p, dx, dy, b):
         p[-1, :] = p[-2, :]
         p[0, :] = p[1, :]
 
-    return p
-
 # Time-stepping loop
-for n in range(nt):
+for _ in range(nt):
     un = u.copy()
     vn = v.copy()
 
-    b = build_up_b(b, u, v, dx, dy, rho)
-    p = pressure_poisson(p, dx, dy, b)
+    build_up_b(b, u, v, dx, dy, rho, dt)
+    pressure_poisson(p, dx, dy, b)
 
     u[1:-1, 1:-1] = (un[1:-1, 1:-1] -
                      un[1:-1, 1:-1] * dt / dx *
@@ -91,10 +86,8 @@ for n in range(nt):
     v[-1, :] = 0
     v[0, :] = 0
 
-# Save the final solution
+# Save the final solutions
 np.save('u.npy', u)
 np.save('v.npy', v)
 np.save('p.npy', p)
 ```
-
-This code solves the given 2D unsteady Navier-Stokes equations using a finite difference method with periodic boundary conditions in the x-direction and no-slip conditions in the y-direction. The pressure Poisson equation is solved iteratively to enforce incompressibility. The final velocity and pressure fields are saved as `.npy` files.

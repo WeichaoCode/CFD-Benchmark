@@ -1,56 +1,42 @@
 ```python
 import numpy as np
 
-# Domain parameters
-Lx, Ly = 5.0, 4.0
-dx, dy = 0.05, 0.05
-nx, ny = 101, 81
-
-# Create grid
-x = np.linspace(0, Lx, nx)
-y = np.linspace(0, Ly, ny)
+# Parameters
+width = 5.0
+height = 4.0
+dx = 0.05
+dy = 0.05
+nx = int(width / dx) + 1
+ny = int(height / dy) + 1
+omega = 1.5  # Over-relaxation factor
+tolerance = 1e-6
 
 # Initialize temperature field
 T = np.zeros((ny, nx))
 
-# Boundary conditions
-T[:, 0] = 10.0  # Left boundary
-T[:, -1] = 40.0  # Right boundary
-T[0, :] = 0.0  # Top boundary
-T[-1, :] = 20.0  # Bottom boundary
-
-# SOR parameters
-omega = 1.5  # Relaxation factor
-tolerance = 1e-6
-max_iterations = 10000
+# Apply boundary conditions
+T[:, 0] = 10.0  # Left boundary (x = 0)
+T[:, -1] = 40.0  # Right boundary (x = 5)
+T[-1, :] = 0.0  # Top boundary (y = 4)
+T[0, :] = 20.0  # Bottom boundary (y = 0)
 
 # Successive Over-Relaxation (SOR) method
-def solve_sor(T, omega, tolerance, max_iterations):
-    for iteration in range(max_iterations):
-        T_old = T.copy()
-        
-        # Update the interior points
+def solve_sor(T, omega, tolerance):
+    error = 1.0
+    while error > tolerance:
+        error = 0.0
         for j in range(1, ny-1):
             for i in range(1, nx-1):
-                T[j, i] = (1 - omega) * T[j, i] + omega * 0.25 * (
-                    T[j+1, i] + T[j-1, i] + T[j, i+1] + T[j, i-1]
-                )
-        
-        # Check for convergence
-        diff = np.linalg.norm(T - T_old, ord=np.inf)
-        if diff < tolerance:
-            print(f"Converged after {iteration+1} iterations.")
-            break
-    else:
-        print("Did not converge within the maximum number of iterations.")
-    
+                T_old = T[j, i]
+                T_new = (1 - omega) * T_old + omega * 0.25 * (T[j+1, i] + T[j-1, i] + T[j, i+1] + T[j, i-1])
+                error = max(error, abs(T_new - T_old))
+                T[j, i] = T_new
     return T
 
 # Solve the PDE
-T_final = solve_sor(T, omega, tolerance, max_iterations)
+T = solve_sor(T, omega, tolerance)
 
-# Save the final temperature field
-np.save('T.npy', T_final)
+# Save the final solution
+save_values = ['T']
+np.save('T.npy', T)
 ```
-
-This code sets up and solves the given 2D Laplace equation using the Successive Over-Relaxation (SOR) method. The boundary conditions are applied directly to the temperature field `T`, and the solution is iteratively updated until convergence is achieved. The final temperature distribution is saved to a file named `T.npy`.

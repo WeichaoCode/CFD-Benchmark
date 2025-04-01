@@ -1,40 +1,35 @@
 import numpy as np
 
 # Parameters
-c = 1.0  # Convection speed
-epsilon_values = [0, 5e-4]  # Damping factors
-x_start, x_end = -5, 5  # Spatial domain
-N_x = 101  # Number of spatial grid points
-dx = (x_end - x_start) / (N_x - 1)  # Spatial step size
-x = np.linspace(x_start, x_end, N_x)  # Spatial grid
+c = 1.0
+epsilon_values = [0, 5e-4]
+x_start, x_end = -5, 5
+Nx = 101
+dx = (x_end - x_start) / (Nx - 1)
+x = np.linspace(x_start, x_end, Nx)
 
 # Initial condition
 u_initial = np.exp(-x**2)
 
 # Time-stepping parameters
-CFL = 0.5  # CFL number for stability
-dt = CFL * dx / c  # Time step size based on CFL condition
-t_final = 2.0  # Final time
-n_steps = int(t_final / dt)  # Number of time steps
+CFL = 0.5
+dt = CFL * dx / c
+t_final = 2.0
+Nt = int(t_final / dt)
 
-# Function to perform the time-stepping
-def solve_convection_diffusion(epsilon):
-    u = u_initial.copy()
-    for _ in range(n_steps):
-        # Compute spatial derivatives
-        u_x = np.roll(u, -1) - np.roll(u, 1)
-        u_xx = np.roll(u, -1) - 2 * u + np.roll(u, 1)
-        
-        # Update using explicit Euler method
-        u = u - dt * c * u_x / (2 * dx) + dt * epsilon * u_xx / (dx**2)
-        
-        # Apply periodic boundary conditions
-        u[0] = u[-1]
-    
-    return u
+# Central difference coefficients
+def central_diff(u, dx):
+    return (np.roll(u, -1) - np.roll(u, 1)) / (2 * dx)
 
-# Solve for each epsilon value and save the results
+def laplacian(u, dx):
+    return (np.roll(u, -1) - 2 * u + np.roll(u, 1)) / (dx**2)
+
+# Solve for each epsilon value
 for epsilon in epsilon_values:
-    u_final = solve_convection_diffusion(epsilon)
-    filename = f'u_final_epsilon_{epsilon:.0e}.npy'
-    np.save(filename, u_final)
+    u = u_initial.copy()
+    for _ in range(Nt):
+        u = u - dt * c * central_diff(u, dx) + dt * epsilon * laplacian(u, dx)
+    
+    # Save the final solution
+    save_values = ['u_damped' if epsilon > 0 else 'u_undamped']
+    np.save(save_values[0] + '.npy', u)

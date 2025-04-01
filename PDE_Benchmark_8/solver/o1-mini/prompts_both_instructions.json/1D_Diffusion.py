@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 nx = 41
 nt = 20
 nu = 0.3
-sigma = 0.2
 dx = 2 / (nx - 1)
+sigma = 0.2
 dt = sigma * dx**2 / nu
 
 # Spatial grid
@@ -14,23 +14,21 @@ x = np.linspace(0, 2, nx)
 
 # Initial condition
 u = np.ones(nx)
-u[np.where((x >= 0.5) & (x <= 1.0))] = 2
+u[(x >= 0.5) & (x <= 1.0)] = 2.0
 
 # Time-stepping
 for _ in range(nt):
-    u_new = u.copy()
-    u_new[1:-1] = u[1:-1] + nu * dt / dx**2 * (u[2:] - 2*u[1:-1] + u[:-2])
-    # Apply Dirichlet boundary conditions
-    u_new[0] = 1
-    u_new[-1] = 0
-    u = u_new
+    un = u.copy()
+    u[1:-1] = un[1:-1] + sigma * (un[2:] - 2 * un[1:-1] + un[:-2])
+    u[0] = 1.0
+    u[-1] = 0.0
 
-# Plot final solution
-plt.plot(x, u, label='Final Solution')
+# Visualization
+plt.figure()
+plt.plot(x, u)
 plt.xlabel('x')
 plt.ylabel('u')
-plt.title('1D Diffusion Equation Final Solution')
-plt.legend()
+plt.title('Final solution at t=T')
 plt.show()
 
 # Save the final solution

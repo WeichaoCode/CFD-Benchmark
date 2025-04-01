@@ -9,37 +9,18 @@ dt = 0.01
 dx = dt / nu
 N = math.ceil(L / dx)
 x = np.linspace(0, L, N, endpoint=False)
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
 T = 500
 
-# Initial condition
-u_initial = np.sin(x) + 0.5 * np.sin(0.5 * x)
-
-# MacCormack Method
-u_mac = u_initial.copy()
+# Time integration using MacCormack method
 for _ in range(T):
-    # Predictor step
-    F = 0.5 * u_mac**2
-    u_pred = u_mac - (dt/dx) * (np.roll(F, -1) - F)
-    # Apply periodic boundary conditions
-    u_pred[0] = u_pred[-1]
-    # Corrector step
-    F_pred = 0.5 * u_pred**2
-    u_mac = 0.5 * (u_mac + u_pred - (dt/dx) * (F_pred - np.roll(F_pred, 1)))
+    F = 0.5 * u**2
+    F_plus = np.roll(F, -1)
+    u_star = u - (dt / dx) * (F_plus - F)
+    F_star = 0.5 * u_star**2
+    F_star_prev = np.roll(F_star, 1)
+    u = 0.5 * (u + u_star - (dt / dx) * (F_star - F_star_prev))
 
-# Lax Method
-u_lax = u_initial.copy()
-for _ in range(T):
-    F = 0.5 * u_lax**2
-    u_lax = 0.5 * (np.roll(u_lax, -1) + np.roll(u_lax, 1)) - (dt/(2*dx)) * (np.roll(F, -1) - np.roll(F, 1))
-
-# Lax-Wendroff Method
-u_lw = u_initial.copy()
-for _ in range(T):
-    F = 0.5 * u_lw**2
-    u_lw = u_lw - (nu/2) * (np.roll(u_lw, -1) - np.roll(u_lw, 1)) + (nu**2 / 2) * (np.roll(u_lw, -1) - 2*u_lw + np.roll(u_lw, 1))
-
-# Save the final solutions
-np.save('u_mac.npy', u_mac)
-np.save('u_lax.npy', u_lax)
-np.save('u_lax_wendroff.npy', u_lw)
+# Save final solution
+np.save('u.npy', u)
 ```

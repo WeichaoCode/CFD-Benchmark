@@ -253,7 +253,7 @@ def call_api(llm_model, prompt_json, temperature=0.0):
 #
 # call_api("gpt-4o", "prompts_instruction_2.json")
 #
-# call_api("gpt-4o", "prompts_no_instruction.json")
+call_api("gpt-4o", "prompts_no_instruction.json")
 
 # call_api("gpt-4o", "prompts.json")
 #
@@ -263,6 +263,6 @@ call_api("o1-mini", "prompts_both_instructions.json")
 #
 # call_api("o1-mini", "prompts_instruction_2.json")
 #
-call_api("o1-mini", "prompts_no_instruction.json")
+# call_api("o1-mini", "prompts_no_instruction.json")
 
 # call_api("gpt-4o", "prompts.json")

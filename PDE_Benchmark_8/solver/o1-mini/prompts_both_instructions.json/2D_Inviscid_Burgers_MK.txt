@@ -3,73 +3,83 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Parameters
-nx, ny = 151, 151
-nt = 300
-sigma = 0.2
-dx = 2 / (nx - 1)
-dy = 2 / (ny - 1)
-dt = sigma * min(dx, dy) / 2
-
-# Grid
+nx = ny = 151
 x = np.linspace(0, 2, nx)
 y = np.linspace(0, 2, ny)
-X, Y = np.meshgrid(x, y)
+dx = 2 / (nx - 1)
+dy = 2 / (ny - 1)
+nt = 300
+sigma = 0.2
+dt = sigma * min(dx, dy) / 2
 
-# Initial Conditions
+# Initialize velocity fields
 u = np.ones((ny, nx))
 v = np.ones((ny, nx))
-mask = (X >= 0.5) & (X <=1) & (Y >=0.5) & (Y <=1)
-u[mask] = 2
-v[mask] = 2
 
-# Time-stepping
+# Apply initial conditions: u = v = 2 in the center square
+u_initial = 2
+v_initial = 2
+x_center = np.where((x >= 0.5) & (x <=1))
+y_center = np.where((y >= 0.5) & (y <=1))
+u[np.ix_(y_center[0], x_center[0])] = u_initial
+v[np.ix_(y_center[0], x_center[0])] = v_initial
+
 for _ in range(nt):
-    # Predictor step for u
+    # Predictor step
     u_star = u.copy()
-    du_dx = (u[1:-1,1:-1] - u[1:-1,0:-2]) / dx
-    du_dy = (u[1:-1,1:-1] - u[0:-2,1:-1]) / dy
-    u_star[1:-1,1:-1] = u[1:-1,1:-1] - dt * (u[1:-1,1:-1]*du_dx + v[1:-1,1:-1]*du_dy)
-    
-    # Predictor step for v
     v_star = v.copy()
-    dv_dx = (v[1:-1,1:-1] - v[1:-1,0:-2]) / dx
-    dv_dy = (v[1:-1,1:-1] - v[0:-2,1:-1]) / dy
-    v_star[1:-1,1:-1] = v[1:-1,1:-1] - dt * (u[1:-1,1:-1]*dv_dx + v[1:-1,1:-1]*dv_dy)
+    u_star[1:-1,1:-1] = u[1:-1,1:-1] - dt * (
+        u[1:-1,1:-1] * (u[1:-1,1:-1] - u[1:-1,0:-2]) / dx +
+        v[1:-1,1:-1] * (u[1:-1,1:-1] - u[0:-2,1:-1]) / dy
+    )
+    v_star[1:-1,1:-1] = v[1:-1,1:-1] - dt * (
+        u[1:-1,1:-1] * (v[1:-1,1:-1] - v[1:-1,0:-2]) / dx +
+        v[1:-1,1:-1] * (v[1:-1,1:-1] - v[0:-2,1:-1]) / dy
+    )
+    
+    # Apply boundary conditions to predictor step
+    u_star[0,:] = 1
+    u_star[-1,:] = 1
+    u_star[:,0] = 1
+    u_star[:,-1] = 1
+    v_star[0,:] = 1
+    v_star[-1,:] = 1
+    v_star[:,0] = 1
+    v_star[:,-1] = 1
     
     # Corrector step for u
-    du_star_dx = (u_star[1:-1,2:] - u_star[1:-1,1:-1]) / dx
-    du_star_dy = (u_star[2:,1:-1] - u_star[1:-1,1:-1]) / dy
-    u_new = 0.5 * (u[1:-1,1:-1] + u_star[1:-1,1:-1] - dt * (u_star[1:-1,1:-1]*du_star_dx + v_star[1:-1,1:-1]*du_star_dy))
+    dudx_star = (u_star[1:-1,2:] - u_star[1:-1,1:-1]) / dx
+    dudy_star = (u_star[2:,1:-1] - u_star[1:-1,1:-1]) / dy
+    u_new = 0.5 * (u[1:-1,1:-1] + u_star[1:-1,1:-1] - dt * (u_star[1:-1,1:-1] * dudx_star + v_star[1:-1,1:-1] * dudy_star))
     
     # Corrector step for v
-    dv_star_dx = (v_star[1:-1,2:] - v_star[1:-1,1:-1]) / dx
-    dv_star_dy = (v_star[2:,1:-1] - v_star[1:-1,1:-1]) / dy
-    v_new = 0.5 * (v[1:-1,1:-1] + v_star[1:-1,1:-1] - dt * (u_star[1:-1,1:-1]*dv_star_dx + v_star[1:-1,1:-1]*dv_star_dy))
+    dvdx_star = (v_star[1:-1,2:] - v_star[1:-1,1:-1]) / dx
+    dvdy_star = (v_star[2:,1:-1] - v_star[1:-1,1:-1]) / dy
+    v_new = 0.5 * (v[1:-1,1:-1] + v_star[1:-1,1:-1] - dt * (u_star[1:-1,1:-1] * dvdx_star + v_star[1:-1,1:-1] * dvdy_star))
     
-    # Update u and v
+    # Update fields
     u[1:-1,1:-1] = u_new
     v[1:-1,1:-1] = v_new
     
-    # Apply boundary conditions
-    u[0, :] = 1
-    u[-1, :] = 1
-    u[:, 0] = 1
-    u[:, -1] = 1
-    
-    v[0, :] = 1
-    v[-1, :] = 1
-    v[:, 0] = 1
-    v[:, -1] = 1
+    # Apply boundary conditions to corrected step
+    u[0,:] = 1
+    u[-1,:] = 1
+    u[:,0] = 1
+    u[:,-1] = 1
+    v[0,:] = 1
+    v[-1,:] = 1
+    v[:,0] = 1
+    v[:,-1] = 1
 
 # Visualization
-plt.figure(figsize=(8,6))
+X, Y = np.meshgrid(x, y)
 plt.quiver(X, Y, u, v)
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.title('Velocity Field at Final Time Step')
+plt.title('Final Velocity Field')
 plt.show()
 
-# Save final solutions
+# Save the final solution
 np.save('u.npy', u)
 np.save('v.npy', v)
 ```

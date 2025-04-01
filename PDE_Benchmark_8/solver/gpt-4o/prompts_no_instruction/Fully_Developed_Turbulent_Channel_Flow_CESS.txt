@@ -1,58 +1,58 @@
-Certainly! The error arises because the lengths of the arrays being assigned to the diagonals do not match the expected size. Let's correct the code by ensuring the diagonals are constructed properly:
-
 ```python
 import numpy as np
-from scipy.sparse import diags
+from scipy.sparse import diags, csr_matrix
 from scipy.sparse.linalg import spsolve
 
 # Parameters
-H = 2.0  # Height of the domain
-n = 100  # Number of grid points
+H = 2.0
+n = 100
 mu = 1.0  # Molecular viscosity
-
-# Cess model parameters
-A_plus = 26.0
-B = 1.0 / 0.41
-Re_tau = 5200.0
 
 # Non-uniform grid clustering near the walls
 y = np.linspace(0, 1, n)
-y = H * (1 - np.cos(np.pi * y)) / 2
+y = H * (np.sinh(3 * (y - 0.5)) / np.sinh(1.5) + 0.5)
 
-# Compute dy
+# Compute dy and dy_mid
 dy = np.diff(y)
+dy_mid = (dy[:-1] + dy[1:]) / 2
 
-# Initialize velocity field
-ubar = np.zeros(n)
+# Cess turbulence model parameters
+Re_tau = 550.0
+A = 26.0
+B = 0.5
+kappa = 0.41
 
 # Compute turbulent viscosity using Cess model
-def compute_mu_t(y, H, Re_tau, A_plus, B):
-    eta = y / H
-    return 0.5 * (1 + np.tanh(A_plus * (eta - 0.5))) * (1 - np.exp(-B * eta * Re_tau))
+y_plus = Re_tau * y / H
+mu_t = 0.5 * mu * (1 + (A * y_plus * (1 - y_plus / Re_tau) ** 2) ** 2) ** 0.5 - 0.5 * mu
 
-mu_t = compute_mu_t(y, H, Re_tau, A_plus, B)
+# Effective viscosity
 mu_eff = mu + mu_t
 
-# Construct the finite difference matrix
-lower_diag = mu_eff[:-1] / dy
-upper_diag = mu_eff[1:] / dy
-main_diag = -(np.concatenate(([0], lower_diag)) + np.concatenate((upper_diag, [0]))) / np.concatenate(([1], dy))
+# Setup the linear system
+A_matrix = np.zeros((n, n))
+b_vector = np.zeros(n)
 
-# Boundary conditions
-main_diag[0] = 1.0
-main_diag[-1] = 1.0
+# Fill the matrix and RHS vector
+for i in range(1, n-1):
+    A_matrix[i, i-1] = (mu_eff[i-1] + mu_eff[i]) / (2 * dy[i-1])
+    A_matrix[i, i] = -(mu_eff[i-1] + 2 * mu_eff[i] + mu_eff[i+1]) / (2 * dy_mid[i-1])
+    A_matrix[i, i+1] = (mu_eff[i] + mu_eff[i+1]) / (2 * dy[i])
+    b_vector[i] = -1
 
-# Right-hand side
-rhs = np.full(n, -1.0)
-rhs[0] = 0.0  # ubar = 0 at y = 0
-rhs[-1] = 0.0  # ubar = 0 at y = H
+# Apply Dirichlet boundary conditions
+A_matrix[0, 0] = 1
+A_matrix[-1, -1] = 1
+b_vector[0] = 0
+b_vector[-1] = 0
+
+# Convert A_matrix to CSR format
+A_sparse = csr_matrix(A_matrix)
 
 # Solve the linear system
-A = diags([lower_diag, main_diag, upper_diag], offsets=[-1, 0, 1], format='csc')
-ubar = spsolve(A, rhs)
+u = spsolve(A_sparse, b_vector)
 
-# Save the final solution
-np.save('ubar.npy', ubar)
+# Save the solution
+save_values = ['u']
+np.save('u.npy', u)
 ```
-
-In this corrected version, the diagonals are constructed with the correct sizes, ensuring that the main diagonal has the same length as the number of grid points, and the lower and upper diagonals are one element shorter. The boundary conditions are applied directly to the main diagonal and the right-hand side.

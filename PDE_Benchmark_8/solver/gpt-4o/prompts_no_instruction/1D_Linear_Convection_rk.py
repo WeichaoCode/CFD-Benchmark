@@ -1,56 +1,43 @@
 import numpy as np
 
 # Parameters
-c = 1.0  # Convection speed
-epsilon_values = [0, 5e-4]  # Damping factors
-x_start, x_end = -5, 5  # Spatial domain
-N_x = 101  # Number of spatial grid points
-dx = (x_end - x_start) / (N_x - 1)  # Spatial step size
-x = np.linspace(x_start, x_end, N_x)  # Spatial grid
+c = 1.0
+epsilon_values = [0, 5e-4]
+x_start, x_end = -5, 5
+Nx = 101
+dx = (x_end - x_start) / (Nx - 1)
+x = np.linspace(x_start, x_end, Nx)
 
 # Initial condition
-u_initial = np.exp(-x**2)
+u0 = np.exp(-x**2)
 
-# Time step based on CFL condition
-CFL = 0.5  # CFL number
-dt = CFL * dx / c  # Time step size
-t_final = 2.0  # Final time
-N_t = int(t_final / dt)  # Number of time steps
+# Time-stepping parameters
+CFL = 0.5
+dt = CFL * dx / c
+t_final = 2.0
+Nt = int(t_final / dt)
 
-# Function to compute spatial derivatives
-def compute_derivatives(u, dx, epsilon):
-    # 2nd-order central difference for first derivative
-    du_dx = np.zeros_like(u)
-    du_dx[1:-1] = (u[2:] - u[:-2]) / (2 * dx)
-    du_dx[0] = (u[1] - u[-1]) / (2 * dx)  # Periodic BC
-    du_dx[-1] = (u[0] - u[-2]) / (2 * dx)  # Periodic BC
+# Central difference for spatial derivatives
+def central_diff(u, dx):
+    return (np.roll(u, -1) - np.roll(u, 1)) / (2 * dx)
 
-    # 2nd-order central difference for second derivative
-    d2u_dx2 = np.zeros_like(u)
-    d2u_dx2[1:-1] = (u[2:] - 2 * u[1:-1] + u[:-2]) / (dx**2)
-    d2u_dx2[0] = (u[1] - 2 * u[0] + u[-1]) / (dx**2)  # Periodic BC
-    d2u_dx2[-1] = (u[0] - 2 * u[-1] + u[-2]) / (dx**2)  # Periodic BC
-
-    return du_dx, d2u_dx2
+def central_diff2(u, dx):
+    return (np.roll(u, -1) - 2 * u + np.roll(u, 1)) / (dx**2)
 
 # RK4 time integration
-def rk4_step(u, dt, dx, epsilon):
-    def rhs(u):
-        du_dx, d2u_dx2 = compute_derivatives(u, dx, epsilon)
-        return -c * du_dx + epsilon * d2u_dx2
-
-    k1 = dt * rhs(u)
-    k2 = dt * rhs(u + 0.5 * k1)
-    k3 = dt * rhs(u + 0.5 * k2)
-    k4 = dt * rhs(u + k3)
-    return u + (k1 + 2 * k2 + 2 * k3 + k4) / 6
+def rk4_step(u, dt, dx, c, epsilon):
+    k1 = -c * central_diff(u, dx) + epsilon * central_diff2(u, dx)
+    k2 = -c * central_diff(u + 0.5 * dt * k1, dx) + epsilon * central_diff2(u + 0.5 * dt * k1, dx)
+    k3 = -c * central_diff(u + 0.5 * dt * k2, dx) + epsilon * central_diff2(u + 0.5 * dt * k2, dx)
+    k4 = -c * central_diff(u + dt * k3, dx) + epsilon * central_diff2(u + dt * k3, dx)
+    return u + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
 
 # Solve for each epsilon value
 for epsilon in epsilon_values:
-    u = u_initial.copy()
-    for _ in range(N_t):
-        u = rk4_step(u, dt, dx, epsilon)
+    u = u0.copy()
+    for _ in range(Nt):
+        u = rk4_step(u, dt, dx, c, epsilon)
     
     # Save the final solution
-    filename = f'u_final_epsilon_{epsilon}.npy'
-    np.save(filename, u)
+    save_values = ['u_damped' if epsilon > 0 else 'u_undamped']
+    np.save(save_values[0] + '.npy', u)

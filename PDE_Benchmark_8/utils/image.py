@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # === Configuration ===
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ground_truth_dir = os.path.join(ROOT_DIR, 'results/ground_truth')
-prediction_dir = os.path.join(ROOT_DIR, 'results/prediction/gpt-4o/prompts_both_instructions')
+prediction_dir = os.path.join(ROOT_DIR, 'results/prediction/gpt-4o/prompts_no_instruction')
 save_dir = os.path.join(ROOT_DIR, 'image')
 os.makedirs(save_dir, exist_ok=True)
 

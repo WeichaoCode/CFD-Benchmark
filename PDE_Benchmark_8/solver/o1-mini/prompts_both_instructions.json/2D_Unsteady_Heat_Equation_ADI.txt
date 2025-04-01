@@ -1,95 +1,83 @@
 ```python
 import numpy as np
+from scipy.linalg import solve_banded
 import matplotlib.pyplot as plt
 
-def solve_tri_diag(a, b, c, d):
-    """
-    Solves a tridiagonal system using the Thomas algorithm.
-    a, b, c are the sub-diagonal, main diagonal, and super-diagonal coefficients.
-    d is the right-hand side vector.
-    """
-    n = len(d)
-    c_prime = np.zeros(n-1)
-    d_prime = np.zeros(n)
-
-    # Forward sweep
-    c_prime[0] = c[0] / b[0]
-    d_prime[0] = d[0] / b[0]
-    for i in range(1, n-1):
-        temp = b[i] - a[i-1] * c_prime[i-1]
-        c_prime[i] = c[i] / temp
-        d_prime[i] = (d[i] - a[i-1] * d_prime[i-1]) / temp
-    d_prime[-1] = (d[-1] - a[-1] * d_prime[-2]) / (b[-1] - a[-1] * c_prime[-2])
-
-    # Back substitution
-    x = np.zeros(n)
-    x[-1] = d_prime[-1]
-    for i in range(n-2, -1, -1):
-        x[i] = d_prime[i] - c_prime[i] * x[i+1]
-    return x
-
 # Parameters
-Q0 = 200.0  # °C/s
+alpha = 1.0
+Q0 = 200.0
 sigma = 0.1
-alpha = 0.01  # Thermal diffusivity
+x_min, x_max = -1.0, 1.0
+y_min, y_max = -1.0, 1.0
 nx, ny = 41, 41
-x = np.linspace(-1, 1, nx)
-y = np.linspace(-1, 1, ny)
-dx = x[1] - x[0]
-dy = y[1] - y[0]
-r = 0.5
+dx = (x_max - x_min) / (nx - 1)
+dy = dx
+r = 1.0
 dt = r * dx**2 / alpha
 t_max = 3.0
-nt = int(t_max / dt)
+nt = int(t_max / dt) + 1
+
+# Grid
+x = np.linspace(x_min, x_max, nx)
+y = np.linspace(y_min, y_max, ny)
 X, Y = np.meshgrid(x, y, indexing='ij')
+
+# Initial condition
+T = 1.0 + Q0 * np.exp(- (X**2 + Y**2) / (2 * sigma**2))
+
+# Source term
 q = Q0 * np.exp(- (X**2 + Y**2) / (2 * sigma**2))
 
-# Initialize temperature field
-T = np.zeros((nx, ny))
+# ADI coefficients
+rx = alpha * dt / (2 * dx**2)
+ry = alpha * dt / (2 * dy**2)
 
-# Coefficients for tridiagonal matrix (implicit in x and y)
-a_x = -r / 2.0 * np.ones(nx-2)
-b_x = (1 + r) * np.ones(nx-2)
-c_x = -r / 2.0 * np.ones(nx-2)
+# Tridiagonal matrix for x-direction
+ab_x = np.zeros((3, nx-2))
+ab_x[0, 1:] = -rx
+ab_x[1, :] = 1 + 2 * rx
+ab_x[2, :-1] = -rx
 
-a_y = -r / 2.0 * np.ones(ny-2)
-b_y = (1 + r) * np.ones(ny-2)
-c_y = -r / 2.0 * np.ones(ny-2)
+# Tridiagonal matrix for y-direction
+ab_y = np.zeros((3, ny-2))
+ab_y[0, 1:] = -ry
+ab_y[1, :] = 1 + 2 * ry
+ab_y[2, :-1] = -ry
 
-# Time-stepping using ADI method
 for n in range(nt):
-    # Half step: implicit in x, explicit in y
-    T_half = np.copy(T)
+    # Intermediate step: implicit in x, explicit in y
+    T_star = np.copy(T)
     for i in range(1, nx-1):
-        d = (r/2.0 * T[i, 2:] + 
-             r/2.0 * T[i, :-2] +
-             r/2.0 * (T[i+1,1:-1] - 2*T[i,1:-1] + T[i-1,1:-1]) +
-             0.5 * dt * q[i,1:-1])
-        T_half[i,1:-1] = solve_tri_diag(a_x, b_x, c_x, d)
-    
-    # Apply Dirichlet boundary conditions
-    T_half[0, :] = 0.0
-    T_half[-1, :] = 0.0
-    T_half[:, 0] = 0.0
-    T_half[:, -1] = 0.0
+        b = rx * T[i+1,1:-1] + (1 - 2 * rx) * T[i,1:-1] + rx * T[i-1,1:-1] + ry * (T[i,2:] - 2 * T[i,1:-1] + T[i,0:-2]) * 0.5 * dt + 0.5 * dt * q[i,1:-1]
+        T_star[i,1:-1] = solve_banded((1,1), ab_x, b)
+    # Apply boundary conditions
+    T_star[0, :] = 1.0
+    T_star[-1, :] = 1.0
+    T_star[:,0] = 1.0
+    T_star[:,-1] = 1.0
 
-    # Full step: implicit in y, explicit in x
-    T_new = np.copy(T_half)
+    # Final step: implicit in y, explicit in x
+    T_new = np.copy(T_star)
     for j in range(1, ny-1):
-        d = (r/2.0 * T_half[2:, j] + 
-             r/2.0 * T_half[:-2, j] +
-             r/2.0 * (T_half[1:-1, j+1] - 2*T_half[1:-1, j] + T_half[1:-1, j-1]) +
-             0.5 * dt * q[1:-1,j])
-        T_new[1:-1, j] = solve_tri_diag(a_y, b_y, c_y, d)
-    
-    # Apply Dirichlet boundary conditions
-    T_new[0, :] = 0.0
-    T_new[-1, :] = 0.0
-    T_new[:, 0] = 0.0
-    T_new[:, -1] = 0.0
+        b = ry * T_star[1:-1,j+1] + (1 - 2 * ry) * T_star[1:-1,j] + ry * T_star[1:-1,j-1] + rx * (T_star[2:,j] - 2 * T_star[1:-1,j] + T_star[0:-2,j]) * 0.5 * dt + 0.5 * dt * q[1:-1,j]
+        T_new[1:-1,j] = solve_banded((1,1), ab_y, b)
+    # Apply boundary conditions
+    T_new[0, :] = 1.0
+    T_new[-1, :] = 1.0
+    T_new[:,0] = 1.0
+    T_new[:,-1] = 1.0
 
-    T = T_new.copy()
+    T = T_new
 
-# Save the final temperature field
+# Save the final temperature distribution
 np.save('T.npy', T)
+
+# Visualization
+plt.figure(figsize=(8,6))
+cp = plt.contourf(X, Y, T, levels=50, cmap='hot')
+plt.colorbar(cp)
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Temperature Distribution at t = {:.2f} s'.format(t_max))
+plt.show()
 ```

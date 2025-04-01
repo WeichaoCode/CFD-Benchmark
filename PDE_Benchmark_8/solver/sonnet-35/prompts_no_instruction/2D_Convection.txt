@@ -1,0 +1,48 @@
+```python
+import numpy as np
+
+# Problem parameters
+nx, ny = 101, 101
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+dx = x[1] - x[0]
+dy = y[1] - y[0]
+
+# Time parameters
+nt = 80
+sigma = 0.2
+dt = sigma * dx
+
+# Initialize solution arrays
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+
+# Initial condition modification
+u[(x >= 0.5) & (x <= 1), (y >= 0.5) & (y <= 1)] = 2
+v[(x >= 0.5) & (x <= 1), (y >= 0.5) & (y <= 1)] = 2
+
+# Boundary conditions
+u[0, :] = u[-1, :] = u[:, 0] = u[:, -1] = 1
+v[0, :] = v[-1, :] = v[:, 0] = v[:, -1] = 1
+
+# Finite difference solver
+for _ in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    
+    # Interior points update
+    for i in range(1, ny-1):
+        for j in range(1, nx-1):
+            u[i,j] = un[i,j] - un[i,j] * dt/dx * (un[i,j] - un[i,j-1]) \
+                              - vn[i,j] * dt/dy * (un[i,j] - un[i-1,j])
+            v[i,j] = vn[i,j] - un[i,j] * dt/dx * (vn[i,j] - vn[i,j-1]) \
+                              - vn[i,j] * dt/dy * (vn[i,j] - vn[i-1,j])
+    
+    # Re-apply boundary conditions
+    u[0, :] = u[-1, :] = u[:, 0] = u[:, -1] = 1
+    v[0, :] = v[-1, :] = v[:, 0] = v[:, -1] = 1
+
+# Save final solution
+np.save('u.npy', u)
+np.save('v.npy', v)
+```

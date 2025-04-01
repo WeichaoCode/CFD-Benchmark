@@ -1,0 +1,116 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_Nonlinear_Convection_MK.py ---
+Exit Code: 1
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/1D_Nonlinear_Convection_MK.py:32: RuntimeWarning: overflow encountered in scalar multiply
+  flux_pred = u_pred[i] * (u_pred[i] - u_pred[right_index])
+/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/1D_Nonlinear_Convection_MK.py:24: RuntimeWarning: overflow encountered in scalar multiply
+  u_pred[i] = u[i] - dt/dx * u[i] * (u[i] - u[left_index])
+/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/1D_Nonlinear_Convection_MK.py:24: RuntimeWarning: invalid value encountered in scalar subtract
+  u_pred[i] = u[i] - dt/dx * u[i] * (u[i] - u[left_index])
+/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/1D_Nonlinear_Convection_MK.py:33: RuntimeWarning: overflow encountered in scalar multiply
+  flux_curr = u[i] * (u[i] - u[left_index])
+/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/1D_Nonlinear_Convection_MK.py:33: RuntimeWarning: invalid value encountered in scalar subtract
+  flux_curr = u[i] * (u[i] - u[left_index])
+/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/1D_Nonlinear_Convection_MK.py:35: RuntimeWarning: invalid value encountered in scalar add
+  u_new[i] = u[i] - 0.5 * dt/dx * (flux_pred + flux_curr)
+/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/1D_Nonlinear_Convection_MK.py:32: RuntimeWarning: invalid value encountered in scalar subtract
+  flux_pred = u_pred[i] * (u_pred[i] - u_pred[right_index])
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/1D_Nonlinear_Convection_MK.py", line 40, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-3.5/prompts_no_instruction/u_1D_Nonlinear_Convection_MK.npy', u)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-3.5/prompts_no_instruction/u_1D_Nonlinear_Convection_MK.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 1
+--- Running: Fully_Developed_Turbulent_Channel_Flow_KE.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 83, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-3.5/prompts_no_instruction/k_final_Fully_Developed_Turbulent_Channel_Flow_KE.npy', k_final)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-3.5/prompts_no_instruction/k_final_Fully_Developed_Turbulent_Channel_Flow_KE.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 2
+--- Running: 1D_Diffusion.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/1D_Diffusion.py", line 34, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-3.5/prompts_no_instruction/u_1D_Diffusion.npy', u)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-3.5/prompts_no_instruction/u_1D_Diffusion.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 3
+--- Running: 1D_Linear_Convection_corr.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/1D_Linear_Convection_corr.py", line 48, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-3.5/prompts_no_instruction/u_1D_Linear_Convection_corr.npy', u)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-3.5/prompts_no_instruction/u_1D_Linear_Convection_corr.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 4
+--- Running: 2D_Diffusion.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/sonnet-3.5/prompts_no_instruction/2D_Diffusion.py", line 46, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-3.5/prompts_no_instruction/u_2D_Diffusion.npy', u)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-3.5/prompts_no_instruction/u_2D_Diffusion.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 5

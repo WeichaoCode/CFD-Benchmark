@@ -1,0 +1,71 @@
+2025-04-01 16:14:20,130 - INFO - ####################################################################################################
+2025-04-01 16:14:20,130 - INFO - Using the sonnet-3.5, change temperature to 0.0, use the prompt prompts_no_instruction.json
+2025-04-01 16:14:20,151 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/5)
+2025-04-01 16:14:20,495 - INFO - ❌ API Call Error for 1D_Burgers_Equation: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:20,495 - INFO - 🔹 Generating code for: 1D_Diffusion (Attempt 1/5)
+2025-04-01 16:14:20,588 - INFO - ❌ API Call Error for 1D_Diffusion: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:20,588 - INFO - 🔹 Generating code for: 1D_Euler_Shock_Tube (Attempt 1/5)
+2025-04-01 16:14:20,679 - INFO - ❌ API Call Error for 1D_Euler_Shock_Tube: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:20,679 - INFO - 🔹 Generating code for: 1D_Linear_Convection_explicit_euler (Attempt 1/5)
+2025-04-01 16:14:20,772 - INFO - ❌ API Call Error for 1D_Linear_Convection_explicit_euler: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:20,772 - INFO - 🔹 Generating code for: 1D_Linear_Convection_adams (Attempt 1/5)
+2025-04-01 16:14:20,870 - INFO - ❌ API Call Error for 1D_Linear_Convection_adams: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:20,870 - INFO - 🔹 Generating code for: 1D_Linear_Convection_corr (Attempt 1/5)
+2025-04-01 16:14:20,965 - INFO - ❌ API Call Error for 1D_Linear_Convection_corr: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:20,965 - INFO - 🔹 Generating code for: 1D_Linear_Convection_rk (Attempt 1/5)
+2025-04-01 16:14:21,056 - INFO - ❌ API Call Error for 1D_Linear_Convection_rk: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,057 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_Lax (Attempt 1/5)
+2025-04-01 16:14:21,151 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_Lax: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,151 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_LW (Attempt 1/5)
+2025-04-01 16:14:21,244 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_LW: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,244 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_MK (Attempt 1/5)
+2025-04-01 16:14:21,333 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_MK: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,333 - INFO - 🔹 Generating code for: 2D_Burgers_Equation (Attempt 1/5)
+2025-04-01 16:14:21,423 - INFO - ❌ API Call Error for 2D_Burgers_Equation: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,423 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 1/5)
+2025-04-01 16:14:21,517 - INFO - ❌ API Call Error for 2D_Convection: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,518 - INFO - 🔹 Generating code for: 2D_Diffusion (Attempt 1/5)
+2025-04-01 16:14:21,612 - INFO - ❌ API Call Error for 2D_Diffusion: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,613 - INFO - 🔹 Generating code for: 2D_Diffusion_FVM (Attempt 1/5)
+2025-04-01 16:14:21,705 - INFO - ❌ API Call Error for 2D_Diffusion_FVM: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,705 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_FOU (Attempt 1/5)
+2025-04-01 16:14:21,799 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_FOU: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,799 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_MK (Attempt 1/5)
+2025-04-01 16:14:21,893 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_MK: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,893 - INFO - 🔹 Generating code for: 2D_Laplace_Equation (Attempt 1/5)
+2025-04-01 16:14:21,983 - INFO - ❌ API Call Error for 2D_Laplace_Equation: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:21,983 - INFO - 🔹 Generating code for: 2D_Linear_Convection (Attempt 1/5)
+2025-04-01 16:14:22,076 - INFO - ❌ API Call Error for 2D_Linear_Convection: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,077 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Cavity (Attempt 1/5)
+2025-04-01 16:14:22,169 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Cavity: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,169 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Channel (Attempt 1/5)
+2025-04-01 16:14:22,257 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Channel: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,257 - INFO - 🔹 Generating code for: 2D_Poisson_Equation (Attempt 1/5)
+2025-04-01 16:14:22,350 - INFO - ❌ API Call Error for 2D_Poisson_Equation: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,350 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Gauss (Attempt 1/5)
+2025-04-01 16:14:22,441 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_Gauss: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,441 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Jac (Attempt 1/5)
+2025-04-01 16:14:22,530 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_Jac: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,530 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_SOR (Attempt 1/5)
+2025-04-01 16:14:22,624 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_SOR: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,624 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_ADI (Attempt 1/5)
+2025-04-01 16:14:22,719 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_ADI: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,719 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_DF (Attempt 1/5)
+2025-04-01 16:14:22,810 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_DF: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,811 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_SE (Attempt 1/5)
+2025-04-01 16:14:22,905 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_SE: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,905 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_CESS (Attempt 1/5)
+2025-04-01 16:14:22,994 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_CESS: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:22,994 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 1/5)
+2025-04-01 16:14:23,083 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_KE: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:23,083 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SA (Attempt 1/5)
+2025-04-01 16:14:23,175 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SA: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:23,175 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SST (Attempt 1/5)
+2025-04-01 16:14:23,268 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SST: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:23,268 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_V2F (Attempt 1/5)
+2025-04-01 16:14:23,357 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_V2F: An error occurred (ExpiredTokenException) when calling the InvokeModel operation: The security token included in the request is expired
+2025-04-01 16:14:23,358 - INFO - 
+🎯 Execution completed. Check the solver directory for generated files.
+2025-04-01 16:14:23,358 - INFO - Total Input Tokens: 0
+2025-04-01 16:14:23,358 - INFO - Total Output Tokens: 0
+2025-04-01 16:14:23,358 - INFO - Total Estimated Cost: $0.000000

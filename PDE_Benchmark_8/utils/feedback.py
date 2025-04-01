@@ -17,11 +17,18 @@ import subprocess
 from openai import OpenAI
 import logging
 from datetime import datetime
+import boto3
 
 # === Token Usage Tracking ===
 total_input_tokens = 0
 total_output_tokens = 0
 total_cost = 0  # To keep track of the total cost (optional, needs pricing rate)
+
+# Initialize AWS Bedrock client
+bedrock_runtime = boto3.client("bedrock-runtime", region_name="us-west-2")
+
+# Define Sonnet-3.5 profile Inference Profile ARN
+inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/g47vfd2xvs5w"
 
 
 def call_api(llm_model, prompt_json, temperature=0.0):
@@ -108,9 +115,31 @@ def call_api(llm_model, prompt_json, temperature=0.0):
                             "If the problem is 1D, the saved array should be 1D. "
                             "If the problem is 2D, the saved array should be 2D."},  # Add the initial user prompt
             ]
-        else:
+        elif llm_model == "gpt-4o":
             conversation_history = [
                 {"role": "system",
+                 "content": "You are a highly skilled assistant capable of generating Python code to solve CFD problems "
+                            "using appropriate numerical methods."
+                            "Given the problem description, you should reason through the problem and determine the best "
+                            "approach for discretizing and solving it,"
+                            "while respecting the specified boundary conditions, initial conditions, and domain.\n"
+                            "For unsteady problems, save only the solution at the final time step. For 1D problems, "
+                            "save a 1D array; for 2D problems, save a 2D array.\n"
+                            "Ensure the code follows the user's specifications and saves the requested variables exactly "
+                            "as named in `save_values`.\n"
+                            "Your task is to generate the correct, fully runnable Python code for solving the problem "
+                            "without additional explanations."
+                 },  # System prompt to guide the LLM
+
+                {"role": "user",
+                 "content": original_prompt +
+                            "If it is an unsteady problem, only save the solution at the final time step "
+                            "If the problem is 1D, the saved array should be 1D. "
+                            "If the problem is 2D, the saved array should be 2D."},  # Add the initial user prompt
+            ]
+        elif llm_model == "sonnet-3.5":
+            conversation_history = [
+                {"role": "user",
                  "content": "You are a highly skilled assistant capable of generating Python code to solve CFD problems "
                             "using appropriate numerical methods."
                             "Given the problem description, you should reason through the problem and determine the best "
@@ -140,12 +169,27 @@ def call_api(llm_model, prompt_json, temperature=0.0):
                         model=llm_model,  # Specify the model
                         messages=conversation_history
                     )
-                else:
+                elif llm_model == "gpt-4o":
                     # Call OpenAI GPT-4o API
                     response = client.chat.completions.create(
                         model=llm_model,  # Specify the model
                         messages=conversation_history,
                         temperature=temperature
+                    )
+                elif llm_model == "sonnet-3.5":
+                    request_body = {
+                        "anthropic_version": "bedrock-2023-05-31",
+                        "max_tokens": 8000,
+                        "temperature": 0.7,
+                        "messages": conversation_history
+                    }
+
+                    # Invoke AWS Bedrock API
+                    response = bedrock_runtime.invoke_model(
+                        modelId=inference_profile_arn,
+                        body=json.dumps(request_body),
+                        contentType="application/json",
+                        accept="application/json"
                     )
                 # log the input message
                 logging.info(
@@ -157,34 +201,44 @@ def call_api(llm_model, prompt_json, temperature=0.0):
                 logging.info(response)
 
                 # Extract model response
-                model_response = response.choices[0].message.content.strip()
+                if llm_model in ["gpt-4o", "o1-mini"]:
+                    model_response = response.choices[0].message.content.strip()
+                elif llm_model == "sonnet-3.5":
+                    # Parse the response
+                    response_body = json.loads(response["body"].read().decode("utf-8"))
 
+                    # Extract model response
+                    if "content" in response_body:
+                        model_response = response_body["content"][0]["text"]
+                    else:
+                        model_response = "Error: No response received from model."
                 # Add the response to the conversation as input
                 conversation_history.append({"role": "assistant", "content": model_response})
                 logging.info(
                     "---------------------------------INPUT TO LLM UPDATE----------------------------------------")
                 logging.info(conversation_history)
 
-                # Extract token usage from the response
-                total_tokens = response.usage.total_tokens  # Get the total tokens used for this request
-                input_tokens = len(
-                    original_prompt.split())  # Get the number of tokens used by the prompt (input tokens)
-                output_tokens = total_tokens - input_tokens  # Subtract input tokens from total tokens to get output tokens
+                if llm_model in ["gpt-4o", "o1-mini"]:
+                    # Extract token usage from the response
+                    total_tokens = response.usage.total_tokens  # Get the total tokens used for this request
+                    input_tokens = len(
+                        original_prompt.split())  # Get the number of tokens used by the prompt (input tokens)
+                    output_tokens = total_tokens - input_tokens  # Subtract input tokens from total tokens to get output tokens
 
-                # Track the total token usage and cost
-                global total_input_tokens, total_output_tokens, total_cost
-                total_input_tokens += input_tokens  # Update total input tokens count
-                total_output_tokens += output_tokens  # Update total output tokens count
+                    # Track the total token usage and cost
+                    global total_input_tokens, total_output_tokens, total_cost
+                    total_input_tokens += input_tokens  # Update total input tokens count
+                    total_output_tokens += output_tokens  # Update total output tokens count
 
-                # Calculate cost (example, adjust as per pricing details)
-                cost_per_input_token = 2.50 / 1_000_000  # Cost per input token (example, adjust accordingly)
-                cost_per_output_token = 10.00 / 1_000_000  # Cost per output token (example, adjust accordingly)
-                total_cost += (input_tokens * cost_per_input_token) + (output_tokens * cost_per_output_token)
+                    # Calculate cost (example, adjust as per pricing details)
+                    cost_per_input_token = 2.50 / 1_000_000  # Cost per input token (example, adjust accordingly)
+                    cost_per_output_token = 10.00 / 1_000_000  # Cost per output token (example, adjust accordingly)
+                    total_cost += (input_tokens * cost_per_input_token) + (output_tokens * cost_per_output_token)
 
-                # Log the usage and estimated cost
-                logging.info(f"Input Tokens: {input_tokens}, Output Tokens: {output_tokens}")
-                logging.info(
-                    f"Estimated cost for this request: ${input_tokens * cost_per_input_token + output_tokens * cost_per_output_token:.6f}")
+                    # Log the usage and estimated cost
+                    logging.info(f"Input Tokens: {input_tokens}, Output Tokens: {output_tokens}")
+                    logging.info(
+                        f"Estimated cost for this request: ${input_tokens * cost_per_input_token + output_tokens * cost_per_output_token:.6f}")
 
                 # Extract Python code using regex
                 code_match = re.findall(r"```python(.*?)```", model_response, re.DOTALL)
@@ -263,6 +317,8 @@ def call_api(llm_model, prompt_json, temperature=0.0):
 #
 # call_api("o1-mini", "prompts_instruction_2.json")
 #
-call_api("o1-mini", "prompts_no_instruction.json")
+# call_api("o1-mini", "prompts_no_instruction.json")
 
 # call_api("gpt-4o", "prompts.json")
+
+call_api("sonnet-3.5", "prompts_no_instruction.json")

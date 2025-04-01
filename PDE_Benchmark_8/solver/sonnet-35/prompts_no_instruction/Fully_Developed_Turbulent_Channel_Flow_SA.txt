@@ -1,0 +1,90 @@
+Here's the corrected version that ensures the matrix is in CSC format:
+
+```python
+import numpy as np
+import scipy.sparse as sp
+import scipy.sparse.linalg as spla
+
+# Problem parameters
+H = 2.0  # Domain height
+n = 100  # Number of grid points
+mu = 0.01  # Molecular viscosity
+
+# Spalart-Allmaras turbulence model parameters
+kappa = 0.41  # Karman constant
+cb1 = 0.1355
+cb2 = 0.622
+sigma = 2/3
+cw1 = cb1 / (kappa**2)
+cw2 = 0.3
+cw3 = 2.0
+cv1 = 7.1
+
+# Grid generation (non-uniform clustering near walls)
+def generate_non_uniform_grid(n, H):
+    y = np.zeros(n)
+    beta = 0.5  # Clustering parameter
+    for i in range(n):
+        eta = (i) / (n-1)
+        y[i] = H * (np.tanh(beta * (eta - 0.5)) / np.tanh(beta/2) + 0.5)
+    return y
+
+# Grid points
+y = generate_non_uniform_grid(n, H)
+
+# Compute grid spacing and derivatives
+dy = np.diff(y)
+dy_plus = np.zeros(n)
+dy_minus = np.zeros(n)
+dy_plus[1:] = dy
+dy_minus[:-1] = dy
+dy_center = 0.5 * (dy_plus + dy_minus)
+
+# Avoid divide by zero
+dy_plus[0] = dy_plus[1]
+dy_minus[-1] = dy_minus[-2]
+
+# Spalart-Allmaras turbulence model
+nu_tilde = np.zeros(n)
+
+# Compute eddy viscosity
+def compute_eddy_viscosity(nu_tilde):
+    f_v1 = nu_tilde**3 / (nu_tilde**3 + cv1**3)
+    mu_t = nu_tilde * f_v1
+    return mu_t
+
+# Effective viscosity
+mu_t = compute_eddy_viscosity(nu_tilde)
+mu_eff = mu + mu_t
+
+# Create diagonal matrices for more stable discretization
+diag_lower = np.zeros(n-1)
+diag_center = np.zeros(n)
+diag_upper = np.zeros(n-1)
+
+# Compute diagonal entries
+for i in range(1, n-1):
+    diag_lower[i-1] = -1 / (dy_center[i] * dy_minus[i])
+    diag_upper[i] = -1 / (dy_center[i] * dy_plus[i])
+    diag_center[i] = -(diag_lower[i-1] + diag_upper[i])
+
+# Handle boundary points
+diag_center[0] = 1
+diag_center[-1] = 1
+
+# Construct sparse matrix in CSC format
+A = sp.diags([diag_lower, diag_center, diag_upper], [-1, 0, 1], shape=(n, n), format='csc')
+
+# Source term
+b = np.ones(n)
+b[0] = 0  # Dirichlet BC at bottom wall
+b[-1] = 0  # Dirichlet BC at top wall
+
+# Solve linear system
+u = spla.spsolve(A, b)
+
+# Save solution
+np.save('u.npy', u)
+```
+
+The key change is adding `format='csc'` when creating the sparse matrix with `sp.diags()`. This ensures the matrix is in Compressed Sparse Column (CSC) format, which is required by `spsolve()` and resolves the previous warning.

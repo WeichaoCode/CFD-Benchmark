@@ -1,0 +1,71 @@
+2025-04-01 16:23:56,885 - INFO - ####################################################################################################
+2025-04-01 16:23:56,885 - INFO - Using the sonnet-3.5, change temperature to 0.0, use the prompt prompts_no_instruction.json
+2025-04-01 16:23:56,906 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/5)
+2025-04-01 16:23:57,250 - INFO - ❌ API Call Error for 1D_Burgers_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:57,250 - INFO - 🔹 Generating code for: 1D_Diffusion (Attempt 1/5)
+2025-04-01 16:23:57,340 - INFO - ❌ API Call Error for 1D_Diffusion: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:57,340 - INFO - 🔹 Generating code for: 1D_Euler_Shock_Tube (Attempt 1/5)
+2025-04-01 16:23:57,436 - INFO - ❌ API Call Error for 1D_Euler_Shock_Tube: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:57,436 - INFO - 🔹 Generating code for: 1D_Linear_Convection_explicit_euler (Attempt 1/5)
+2025-04-01 16:23:57,529 - INFO - ❌ API Call Error for 1D_Linear_Convection_explicit_euler: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:57,529 - INFO - 🔹 Generating code for: 1D_Linear_Convection_adams (Attempt 1/5)
+2025-04-01 16:23:57,623 - INFO - ❌ API Call Error for 1D_Linear_Convection_adams: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:57,624 - INFO - 🔹 Generating code for: 1D_Linear_Convection_corr (Attempt 1/5)
+2025-04-01 16:23:57,723 - INFO - ❌ API Call Error for 1D_Linear_Convection_corr: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:57,724 - INFO - 🔹 Generating code for: 1D_Linear_Convection_rk (Attempt 1/5)
+2025-04-01 16:23:57,817 - INFO - ❌ API Call Error for 1D_Linear_Convection_rk: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:57,817 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_Lax (Attempt 1/5)
+2025-04-01 16:23:57,910 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_Lax: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:57,911 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_LW (Attempt 1/5)
+2025-04-01 16:23:58,004 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_LW: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,004 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_MK (Attempt 1/5)
+2025-04-01 16:23:58,099 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_MK: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,099 - INFO - 🔹 Generating code for: 2D_Burgers_Equation (Attempt 1/5)
+2025-04-01 16:23:58,192 - INFO - ❌ API Call Error for 2D_Burgers_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,192 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 1/5)
+2025-04-01 16:23:58,286 - INFO - ❌ API Call Error for 2D_Convection: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,286 - INFO - 🔹 Generating code for: 2D_Diffusion (Attempt 1/5)
+2025-04-01 16:23:58,378 - INFO - ❌ API Call Error for 2D_Diffusion: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,378 - INFO - 🔹 Generating code for: 2D_Diffusion_FVM (Attempt 1/5)
+2025-04-01 16:23:58,474 - INFO - ❌ API Call Error for 2D_Diffusion_FVM: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,475 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_FOU (Attempt 1/5)
+2025-04-01 16:23:58,568 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_FOU: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,569 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_MK (Attempt 1/5)
+2025-04-01 16:23:58,666 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_MK: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,666 - INFO - 🔹 Generating code for: 2D_Laplace_Equation (Attempt 1/5)
+2025-04-01 16:23:58,765 - INFO - ❌ API Call Error for 2D_Laplace_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,765 - INFO - 🔹 Generating code for: 2D_Linear_Convection (Attempt 1/5)
+2025-04-01 16:23:58,858 - INFO - ❌ API Call Error for 2D_Linear_Convection: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,858 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Cavity (Attempt 1/5)
+2025-04-01 16:23:58,947 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Cavity: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:58,947 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Channel (Attempt 1/5)
+2025-04-01 16:23:59,047 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Channel: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,047 - INFO - 🔹 Generating code for: 2D_Poisson_Equation (Attempt 1/5)
+2025-04-01 16:23:59,139 - INFO - ❌ API Call Error for 2D_Poisson_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,139 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Gauss (Attempt 1/5)
+2025-04-01 16:23:59,246 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_Gauss: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,246 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Jac (Attempt 1/5)
+2025-04-01 16:23:59,333 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_Jac: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,333 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_SOR (Attempt 1/5)
+2025-04-01 16:23:59,427 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_SOR: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,427 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_ADI (Attempt 1/5)
+2025-04-01 16:23:59,525 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_ADI: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,525 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_DF (Attempt 1/5)
+2025-04-01 16:23:59,620 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_DF: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,620 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_SE (Attempt 1/5)
+2025-04-01 16:23:59,715 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_SE: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,715 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_CESS (Attempt 1/5)
+2025-04-01 16:23:59,807 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_CESS: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,807 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 1/5)
+2025-04-01 16:23:59,897 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_KE: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,897 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SA (Attempt 1/5)
+2025-04-01 16:23:59,992 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SA: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:23:59,992 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SST (Attempt 1/5)
+2025-04-01 16:24:00,085 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SST: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:24:00,085 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_V2F (Attempt 1/5)
+2025-04-01 16:24:00,176 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_V2F: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid.
+2025-04-01 16:24:00,177 - INFO - 
+🎯 Execution completed. Check the solver directory for generated files.
+2025-04-01 16:24:00,177 - INFO - Total Input Tokens: 0
+2025-04-01 16:24:00,177 - INFO - Total Output Tokens: 0
+2025-04-01 16:24:00,177 - INFO - Total Estimated Cost: $0.000000

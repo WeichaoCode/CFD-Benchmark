@@ -107,5 +107,7 @@ def call_compare_common(llm_model, prompt_json):
 
 
 # call_compare_common('gpt-4o', 'prompts_no_instruction')
-call_compare_common('o1-mini', 'prompts_no_instruction')
+# call_compare_common('o1-mini', 'prompts_no_instruction')
 # call_compare_common('gpt-4o', 'prompts_both_instructions')
+
+call_compare_common('sonnet-35', 'prompts_no_instruction')

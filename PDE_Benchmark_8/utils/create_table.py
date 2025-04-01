@@ -6,7 +6,7 @@ import os
 # === Config ===
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
-LOG_FILE_PATH = os.path.join(ROOT_DIR, 'compare/comparison_results_o1-mini_prompts_no_instruction_14-40-08.log')
+LOG_FILE_PATH = os.path.join(ROOT_DIR, 'compare/comparison_results_sonnet-35_prompts_no_instruction_17-15-23.log')
 CSV_FILE_PATH = os.path.join(ROOT_DIR, f'table/extracted_results_table_{timestamp}.csv')
 log_file_path = LOG_FILE_PATH
 output_csv_path = CSV_FILE_PATH

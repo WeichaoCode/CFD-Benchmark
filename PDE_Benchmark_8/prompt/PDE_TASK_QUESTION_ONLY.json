@@ -8,9 +8,9 @@
     },
     "1D_Diffusion": {
         "equation": "\\[\n  \\frac{\\partial u}{\\partial t} = \\nu \\frac{\\partial^2 u}{\\partial x^2}\n\\]\n\nwhere:\n- \\( u(x,t) \\) is the diffused quantity (e.g., temperature, concentration)\n- \\( \\nu = 0.3 \\) is the diffusion coefficient\n- \\( x \\) is the spatial coordinate\n- \\( t \\) is time",
-        "boundary conditions": "Dirichlet boundary conditions:\n\\[\n  u(0) = 1, \\quad u(1) = 0\n\\]",
-        "initial conditions": "At \\( t = 0 \\),\n\\[\n  u(x,0) = 2 \\quad \\text{for } 0.5 \\leq x \\leq 1, \\quad u = 1 \\quad \\text{elsewhere}\n\\]",
-        "domain": "- Spatial domain: \\( x \\in [0, 1] \\),  Temporal domain: (t \\in [0, 0.0333])",
+        "boundary conditions": " ",
+        "initial conditions": "\\[ u(x, 0) = \\begin{cases} 2, & \\text{if } 0.5 \\leq x \\leq 1 \\\\ 1, & \\text{elsewhere} \\end{cases} \\]",
+        "domain": "- Spatial domain: \\( x \\in [0, 2] \\),  Temporal domain: (t \\in [0, 0.0333])",
         "save values": "u"
     },
     "1D_Euler_Shock_Tube": {
@@ -120,7 +120,7 @@
     },
     "2D_Steady_Heat_Equation": {
         "equation": "\\[\n\\frac{\\partial^2 T}{\\partial x^2} + \\frac{\\partial^2 T}{\\partial y^2} = 0\n\\]\n\nwhere:\n- \\( T(x, y) \\): temperature field over the domain",
-        "boundary conditions": "- Dirichlet boundary conditions:\n  - Left boundary: \\( T = 10^\\circ C \\)\n  - Right boundary: \\( T = 40^\\circ C \\)\n  - Top boundary: \\( T = 0^\\circ C \\)\n  - Bottom boundary: \\( T = 20^\\circ C \\)",
+        "boundary conditions": "- Dirichlet boundary conditions applied on all boundaries of a rectangular domain (width = 5, height = 4):\n  - Left boundary (AB, at x = 0): \\( T = 10^\\circ C \\)\n  - Right boundary (EF, at x = 5): \\( T = 40^\\circ C \\)\n  - Top boundary (CD, at y = 4): \\( T = 0^\\circ C \\)\n  - Bottom boundary (G, at y = 0): \\( T = 20^\\circ C \\)",
         "initial conditions": "\\[\n  T(x, y) = 0 \\text{ everywhere except at the boundaries}\n\\]",
         "domain": "- Spatial domain: \\( x \\in [0, 5], y \\in [0, 4] \\)",
         "save values": "T"

@@ -27,9 +27,6 @@ total_cost = 0  # To keep track of the total cost (optional, needs pricing rate)
 # Initialize AWS Bedrock client
 bedrock_runtime = boto3.client("bedrock-runtime", region_name="us-west-2")
 
-# Define Sonnet-3.5 profile Inference Profile ARN
-inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/g47vfd2xvs5w"
-
 
 def call_api(llm_model, prompt_json, temperature=0.0):
     # Get current time with microseconds
@@ -59,6 +56,12 @@ def call_api(llm_model, prompt_json, temperature=0.0):
     api_key = "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"  # Replace this with your OpenAI API key
     client = OpenAI(api_key=api_key)
 
+    if llm_model == "sonnet-35":
+        # Define Sonnet-3.5 profile Inference Profile ARN
+        inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/g47vfd2xvs5w"
+    elif llm_model == "haiku":
+        # Define Haiku profile Inference Profile ARN
+        inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/g47vfd2xvs5w"
     # === Load PDE Prompts ===
     with open(PROMPTS_FILE, "r") as file:
         pde_prompts = json.load(file)
@@ -321,4 +324,6 @@ def call_api(llm_model, prompt_json, temperature=0.0):
 
 # call_api("gpt-4o", "prompts.json")
 
-call_api("sonnet-3.5", "prompts_no_instruction.json")
+# call_api("sonnet-3.5", "prompts_no_instruction.json")
+
+# call_api("haiku", "prompts_no_instruction.json")

@@ -1,0 +1,54 @@
+import numpy as np
+
+# Parameters
+gamma = 1.4
+x_start, x_end = -1.0, 1.0
+t_end = 0.25
+nx = 200  # Number of spatial points
+dx = (x_end - x_start) / (nx - 1)
+dt = 0.0005  # Time step
+nt = int(t_end / dt)  # Number of time steps
+
+# Initial conditions
+x = np.linspace(x_start, x_end, nx)
+rho = np.where(x < 0, 1.0, 0.125)
+u = np.zeros_like(x)
+p = np.where(x < 0, 1.0, 0.1)
+
+# Conservative variables
+E = p / ((gamma - 1) * rho) + 0.5 * u**2
+U = np.array([rho, rho * u, rho * E])
+
+# Flux function
+def compute_flux(U):
+    rho = U[0]
+    momentum = U[1]
+    energy = U[2]
+    u = momentum / rho
+    p = (gamma - 1) * (energy - 0.5 * rho * u**2)
+    F = np.array([
+        momentum,
+        momentum * u + p,
+        u * (energy + p)
+    ])
+    return F
+
+# Time integration using Lax-Friedrichs method
+for n in range(nt):
+    F = compute_flux(U)
+    U[:, 1:-1] = 0.5 * (U[:, :-2] + U[:, 2:]) - dt / (2 * dx) * (F[:, 2:] - F[:, :-2])
+    
+    # Reflective boundary conditions
+    U[:, 0] = U[:, 1]
+    U[:, -1] = U[:, -2]
+
+# Extract final solution
+rho_final = U[0]
+u_final = U[1] / rho_final
+E_final = U[2] / rho_final
+p_final = (gamma - 1) * (E_final - 0.5 * u_final**2) * rho_final
+
+# Save the final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts/rho_final_1D_Euler_Shock_Tube.npy', rho_final)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts/u_final_1D_Euler_Shock_Tube.npy', u_final)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/gpt-4o/prompts/p_final_1D_Euler_Shock_Tube.npy', p_final)

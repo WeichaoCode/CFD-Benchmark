@@ -1,0 +1,31 @@
+2025-04-02 17:38:08,770 - INFO - ====== Starting Comparison of Common Files ======
+2025-04-02 17:38:08,770 - INFO - Found 14 common files to compare.
+2025-04-02 17:38:08,773 - WARNING - Shape mismatch in p_2D_Laplace_Equation.npy — tried transpose. New shape: (50, 25)
+2025-04-02 17:38:08,773 - ERROR - ❌ Error comparing p_2D_Laplace_Equation.npy: Still shape mismatch after transpose: GT (31, 31), PRED (50, 25)
+2025-04-02 17:38:08,773 - WARNING - Shape mismatch in p_2D_Navier_Stokes_Cavity.npy — tried transpose. New shape: (41, 41)
+2025-04-02 17:38:08,773 - ERROR - ❌ Error comparing p_2D_Navier_Stokes_Cavity.npy: Still shape mismatch after transpose: GT (51, 51), PRED (41, 41)
+2025-04-02 17:38:08,774 - INFO - ✅ p_2D_Navier_Stokes_Channel.npy comparison completed.
+2025-04-02 17:38:08,775 - INFO - Results for p_2D_Navier_Stokes_Channel.npy: MSE=1.128989595173342, MAE=1.0023987244341093, RMSE=1.0625392205341608, Cosine Similarity=-0.006806648010158586, R-squared=0.0
+2025-04-02 17:38:08,776 - INFO - ✅ p_2D_Poisson_Equation.npy comparison completed.
+2025-04-02 17:38:08,776 - INFO - Results for p_2D_Poisson_Equation.npy: MSE=1.9606776332831047e-05, MAE=0.003307475664303024, RMSE=0.004427953966882565, Cosine Similarity=0.8844287417105993, R-squared=-261.1456240871986
+2025-04-02 17:38:08,777 - INFO - ✅ u_2D_Burgers_Equation.npy comparison completed.
+2025-04-02 17:38:08,777 - INFO - Results for u_2D_Burgers_Equation.npy: MSE=3.209289138111746e-07, MAE=0.00015607160329435363, RMSE=0.0005665058815327292, Cosine Similarity=0.9999998663367341, R-squared=0.9916444321776042
+2025-04-02 17:38:08,779 - INFO - ✅ u_2D_Convection.npy comparison completed.
+2025-04-02 17:38:08,779 - INFO - Results for u_2D_Convection.npy: MSE=6.918205909184602e-05, MAE=0.002086818432768849, RMSE=0.00831757531326564, Cosine Similarity=0.9999697431375509, R-squared=0.9480148262560444
+2025-04-02 17:38:08,780 - WARNING - Shape mismatch in u_2D_Diffusion.npy — tried transpose. New shape: (101, 101)
+2025-04-02 17:38:08,780 - ERROR - ❌ Error comparing u_2D_Diffusion.npy: Still shape mismatch after transpose: GT (31, 31), PRED (101, 101)
+2025-04-02 17:38:08,780 - WARNING - Shape mismatch in u_2D_Linear_Convection.npy — tried transpose. New shape: (100, 100)
+2025-04-02 17:38:08,780 - ERROR - ❌ Error comparing u_2D_Linear_Convection.npy: Still shape mismatch after transpose: GT (81, 81), PRED (100, 100)
+2025-04-02 17:38:08,781 - WARNING - Shape mismatch in u_2D_Navier_Stokes_Cavity.npy — tried transpose. New shape: (41, 41)
+2025-04-02 17:38:08,781 - ERROR - ❌ Error comparing u_2D_Navier_Stokes_Cavity.npy: Still shape mismatch after transpose: GT (51, 51), PRED (41, 41)
+2025-04-02 17:38:08,783 - INFO - ✅ u_2D_Navier_Stokes_Channel.npy comparison completed.
+2025-04-02 17:38:08,783 - INFO - Results for u_2D_Navier_Stokes_Channel.npy: MSE=6.2624601719504405, MAE=2.261009736087924, RMSE=2.502490793579557, Cosine Similarity=0.928532445603483, R-squared=-4.336297073509398
+2025-04-02 17:38:08,785 - INFO - ✅ v_2D_Burgers_Equation.npy comparison completed.
+2025-04-02 17:38:08,785 - INFO - Results for v_2D_Burgers_Equation.npy: MSE=3.209289138111746e-07, MAE=0.00015607160329435363, RMSE=0.0005665058815327292, Cosine Similarity=0.9999998663367341, R-squared=0.9916444321776042
+2025-04-02 17:38:08,787 - INFO - ✅ v_2D_Convection.npy comparison completed.
+2025-04-02 17:38:08,787 - INFO - Results for v_2D_Convection.npy: MSE=6.918205909184602e-05, MAE=0.002086818432768849, RMSE=0.00831757531326564, Cosine Similarity=0.9999697431375509, R-squared=0.9480148262560444
+2025-04-02 17:38:08,787 - WARNING - Shape mismatch in v_2D_Navier_Stokes_Cavity.npy — tried transpose. New shape: (41, 41)
+2025-04-02 17:38:08,787 - ERROR - ❌ Error comparing v_2D_Navier_Stokes_Cavity.npy: Still shape mismatch after transpose: GT (51, 51), PRED (41, 41)
+2025-04-02 17:38:08,789 - INFO - ✅ v_2D_Navier_Stokes_Channel.npy comparison completed.
+2025-04-02 17:38:08,789 - INFO - Results for v_2D_Navier_Stokes_Channel.npy: MSE=2.4842118037010477e-06, MAE=0.0008468679629837549, RMSE=0.0015761382565311483, Cosine Similarity=0.0, R-squared=0.04878048780487805
+2025-04-02 17:38:08,789 - INFO - ====== Comparison Completed ======

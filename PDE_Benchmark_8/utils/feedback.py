@@ -322,7 +322,7 @@ def call_api(llm_model, prompt_json, temperature=0.0):
 #
 # call_api("o1-mini", "prompts_no_instruction.json")
 
-# call_api("gpt-4o", "prompts.json")
+call_api("gpt-4o", "prompts.json")
 
 # call_api("sonnet-3.5", "prompts_no_instruction.json")
 

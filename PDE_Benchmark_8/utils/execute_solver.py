@@ -13,6 +13,9 @@ def call_execute_solver(llm_model, prompt_json):
     # Define the log file for execution results
     LOG_FILE = os.path.join(GENERATED_SOLVERS_SAVE_DIR, f"execution_results_{llm_model}_{prompt_json}_{timestamp}.log")
 
+    # Ensure the output directory exists
+    os.makedirs(GENERATED_SOLVERS_DIR, exist_ok=True)
+
     # Get all Python files in the solvers directory
     python_files = [f for f in os.listdir(GENERATED_SOLVERS_DIR) if f.endswith(".py")]
 
@@ -82,6 +85,10 @@ def call_execute_solver(llm_model, prompt_json):
 
 # call_execute_solver('o1-mini', 'prompts_no_instruction')
 
-call_execute_solver('gpt-4o', 'prompts')
+# call_execute_solver('gpt-4o', 'prompts')
+
+# call_execute_solver('sonnet-35', 'prompts')
+
+call_execute_solver('haiku', 'prompts')
 
 # call_execute_solver('sonnet-35', 'prompts_no_instruction')

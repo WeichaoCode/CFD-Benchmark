@@ -1,0 +1,91 @@
+import numpy as np
+import scipy.sparse as sp
+from scipy.sparse.linalg import spsolve
+from scipy.interpolate import griddata
+
+# Domain parameters
+Lx, Ly = 2.0, 2.0
+nx, ny = 100, 100
+nt = 500
+dx = Lx / (nx-1)
+dy = Ly / (ny-1)
+dt = 0.0002
+
+# Physical parameters
+rho = 1.0
+nu = 0.1
+F = 1.0
+
+# Grid generation
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize variables
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+p = np.zeros((ny, nx))
+
+# Time-stepping (Finite Difference Method with Staggered Grid)
+for n in range(nt):
+    # Compute derivatives
+    u_old = u.copy()
+    v_old = v.copy()
+    
+    # Momentum equation x-direction (u)
+    u_x = np.gradient(u, dx, axis=1)
+    u_y = np.gradient(u, dy, axis=0)
+    u_xx = np.gradient(u_x, dx, axis=1)
+    u_yy = np.gradient(u_y, dy, axis=0)
+    
+    # Momentum equation y-direction (v) 
+    v_x = np.gradient(v, dx, axis=1)
+    v_y = np.gradient(v, dy, axis=0)
+    v_xx = np.gradient(v_x, dx, axis=1)
+    v_yy = np.gradient(v_y, dy, axis=0)
+    
+    # Pressure Poisson equation terms
+    div_u_sq = (u_x**2 + 2*u_y*v_x + v_y**2)
+    
+    # Update equations
+    u[1:-1,1:-1] = (u_old[1:-1,1:-1] 
+                    - dt * (u_old[1:-1,1:-1] * u_x[1:-1,1:-1] 
+                            + v_old[1:-1,1:-1] * u_y[1:-1,1:-1])
+                    + nu * dt * (u_xx[1:-1,1:-1] + u_yy[1:-1,1:-1])
+                    + dt * F)
+    
+    v[1:-1,1:-1] = (v_old[1:-1,1:-1] 
+                    - dt * (u_old[1:-1,1:-1] * v_x[1:-1,1:-1] 
+                            + v_old[1:-1,1:-1] * v_y[1:-1,1:-1])
+                    + nu * dt * (v_xx[1:-1,1:-1] + v_yy[1:-1,1:-1]))
+    
+    # Solve Poisson equation for pressure
+    p_xx = np.gradient(p, dx, axis=1)
+    p_yy = np.gradient(p, dy, axis=0)
+    
+    p[1:-1,1:-1] = (p[1:-1,1:-1] 
+                    - rho * div_u_sq[1:-1,1:-1])
+    
+    # Enforce boundary conditions
+    # Periodic in x
+    u[:,0] = u[:,-2]
+    u[:,-1] = u[:,1]
+    v[:,0] = v[:,-2]
+    v[:,-1] = v[:,1]
+    p[:,0] = p[:,-2]
+    p[:,-1] = p[:,1]
+    
+    # No-slip in y
+    u[0,:] = 0
+    u[-1,:] = 0
+    v[0,:] = 0
+    v[-1,:] = 0
+    
+    # Pressure Neumann BC
+    p[0,:] = p[1,:]
+    p[-1,:] = p[-2,:]
+
+# Save final time step solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-35/prompts/u_2D_Navier_Stokes_Channel.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-35/prompts/v_2D_Navier_Stokes_Channel.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-35/prompts/p_2D_Navier_Stokes_Channel.npy', p)

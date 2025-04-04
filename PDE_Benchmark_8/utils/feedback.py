@@ -140,7 +140,7 @@ def call_api(llm_model, prompt_json, temperature=0.0):
                             "If the problem is 1D, the saved array should be 1D. "
                             "If the problem is 2D, the saved array should be 2D."},  # Add the initial user prompt
             ]
-        elif llm_model == "sonnet-3.5":
+        elif llm_model in ["sonnet-35", "haiku"]:
             conversation_history = [
                 {"role": "user",
                  "content": "You are a highly skilled assistant capable of generating Python code to solve CFD problems "
@@ -179,7 +179,7 @@ def call_api(llm_model, prompt_json, temperature=0.0):
                         messages=conversation_history,
                         temperature=temperature
                     )
-                elif llm_model == "sonnet-3.5":
+                elif llm_model in ["sonnet-35", "haiku"]:
                     request_body = {
                         "anthropic_version": "bedrock-2023-05-31",
                         "max_tokens": 8000,
@@ -206,7 +206,7 @@ def call_api(llm_model, prompt_json, temperature=0.0):
                 # Extract model response
                 if llm_model in ["gpt-4o", "o1-mini"]:
                     model_response = response.choices[0].message.content.strip()
-                elif llm_model == "sonnet-3.5":
+                elif llm_model in ["sonnet-35", "haiku"]:
                     # Parse the response
                     response_body = json.loads(response["body"].read().decode("utf-8"))
 
@@ -322,7 +322,13 @@ def call_api(llm_model, prompt_json, temperature=0.0):
 #
 # call_api("o1-mini", "prompts_no_instruction.json")
 
-call_api("gpt-4o", "prompts.json")
+# call_api("gpt-4o", "prompts.json")
+
+# call_api("o1-mini", "prompts.json")
+
+# call_api("sonnet-35", "prompts.json")
+
+call_api("haiku", "prompts.json")
 
 # call_api("sonnet-3.5", "prompts_no_instruction.json")
 

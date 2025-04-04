@@ -1,0 +1,41 @@
+```python
+import numpy as np
+
+# Parameters
+nu = 1.0
+x_start, x_end = 0.0, 2.0
+y_start, y_end = 0.0, 2.0
+t_start, t_end = 0.0, 0.3777
+Nx, Ny = 101, 101
+dx = (x_end - x_start) / (Nx - 1)
+dy = (y_end - y_start) / (Ny - 1)
+dt = 0.0001
+Nt = int((t_end - t_start) / dt)
+
+# Create grid
+x = np.linspace(x_start, x_end, Nx)
+y = np.linspace(y_start, y_end, Ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize u
+u = np.ones((Ny, Nx))
+mask = (X >= 0.5) & (X <= 1.0) & (Y >= 0.5) & (Y <= 1.0)
+u[mask] = 2.0
+
+# Time-stepping
+for _ in range(Nt):
+    u_new = u.copy()
+    u_new[1:-1,1:-1] = u[1:-1,1:-1] + nu * dt * (
+        (u[2:,1:-1] - 2*u[1:-1,1:-1] + u[0:-2,1:-1]) / dx**2 +
+        (u[1:-1,2:] - 2*u[1:-1,1:-1] + u[1:-1,0:-2]) / dy**2
+    )
+    # Apply Dirichlet boundary conditions
+    u_new[0, :] = 1.0
+    u_new[-1, :] = 1.0
+    u_new[:, 0] = 1.0
+    u_new[:, -1] = 1.0
+    u = u_new
+
+# Save the final solution
+np.save('u.npy', u)
+```

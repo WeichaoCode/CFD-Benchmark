@@ -1,0 +1,76 @@
+```python
+import numpy as np
+import scipy.sparse as sp
+import scipy.sparse.linalg as spla
+
+# Domain parameters
+Lx, Ly = 2.0, 1.0
+nx, ny = 100, 50
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+# Create mesh
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize potential field
+p = np.zeros((ny, nx))
+
+# Create sparse matrix for Laplacian
+# Set up finite difference matrix
+diagonals = []
+offsets = []
+
+# Main diagonal
+main_diag = np.zeros(nx * ny)
+# Off-diagonal entries for x-direction
+x_diag_main = np.zeros(nx * ny)
+x_diag_lower = np.zeros(nx * ny)
+x_diag_upper = np.zeros(nx * ny)
+# Off-diagonal entries for y-direction  
+y_diag_main = np.zeros(nx * ny)
+y_diag_lower = np.zeros(nx * ny)
+y_diag_upper = np.zeros(nx * ny)
+
+# Fill matrix entries
+for j in range(ny):
+    for i in range(nx):
+        k = j * nx + i
+        
+        # Boundary conditions handling
+        if i == 0:  # Left boundary
+            main_diag[k] = 1
+        elif i == nx - 1:  # Right boundary 
+            main_diag[k] = 1
+            p[j, i] = y[j]
+        else:
+            # Interior points
+            main_diag[k] = -2 * (1/dx**2 + 1/dy**2)
+            x_diag_lower[k] = 1/dx**2
+            x_diag_upper[k] = 1/dx**2
+            
+        # Top/bottom Neumann boundary condition
+        if j == 0 or j == ny - 1:
+            main_diag[k] = 1
+        else:
+            y_diag_lower[k] = 1/dy**2
+            y_diag_upper[k] = 1/dy**2
+
+# Construct sparse matrix in CSR format
+diagonals = [main_diag, 
+             x_diag_lower, x_diag_upper, 
+             y_diag_lower, y_diag_upper]
+offsets = [0, -1, 1, -nx, nx]
+A = sp.diags(diagonals, offsets, shape=(nx*ny, nx*ny)).tocsr()
+
+# Solve linear system
+b = np.zeros(nx * ny)
+p_flat = spla.spsolve(A, b)
+p = p_flat.reshape((ny, nx))
+
+# Save solution
+np.save('p.npy', p)
+```
+
+The key change is adding `.tocsr()` to convert the sparse matrix to Compressed Sparse Row (CSR) format, which resolves the warning and ensures compatibility with `spsolve()`.

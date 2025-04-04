@@ -1,0 +1,94 @@
+import numpy as np
+import scipy.sparse as sp
+import scipy.sparse.linalg as spla
+
+# Problem Parameters
+Lx, Ly = 2.0, 2.0
+rho = 1.0
+nu = 0.1
+t_end = 10.0
+nx, ny = 50, 50
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = 0.01
+
+# Grid Generation
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initial Conditions
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+p = np.zeros((ny, nx))
+
+# Boundary Conditions
+u[-1, :] = 1.0  # Top lid moving with u=1
+
+def poisson_matrix(nx, ny, dx, dy):
+    """Create sparse Poisson matrix for pressure solve"""
+    main_diag = -2 * (1/dx**2 + 1/dy**2)
+    x_diag = 1/dx**2
+    y_diag = 1/dy**2
+    
+    # Create sparse matrix in CSR format
+    diagonals = [main_diag * np.ones(nx*ny),
+                 x_diag * np.ones(nx*ny-1),
+                 x_diag * np.ones(nx*ny-1),
+                 y_diag * np.ones(nx*ny-nx),
+                 y_diag * np.ones(nx*ny-nx)]
+    offsets = [0, -1, 1, -nx, nx]
+    
+    return sp.diags(diagonals, offsets, shape=(nx*ny, nx*ny)).tocsr()
+
+# Time Integration
+for t in np.arange(0, t_end, dt):
+    # Store old velocities
+    u_old = u.copy()
+    v_old = v.copy()
+    
+    # Compute Derivatives
+    du_dx = np.gradient(u, dx, axis=1)
+    du_dy = np.gradient(u, dy, axis=0)
+    dv_dx = np.gradient(v, dx, axis=1)
+    dv_dy = np.gradient(v, dy, axis=0)
+    
+    # Advection Terms
+    u_adv = u_old * du_dx + v_old * du_dy
+    v_adv = u_old * dv_dx + v_old * dv_dy
+    
+    # Diffusion Terms
+    u_diff = nu * (np.gradient(du_dx, dx, axis=1) + np.gradient(du_dy, dy, axis=0))
+    v_diff = nu * (np.gradient(dv_dx, dx, axis=1) + np.gradient(dv_dy, dy, axis=0))
+    
+    # Velocity Prediction
+    u_star = u_old - dt * (u_adv - u_diff)
+    v_star = v_old - dt * (v_adv - v_diff)
+    
+    # Pressure Poisson Equation
+    div_u = np.gradient(u_star, dx, axis=1) + np.gradient(v_star, dy, axis=0)
+    
+    # Solve Poisson Equation
+    A = poisson_matrix(nx, ny, dx, dy)
+    b = -rho * div_u.flatten()
+    p_new = spla.spsolve(A, b).reshape((ny, nx))
+    
+    # Pressure Correction
+    u = u_star - dt/rho * np.gradient(p_new, dx, axis=1)
+    v = v_star - dt/rho * np.gradient(p_new, dy, axis=0)
+    
+    # Enforce Boundary Conditions
+    u[0, :] = 0
+    u[:, 0] = 0
+    u[:, -1] = 0
+    u[-1, :] = 1.0
+    
+    v[0, :] = 0
+    v[:, 0] = 0
+    v[:, -1] = 0
+    v[-1, :] = 0
+
+# Save Final Solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_2D_Navier_Stokes_Cavity.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/v_2D_Navier_Stokes_Cavity.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/p_2D_Navier_Stokes_Cavity.npy', p)

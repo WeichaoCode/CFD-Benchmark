@@ -1,0 +1,124 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_Diffusion.py ---
+Exit Code: 1
+Output:
+Stability Condition: 0.09900250000000001
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/haiku/prompts/1D_Diffusion.py", line 44, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_1D_Diffusion.npy', u)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_1D_Diffusion.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 1
+--- Running: Fully_Developed_Turbulent_Channel_Flow.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/haiku/prompts/Fully_Developed_Turbulent_Channel_Flow.py", line 83, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_solution_Fully_Developed_Turbulent_Channel_Flow.npy', u_solution)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_solution_Fully_Developed_Turbulent_Channel_Flow.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 2
+--- Running: 2D_Diffusion.py ---
+Exit Code: 1
+Output:
+Stability check - alpha_x: 0.245025, alpha_y: 0.245025
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/haiku/prompts/2D_Diffusion.py", line 47, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_2D_Diffusion.npy', u)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_2D_Diffusion.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 3
+--- Running: 2D_Navier_Stokes_Cavity.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/haiku/prompts/2D_Navier_Stokes_Cavity.py", line 92, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_2D_Navier_Stokes_Cavity.npy', u)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_2D_Navier_Stokes_Cavity.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 4
+--- Running: 1D_Linear_Convection.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/haiku/prompts/1D_Linear_Convection.py", line 37, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_1D_Linear_Convection.npy', u)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_1D_Linear_Convection.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 5
+--- Running: 2D_Inviscid_Burgers.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_8/solver/haiku/prompts/2D_Inviscid_Burgers.py", line 51, in <module>
+    np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_2D_Inviscid_Burgers.npy', u)
+  File "<__array_function__ internals>", line 200, in save
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 518, in save
+    file_ctx = open(file, "wb")
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_2D_Inviscid_Burgers.npy'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 6

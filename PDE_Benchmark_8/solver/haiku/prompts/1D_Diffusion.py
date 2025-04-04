@@ -1,0 +1,44 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Problem Parameters
+nu = 0.3  # Diffusion coefficient
+L = 2.0   # Domain length
+T = 0.0333  # Total simulation time
+
+# Discretization Parameters
+nx = 200  # Spatial points
+nt = 1000  # Time steps
+
+# Grid Generation
+dx = L / (nx - 1)
+dt = T / (nt - 1)
+
+x = np.linspace(0, L, nx)
+t = np.linspace(0, T, nt)
+
+# Initialize Solution Array
+u = np.zeros(nx)
+
+# Initial Condition
+u[(x >= 0.5) & (x <= 1.0)] = 2.0
+u[(x < 0.5) | (x > 1.0)] = 1.0
+
+# Stability Check
+stability_condition = nu * dt / (dx**2)
+print(f"Stability Condition: {stability_condition}")
+
+# Finite Difference Method (Explicit Scheme)
+for n in range(1, nt):
+    u_old = u.copy()
+    
+    # Interior Points
+    u[1:-1] = u_old[1:-1] + nu * dt / (dx**2) * \
+              (u_old[2:] - 2 * u_old[1:-1] + u_old[:-2])
+    
+    # Neumann Boundary Conditions (Zero Flux)
+    u[0] = u[1]
+    u[-1] = u[-2]
+
+# Save Final Solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_1D_Diffusion.npy', u)

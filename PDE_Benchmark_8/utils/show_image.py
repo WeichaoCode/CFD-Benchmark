@@ -77,6 +77,8 @@ def call_show_image(llm_model, prompts_json):
 
     print(f"\n🎯 Plotting complete. Images saved to: {save_dir}")
 
+#
+# call_show_image("sonnet-35", "prompts")
+# call_show_image("haiku", "prompts")
 
-call_show_image("sonnet-35", "prompts")
-call_show_image("haiku", "prompts")
+call_show_image("o1-mini", "prompts")

@@ -8,8 +8,8 @@ def call_compare_image(llm_model, prompts_json):
     ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     ground_truth_dir = os.path.join(ROOT_DIR, 'results/solution')
     prediction_dir = os.path.join(ROOT_DIR, f'results/prediction/{llm_model}/{prompts_json}')
-    save_dir_gt = os.path.join(ROOT_DIR, 'compare_images/ground_truth')
-    save_dir_pred = os.path.join(ROOT_DIR, 'compare_images/prediction')
+    save_dir_gt = os.path.join(ROOT_DIR, f'compare_images/ground_truth/{llm_model}/{prompts_json}')
+    save_dir_pred = os.path.join(ROOT_DIR, f'compare_images/prediction/{llm_model}/{prompts_json}')
     os.makedirs(save_dir_gt, exist_ok=True)
     os.makedirs(save_dir_pred, exist_ok=True)
 
@@ -87,3 +87,6 @@ def call_compare_image(llm_model, prompts_json):
 
 
 call_compare_image("gpt-4o", "prompts")
+call_compare_image("o1-mini", "prompts")
+call_compare_image("sonnet-35", "prompts")
+call_compare_image("haiku", "prompts")

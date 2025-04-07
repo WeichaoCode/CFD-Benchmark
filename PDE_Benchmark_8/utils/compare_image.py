@@ -26,9 +26,14 @@ def call_compare_image(llm_model, prompts_json):
         x_gt = np.arange(len(gt))
         x_pred = np.arange(len(pred))
 
+        # Get shared y-axis range
+        ymin = min(gt.min(), pred.min())
+        ymax = max(gt.max(), pred.max())
+
         # Plot the Ground Truth and save to separate directory
         plt.figure(figsize=(10, 6))
         plt.plot(x_gt, gt, label='Ground Truth', color='blue')
+        plt.ylim([ymin, ymax])
         plt.title(f'Ground Truth - {file_name}')
         plt.grid(True)
         plt.tight_layout()
@@ -38,6 +43,7 @@ def call_compare_image(llm_model, prompts_json):
         # Plot the Prediction and save to separate directory
         plt.figure(figsize=(10, 6))
         plt.plot(x_pred, pred, label='Prediction', color='green')
+        plt.ylim([ymin, ymax])
         plt.title(f'Prediction - {file_name}')
         plt.grid(True)
         plt.tight_layout()
@@ -45,10 +51,12 @@ def call_compare_image(llm_model, prompts_json):
         plt.close()
 
     def plot_2d(gt, pred, file_name):
-
+        # Get shared colorbar range
+        vmin = min(gt.min(), pred.min())
+        vmax = max(gt.max(), pred.max())
         # Plot the Ground Truth and save to separate directory
         plt.figure(figsize=(10, 6))
-        im0 = plt.imshow(gt, cmap='viridis', origin='lower')
+        im0 = plt.imshow(gt, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
         plt.title(f'Ground Truth - {file_name}')
         plt.colorbar(im0)
         plt.tight_layout()
@@ -57,7 +65,7 @@ def call_compare_image(llm_model, prompts_json):
 
         # Plot the Prediction and save to separate directory
         plt.figure(figsize=(10, 6))
-        im1 = plt.imshow(pred, cmap='viridis', origin='lower')
+        im1 = plt.imshow(pred, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
         plt.title(f'Prediction - {file_name}')
         plt.colorbar(im1)
         plt.tight_layout()

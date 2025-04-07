@@ -24,15 +24,21 @@ def call_show_image(llm_model, prompts_json):
         x_gt = np.arange(len(gt))
         x_pred = np.arange(len(pred))
 
+        # Get shared y-axis range
+        ymin = min(gt.min(), pred.min())
+        ymax = max(gt.max(), pred.max())
+
         plt.figure(figsize=(10, 6))
         plt.suptitle(f"{file_name}")
         plt.subplot(2, 1, 1)
         plt.plot(x_gt, gt, label='Ground Truth', color='blue')
+        plt.ylim([ymin, ymax])
         plt.title('Ground Truth')
         plt.grid(True)
 
         plt.subplot(2, 1, 2)
         plt.plot(x_pred, pred, label='Prediction', color='green')
+        plt.ylim([ymin, ymax])
         plt.title('Prediction')
         plt.grid(True)
 
@@ -41,14 +47,16 @@ def call_show_image(llm_model, prompts_json):
         plt.close()
 
     def plot_2d(gt, pred, file_name):
-
+        # Get shared colorbar range
+        vmin = min(gt.min(), pred.min())
+        vmax = max(gt.max(), pred.max())
         fig, axes = plt.subplots(1, 2, figsize=(15, 5))
         plt.suptitle(f"{file_name}")
-        im0 = axes[0].imshow(gt, cmap='viridis', origin='lower')
+        im0 = axes[0].imshow(gt, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
         axes[0].set_title('Ground Truth')
         plt.colorbar(im0, ax=axes[0])
 
-        im1 = axes[1].imshow(pred, cmap='viridis', origin='lower')
+        im1 = axes[1].imshow(pred, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
         axes[1].set_title('Prediction')
         plt.colorbar(im1, ax=axes[1])
 
@@ -81,4 +89,8 @@ def call_show_image(llm_model, prompts_json):
 # call_show_image("sonnet-35", "prompts")
 # call_show_image("haiku", "prompts")
 
+call_show_image("gpt-4o", "prompts")
 call_show_image("o1-mini", "prompts")
+call_show_image("sonnet-35", "prompts")
+call_show_image("haiku", "prompts")
+

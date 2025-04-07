@@ -57,8 +57,8 @@ def call_compare_image_mismatch(llm_model, prompts_json):
 
     df = pd.DataFrame(results)
     print(df.to_string(index=False))
-
-    df.to_csv("save_csv_path", index=False)
+    csv_file = os.path.join(save_csv_path, 'image_similarity_scores.csv')
+    df.to_csv(csv_file, index=False)
 
 
 call_compare_image_mismatch("gpt-4o", "prompts")

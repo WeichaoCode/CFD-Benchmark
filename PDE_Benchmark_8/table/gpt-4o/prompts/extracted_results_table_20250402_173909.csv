@@ -1,9 +1,0 @@
-Filename,MSE,MAE,RMSE,Cosine Similarity,R-squared
-p_2D_Navier_Stokes_Channel.npy,1.129e+00,1.002e+00,1.063e+00,-6.807e-03,0.000e+00
-p_2D_Poisson_Equation.npy,1.961e-05,3.307e-03,4.428e-03,8.844e-01,-2.611e+02
-u_2D_Burgers_Equation.npy,3.209e-07,1.561e-04,5.665e-04,1.000e+00,9.916e-01
-u_2D_Convection.npy,6.918e-05,2.087e-03,8.318e-03,1.000e+00,9.480e-01
-u_2D_Navier_Stokes_Channel.npy,6.262e+00,2.261e+00,2.502e+00,9.285e-01,-4.336e+00
-v_2D_Burgers_Equation.npy,3.209e-07,1.561e-04,5.665e-04,1.000e+00,9.916e-01
-v_2D_Convection.npy,6.918e-05,2.087e-03,8.318e-03,1.000e+00,9.480e-01
-v_2D_Navier_Stokes_Channel.npy,2.484e-06,8.469e-04,1.576e-03,0.000e+00,4.878e-02

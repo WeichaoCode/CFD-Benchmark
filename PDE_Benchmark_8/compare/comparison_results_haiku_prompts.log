@@ -1,0 +1,20 @@
+2025-04-07 19:17:53,907 - INFO - ====== Starting Comparison ======
+2025-04-07 19:17:53,907 - INFO - Found 18 common files.
+2025-04-07 19:17:53,909 - INFO - p_2D_Laplace_Equation.npy: MSE=9.412e-02, MAE=2.412e-01, RMSE=3.068e-01, Cosine=0.000, R2=-1.619
+2025-04-07 19:17:53,911 - INFO - p_2D_Navier_Stokes_Cavity.npy: MSE=3.177e-03, MAE=3.309e-02, RMSE=5.636e-02, Cosine=0.000, R2=-0.103
+2025-04-07 19:17:53,913 - INFO - p_2D_Navier_Stokes_Channel.npy: MSE=1.000e+00, MAE=1.000e+00, RMSE=1.000e+00, Cosine=0.000, R2=0.000
+2025-04-07 19:17:53,915 - INFO - p_2D_Poisson_Equation.npy: MSE=3.078e-06, MAE=1.233e-03, RMSE=1.754e-03, Cosine=0.877, R2=0.751
+2025-04-07 19:17:53,917 - INFO - rho_1D_Euler_Shock_Tube.npy: MSE=5.771e+18, MAE=1.253e+09, RMSE=2.402e+09, Cosine=0.302, R2=-41868378976080510976.000
+2025-04-07 19:17:53,918 - ERROR - ❌ u_1D_Burgers_Equation.npy failed: Input contains NaN.
+2025-04-07 19:17:53,919 - INFO - u_1D_Diffusion.npy: MSE=1.141e-03, MAE=2.317e-02, RMSE=3.378e-02, Cosine=1.000, R2=0.990
+2025-04-07 19:17:53,921 - INFO - u_1D_Euler_Shock_Tube.npy: MSE=3.842e+19, MAE=4.765e+09, RMSE=6.198e+09, Cosine=-0.050, R2=-237553122021729927168.000
+2025-04-07 19:17:53,923 - INFO - u_2D_Burgers_Equation.npy: MSE=5.220e-02, MAE=6.645e-02, RMSE=2.285e-01, Cosine=0.980, R2=-0.026
+2025-04-07 19:17:53,925 - INFO - u_2D_Convection.npy: MSE=3.268e-02, MAE=5.454e-02, RMSE=1.808e-01, Cosine=0.987, R2=-0.096
+2025-04-07 19:17:53,927 - INFO - u_2D_Diffusion.npy: MSE=1.582e-02, MAE=7.508e-02, RMSE=1.258e-01, Cosine=0.996, R2=-0.545
+2025-04-07 19:17:53,929 - INFO - u_2D_Linear_Convection.npy: MSE=8.893e-03, MAE=4.008e-02, RMSE=9.430e-02, Cosine=0.996, R2=0.759
+2025-04-07 19:17:53,931 - INFO - u_2D_Navier_Stokes_Cavity.npy: MSE=7.903e-02, MAE=2.128e-01, RMSE=2.811e-01, Cosine=0.659, R2=-0.423
+2025-04-07 19:17:53,933 - INFO - u_2D_Navier_Stokes_Channel.npy: MSE=6.088e+00, MAE=2.226e+00, RMSE=2.467e+00, Cosine=0.958, R2=-4.188
+2025-04-07 19:17:53,935 - INFO - v_2D_Burgers_Equation.npy: MSE=5.220e-02, MAE=6.645e-02, RMSE=2.285e-01, Cosine=0.980, R2=-0.026
+2025-04-07 19:17:53,937 - INFO - v_2D_Convection.npy: MSE=3.268e-02, MAE=5.454e-02, RMSE=1.808e-01, Cosine=0.987, R2=-0.096
+2025-04-07 19:17:53,939 - INFO - v_2D_Navier_Stokes_Cavity.npy: MSE=1.395e-02, MAE=8.838e-02, RMSE=1.181e-01, Cosine=-0.105, R2=-0.210
+2025-04-07 19:17:53,941 - INFO - v_2D_Navier_Stokes_Channel.npy: MSE=0.000e+00, MAE=0.000e+00, RMSE=0.000e+00, Cosine=0.000, R2=1.000

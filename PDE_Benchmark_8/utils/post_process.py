@@ -46,11 +46,11 @@ def call_post_process(llm_model, prompt_json):
 # call_post_process('gpt-4o', 'prompts_no_instruction')
 # call_post_process('o1-mini', 'prompts_no_instruction')
 
-# call_post_process('gpt-4o', 'prompts')
+call_post_process('gpt-4o', 'prompts')
 
-# call_post_process('sonnet-35', 'prompts')
-#
-# call_post_process('haiku', 'prompts')
+call_post_process('sonnet-35', 'prompts')
+
+call_post_process('haiku', 'prompts')
 
 call_post_process('o1-mini', 'prompts')
 

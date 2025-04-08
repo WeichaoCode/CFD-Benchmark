@@ -1,0 +1,42 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_Diffusion.py ---
+Exit Code: 0
+Output:
+Stability check (should be < 0.5): 0.1982034018036072
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 1
+Total Scripts Failed: 0
+--- Running: Fully_Developed_Turbulent_Channel_Flow.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 0
+--- Running: 2D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 0

@@ -85,11 +85,11 @@ def call_execute_solver(llm_model, prompt_json):
 
 # call_execute_solver('o1-mini', 'prompts_no_instruction')
 
-# call_execute_solver('gpt-4o', 'prompts')
+call_execute_solver('gpt-4o', 'prompts')
 
-# call_execute_solver('sonnet-35', 'prompts')
+call_execute_solver('sonnet-35', 'prompts')
 
-# call_execute_solver('haiku', 'prompts')
+call_execute_solver('haiku', 'prompts')
 
 call_execute_solver('o1-mini', 'prompts')
 

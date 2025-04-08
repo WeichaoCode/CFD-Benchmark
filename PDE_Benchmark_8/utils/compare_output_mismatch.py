@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 def call_compare_output_mismatch(llm_model, prompt_json):
     # === Config ===
     ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    ground_truth_dir = os.path.join(ROOT_DIR, 'results/ground_truth')
+    ground_truth_dir = os.path.join(ROOT_DIR, 'results/solution')
     prediction_dir = os.path.join(ROOT_DIR, f'results/prediction/{llm_model}/{prompt_json}')
 
     # === Logging ===

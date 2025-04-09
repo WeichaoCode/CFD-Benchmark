@@ -1,11 +1,20 @@
-import os
 import json
 import re
 import subprocess
-import logging
-from datetime import datetime
 import boto3
 from openai import OpenAI
+import logging
+from datetime import datetime
+from scipy.ndimage import zoom
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.metrics.pairwise import cosine_similarity
+import os
+import numpy as np
+import cv2
+from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import peak_signal_noise_ratio as psnr
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def generate_prompt(data):
@@ -71,9 +80,9 @@ class PromptGenerator:
 
 
 # === Function to Execute Python Script and Capture Errors and Warnings ===
-def execute_python_script(filepath):
+def execute_python_script(filepath, timeout=60):
     try:
-        result = subprocess.run(["python3", filepath], capture_output=True, text=True, timeout=60)
+        result = subprocess.run(["python3", filepath], capture_output=True, text=True, timeout=timeout)
         stderr_output = result.stderr.strip()
 
         if result.returncode == 0:
@@ -85,7 +94,7 @@ def execute_python_script(filepath):
                 return "Execution successful, no errors detected."
 
         logging.error(f"Execution failed with errors:\n{stderr_output}")
-        return stderr_output
+        return stderr_output, result
 
     except subprocess.TimeoutExpired:
         logging.warning("⚠️ Timeout Error: Script took too long to execute.")
@@ -195,7 +204,7 @@ def save_model_outputs(task_name, output_folder, model_response):
 
 def execute_check_errors(script_path, task_name, conversation_history):
     # Execute and check for errors
-    execution_feedback = execute_python_script(script_path)
+    execution_feedback, _ = execute_python_script(script_path)
 
     if "no errors detected" in execution_feedback:
         print(f"🎯 {task_name} executed successfully without syntax errors.")
@@ -382,11 +391,9 @@ def replacer_factory(base_name, save_dir):
     return replacer
 
 
-def call_post_process(llm_model, prompt_json):
+def call_post_process(generated_solvers_dir, save_dir):
     # === Paths ===
-    ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
-    folder_path = os.path.join(ROOT_DIR, f'solver/{llm_model}/{prompt_json}')
-    save_dir = os.path.join(ROOT_DIR, f'results/prediction/{llm_model}/{prompt_json}')
+    folder_path = generated_solvers_dir
     os.makedirs(save_dir, exist_ok=True)
 
     pattern = r"np\.save\((['\"])(.+?\.npy)\1\s*,\s*(\w+)\s*\)"
@@ -413,3 +420,406 @@ def call_post_process(llm_model, prompt_json):
                 print(f"ℹ️ No np.save calls updated in {filename}")
 
 
+def write_execute_results_to_log(log, script, result, pass_count, fail_count):
+    # Write execution results to log file
+    log.write(f"--- Running: {script} ---\n")
+    log.write(f"Exit Code: {result.returncode}\n")
+    log.write("Output:\n")
+    log.write(result.stdout + "\n")
+    log.write("Errors:\n")
+    log.write(result.stderr + "\n")
+    log.write("-" * 50 + "\n\n")
+
+    # Print execution status
+    if result.returncode == 0:
+        print(f"✅ {script} executed successfully.")
+        pass_count += 1  # Increment pass count
+    else:
+        print(f"❌ {script} encountered an error (check logs).")
+        fail_count += 1  # Increment fail count
+
+
+def write_execute_error_to_log(log, script, fail_count):
+    log.write(f"--- Running: {script} ---\n")
+    log.write("⚠️ Timeout Error: Script took too long to execute.\n")
+    log.write("-" * 50 + "\n\n")
+    print(f"⚠️ Timeout: {script} took too long and was skipped.")
+    fail_count += 1  # Increment fail count for timeout
+
+
+def write_execute_summary_to_log(log, pass_count, fail_count):
+    # Log the summary of pass and fail counts
+    log.write("\n\n====== Execution Summary ======\n")
+    log.write(f"Total Scripts Passed: {pass_count}\n")
+    log.write(f"Total Scripts Failed: {fail_count}\n")
+
+
+def open_log_save_execution_results(log_file, python_files, generate_solvers_dir, pass_count, fail_count):
+    with open(log_file, "w") as log:
+        log.write("====== Execution Results for Generated Solvers ======\n\n")
+
+        for script in python_files:
+            script_path = os.path.join(generate_solvers_dir, script)
+            print(f"🔹 Running: {script} ...")
+
+            # Run the script and capture the output
+            try:
+                _, result = execute_python_script(script_path, timeout=300)
+
+                # Write execution results to log file
+                write_execute_results_to_log(log, script, result, pass_count, fail_count)
+
+            except subprocess.TimeoutExpired:
+                write_execute_error_to_log(log, script, fail_count)
+
+            # Log the summary of pass and fail counts
+            write_execute_summary_to_log(log, pass_count, fail_count)
+
+    print(f"\n🎯 Execution completed. Results saved in: {log_file}")
+
+
+def call_execute_solver(generated_solvers_dir, log_file):
+    # Define the directory where generated solver scripts are stored
+    GENERATED_SOLVERS_DIR = generated_solvers_dir
+    # Define the log file for execution results
+    LOG_FILE = log_file
+
+    # Ensure the output directory exists
+    os.makedirs(GENERATED_SOLVERS_DIR, exist_ok=True)
+
+    # Get all Python files in the solvers directory
+    python_files = [f for f in os.listdir(GENERATED_SOLVERS_DIR) if f.endswith(".py")]
+
+    # Ensure there are solver scripts to run
+    if not python_files:
+        print("No Python solver scripts found in the directory.")
+        exit()
+    # Initialize counters for pass and fail
+    pass_count = 0
+    fail_count = 0
+    # Open a log file to save execution results
+    open_log_save_execution_results(LOG_FILE, python_files, GENERATED_SOLVERS_DIR, pass_count, fail_count)
+
+
+def interpolate_to_match(gt, pred):
+    if gt.shape == pred.shape:
+        return pred
+    try:
+        factors = np.array(gt.shape) / np.array(pred.shape)
+        pred_resized = zoom(pred, factors, order=1)
+        return pred_resized
+    except Exception as e:
+        raise RuntimeError(f"Interpolation failed: {e}")
+
+
+def compute_losses(gt, pred):
+    gt_flat = gt.flatten()
+    pred_flat = pred.flatten()
+    mse = mean_squared_error(gt_flat, pred_flat)
+    mae = mean_absolute_error(gt_flat, pred_flat)
+    rmse = np.sqrt(mse)
+    cosine_sim = cosine_similarity(gt_flat.reshape(1, -1), pred_flat.reshape(1, -1))[0][0]
+    r2 = r2_score(gt_flat, pred_flat)
+    return mse, mae, rmse, cosine_sim, r2
+
+
+def print_summary(results):
+    print("\n=== Summary ===")
+    for fname, res in results.items():
+        print(f"📄 {fname}")
+        for k, v in res.items():
+            print(f"   {k}: {v}")
+        print("-" * 40)
+
+
+def compute_errors_gt_pred(common_files, ground_truth_dir, prediction_dir, results):
+    for fname in common_files:
+        try:
+            gt_path = os.path.join(ground_truth_dir, fname)
+            pred_path = os.path.join(prediction_dir, fname)
+            gt = np.load(gt_path)
+            pred = np.load(pred_path)
+
+            if gt.ndim == 1:
+                gt = gt[:, np.newaxis]
+            if pred.ndim == 1:
+                pred = pred[:, np.newaxis]
+
+            pred = interpolate_to_match(gt, pred)
+
+            if gt.shape != pred.shape:
+                raise ValueError(f"Shape mismatch after interpolation: {gt.shape} vs {pred.shape}")
+
+            mse, mae, rmse, cosine_sim, r2 = compute_losses(gt, pred)
+
+            results[fname] = {
+                "MSE": f"{mse:.3e}",
+                "MAE": f"{mae:.3e}",
+                "RMSE": f"{rmse:.3e}",
+                "CosineSimilarity": f"{cosine_sim:.3f}",
+                "R2": f"{r2:.3f}"
+            }
+
+            logging.info(
+                f"{fname}: MSE={mse:.3e}, MAE={mae:.3e}, RMSE={rmse:.3e}, Cosine={cosine_sim:.3f}, R2={r2:.3f}")
+
+        except Exception as e:
+            results[fname] = {"Error": str(e)}
+            logging.error(f"❌ {fname} failed: {str(e)}")
+
+
+def get_common_files(ground_truth_dir, prediction_dir):
+    files_gt = {f for f in os.listdir(ground_truth_dir) if f.endswith('.npy')}
+    files_pred = {f for f in os.listdir(prediction_dir) if f.endswith('.npy')}
+    common_files = sorted(files_gt & files_pred)
+
+    print(f"Found {len(common_files)} common files to compare.")
+    logging.info(f"Found {len(common_files)} common files.")
+
+    return common_files
+
+
+def call_compare_output_mismatch(ground_truth_dir, prediction_dir, log_file):
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+
+    # Clear old logging handlers
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
+
+    # Setup new log file
+    logging.basicConfig(
+        filename=log_file,
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+    logging.info("====== Starting Comparison ======")
+
+    # === Get common .npy files ===
+    common_files = get_common_files(ground_truth_dir, prediction_dir)
+
+    results = {}
+
+    compute_errors_gt_pred(common_files, ground_truth_dir, prediction_dir, results)
+
+    # === Print Summary ===
+    print_summary(results)
+
+    print(f"\n🎯 Log saved to: {log_file}")
+
+
+def get_problem_name_pred(filename):
+    return filename.rsplit('_', 1)[0]
+
+
+def get_problem_name_gt(filename):
+    return filename.rsplit('_', 2)[0]
+
+
+def call_compare_image_mismatch(save_dir_gt, save_dir_pred, save_csv_path):
+    # === Configuration ===
+    os.makedirs(save_csv_path, exist_ok=True)
+
+    # === Find common files ===
+    gt_files = {get_problem_name_gt(f): f for f in os.listdir(save_dir_gt) if f.endswith('.png')}
+    pred_files = {get_problem_name_pred(f): f for f in os.listdir(save_dir_pred) if f.endswith('.png')}
+
+    common_files = gt_files.keys() & pred_files.keys()
+
+    results = []
+
+    for filename in common_files:
+        gt_path = os.path.join(save_dir_gt, gt_files[filename])
+        pred_path = os.path.join(save_dir_pred, pred_files[filename])
+
+        img_gt = cv2.imread(gt_path, cv2.IMREAD_GRAYSCALE).astype(np.float32) / 255.0
+        img_pred = cv2.imread(pred_path, cv2.IMREAD_GRAYSCALE).astype(np.float32) / 255.0
+
+        img_pred_resized = cv2.resize(img_pred, (img_gt.shape[1], img_gt.shape[0]), interpolation=cv2.INTER_LINEAR)
+
+        abs_error = np.abs(img_gt - img_pred_resized)
+        mse_val = np.mean((img_gt - img_pred_resized) ** 2)
+        mae_val = np.mean(abs_error)
+        ssim_val = ssim(img_gt, img_pred_resized, data_range=1.0)
+        psnr_val = psnr(img_gt, img_pred_resized, data_range=1.0)
+
+        results.append({
+            "filename": filename,
+            "MSE": mse_val,
+            "MAE": mae_val,
+            "SSIM": ssim_val,
+            "PSNR": psnr_val,
+        })
+
+    df = pd.DataFrame(results)
+    print(df.to_string(index=False))
+    csv_file = os.path.join(save_csv_path, 'image_similarity_scores.csv')
+    df.to_csv(csv_file, index=False, float_format="%.3e")
+
+
+def call_create_table(compare_results_log_file, save_table_path):
+    # === Config ===
+    log_file_path = compare_results_log_file
+    output_csv_path = save_table_path
+
+    # === Regex pattern for results line ===
+    pattern = re.compile(
+        r"INFO - ([\w_.\-]+): MSE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
+        r"MAE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
+        r"RMSE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
+        r"Cosine=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
+        r"R2=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)"
+    )
+
+    # === Extract Data ===
+    results = []
+    with open(log_file_path, 'r') as file:
+        for line in file:
+            match = pattern.search(line)
+            if match:
+                results.append({
+                    'Filename': match.group(1),
+                    'MSE': float(match.group(2)),
+                    'MAE': float(match.group(3)),
+                    'RMSE': float(match.group(4)),
+                    'Cosine Similarity': float(match.group(5)),
+                    'R-squared': float(match.group(6)),
+                })
+
+    # === Create DataFrame ===
+    df = pd.DataFrame(results)
+
+    # Format all float columns to scientific notation with 3 significant digits
+    for col in ['MSE', 'MAE', 'RMSE', 'Cosine Similarity', 'R-squared']:
+        df[col] = df[col].apply(lambda x: f"{x:.3e}")
+
+    # === Save to CSV ===
+    df.to_csv(output_csv_path, index=False)
+
+    # === Display all rows/columns ===
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+        print("✅ Table saved to:", output_csv_path)
+        print(df)
+
+
+def call_show_image(llm_model, prompts_json):
+    # === Configuration ===
+    ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    ground_truth_dir = os.path.join(ROOT_DIR, 'results/solution')
+    prediction_dir = os.path.join(ROOT_DIR, f'results/prediction/{llm_model}/{prompts_json}')
+    save_dir = os.path.join(ROOT_DIR, f'image/{llm_model}/{prompts_json}')
+    os.makedirs(save_dir, exist_ok=True)
+
+    # === List .npy files in both directories ===
+    gt_files = {f for f in os.listdir(ground_truth_dir) if f.endswith('.npy')}
+    pred_files = {f for f in os.listdir(prediction_dir) if f.endswith('.npy')}
+
+    # === Common files (files that exist in both directories) ===
+    common_files = gt_files.intersection(pred_files)
+
+    # === Plotting Functions ===
+
+    def plot_1d(gt, pred, file_name):
+        x_gt = np.arange(len(gt))
+        x_pred = np.arange(len(pred))
+
+        # Get shared y-axis range
+        ymin = min(gt.min(), pred.min())
+        ymax = max(gt.max(), pred.max())
+
+        plt.figure(figsize=(10, 6))
+        plt.suptitle(f"{file_name}")
+        plt.subplot(2, 1, 1)
+        plt.plot(x_gt, gt, label='Ground Truth', color='blue')
+        plt.ylim([ymin, ymax])
+        plt.title('Ground Truth')
+        plt.grid(True)
+
+        plt.subplot(2, 1, 2)
+        plt.plot(x_pred, pred, label='Prediction', color='green')
+        plt.ylim([ymin, ymax])
+        plt.title('Prediction')
+        plt.grid(True)
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(save_dir, f"{file_name}_plot.png"))
+        plt.close()
+
+    def plot_2d(gt, pred, file_name):
+        # Get shared colorbar range
+        vmin = min(gt.min(), pred.min())
+        vmax = max(gt.max(), pred.max())
+        fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+        plt.suptitle(f"{file_name}")
+        im0 = axes[0].imshow(gt, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
+        axes[0].set_title('Ground Truth')
+        plt.colorbar(im0, ax=axes[0])
+
+        im1 = axes[1].imshow(pred, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
+        axes[1].set_title('Prediction')
+        plt.colorbar(im1, ax=axes[1])
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(save_dir, f"{file_name}_plot.png"))
+        plt.close()
+
+    # === Iterate and Plot for Common Files ===
+    for file in common_files:
+        gt_path = os.path.join(ground_truth_dir, file)
+        pred_path = os.path.join(prediction_dir, file)
+
+        try:
+            gt = np.load(gt_path)
+            pred = np.load(pred_path)
+
+            # Plot
+            if gt.ndim == 1 or (gt.ndim == 2 and 1 in gt.shape):
+                plot_1d(gt.flatten(), pred.flatten(), file.replace(".npy", ""))
+            elif gt.ndim == 2:
+                plot_2d(gt, pred, file.replace(".npy", ""))
+            else:
+                print(f"❌ Skipping unsupported shape for file: {file} → {gt.shape}")
+        except Exception as e:
+            print(f"❌ Error plotting {file}: {str(e)}")
+
+    print(f"\n🎯 Plotting complete. Images saved to: {save_dir}")
+
+
+class SolverPostProcessor:
+    def __init__(self, llm_model, prompt_json):
+        self.llm_model = llm_model
+        self.prompt_json = prompt_json
+        self.timestamp = datetime.now().strftime("%H-%M-%S-%f")
+        self.root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
+        self.generated_solvers_dir = os.path.join(self.root_dir, f"solver/{llm_model}/{prompt_json}")
+        self.generated_solvers_save_dir = os.path.join(self.root_dir, "report")
+        self.log_file = os.path.join(self.generated_solvers_save_dir,
+                                     f"execution_results_{llm_model}_{prompt_json}_{self.timestamp}.log")
+        self.save_dir = os.path.join(self.root_dir, f'results/prediction/{llm_model}/{prompt_json}')
+        self.ground_truth_dir = os.path.join(self.root_dir, 'results/solution')
+        self.prediction_dir = os.path.join(self.root_dir, f'results/prediction/{llm_model}/{prompt_json}')
+        self.compare_results_log_file = os.path.join(self.root_dir,
+                                                     f'compare/comparison_results_{llm_model}_{prompt_json}.log')
+        self.save_dir_gt = os.path.join(self.root_dir, f'compare_images/ground_truth/{llm_model}/{prompt_json}')
+        self.save_dir_pred = os.path.join(self.root_dir, f'compare_images/prediction/{llm_model}/{prompt_json}')
+        self.save_csv_path = os.path.join(self.root_dir, f'compare_images/table/{llm_model}/{prompt_json}')
+        self.save_table_path = os.path.join(self.root_dir,
+                                            f'table/{llm_model}_{prompt_json}_extracted_results_table_{self.timestamp}.csv')
+
+    def run_all(self):
+        # STEP 1:
+        # post process to change the .npy save path to specific path
+        call_post_process(self.generated_solvers_dir, self.save_dir)
+        # STEP 2:
+        # execute LLM generated python code and save the results to log file
+        call_execute_solver(self.generated_solvers_dir, self.log_file)
+        # STEP 3:
+        # compute the numerical errors (MSE, MAE, RMSE, CosineSimilarity, R2) for shape mismatch / match array
+        call_compare_output_mismatch(self.ground_truth_dir, self.prediction_dir, self.compare_results_log_file)
+        # transfer the numerical errors to tables
+        call_create_table(self.compare_results_log_file, self.save_table_path)
+        # STEP 4:
+        # plot and save the images of gt and pred in different folder
+
+        # compare the images for mismatch shape, change the image to gray image, note the MSE is for pixel not
+        # the same with MSE of original images, it works like human eyes (this function is optional)
+        call_compare_image_mismatch(self.save_dir_gt, self.save_dir_pred, self.save_csv_path)

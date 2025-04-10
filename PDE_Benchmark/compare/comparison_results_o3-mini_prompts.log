@@ -1,0 +1,8 @@
+2025-04-10 16:22:39,692 - INFO - ====== Starting Comparison ======
+2025-04-10 16:22:39,692 - INFO - Found 1 common files.
+2025-04-10 16:22:39,696 - INFO - u_Fully_Developed_Turbulent_Channel_Flow.npy: MSE=8.762e+02, MAE=2.770e+01, RMSE=2.960e+01, Cosine=-0.951, R2=-17.534
+2025-04-10 16:25:14,436 - INFO - ====== Starting Comparison ======
+2025-04-10 16:25:14,436 - INFO - Found 1 common files.
+2025-04-10 16:25:14,440 - INFO - u_Fully_Developed_Turbulent_Channel_Flow.npy: MSE=8.762e+02, MAE=2.770e+01, RMSE=2.960e+01, Cosine=-0.951, R2=-17.534
+2025-04-10 16:25:14,446 - INFO - Found 1 common files.
+2025-04-10 16:25:14,748 - INFO - Found 1 common files.

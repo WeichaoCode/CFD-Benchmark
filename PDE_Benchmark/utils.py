@@ -15,6 +15,7 @@ from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
 import pandas as pd
 import matplotlib.pyplot as plt
+import ast
 
 
 def generate_prompt(data):
@@ -68,7 +69,7 @@ class PromptGenerator:
         output_data = {}
         for name, data in self.problems.items():
             output_data[name] = generate_prompt(data)
-        return output_data
+        return {"prompts": output_data}  # <-- wrap in top-level "prompts" key
 
     def save_prompts(self, prompts):
         if os.path.exists(self.output_json):
@@ -88,17 +89,17 @@ def execute_python_script(filepath, timeout=60):
         if result.returncode == 0:
             if "warning" in stderr_output.lower():
                 logging.warning(f"Execution completed with warnings:\n{stderr_output}")
-                return f"⚠️ Execution completed with warnings:\n{stderr_output}"
+                return f"⚠️ Execution completed with warnings:\n{stderr_output}", result
             else:
                 logging.info("Execution successful, no errors detected.")
-                return "Execution successful, no errors detected."
+                return "Execution successful, no errors detected.", result
 
         logging.error(f"Execution failed with errors:\n{stderr_output}")
         return stderr_output, result
 
     except subprocess.TimeoutExpired:
         logging.warning("⚠️ Timeout Error: Script took too long to execute.")
-        return "⚠️ Timeout Error: Script took too long to execute."
+        return "⚠️ Timeout Error: Script took too long to execute.", result
 
 
 def build_conversation(original_prompt, llm_model):
@@ -121,7 +122,7 @@ def build_conversation(original_prompt, llm_model):
                    "If the problem is 1D, the saved array should be 1D. "
                    "If the problem is 2D, the saved array should be 2D.")
     # Determine system or user role for the instruction
-    if llm_model in ["o1-mini", "sonnet-35", "haiku"]:
+    if llm_model in ["o3-mini", "sonnet-35", "haiku"]:
         conversation_history = [
             {"role": "user", "content": instruction},
             {"role": "user", "content": user_prompt}
@@ -139,7 +140,7 @@ def build_conversation(original_prompt, llm_model):
 
 def extract_model_response(llm_model, response):
     # Extract model response
-    if llm_model in ["gpt-4o", "o1-mini"]:
+    if llm_model in ["gpt-4o", "o3-mini"]:
         model_response = response.choices[0].message.content.strip()
     elif llm_model in ["sonnet-35", "haiku"]:
         # Parse the response
@@ -156,8 +157,8 @@ def extract_model_response(llm_model, response):
     return model_response
 
 
-def update_token_usage(llm_model, original_prompt, response):
-    if llm_model in ["gpt-4o", "o1-mini"]:
+def update_token_usage(llm_model, original_prompt, response, total_input_tokens, total_output_tokens, total_cost):
+    if llm_model in ["gpt-4o", "o3-mini"]:
         # Extract token usage from the response
         total_tokens = response.usage.total_tokens  # Get the total tokens used for this request
         input_tokens = len(
@@ -165,7 +166,6 @@ def update_token_usage(llm_model, original_prompt, response):
         output_tokens = total_tokens - input_tokens  # Subtract input tokens from total tokens to get output tokens
 
         # Track the total token usage and cost
-        global total_input_tokens, total_output_tokens, total_cost
         total_input_tokens += input_tokens  # Update total input tokens count
         total_output_tokens += output_tokens  # Update total output tokens count
 
@@ -182,10 +182,36 @@ def update_token_usage(llm_model, original_prompt, response):
         raise ValueError(f"Unsupported model type: {llm_model}")
 
 
+def extract_code(model_response):
+    # Match ```python ...``` or ```...``` code blocks
+    code_blocks = re.findall(r"```(?:python)?\s*(.*?)```", model_response, re.DOTALL)
+    if code_blocks:
+        return code_blocks[0].strip()
+
+    # Try parsing the whole thing as Python code
+    try:
+        ast.parse(model_response)
+        return model_response.strip()
+    except SyntaxError:
+        pass
+
+    # Extract "Python-like" lines
+    lines = model_response.splitlines()
+    python_lines = []
+    for line in lines:
+        if re.match(r'^\s*(import|from|def|class|for|if|while|print|#|@|[a-zA-Z_]+\s*=)', line):
+            python_lines.append(line)
+
+    if python_lines:
+        return "\n".join(python_lines).strip()
+
+    return "# No valid Python code extracted"
+
+
 def save_model_outputs(task_name, output_folder, model_response):
-    # Extract Python code using regex
-    code_match = re.findall(r"```python(.*?)```", model_response, re.DOTALL)
-    extracted_code = code_match[0].strip() if code_match else "# No valid Python code extracted"
+    # Extract Python code:
+    # start as ```python / ``` / or pure python code
+    extracted_code = extract_code(model_response)
 
     # Save the full model response
     response_file = os.path.join(output_folder, f"{task_name}.txt")
@@ -209,7 +235,7 @@ def execute_check_errors(script_path, task_name, conversation_history):
     if "no errors detected" in execution_feedback:
         print(f"🎯 {task_name} executed successfully without syntax errors.")
         logging.info(f"🎯 {task_name} executed successfully without syntax errors.")
-        return  # Exit function if no errors
+        return True  # Exit function if no errors
 
     else:
         print(f"❌ Error detected in {task_name}, refining prompt...")
@@ -223,8 +249,8 @@ def execute_check_errors(script_path, task_name, conversation_history):
 
 
 def call_llm_api(llm_model, client, conversation_history, temperature, bedrock_runtime, inference_profile_arn):
-    if llm_model == "o1-mini":
-        # Call OpenAI o1-mini API
+    if llm_model == "o3-mini":
+        # Call OpenAI o3-mini API
         response = client.chat.completions.create(
             model=llm_model,  # Specify the model
             messages=conversation_history
@@ -257,7 +283,7 @@ def call_llm_api(llm_model, client, conversation_history, temperature, bedrock_r
 
 
 def generate_code(llm_model, task_name, prompt, client, temperature, bedrock_runtime, inference_profile_arn,
-                  output_folder, max_retries=5):
+                  output_folder, total_input_tokens, total_output_tokens, total_cost, max_retries=5):
     retries = 0
     original_prompt = prompt  # Keep the original prompt unchanged
     # Initialize an empty list to store the conversation history
@@ -287,14 +313,15 @@ def generate_code(llm_model, task_name, prompt, client, temperature, bedrock_run
             logging.info(conversation_history)
 
             # tracking the token usage and cost
-            update_token_usage(llm_model, original_prompt, response)
+            update_token_usage(llm_model, original_prompt, response, total_input_tokens, total_output_tokens,
+                               total_cost)
 
             # Extract Python code using regex, save the full model response and extracted python code
             script_path = save_model_outputs(task_name, output_folder, model_response)
 
             # Execute and check for errors
-            execute_check_errors(script_path, task_name, conversation_history)
-
+            if execute_check_errors(script_path, task_name, conversation_history):
+                return  # Exit function if no errors
             retries += 1
 
         except Exception as e:
@@ -317,6 +344,8 @@ def api_key_configuration(llm_model):
     elif llm_model == "haiku":
         # Define Haiku profile Inference Profile ARN
         inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/g47vfd2xvs5w"
+    elif llm_model in ["o3-mini", "gpt-4o"]:
+        inference_profile_arn = None
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
 
@@ -336,12 +365,16 @@ class LLMCodeGenerator:
         # Get current time with microseconds
         self.timestamp = datetime.now().strftime("%H-%M-%S-%f")  # %f gives microseconds
         # === Paths ===
-        self.ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
+        # PDE_Benchmark root
+        self.ROOT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PDE_Benchmark')
         self.PROMPTS_FILE = os.path.join(self.ROOT_DIR, "prompt", prompt_json)
-        self.OUTPUT_FOLDER = os.path.join(self.ROOT_DIR, f"solver/{llm_model}/{prompt_json}")
-        self.LOG_FILE = os.path.join(self.ROOT_DIR, f"report/{llm_model}_{prompt_json}_{self.timestamp}.log")
+        self.OUTPUT_FOLDER = os.path.join(self.ROOT_DIR, f"solver/{llm_model}/{os.path.splitext(prompt_json)[0]}")
+        self.REPORT_FOLDER = os.path.join(self.ROOT_DIR, 'report')
+        self.LOG_FILE = os.path.join(self.REPORT_FOLDER, f"{llm_model}_{os.path.splitext(prompt_json)[0]}_"
+                                                         f"{self.timestamp}.log")
         # Ensure the output directory exists
         os.makedirs(self.OUTPUT_FOLDER, exist_ok=True)
+        os.makedirs(self.REPORT_FOLDER, exist_ok=True)
 
         logging.basicConfig(
             filename=self.LOG_FILE,
@@ -362,6 +395,8 @@ class LLMCodeGenerator:
 
         # Loop through prompts and generate code
         for task_name, prompt in pde_prompts["prompts"].items():
+            if task_name not in ["Fully_Developed_Turbulent_Channel_Flow"]:
+                continue
             generate_code(
                 self.llm_model,
                 task_name,
@@ -371,6 +406,9 @@ class LLMCodeGenerator:
                 self.bedrock_runtime,
                 inference_profile_arn,
                 self.OUTPUT_FOLDER,
+                self.total_input_tokens,
+                self.total_output_tokens,
+                self.total_cost,
                 max_retries=5
             )
 
@@ -747,6 +785,58 @@ def plot_2d(gt, pred, file_name, save_dir):
     plt.close()
 
 
+def plot_1d_diff(gt, pred, file_name, save_dir_gt, save_dir_pred):
+    x_gt = np.arange(len(gt))
+    x_pred = np.arange(len(pred))
+
+    # Get shared y-axis range
+    ymin = min(gt.min(), pred.min())
+    ymax = max(gt.max(), pred.max())
+
+    # Plot the Ground Truth and save to separate directory
+    plt.figure(figsize=(10, 6))
+    plt.plot(x_gt, gt, label='Ground Truth', color='blue')
+    plt.ylim([ymin, ymax])
+    plt.title(f'Ground Truth - {file_name}')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_dir_gt, f"{file_name}_ground_truth.png"))
+    plt.close()
+
+    # Plot the Prediction and save to separate directory
+    plt.figure(figsize=(10, 6))
+    plt.plot(x_pred, pred, label='Prediction', color='green')
+    plt.ylim([ymin, ymax])
+    plt.title(f'Prediction - {file_name}')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_dir_pred, f"{file_name}_prediction.png"))
+    plt.close()
+
+
+def plot_2d_diff(gt, pred, file_name, save_dir_gt, save_dir_pred):
+    # Get shared colorbar range
+    vmin = min(gt.min(), pred.min())
+    vmax = max(gt.max(), pred.max())
+    # Plot the Ground Truth and save to separate directory
+    plt.figure(figsize=(10, 6))
+    im0 = plt.imshow(gt, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
+    plt.title(f'Ground Truth - {file_name}')
+    plt.colorbar(im0)
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_dir_gt, f"{file_name}_ground_truth.png"))
+    plt.close()
+
+    # Plot the Prediction and save to separate directory
+    plt.figure(figsize=(10, 6))
+    im1 = plt.imshow(pred, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
+    plt.title(f'Prediction - {file_name}')
+    plt.colorbar(im1)
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_dir_pred, f"{file_name}_prediction.png"))
+    plt.close()
+
+
 def call_save_image_same_dir(save_dir, ground_truth_dir, prediction_dir):
     # === Configuration ===
     os.makedirs(save_dir, exist_ok=True)
@@ -794,9 +884,9 @@ def call_save_image_different_dir(ground_truth_dir, prediction_dir, save_dir_gt,
 
             # Plot
             if gt.ndim == 1 or (gt.ndim == 2 and 1 in gt.shape):
-                plot_1d(gt.flatten(), pred.flatten(), file.replace(".npy", ""))
+                plot_1d_diff(gt.flatten(), pred.flatten(), file.replace(".npy", ""), save_dir_gt, save_dir_pred)
             elif gt.ndim == 2:
-                plot_2d(gt, pred, file.replace(".npy", ""))
+                plot_2d_diff(gt, pred, file.replace(".npy", ""), save_dir_gt, save_dir_pred)
             else:
                 print(f"❌ Skipping unsupported shape for file: {file} → {gt.shape}")
         except Exception as e:
@@ -810,22 +900,31 @@ class SolverPostProcessor:
         self.llm_model = llm_model
         self.prompt_json = prompt_json
         self.timestamp = datetime.now().strftime("%H-%M-%S-%f")
-        self.root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # PDE_Benchmark root
-        self.generated_solvers_dir = os.path.join(self.root_dir, f"solver/{llm_model}/{prompt_json}")
+        # PDE_Benchmark root
+        self.root_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'PDE_Benchmark')
+        self.prompt_name = os.path.splitext(prompt_json)[0]
+        self.generated_solvers_dir = os.path.join(self.root_dir, f"solver/{llm_model}/{self.prompt_name}")
         self.generated_solvers_save_dir = os.path.join(self.root_dir, "report")
         self.log_file = os.path.join(self.generated_solvers_save_dir,
-                                     f"execution_results_{llm_model}_{prompt_json}_{self.timestamp}.log")
-        self.save_dir = os.path.join(self.root_dir, f'results/prediction/{llm_model}/{prompt_json}')
+                                     f"execution_results_{llm_model}_{self.prompt_name}_{self.timestamp}.log")
+        self.save_dir = os.path.join(self.root_dir, f'results/prediction/{llm_model}/{self.prompt_name}')
         self.ground_truth_dir = os.path.join(self.root_dir, 'results/solution')
-        self.prediction_dir = os.path.join(self.root_dir, f'results/prediction/{llm_model}/{prompt_json}')
+        self.prediction_dir = os.path.join(self.root_dir, f'results/prediction/{llm_model}/{self.prompt_name}')
         self.compare_results_log_file = os.path.join(self.root_dir,
-                                                     f'compare/comparison_results_{llm_model}_{prompt_json}.log')
-        self.save_dir_gt = os.path.join(self.root_dir, f'compare_images/ground_truth/{llm_model}/{prompt_json}')
-        self.save_dir_pred = os.path.join(self.root_dir, f'compare_images/prediction/{llm_model}/{prompt_json}')
-        self.save_csv_path = os.path.join(self.root_dir, f'compare_images/table/{llm_model}/{prompt_json}')
+                                                     f'compare/comparison_results_{llm_model}_{self.prompt_name}.log')
+        self.save_dir_gt = os.path.join(self.root_dir, f'compare_images/ground_truth/{llm_model}/{self.prompt_name}')
+        self.save_dir_pred = os.path.join(self.root_dir, f'compare_images/prediction/{llm_model}/{self.prompt_name}')
+        self.save_csv_path = os.path.join(self.root_dir, f'compare_images/table/{llm_model}/{self.prompt_name}')
+        self.TABLE_FOLDER = os.path.join(self.root_dir, 'table')
+        self.IMAGE_FOLDER = os.path.join(self.root_dir, 'image')
+        self.COMPARE_IMAGE_FOLDER = os.path.join(self.root_dir, 'compare_images')
         self.save_table_path = os.path.join(self.root_dir,
-                                            f'table/{llm_model}_{prompt_json}_extracted_results_table_{self.timestamp}.csv')
-        self.save_image_dir = os.path.join(self.root_dir, f'image/{llm_model}/{prompt_json}')
+                                            f'table/{llm_model}_{self.prompt_name}_extracted_results_table_{self.timestamp}.csv')
+        self.save_image_dir = os.path.join(self.root_dir, f'image/{llm_model}/{self.prompt_name}')
+
+        os.makedirs(self.TABLE_FOLDER, exist_ok=True)
+        os.makedirs(self.IMAGE_FOLDER, exist_ok=True)
+        os.makedirs(self.COMPARE_IMAGE_FOLDER, exist_ok=True)
 
     def run_all(self):
         # STEP 1:
@@ -848,3 +947,4 @@ class SolverPostProcessor:
         # save the gt and pred images in the same figure, each is sub-figure, this used for human view the images
         # this function is optional
         call_save_image_same_dir(self.save_image_dir, self.ground_truth_dir, self.prediction_dir)
+

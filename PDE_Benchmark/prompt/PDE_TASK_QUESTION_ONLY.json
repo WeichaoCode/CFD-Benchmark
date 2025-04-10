@@ -125,18 +125,18 @@
         "domain": "- Spatial domain: \\( x \\in [0, 5], y \\in [0, 4] \\)",
         "save values": "T"
     },
-    "Fully_Developed_Turbulent_Channel_Flow": {
-        "equation": "\\[\n\\frac{d}{dy} \\left( (\\mu + \\mu_t) \\frac{d\\bar{u}}{dy} \\right) = -1.\n\\]\n\nwhere:\n- \\( \\mu \\): molecular viscosity\n- \\( \\mu_t \\): turbulent eddy viscosity, computed using the Cess turbulence model\n- The effective viscosity is defined as \\( \\mu_{\\text{eff}} = \\mu + \\mu_t \\)",
-        "boundary conditions": "- Dirichlet boundary conditions for velocity: \\( \\bar{u} = 0 \\) at both walls\n- Pressure boundary condition is implicit through the linear system",
-        "initial conditions": "\\[\n  \\bar{u}(y) = 0 \\text{ everywhere in the domain}\n\\]",
-        "domain": "- Spatial domain: \\( y \\in [0, H] \\) where \\( H = 2 \\)",
-        "save values": "u"
-    },
     "2D_Unsteady_Heat_Equation": {
         "equation": "\\[\n\\frac{\\partial T}{\\partial t} - \\alpha \\left( \\frac{\\partial^2 T}{\\partial x^2} + \\frac{\\partial^2 T}{\\partial y^2} \\right) = q(x, y, t)\n\\]\n\nwhere:\n- \\( T(x, y, t) \\): temperature field over time\n- \\( q(x, y, t) = Q_0 \\exp\\left(-\\frac{x^2 + y^2}{2\\sigma^2} \\right) \\): source term, with \\( Q_0 = 200°C/s \\) and \\( \\sigma = 0.1 \\)",
         "boundary conditions": "\\[ T(x, y, t) = 1 \\quad \\text{on all boundaries} \\]",
         "initial conditions": "\\[ T(x, y, 0) = 1 + 200 \\cdot \\exp\\left(-\\frac{x^2 + y^2}{2 \\cdot 0.1^2}\\right) \\]",
         "domain": "- Spatial domain: \\( x, y \\in [-1, 1] \\), Temporal domain: (t \\in [0, 3])",
         "save values": "T"
+    },
+    "Fully_Developed_Turbulent_Channel_Flow": {
+        "equation": "\\[\n\\frac{d}{dy} \\left( (\\mu + \\mu_t(y)) \\frac{du}{dy} \\right) = -1\n\\]\n\nwhere:\n- \\( \\mu \\): molecular viscosity (constant), defined as \\( \\mu = 1 / \\text{Re}_\\tau \\)\n- \\( \\mu_t(y) \\): turbulent eddy viscosity, computed from a turbulence model\n- \\( \\mu_{\\text{eff}}(y) = \\mu + \\mu_t(y) \\): effective viscosity\n- \\( \\text{Re}_\\tau = 395 \\): friction Reynolds number\n- \\( \\rho = 1.0 \\): fluid density",
+        "boundary conditions": "- Dirichlet boundary conditions for velocity:\n  - \\( u(0) = 0 \\)\n  - \\( u(2) = 0 \\) (no-slip at walls)",
+        "initial conditions": "\\[\n  u(y) = 0 \\quad \\text{as the initial guess for the iterative solver}\n\\]",
+        "domain": "- Spatial domain: \\( y \\in [0, 2] \\)",
+        "save values": ["u"]
     }
 }

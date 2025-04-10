@@ -137,6 +137,27 @@
         "boundary conditions": "- Dirichlet boundary conditions for velocity:\n  - \\( u(0) = 0 \\)\n  - \\( u(2) = 0 \\) (no-slip at walls)",
         "initial conditions": "\\[\n  u(y) = 0 \\quad \\text{as the initial guess for the iterative solver}\n\\]",
         "domain": "- Spatial domain: \\( y \\in [0, 2] \\)",
-        "save values": ["u"]
+        "save values": "u"
+    },
+     "Lid_Driven_Cavity": {
+        "equation": "\\[\n\\text{Momentum equation:} \\\\\n\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u} \\cdot \\nabla)\\mathbf{u} = - \\frac{1}{\\rho} \\nabla p + \\nu \\nabla^2 \\mathbf{u} \\\\\n\\text{Incompressibility constraint:} \\\\\n\\nabla \\cdot \\mathbf{u} = 0 \\\\\n\\text{Pressure Poisson equation:} \\\\\n\\nabla^2 p = \\frac{\\rho}{\\Delta t} (\\nabla \\cdot \\mathbf{u}^*)\n\\]\n\nwhere:\n- \\( \\mathbf{u} = [u(x, y, t), v(x, y, t)] \\): velocity vector\n- \\( p(x, y, t) \\): pressure\n- \\( \\rho = 1.0 \\): fluid density\n- \\( \\nu = 0.1 \\): kinematic viscosity\n- \\( \\mathbf{u}^* \\): intermediate velocity (before pressure correction)",
+        "boundary conditions": "- Velocity boundary conditions:\n  - \\( u = 1 \\), \\( v = 0 \\) on the **top lid** (driven wall)\n  - \\( u = 0 \\), \\( v = 0 \\) on **all other walls** (no-slip)\n- Pressure boundary conditions:\n  - Homogeneous Neumann \\( \\partial p/\\partial n = 0 \\) on all walls\n  - Homogeneous Dirichlet \\( p = 0 \\) optionally at one reference point (to make pressure unique)",
+        "initial conditions": "\\[\n  u(x, y, 0) = 0, \\quad v(x, y, 0) = 0, \\quad p(x, y, 0) = 0\n\\]\n(velocity and pressure fields are initialized to zero)",
+        "domain": "- Spatial domain: \\( x, y \\in [0, 1] \\)\n- 2D square cavity with time evolution until steady state",
+        "save values": ["u", "v", "p"]
+     },
+    "Vortex_Roll_Up": {
+        "equation": "\\[\n\\text{Poisson equation:} \\\\\n\\nabla^2 \\psi = -\\omega \\\\\n\\text{Vorticity transport equation:} \\\\\n\\frac{\\partial \\omega}{\\partial t} + u \\frac{\\partial \\omega}{\\partial x} + v \\frac{\\partial \\omega}{\\partial y} = \\nu \\nabla^2 \\omega\n\\]\n\nwhere:\n- \\( \\psi(x, y, t) \\): streamfunction\n- \\( \\omega(x, y, t) \\): vorticity\n- \\( u = \\partial \\psi / \\partial y \\), \\( v = -\\partial \\psi / \\partial x \\): velocity components\n- \\( \\nu = 0.001 \\): kinematic viscosity",
+        "boundary conditions": "- Periodic in x-direction for both \\( \\psi \\) and \\( \\omega \\)\n- Dirichlet boundary condition in y-direction for \\( \\psi \\): \\( \\psi = 0 \\) at top and bottom\n- Top/bottom boundary condition for \\( \\omega \\) approximated from interior values",
+        "initial conditions": "\\[\n  \\psi(x, y, 0) = 0, \\quad \\omega(x, y, 0) = 0 \\quad \\text{except for a pair of vortex layers initialized in the center region}\n\\]",
+        "domain": "- Spatial domain: \\( x, y \\in [0, 1] \\)\n- 2D periodic channel with finite vortex initialization",
+        "save values": ["psi", "omega"]
+    },
+    "Flow_Past_Circular_Cylinder": {
+        "equation": "\\[\n\\text{Poisson equation (in polar coordinates):} \\\\\n\\nabla^2 \\psi = -\\omega \\\\\n\\text{Vorticity transport equation:} \\\\\n\\frac{\\partial \\omega}{\\partial t} + u_r \\frac{\\partial \\omega}{\\partial r} + \\frac{u_\\theta}{r} \\frac{\\partial \\omega}{\\partial \\theta} = \\nu \\nabla^2 \\omega\n\\]\n\nwhere:\n- \\( \\psi(r, \\theta, t) \\): streamfunction\n- \\( \\omega(r, \\theta, t) \\): vorticity\n- \\( u_r = \\frac{1}{r} \\frac{\\partial \\psi}{\\partial \\theta} \\), \\( u_\\theta = -\\frac{\\partial \\psi}{\\partial r} \\): velocity components in polar coordinates\n- \\( \\nu = 0.005 \\): kinematic viscosity",
+        "boundary conditions": "- Inner boundary (cylinder surface): \\( \\psi = 20 \\), \\( \\omega = 2(\\psi_0 - \\psi_1)/\\Delta r^2 \\)\n- Outer boundary: \\( \\psi = v_\\infty \\cdot y + 20 \\), \\( \\omega = 0 \\)\n- Periodic boundary in \\( \\theta \\)-direction for both \\( \\psi \\) and \\( \\omega \\)",
+        "initial conditions": "\\[\n  \\psi(r, \\theta, 0) = 0, \\quad \\omega(r, \\theta, 0) = 0\n\\]\nVelocity field is initialized based on boundary conditions.",
+        "domain": "- Spatial domain: \\( r \\in [0.5, 10] \\), \\( \\theta \\in [0, 2\\pi] \\)\n- 2D flow around a fixed circular cylinder using polar coordinates",
+        "save values": ["psi", "omega"]
     }
 }

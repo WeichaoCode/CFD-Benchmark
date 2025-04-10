@@ -701,66 +701,87 @@ def call_create_table(compare_results_log_file, save_table_path):
         print(df)
 
 
-def call_show_image(llm_model, prompts_json):
-    # === Configuration ===
-    ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    ground_truth_dir = os.path.join(ROOT_DIR, 'results/solution')
-    prediction_dir = os.path.join(ROOT_DIR, f'results/prediction/{llm_model}/{prompts_json}')
-    save_dir = os.path.join(ROOT_DIR, f'image/{llm_model}/{prompts_json}')
-    os.makedirs(save_dir, exist_ok=True)
+def plot_1d(gt, pred, file_name, save_dir):
+    x_gt = np.arange(len(gt))
+    x_pred = np.arange(len(pred))
 
-    # === List .npy files in both directories ===
-    gt_files = {f for f in os.listdir(ground_truth_dir) if f.endswith('.npy')}
-    pred_files = {f for f in os.listdir(prediction_dir) if f.endswith('.npy')}
+    # Get shared y-axis range
+    ymin = min(gt.min(), pred.min())
+    ymax = max(gt.max(), pred.max())
+
+    plt.figure(figsize=(10, 6))
+    plt.suptitle(f"{file_name}")
+    plt.subplot(2, 1, 1)
+    plt.plot(x_gt, gt, label='Ground Truth', color='blue')
+    plt.ylim([ymin, ymax])
+    plt.title('Ground Truth')
+    plt.grid(True)
+
+    plt.subplot(2, 1, 2)
+    plt.plot(x_pred, pred, label='Prediction', color='green')
+    plt.ylim([ymin, ymax])
+    plt.title('Prediction')
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_dir, f"{file_name}_plot.png"))
+    plt.close()
+
+
+def plot_2d(gt, pred, file_name, save_dir):
+    # Get shared colorbar range
+    vmin = min(gt.min(), pred.min())
+    vmax = max(gt.max(), pred.max())
+    fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+    plt.suptitle(f"{file_name}")
+    im0 = axes[0].imshow(gt, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
+    axes[0].set_title('Ground Truth')
+    plt.colorbar(im0, ax=axes[0])
+
+    im1 = axes[1].imshow(pred, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
+    axes[1].set_title('Prediction')
+    plt.colorbar(im1, ax=axes[1])
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_dir, f"{file_name}_plot.png"))
+    plt.close()
+
+
+def call_save_image_same_dir(save_dir, ground_truth_dir, prediction_dir):
+    # === Configuration ===
+    os.makedirs(save_dir, exist_ok=True)
+    # === Common files (files that exist in both directories) ===
+    common_files = get_common_files(ground_truth_dir, prediction_dir)
+
+    # === Iterate and Plot for Common Files ===
+    for file in common_files:
+        gt_path = os.path.join(ground_truth_dir, file)
+        pred_path = os.path.join(prediction_dir, file)
+
+        try:
+            gt = np.load(gt_path)
+            pred = np.load(pred_path)
+
+            # Plot
+            if gt.ndim == 1 or (gt.ndim == 2 and 1 in gt.shape):
+                plot_1d(gt.flatten(), pred.flatten(), file.replace(".npy", ""), save_dir)
+            elif gt.ndim == 2:
+                plot_2d(gt, pred, file.replace(".npy", ""), save_dir)
+            else:
+                print(f"❌ Skipping unsupported shape for file: {file} → {gt.shape}")
+        except Exception as e:
+            print(f"❌ Error plotting {file}: {str(e)}")
+
+    print(f"\n🎯 Plotting complete. Images saved to: {save_dir}")
+
+
+def call_save_image_different_dir(ground_truth_dir, prediction_dir, save_dir_gt, save_dir_pred):
+    # === Configuration ===
+    os.makedirs(save_dir_gt, exist_ok=True)
+    os.makedirs(save_dir_pred, exist_ok=True)
 
     # === Common files (files that exist in both directories) ===
-    common_files = gt_files.intersection(pred_files)
-
-    # === Plotting Functions ===
-
-    def plot_1d(gt, pred, file_name):
-        x_gt = np.arange(len(gt))
-        x_pred = np.arange(len(pred))
-
-        # Get shared y-axis range
-        ymin = min(gt.min(), pred.min())
-        ymax = max(gt.max(), pred.max())
-
-        plt.figure(figsize=(10, 6))
-        plt.suptitle(f"{file_name}")
-        plt.subplot(2, 1, 1)
-        plt.plot(x_gt, gt, label='Ground Truth', color='blue')
-        plt.ylim([ymin, ymax])
-        plt.title('Ground Truth')
-        plt.grid(True)
-
-        plt.subplot(2, 1, 2)
-        plt.plot(x_pred, pred, label='Prediction', color='green')
-        plt.ylim([ymin, ymax])
-        plt.title('Prediction')
-        plt.grid(True)
-
-        plt.tight_layout()
-        plt.savefig(os.path.join(save_dir, f"{file_name}_plot.png"))
-        plt.close()
-
-    def plot_2d(gt, pred, file_name):
-        # Get shared colorbar range
-        vmin = min(gt.min(), pred.min())
-        vmax = max(gt.max(), pred.max())
-        fig, axes = plt.subplots(1, 2, figsize=(15, 5))
-        plt.suptitle(f"{file_name}")
-        im0 = axes[0].imshow(gt, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
-        axes[0].set_title('Ground Truth')
-        plt.colorbar(im0, ax=axes[0])
-
-        im1 = axes[1].imshow(pred, cmap='viridis', origin='lower', vmin=vmin, vmax=vmax)
-        axes[1].set_title('Prediction')
-        plt.colorbar(im1, ax=axes[1])
-
-        plt.tight_layout()
-        plt.savefig(os.path.join(save_dir, f"{file_name}_plot.png"))
-        plt.close()
+    common_files = get_common_files(ground_truth_dir, prediction_dir)
 
     # === Iterate and Plot for Common Files ===
     for file in common_files:
@@ -781,7 +802,7 @@ def call_show_image(llm_model, prompts_json):
         except Exception as e:
             print(f"❌ Error plotting {file}: {str(e)}")
 
-    print(f"\n🎯 Plotting complete. Images saved to: {save_dir}")
+    print(f"\n🎯 Plotting complete. Images saved to: {save_dir_gt} and {save_dir_pred}")
 
 
 class SolverPostProcessor:
@@ -804,6 +825,7 @@ class SolverPostProcessor:
         self.save_csv_path = os.path.join(self.root_dir, f'compare_images/table/{llm_model}/{prompt_json}')
         self.save_table_path = os.path.join(self.root_dir,
                                             f'table/{llm_model}_{prompt_json}_extracted_results_table_{self.timestamp}.csv')
+        self.save_image_dir = os.path.join(self.root_dir, f'image/{llm_model}/{prompt_json}')
 
     def run_all(self):
         # STEP 1:
@@ -819,7 +841,10 @@ class SolverPostProcessor:
         call_create_table(self.compare_results_log_file, self.save_table_path)
         # STEP 4:
         # plot and save the images of gt and pred in different folder
-
+        call_save_image_different_dir(self.ground_truth_dir, self.prediction_dir, self.save_dir_gt, self.save_dir_pred)
         # compare the images for mismatch shape, change the image to gray image, note the MSE is for pixel not
         # the same with MSE of original images, it works like human eyes (this function is optional)
         call_compare_image_mismatch(self.save_dir_gt, self.save_dir_pred, self.save_csv_path)
+        # save the gt and pred images in the same figure, each is sub-figure, this used for human view the images
+        # this function is optional
+        call_save_image_same_dir(self.save_image_dir, self.ground_truth_dir, self.prediction_dir)

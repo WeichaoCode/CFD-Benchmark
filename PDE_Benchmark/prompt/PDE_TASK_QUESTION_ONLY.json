@@ -159,5 +159,26 @@
         "initial conditions": "\\[\n  \\psi(r, \\theta, 0) = 0, \\quad \\omega(r, \\theta, 0) = 0\n\\]\nVelocity field is initialized based on boundary conditions.",
         "domain": "- Spatial domain: \\( r \\in [0.5, 10] \\), \\( \\theta \\in [0, 2\\pi] \\)\n- 2D flow around a fixed circular cylinder using polar coordinates",
         "save values": ["psi", "omega"]
+    },
+    "1D_KdV_Burgers_Equation": {
+        "equation": "\\[\n\\text{KdV-Burgers equation:} \\\\\n\\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} = a \\frac{\\partial^2 u}{\\partial x^2} + b \\frac{\\partial^3 u}{\\partial x^3}\n\\]\n\nwhere:\n- \\( u(x, t) \\): scalar field (e.g., velocity or wave amplitude)\n- \\( a = 1 \\times 10^{-4} \\): diffusion coefficient (Burgers term)\n- \\( b = 2 \\times 10^{-4} \\): dispersion coefficient (KdV term)",
+        "boundary conditions": "- Periodic boundary conditions in space: \\( u(0, t) = u(10, t) \\) for all \\( t \\)",
+        "initial conditions": "\\[\n  u(x, 0) = \\frac{1}{2n} \\log \\left( 1 + \\frac{\\cosh^2(n)}{\\cosh^2(n(x - 0.2L))} \\right), \\quad n = 20\n\\]\nThis defines a localized disturbance (soliton) centered near \\( x = 2.0 \\).",
+        "domain": "- Spatial domain: \\( x \\in [0, 10] \\)\n- Temporal domain: \\( t \\in [0, 10] \\)",
+        "save values": ["u"]
+    },
+    "2D_Rayleigh_Benard_Convection": {
+        "equation": "\\[\n\\text{Momentum equation:} \\\\\n\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u} \\cdot \\nabla)\\mathbf{u} = -\\nabla p + \\nu \\nabla^2 \\mathbf{u} + b \\mathbf{e}_z \\\\\n\\text{Buoyancy (temperature) transport:} \\\\\n\\frac{\\partial b}{\\partial t} + \\mathbf{u} \\cdot \\nabla b = \\kappa \\nabla^2 b \\\\\n\\text{Incompressibility:} \\\\\n\\nabla \\cdot \\mathbf{u} = 0\n\\]\n\nwhere:\n- \\( \\mathbf{u}(x, z, t) = (u, w) \\): velocity field\n- \\( p(x, z, t) \\): pressure\n- \\( b(x, z, t) \\): buoyancy (temperature deviation)\n- \\( \\nu = (Ra/Pr)^{-1/2} \\): kinematic viscosity\n- \\( \\kappa = (Ra\\cdot Pr)^{-1/2} \\): thermal diffusivity\n- \\( Ra = 2 \\times 10^6 \\), \\( Pr = 1 \\): Rayleigh and Prandtl numbers",
+        "boundary conditions": "- Top boundary \\( z = L_z \\): \\( \\mathbf{u} = 0 \\), \\( b = 0 \\)\n- Bottom boundary \\( z = 0 \\): \\( \\mathbf{u} = 0 \\), \\( b = L_z \\)\n- Horizontal boundaries: periodic for all variables",
+        "initial conditions": "\\[\n  \\mathbf{u}(x, z, 0) = 0, \\quad b(x, z, 0) = L_z - z + \\varepsilon(x, z)\n\\]\nwith small random perturbation \\( \\varepsilon \\) added to trigger instability.",
+        "domain": "- Spatial domain: \\( x \\in [0, 4],\\ z \\in [0, 1] \\)\n- Temporal domain: \\( t \\in [0, 50] \\)",
+        "save values": ["u", "b", "p"]
+    },
+    "2D_Shear_Flow_With_Tracer": {
+        "equation": "\\[\n\\text{Momentum equation:} \\\\\n\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u} \\cdot \\nabla)\\mathbf{u} = -\\nabla p + \\nu \\nabla^2 \\mathbf{u} \\\\\n\\text{Tracer transport equation:} \\\\\n\\frac{\\partial s}{\\partial t} + (\\mathbf{u} \\cdot \\nabla)s = D \\nabla^2 s \\\\\n\\text{Incompressibility constraint:} \\\\\n\\nabla \\cdot \\mathbf{u} = 0\n\\]\n\nwhere:\n- \\( \\mathbf{u}(x, z, t) = (u, w) \\): velocity field\n- \\( p(x, z, t) \\): pressure field\n- \\( s(x, z, t) \\): passive tracer field\n- \\( \\nu = 1 / 5 \\times 10^4 \\): kinematic viscosity (from Reynolds number)\n- \\( D = \\nu / 1 \\): tracer diffusivity (from Schmidt number)",
+        "boundary conditions": "- Periodic boundary conditions in both \\( x \\)- and \\( z \\)-directions for all variables",
+        "initial conditions": "\\[\n  u(x, z, 0) = \\frac{1}{2} \\left[ 1 + \\tanh\\left(\\frac{z - 0.5}{0.1}\\right) - \\tanh\\left(\\frac{z + 0.5}{0.1}\\right) \\right] \\\\\n  w(x, z, 0): \\text{small sinusoidal perturbations localized around } z = \\pm 0.5 \\\\\n  s(x, z, 0) = u(x, z, 0)\n\\]",
+        "domain": "- Spatial domain: \\( x \\in [0, 1],\\ z \\in [-1, 1] \\)\n- Temporal domain: \\( t \\in [0, 20] \\)",
+        "save values": ["s", "p", "u"]
     }
 }

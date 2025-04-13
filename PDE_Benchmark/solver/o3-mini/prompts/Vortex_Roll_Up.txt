@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+nx = 128
+ny = 128
+Lx = 1.0
+Ly = 1.0
+dx = Lx / nx
+dy = Ly / ny
+dt = 0.001
+T_end = 1.0
+nsteps = int(T_end/dt)
+nu = 0.001
+
+# Create grid
+x = np.linspace(0, Lx, nx, endpoint=False)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y, indexing='ij')
+
+# Initialize streamfunction psi and vorticity omega
+psi = np.zeros((nx, ny))
+omega = np.zeros((nx, ny))
+
+# Initialize a pair of vortex layers in the center region
+# Positive vorticity in lower layer and negative in upper layer
+A = 5.0  # amplitude
+y_lower_min = 0.4
+y_lower_max = 0.5
+y_upper_min = 0.5
+y_upper_max = 0.6
+mask_lower = (Y >= y_lower_min) & (Y <= y_lower_max)
+mask_upper = (Y >= y_upper_min) & (Y <= y_upper_max)
+omega[mask_lower] = A
+omega[mask_upper] = -A
+
+# Function: Solve Poisson equation for psi: Laplacian(psi) = -omega 
+# using Jacobi iteration with periodic BC in x and Dirichlet in y (psi=0 at y=0 and y=Ly)
+def solve_poisson(omega, psi, dx, dy, max_iter=100, tol=1e-6):
+    psi_new = psi.copy()
+    # Since dx==dy, we assume uniform spacing
+    for it in range(max_iter):
+        psi_old = psi_new.copy()
+        # Update interior points for y: j = 1 ... ny-2; periodic in x using np.roll.
+        # Jacobi update for interior
+        psi_new[:,1:-1] = 0.25 * (np.roll(psi_old, 1, axis=0)[:,1:-1] + 
+                                   np.roll(psi_old, -1, axis=0)[:,1:-1] +
+                                   psi_old[:,2:   ] + 
+                                   psi_old[:,0:-2] +
+                                   dx**2 * omega[:,1:-1])
+        # Enforce Dirichlet BC for psi in y
+        psi_new[:,0] = 0.0
+        psi_new[:,-1] = 0.0
+        # Check convergence
+        if np.linalg.norm(psi_new - psi_old, ord=np.inf) < tol:
+            break
+    return psi_new
+
+# Time stepping loop (unsteady problem; only final time step is saved)
+for step in range(nsteps):
+    # Solve for streamfunction psi from current vorticity omega
+    psi = solve_poisson(omega, psi, dx, dy, max_iter=100, tol=1e-6)
+    
+    # Compute velocity field from streamfunction
+    # u = d(psi)/dy and v = -d(psi)/dx, using central differences.
+    u = (np.roll(psi, -1, axis=1) - np.roll(psi, 1, axis=1)) / (2*dy)
+    v = - (np.roll(psi, -1, axis=0) - np.roll(psi, 1, axis=0)) / (2*dx)
+    
+    # Compute derivatives for vorticity transport
+    # Use central differences and periodic BC in x; for y, interior computed then BC applied.
+    domega_dx = (np.roll(omega, -1, axis=0) - np.roll(omega, 1, axis=0)) / (2*dx)
+    domega_dy = (np.roll(omega, -1, axis=1) - np.roll(omega, 1, axis=1)) / (2*dy)
+    lap_omega = (np.roll(omega, 1, axis=0) + np.roll(omega, -1, axis=0) +
+                 np.roll(omega, 1, axis=1) + np.roll(omega, -1, axis=1) - 4*omega) / (dx**2)
+    
+    # Update vorticity omega using explicit Euler time integration for interior points (y-direction j=1...ny-2)
+    omega_new = omega.copy()
+    convection = u * domega_dx + v * domega_dy
+    omega_new[:,1:-1] = omega[:,1:-1] + dt * (-convection[:,1:-1] + nu*lap_omega[:,1:-1])
+    
+    # Enforce boundary conditions for omega:
+    # Periodic in x is automatically handled by np.roll.
+    # For top and bottom (y boundaries), approximate from interior.
+    omega_new[:,0] = omega_new[:,1]
+    omega_new[:,-1] = omega_new[:,-2]
+    
+    omega = omega_new.copy()
+
+# Save the final solution fields in .npy files
+np.save("psi.npy", psi)
+np.save("omega.npy", omega)

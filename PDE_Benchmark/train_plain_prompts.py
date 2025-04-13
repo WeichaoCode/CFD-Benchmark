@@ -20,18 +20,34 @@ generator_prompt.save_prompts(prompts)
 
 # STEP 2: call LLM API to get generated code
 # Set the model and prompt JSON filename
-llm_model = "o3-mini"  # "gpt-4o", ""o3-mini, "sonnet-3.5", "haiku", "lama 4", "gemma 3"
+# llm_model = "gemini"  # "gpt-4o", ""o3-mini, "sonnet-3.5", "haiku", "lama 4", "gemini: gemini-2.0-flash"
+# List of LLM models to evaluate
+# llm_models = [
+#     "gpt-4o",
+#     "o3-mini",
+#     "sonnet-35",
+#     "haiku",
+#     "gemini"
+# ]
+llm_models = [
+    "sonnet-35",
+    "haiku",
+    "gemini"
+]
 prompt_json = "prompts.json"  # the file under ./prompt/
+# Loop over all models
+for llm_model in llm_models:
+    print(f"\n=== Running for model: {llm_model} ===")
+    # Instantiate the class
+    generator_llm = LLMCodeGenerator(llm_model, prompt_json)
 
-# # Instantiate the class
-# generator_llm = LLMCodeGenerator(llm_model, prompt_json)
-#
-# # Call the API to generate code for each task
-# generator_llm.call_api()
+    # Call the API to generate code for each task
+    generator_llm.call_api()
 
-# STEP 3: post-process the generate code and compare the loss and images
-# Create the post-processor
-processor = SolverPostProcessor(llm_model, prompt_json)
+    # STEP 3: post-process the generate code and compare the loss and images
+    # Create the post-processor
+    processor = SolverPostProcessor(llm_model, prompt_json)
 
-# Run the full post-processing pipeline
-processor.run_all()
+    # Run the full post-processing pipeline
+    processor.run_all()
+

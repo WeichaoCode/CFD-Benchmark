@@ -1,0 +1,43 @@
+```python
+import numpy as np
+
+# Parameters
+nu = 1.0
+Lx, Ly = 2.0, 2.0
+Nx, Ny = 101, 101
+dx, dy = Lx / (Nx - 1), Ly / (Ny - 1)
+dt = 0.0001  # Reduced time step for stability
+T_final = 0.3777
+
+# Create grid
+x = np.linspace(0, Lx, Nx)
+y = np.linspace(0, Ly, Ny)
+X, Y = np.meshgrid(x, y)
+
+# Initial condition
+u = np.ones((Ny, Nx))
+u[(X >= 0.5) & (X <= 1.0) & (Y >= 0.5) & (Y <= 1.0)] = 2.0
+
+# Time-stepping loop
+t = 0.0
+while t < T_final:
+    u_new = u.copy()
+    
+    # Update interior points
+    u_new[1:-1, 1:-1] = (u[1:-1, 1:-1] +
+                         nu * dt / dx**2 * (u[1:-1, 2:] - 2 * u[1:-1, 1:-1] + u[1:-1, :-2]) +
+                         nu * dt / dy**2 * (u[2:, 1:-1] - 2 * u[1:-1, 1:-1] + u[:-2, 1:-1]))
+    
+    # Apply Dirichlet boundary conditions
+    u_new[0, :] = 1
+    u_new[-1, :] = 1
+    u_new[:, 0] = 1
+    u_new[:, -1] = 1
+    
+    # Update solution
+    u = u_new
+    t += dt
+
+# Save the final solution
+np.save('u.npy', u)
+```

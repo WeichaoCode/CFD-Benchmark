@@ -106,6 +106,6 @@ solver.set_state(np.argmin(np.abs(solver.eigenvalues - evals[0])), sp.subsystems
 #     axi.set_axis_off()
 # fig.tight_layout()
 
-np.save("u_Pipe_Flow_Disk_EVP.npy", u.data)
-np.save("w_Pipe_Flow_Disk_EVP.npy", w.data)
-np.save("p_Pipe_Flow_Disk_EVP.npy", p.data)
+np.save("../../PDE_Benchmark/results/solution/u_Pipe_Flow_Disk_EVP.npy", u.data)
+np.save("../../PDE_Benchmark/results/solution/w_Pipe_Flow_Disk_EVP.npy", w.data)
+np.save("../../PDE_Benchmark/results/solution/p_Pipe_Flow_Disk_EVP.npy", p.data)

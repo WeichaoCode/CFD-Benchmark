@@ -16,6 +16,8 @@ from skimage.metrics import peak_signal_noise_ratio as psnr
 import pandas as pd
 import matplotlib.pyplot as plt
 import ast
+from google import genai
+from google.genai import types
 
 
 def generate_prompt(data):
@@ -97,13 +99,13 @@ def execute_python_script(filepath, timeout=60):
         logging.error(f"Execution failed with errors:\n{stderr_output}")
         return stderr_output, result
 
-    except subprocess.TimeoutExpired:
-        logging.warning("⚠️ Timeout Error: Script took too long to execute.")
-        return "⚠️ Timeout Error: Script took too long to execute.", result
+    except Exception as e:
+        logging.error(f"❌ Unexpected error while running script {filepath}: {e}")
+        return f"❌ Unexpected error: {e}", None
 
 
-def build_conversation(original_prompt, llm_model):
-    # Shared instruction
+def build_system_prompt():
+    # Shared instruction - system instruction
     instruction = ("You are a highly skilled assistant capable of generating Python code to solve CFD problems "
                    "using appropriate numerical methods."
                    "Given the problem description, you should reason through the problem and determine the best "
@@ -115,6 +117,12 @@ def build_conversation(original_prompt, llm_model):
                    "as named in `save_values`.\n"
                    "Your task is to generate the correct, fully runnable Python code for solving the problem "
                    "without additional explanations.")
+    return instruction
+
+
+def build_conversation(original_prompt, llm_model):
+    # Shared instruction - system instruction
+    instruction = build_system_prompt()
 
     # Prompt augmentation
     user_prompt = (original_prompt +
@@ -132,6 +140,8 @@ def build_conversation(original_prompt, llm_model):
             {"role": "system", "content": instruction},
             {"role": "user", "content": user_prompt}
         ]
+    elif llm_model == "gemini":
+        conversation_history = user_prompt
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
 
@@ -151,6 +161,8 @@ def extract_model_response(llm_model, response):
             model_response = response_body["content"][0]["text"]
         else:
             model_response = "Error: No response received from model."
+    elif llm_model == "gemini":
+        model_response = response.text
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
 
@@ -178,6 +190,12 @@ def update_token_usage(llm_model, original_prompt, response, total_input_tokens,
         logging.info(f"Input Tokens: {input_tokens}, Output Tokens: {output_tokens}")
         logging.info(
             f"Estimated cost for this request: ${input_tokens * cost_per_input_token + output_tokens * cost_per_output_token:.6f}")
+    elif llm_model == "sonnet-35":
+        pass
+    elif llm_model == "haiku":
+        pass
+    elif llm_model == "gemini":
+        pass
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
 
@@ -228,7 +246,7 @@ def save_model_outputs(task_name, output_folder, model_response):
     return script_path
 
 
-def execute_check_errors(script_path, task_name, conversation_history):
+def execute_check_errors(llm_model, script_path, task_name, conversation_history):
     # Execute and check for errors
     execution_feedback, _ = execute_python_script(script_path)
 
@@ -245,7 +263,10 @@ def execute_check_errors(script_path, task_name, conversation_history):
         updated_prompt = f"[Feedback]: The previous generated code had the following error:\n{execution_feedback}\nPlease correct it."
 
         # Add the refine prompt feedback to the conversation as input
-        conversation_history.append({"role": "user", "content": updated_prompt})
+        if llm_model == "gemini":
+            conversation_history += updated_prompt
+        else:
+            conversation_history.append({"role": "user", "content": updated_prompt})
 
 
 def call_llm_api(llm_model, client, conversation_history, temperature, bedrock_runtime, inference_profile_arn):
@@ -266,7 +287,7 @@ def call_llm_api(llm_model, client, conversation_history, temperature, bedrock_r
         request_body = {
             "anthropic_version": "bedrock-2023-05-31",
             "max_tokens": 8000,
-            "temperature": 0.7,
+            "temperature": temperature,
             "messages": conversation_history
         }
 
@@ -276,6 +297,15 @@ def call_llm_api(llm_model, client, conversation_history, temperature, bedrock_r
             body=json.dumps(request_body),
             contentType="application/json",
             accept="application/json"
+        )
+    elif llm_model == "gemini":
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=conversation_history,
+            config=types.GenerateContentConfig(
+                temperature=temperature,
+                system_instruction=build_system_prompt()
+            )
         )
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
@@ -307,7 +337,10 @@ def generate_code(llm_model, task_name, prompt, client, temperature, bedrock_run
             # Extract model response
             model_response = extract_model_response(llm_model, response)
             # Add the response to the conversation as input
-            conversation_history.append({"role": "assistant", "content": model_response})
+            if llm_model == "gemini":
+                conversation_history += model_response
+            else:
+                conversation_history.append({"role": "assistant", "content": model_response})
             logging.info(
                 "---------------------------------INPUT TO LLM UPDATE----------------------------------------")
             logging.info(conversation_history)
@@ -320,7 +353,7 @@ def generate_code(llm_model, task_name, prompt, client, temperature, bedrock_run
             script_path = save_model_outputs(task_name, output_folder, model_response)
 
             # Execute and check for errors
-            if execute_check_errors(script_path, task_name, conversation_history):
+            if execute_check_errors(llm_model, script_path, task_name, conversation_history):
                 return  # Exit function if no errors
             retries += 1
 
@@ -335,8 +368,17 @@ def generate_code(llm_model, task_name, prompt, client, temperature, bedrock_run
 
 def api_key_configuration(llm_model):
     # === OpenAI API Configuration ===
-    api_key = "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"  # Replace this with your OpenAI API key
-    client = OpenAI(api_key=api_key)
+    if llm_model in ["gpt-4o", "o3-mini"]:
+        api_key = ("sk-proj-hNMu"
+                   "-tIC6jn03YNcIT1d5XQvSebaao_uiVju1q1iQJKQcP1Ha7rXo1PDcbHVNcIUst75baI3QKT3BlbkFJ7XyhER3QUrjoOFUoWrsp97cw0Z853u7kf-nJgFzlDDB09lVV2fBmGHxvPkGGDSTbakE-FSe4wA")  # Replace this with your OpenAI API key
+        client = OpenAI(api_key=api_key)
+    elif llm_model == "gemini":
+        api_key = "AIzaSyAlV3264W1Qoo_txpi7QCJz40PVN2jUhs4"
+        client = genai.Client(api_key=api_key)
+    elif llm_model in ["sonnet-35", "haiku"]:
+        api_key, client = None, None
+    else:
+        raise ValueError(f"Invalid {llm_model} api key")
 
     if llm_model == "sonnet-35":
         # Define Sonnet-3.5 profile Inference Profile ARN
@@ -344,7 +386,7 @@ def api_key_configuration(llm_model):
     elif llm_model == "haiku":
         # Define Haiku profile Inference Profile ARN
         inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/g47vfd2xvs5w"
-    elif llm_model in ["o3-mini", "gpt-4o"]:
+    elif llm_model in ["o3-mini", "gpt-4o", "gemini"]:
         inference_profile_arn = None
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
@@ -395,8 +437,8 @@ class LLMCodeGenerator:
 
         # Loop through prompts and generate code
         for task_name, prompt in pde_prompts["prompts"].items():
-            if task_name not in ["Fully_Developed_Turbulent_Channel_Flow"]:
-                continue
+            # if task_name not in ["Fully_Developed_Turbulent_Channel_Flow"]:
+            #     continue
             generate_code(
                 self.llm_model,
                 task_name,
@@ -459,84 +501,99 @@ def call_post_process(generated_solvers_dir, save_dir):
 
 
 def write_execute_results_to_log(log, script, result, pass_count, fail_count):
-    # Write execution results to log file
-    log.write(f"--- Running: {script} ---\n")
-    log.write(f"Exit Code: {result.returncode}\n")
-    log.write("Output:\n")
-    log.write(result.stdout + "\n")
-    log.write("Errors:\n")
-    log.write(result.stderr + "\n")
-    log.write("-" * 50 + "\n\n")
+    try:
+        # Write execution results to log file
+        log.write(f"--- Running: {script} ---\n")
+        log.write(f"Exit Code: {result.returncode}\n")
+        log.write("Output:\n")
+        log.write(result.stdout + "\n")
+        log.write("Errors:\n")
+        log.write(result.stderr + "\n")
+        log.write("-" * 50 + "\n\n")
 
-    # Print execution status
-    if result.returncode == 0:
-        print(f"✅ {script} executed successfully.")
-        pass_count += 1  # Increment pass count
-    else:
-        print(f"❌ {script} encountered an error (check logs).")
-        fail_count += 1  # Increment fail count
+        # Print execution status
+        if result.returncode == 0:
+            print(f"✅ {script} executed successfully.")
+            pass_count += 1  # Increment pass count
+        else:
+            print(f"❌ {script} encountered an error (check logs).")
+            fail_count += 1  # Increment fail count
+    except Exception as e:
+        log.write(f" {e}\n")
 
 
 def write_execute_error_to_log(log, script, fail_count):
-    log.write(f"--- Running: {script} ---\n")
-    log.write("⚠️ Timeout Error: Script took too long to execute.\n")
-    log.write("-" * 50 + "\n\n")
-    print(f"⚠️ Timeout: {script} took too long and was skipped.")
-    fail_count += 1  # Increment fail count for timeout
+    try:
+        log.write(f"--- Running: {script} ---\n")
+        log.write("⚠️ Timeout Error: Script took too long to execute.\n")
+        log.write("-" * 50 + "\n\n")
+        print(f"⚠️ Timeout: {script} took too long and was skipped.")
+        fail_count += 1  # Increment fail count for timeout
+    except Exception as e:
+        log.write(f" {e}\n")
 
 
 def write_execute_summary_to_log(log, pass_count, fail_count):
-    # Log the summary of pass and fail counts
-    log.write("\n\n====== Execution Summary ======\n")
-    log.write(f"Total Scripts Passed: {pass_count}\n")
-    log.write(f"Total Scripts Failed: {fail_count}\n")
+    try:
+        # Log the summary of pass and fail counts
+        log.write("\n\n====== Execution Summary ======\n")
+        log.write(f"Total Scripts Passed: {pass_count}\n")
+        log.write(f"Total Scripts Failed: {fail_count}\n")
+    except Exception as e:
+        log.write(f" {e}\n")
 
 
 def open_log_save_execution_results(log_file, python_files, generate_solvers_dir, pass_count, fail_count):
-    with open(log_file, "w") as log:
-        log.write("====== Execution Results for Generated Solvers ======\n\n")
+    try:
+        with open(log_file, "w") as log:
+            log.write("====== Execution Results for Generated Solvers ======\n\n")
 
-        for script in python_files:
-            script_path = os.path.join(generate_solvers_dir, script)
-            print(f"🔹 Running: {script} ...")
+            for script in python_files:
+                script_path = os.path.join(generate_solvers_dir, script)
+                print(f"🔹 Running: {script} ...")
 
-            # Run the script and capture the output
-            try:
-                _, result = execute_python_script(script_path, timeout=300)
+                # Run the script and capture the output
+                try:
+                    _, result = execute_python_script(script_path)
 
-                # Write execution results to log file
-                write_execute_results_to_log(log, script, result, pass_count, fail_count)
+                    # Write execution results to log file
+                    write_execute_results_to_log(log, script, result, pass_count, fail_count)
 
-            except subprocess.TimeoutExpired:
-                write_execute_error_to_log(log, script, fail_count)
+                except subprocess.TimeoutExpired:
+                    write_execute_error_to_log(log, script, fail_count)
 
-            # Log the summary of pass and fail counts
-            write_execute_summary_to_log(log, pass_count, fail_count)
+                # Log the summary of pass and fail counts
+                write_execute_summary_to_log(log, pass_count, fail_count)
 
-    print(f"\n🎯 Execution completed. Results saved in: {log_file}")
+        print(f"\n🎯 Execution completed. Results saved in: {log_file}")
+    except Exception as e:
+        log.write(f" {e}\n")
 
 
 def call_execute_solver(generated_solvers_dir, log_file):
-    # Define the directory where generated solver scripts are stored
-    GENERATED_SOLVERS_DIR = generated_solvers_dir
-    # Define the log file for execution results
-    LOG_FILE = log_file
+    try:
+        # Define the directory where generated solver scripts are stored
+        GENERATED_SOLVERS_DIR = generated_solvers_dir
+        # Define the log file for execution results
+        LOG_FILE = log_file
 
-    # Ensure the output directory exists
-    os.makedirs(GENERATED_SOLVERS_DIR, exist_ok=True)
+        # Ensure the output directory exists
+        os.makedirs(GENERATED_SOLVERS_DIR, exist_ok=True)
 
-    # Get all Python files in the solvers directory
-    python_files = [f for f in os.listdir(GENERATED_SOLVERS_DIR) if f.endswith(".py")]
+        # Get all Python files in the solvers directory
+        python_files = [f for f in os.listdir(GENERATED_SOLVERS_DIR) if f.endswith(".py")]
 
-    # Ensure there are solver scripts to run
-    if not python_files:
-        print("No Python solver scripts found in the directory.")
-        exit()
-    # Initialize counters for pass and fail
-    pass_count = 0
-    fail_count = 0
-    # Open a log file to save execution results
-    open_log_save_execution_results(LOG_FILE, python_files, GENERATED_SOLVERS_DIR, pass_count, fail_count)
+        # Ensure there are solver scripts to run
+        if not python_files:
+            print("No Python solver scripts found in the directory.")
+            exit()
+        # Initialize counters for pass and fail
+        pass_count = 0
+        fail_count = 0
+        # Open a log file to save execution results
+        open_log_save_execution_results(LOG_FILE, python_files, GENERATED_SOLVERS_DIR, pass_count, fail_count)
+    except Exception as e:
+        print(f" {e}\n")
 
 
 def interpolate_to_match(gt, pred):
@@ -547,7 +604,7 @@ def interpolate_to_match(gt, pred):
         pred_resized = zoom(pred, factors, order=1)
         return pred_resized
     except Exception as e:
-        raise RuntimeError(f"Interpolation failed: {e}")
+        print(f"RuntimeError: Interpolation failed: {e}")
 
 
 def compute_losses(gt, pred):
@@ -918,6 +975,7 @@ class SolverPostProcessor:
         self.TABLE_FOLDER = os.path.join(self.root_dir, 'table')
         self.IMAGE_FOLDER = os.path.join(self.root_dir, 'image')
         self.COMPARE_IMAGE_FOLDER = os.path.join(self.root_dir, 'compare_images')
+        self.SOLVER_FOLDER = os.path.join(self.root_dir, 'solver')
         self.save_table_path = os.path.join(self.root_dir,
                                             f'table/{llm_model}_{self.prompt_name}_extracted_results_table_{self.timestamp}.csv')
         self.save_image_dir = os.path.join(self.root_dir, f'image/{llm_model}/{self.prompt_name}')
@@ -925,6 +983,7 @@ class SolverPostProcessor:
         os.makedirs(self.TABLE_FOLDER, exist_ok=True)
         os.makedirs(self.IMAGE_FOLDER, exist_ok=True)
         os.makedirs(self.COMPARE_IMAGE_FOLDER, exist_ok=True)
+        os.makedirs(self.SOLVER_FOLDER, exist_ok=True)
 
     def run_all(self):
         # STEP 1:
@@ -947,4 +1006,3 @@ class SolverPostProcessor:
         # save the gt and pred images in the same figure, each is sub-figure, this used for human view the images
         # this function is optional
         call_save_image_same_dir(self.save_image_dir, self.ground_truth_dir, self.prediction_dir)
-

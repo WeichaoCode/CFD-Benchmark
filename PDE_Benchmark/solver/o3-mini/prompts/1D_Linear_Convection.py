@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+c = 1.0
+epsilon = 5e-4  # set to 0 for undamped, or 5e-4 for damped
+x_start, x_end = -5.0, 5.0
+T = 10.0
+
+# Discretization
+Nx = 201                     # number of spatial points
+x = np.linspace(x_start, x_end, Nx)
+dx = x[1] - x[0]
+dt = 0.01                    # time step
+Nt = int(T / dt)           # number of time steps
+
+# Initial condition
+u = np.exp(-x**2)
+
+# Time integration using explicit finite differences
+for _ in range(Nt):
+    # Periodic boundary conditions via np.roll
+    u_right = np.roll(u, -1)
+    u_left = np.roll(u, 1)
+    
+    # Compute spatial derivatives
+    du_dx = (u_right - u_left) / (2 * dx)
+    d2u_dx2 = (u_right - 2 * u + u_left) / (dx**2)
+    
+    # Update solution
+    u = u - c * dt * du_dx + epsilon * dt * d2u_dx2
+
+# Save the final solution as a 1D NumPy array in 'u.npy'
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_1D_Linear_Convection.npy', u)

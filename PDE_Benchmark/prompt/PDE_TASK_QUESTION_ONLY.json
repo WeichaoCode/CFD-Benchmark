@@ -180,5 +180,19 @@
         "initial conditions": "\\[\n  u(x, z, 0) = \\frac{1}{2} \\left[ 1 + \\tanh\\left(\\frac{z - 0.5}{0.1}\\right) - \\tanh\\left(\\frac{z + 0.5}{0.1}\\right) \\right] \\\\\n  w(x, z, 0): \\text{small sinusoidal perturbations localized around } z = \\pm 0.5 \\\\\n  s(x, z, 0) = u(x, z, 0)\n\\]",
         "domain": "- Spatial domain: \\( x \\in [0, 1],\\ z \\in [-1, 1] \\)\n- Temporal domain: \\( t \\in [0, 20] \\)",
         "save values": ["s", "p", "u"]
+    },
+    "Pipe_Flow_Disk_EVP": {
+        "equation": "\\[\n\\text{Linearized incompressible Navier–Stokes equations (in cylindrical coordinates):} \\\\\n\\nabla \\cdot \\mathbf{u} + \\partial_z w = 0 \\\\\ns \\mathbf{u} + w_0 \\partial_z \\mathbf{u} + \\nabla p - \\frac{1}{Re}(\\nabla^2 \\mathbf{u} + \\partial_z^2 \\mathbf{u}) = 0 \\\\\ns w + w_0 \\partial_z w + \\mathbf{u} \\cdot \\nabla w_0 + \\partial_z p - \\frac{1}{Re}(\\nabla^2 w + \\partial_z^2 w) = 0\n\\]\n\nwhere:\n- \\( \\mathbf{u}(r, \\phi) \\): in-plane perturbation velocity\n- \\( w(r, \\phi) \\): axial velocity perturbation\n- \\( p(r, \\phi) \\): pressure perturbation\n- \\( s \\): eigenvalue representing temporal growth/decay rate\n- \\( w_0(r) = 1 - r^2 \\): laminar background flow\n- \\( Re = 10^4 \\): Reynolds number",
+        "boundary conditions": "- No-slip at the pipe wall \\( r = 1 \\):\n  - \\( \\mathbf{u}(r=1) = 0 \\)\n  - \\( w(r=1) = 0 \\)\n- Periodic in azimuthal \\( \\phi \\) and axial \\( z \\) directions (implicitly handled by Fourier expansion)",
+        "initial conditions": "As this is an eigenvalue problem (EVP), no initial conditions are needed. The system seeks eigenmodes and growth rates directly.",
+        "domain": "- Radial domain: \\( r \\in [0, 1] \\)\n- Azimuthal domain: \\( \\phi \\in [0, 2\\pi] \\)\n- Axial domain: \\( z \\in (-\\infty, \\infty) \\), represented by a fixed wave number \\( k_z = 1 \\)",
+        "save values": ["u", "w", "p"]
+    },
+    "Lane_Emden_Equation": {
+        "equation": "\\[\n\\text{Lane-Emden equation:} \\\\\n\\nabla^2 f + f^n = 0\n\\]\n\nwhere:\n- \\( f(r) \\): scalar field (e.g., dimensionless density or potential) defined in the radial direction\n- \\( n = 3.0 \\): polytropic index controlling nonlinearity",
+        "boundary conditions": "- Dirichlet boundary conditions:\n  - \\( f(r=1) = 0 \\) at the outer radius\n- Regularity condition at the center \\( r=0 \\) (implied by symmetry)",
+        "initial conditions": "As this is a nonlinear boundary value problem, no explicit initial conditions are needed, but an initial guess is used:\n\\[\n  f_0(r) = R_0^{\\frac{2}{n-1}} (1 - r^2)^2, \\quad R_0 = 5\n\\]",
+        "domain": "- Radial domain: \\( r \\in [0, 1] \\)\n- Spherically symmetric problem over the unit ball (no angular dependence)",
+        "save values": ["f"]
     }
 }

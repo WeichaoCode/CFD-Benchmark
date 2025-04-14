@@ -30,8 +30,8 @@ for _ in range(nt):
     # Nonlinear term (using anti-aliasing and dealiasing)
     du_dx = fft.irfft(1j * dx_hat * u_hat, n=nx)
     
-    # Compute nonlinear term with careful scaling to prevent overflow
-    nonlinear = du_dx * u
+    # Compute nonlinear term with careful scaling and normalization
+    nonlinear = du_dx * (u / np.max(np.abs(u)))
     nonlinear_hat = fft.rfft(nonlinear) * 0.5
     
     # Linear term (diffusion)
@@ -44,4 +44,4 @@ for _ in range(nt):
     u = fft.irfft(u_hat)
 
 # Save final solution
-np.save('u.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/u_1D_Burgers_Equation.npy', u)

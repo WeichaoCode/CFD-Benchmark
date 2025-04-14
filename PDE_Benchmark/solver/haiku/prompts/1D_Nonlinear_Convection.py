@@ -1,0 +1,42 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Problem parameters
+L = 2 * np.pi  # Domain length
+T = 5.0        # Total simulation time
+nx = 200       # Number of spatial points 
+nt = 500       # Number of time steps
+
+# Grid setup
+dx = L / (nx - 1)
+dt = T / nt
+x = np.linspace(0, L, nx)
+
+# Initial condition
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# Lax-Wendroff method for solving advection equation
+def lax_wendroff_1d(u, dx, dt):
+    un = u.copy()
+    for _ in range(nt):
+        # Periodic boundary conditions
+        un[0] = u[-1]
+        un[-1] = u[0]
+        
+        # Lax-Wendroff scheme
+        f_plus = 0.5 * (un**2)
+        f_minus = 0.5 * (un**2)
+        
+        u[1:-1] = un[1:-1] - dt/(2*dx) * (f_plus[2:] - f_plus[:-2]) + \
+                  0.5 * (dt/dx)**2 * (un[2:] - 2*un[1:-1] + un[:-2])
+        
+        # Update
+        un = u.copy()
+    
+    return u
+
+# Solve the problem
+solution = lax_wendroff_1d(u, dx, dt)
+
+# Save the solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/solution_1D_Nonlinear_Convection.npy', solution)

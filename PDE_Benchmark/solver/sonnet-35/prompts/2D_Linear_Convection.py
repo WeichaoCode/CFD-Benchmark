@@ -1,0 +1,51 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Problem Parameters
+Lx, Ly = 2.0, 2.0  # Domain size
+nx, ny = 100, 100  # Grid points
+nt = 500  # Time steps
+c = 1.0  # Convection speed
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = 0.001  # Time step size
+
+# Grid Generation
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initial Condition
+u = np.ones((ny, nx))
+mask = ((X >= 0.5) & (X <= 1.0) & (Y >= 0.5) & (Y <= 1.0))
+u[mask] = 2.0
+
+# Boundary Conditions
+u[0, :] = 1.0  # Bottom boundary
+u[-1, :] = 1.0  # Top boundary
+u[:, 0] = 1.0  # Left boundary
+u[:, -1] = 1.0  # Right boundary
+
+# Lax-Wendroff Method for 2D Advection
+for _ in range(nt):
+    un = u.copy()
+    
+    # x-direction flux
+    fx_p = 0.5 * c * (un[1:-1, 2:] + un[1:-1, 1:-1]) - 0.5 * (c * dt / dx) * (un[1:-1, 2:] - un[1:-1, 1:-1])
+    fx_m = 0.5 * c * (un[1:-1, 1:-1] + un[1:-1, :-2]) - 0.5 * (c * dt / dx) * (un[1:-1, 1:-1] - un[1:-1, :-2])
+    
+    # y-direction flux
+    fy_p = 0.5 * c * (un[2:, 1:-1] + un[1:-1, 1:-1]) - 0.5 * (c * dt / dy) * (un[2:, 1:-1] - un[1:-1, 1:-1])
+    fy_m = 0.5 * c * (un[1:-1, 1:-1] + un[:-2, 1:-1]) - 0.5 * (c * dt / dy) * (un[1:-1, 1:-1] - un[:-2, 1:-1])
+    
+    # Update interior points
+    u[1:-1, 1:-1] = un[1:-1, 1:-1] - (dt/dx) * (fx_p - fx_m) - (dt/dy) * (fy_p - fy_m)
+    
+    # Enforce boundary conditions
+    u[0, :] = 1.0
+    u[-1, :] = 1.0
+    u[:, 0] = 1.0
+    u[:, -1] = 1.0
+
+# Save final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/u_2D_Linear_Convection.npy', u)

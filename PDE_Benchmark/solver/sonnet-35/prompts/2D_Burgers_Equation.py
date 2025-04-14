@@ -1,0 +1,90 @@
+import numpy as np
+import scipy.sparse as sp
+import scipy.sparse.linalg as spla
+
+# Problem parameters
+Lx, Ly = 2.0, 2.0
+nx, ny = 100, 100
+nu = 0.01
+t_start, t_end = 0.0, 0.027
+dt = 0.0001
+nt = int((t_end - t_start) / dt)
+
+# Grid generation
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+dx, dy = x[1] - x[0], y[1] - y[0]
+
+# Initial conditions
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+
+# Initial condition modification
+mask = (0.5 <= x) & (x <= 1) & (0.5 <= y[:, np.newaxis]) & (y[:, np.newaxis] <= 1)
+u[mask] = 2
+v[mask] = 2
+
+# Finite difference method
+def compute_derivatives(f):
+    df_dx = np.zeros_like(f)
+    df_dy = np.zeros_like(f)
+    
+    # Central difference for interior points
+    df_dx[:, 1:-1] = (f[:, 2:] - f[:, :-2]) / (2 * dx)
+    df_dy[1:-1, :] = (f[2:, :] - f[:-2, :]) / (2 * dy)
+    
+    # Forward/backward differences at boundaries
+    df_dx[:, 0] = (f[:, 1] - f[:, 0]) / dx
+    df_dx[:, -1] = (f[:, -1] - f[:, -2]) / dx
+    df_dy[0, :] = (f[1, :] - f[0, :]) / dy
+    df_dy[-1, :] = (f[-1, :] - f[-2, :]) / dy
+    
+    return df_dx, df_dy
+
+def compute_diffusion(f):
+    d2f_dx2 = np.zeros_like(f)
+    d2f_dy2 = np.zeros_like(f)
+    
+    # Central difference for interior points
+    d2f_dx2[:, 1:-1] = (f[:, 2:] - 2*f[:, 1:-1] + f[:, :-2]) / (dx**2)
+    d2f_dy2[1:-1, :] = (f[2:, :] - 2*f[1:-1, :] + f[:-2, :]) / (dy**2)
+    
+    # Forward/backward differences at boundaries
+    d2f_dx2[:, 0] = (f[:, 1] - 2*f[:, 0] + f[:, 0]) / (dx**2)
+    d2f_dx2[:, -1] = (f[:, -1] - 2*f[:, -1] + f[:, -2]) / (dx**2)
+    d2f_dy2[0, :] = (f[1, :] - 2*f[0, :] + f[0, :]) / (dy**2)
+    d2f_dy2[-1, :] = (f[-1, :] - 2*f[-1, :] + f[-2, :]) / (dy**2)
+    
+    return d2f_dx2, d2f_dy2
+
+# Time integration
+for _ in range(nt):
+    # Compute derivatives
+    u_dx, u_dy = compute_derivatives(u)
+    v_dx, v_dy = compute_derivatives(v)
+    
+    # Compute diffusion terms
+    u_d2x, u_d2y = compute_diffusion(u)
+    v_d2x, v_d2y = compute_diffusion(v)
+    
+    # Update u and v using finite difference method
+    u_new = u - dt * (u * u_dx + v * u_dy) + nu * dt * (u_d2x + u_d2y)
+    v_new = v - dt * (u * v_dx + v * v_dy) + nu * dt * (v_d2x + v_d2y)
+    
+    # Enforce boundary conditions
+    u_new[0, :] = 1
+    u_new[-1, :] = 1
+    u_new[:, 0] = 1
+    u_new[:, -1] = 1
+    
+    v_new[0, :] = 1
+    v_new[-1, :] = 1
+    v_new[:, 0] = 1
+    v_new[:, -1] = 1
+    
+    # Update solution
+    u, v = u_new, v_new
+
+# Save final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/u_2D_Burgers_Equation.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/v_2D_Burgers_Equation.npy', v)

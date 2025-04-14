@@ -1,0 +1,92 @@
+import numpy as np
+
+# Simulation parameters
+Lx, Lz = 1.0, 2.0
+nx, nz = 128, 256
+dx, dz = Lx/nx, Lz/nz
+x = np.linspace(0, Lx, nx, endpoint=False)
+z = np.linspace(-Lz/2, Lz/2, nz, endpoint=False)
+X, Z = np.meshgrid(x, z, indexing='ij')
+
+# Physical parameters
+nu = 1/5e4  # Kinematic viscosity
+D = nu  # Tracer diffusivity
+
+# Time parameters
+t_start = 0
+t_end = 20
+dt = 0.01
+nt = int((t_end - t_start) / dt)
+
+# Initial conditions
+def initial_u(x, z):
+    return 0.5 * (1 + np.tanh((z - 0.5)/0.1) - np.tanh((z + 0.5)/0.1))
+
+def initial_w(x, z):
+    return 0.01 * np.sin(np.pi*z) * np.cos(2*np.pi*x)
+
+# Initial fields
+u = initial_u(X, Z)
+w = initial_w(X, Z)
+s = initial_u(X, Z)
+
+# Time-stepping using spectral method
+for n in range(nt):
+    # Transform to spectral space
+    u_hat = np.fft.rfft2(u)
+    w_hat = np.fft.rfft2(w)
+    s_hat = np.fft.rfft2(s)
+
+    # Spectral method setup
+    kx = 2*np.pi*np.fft.rfftfreq(nx, d=dx)
+    kz = 2*np.pi*np.fft.fftfreq(nz, d=dz)
+    
+    # Create wavenumber grids
+    KX, KZ = np.meshgrid(kx, kz, indexing='ij')
+    k2 = KX**2 + KZ**2
+
+    # Nonlinear terms (spectral)
+    ux_hat = 1j * KX * u_hat
+    uz_hat = 1j * KZ * u_hat
+    wx_hat = 1j * KX * w_hat
+    wz_hat = 1j * KZ * w_hat
+    sx_hat = 1j * KX * s_hat
+    sz_hat = 1j * KZ * s_hat
+
+    # Inverse transform nonlinear terms
+    ux = np.fft.irfft2(ux_hat)
+    uz = np.fft.irfft2(uz_hat)
+    wx = np.fft.irfft2(wx_hat)
+    wz = np.fft.irfft2(wz_hat)
+    sx = np.fft.irfft2(sx_hat)
+    sz = np.fft.irfft2(sz_hat)
+
+    # Convective terms
+    u_conv = u * ux + w * uz
+    w_conv = u * wx + w * wz
+    s_conv = u * sx + w * sz
+
+    # Transform convective terms
+    u_conv_hat = np.fft.rfft2(u_conv)
+    w_conv_hat = np.fft.rfft2(w_conv)
+    s_conv_hat = np.fft.rfft2(s_conv)
+
+    # Diffusive terms
+    u_diff_hat = -nu * k2 * u_hat
+    w_diff_hat = -nu * k2 * w_hat
+    s_diff_hat = -D * k2 * s_hat
+
+    # Time integration
+    u_hat = u_hat - dt * (u_conv_hat + u_diff_hat)
+    w_hat = w_hat - dt * (w_conv_hat + w_diff_hat)
+    s_hat = s_hat - dt * (s_conv_hat + s_diff_hat)
+
+    # Back to physical space
+    u = np.fft.irfft2(u_hat)
+    w = np.fft.irfft2(w_hat)
+    s = np.fft.irfft2(s_hat)
+
+# Save final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_2D_Shear_Flow_With_Tracer.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/w_2D_Shear_Flow_With_Tracer.npy', w)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/s_2D_Shear_Flow_With_Tracer.npy', s)

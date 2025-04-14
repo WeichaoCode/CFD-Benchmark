@@ -1,0 +1,105 @@
+import numpy as np
+import scipy.sparse as sp
+import scipy.sparse.linalg as spla
+
+# Problem parameters
+r_min, r_max = 0.5, 10.0
+theta_min, theta_max = 0, 2*np.pi
+nu = 0.005
+v_inf = 1.0
+
+# Discretization parameters
+Nr, Ntheta = 50, 50
+dt = 0.01
+total_time = 5.0
+
+# Grid generation
+r = np.linspace(r_min, r_max, Nr)
+theta = np.linspace(theta_min, theta_max, Ntheta)
+dr = r[1] - r[0]
+dtheta = theta[1] - theta[0]
+
+# Initialize fields
+psi = np.zeros((Nr, Ntheta))
+omega = np.zeros((Nr, Ntheta))
+
+# Stabilization parameters
+epsilon = 1e-10  # Small value to prevent division by zero
+
+# Time integration
+for t in np.arange(0, total_time, dt):
+    # Compute velocity components with stabilization
+    u_r = np.zeros((Nr, Ntheta))
+    u_theta = np.zeros((Nr, Ntheta))
+    
+    for i in range(1, Nr-1):
+        for j in range(Ntheta):
+            u_r[i,j] = (1/(r[i] + epsilon)) * (psi[i,(j+1)%Ntheta] - psi[i,(j-1)%Ntheta]) / (2*dtheta)
+            u_theta[i,j] = -(psi[i+1,j] - psi[i-1,j]) / (2*dr)
+    
+    # Vorticity transport equation (explicit scheme with stabilization)
+    omega_new = np.copy(omega)
+    for i in range(1, Nr-1):
+        for j in range(Ntheta):
+            # Advection terms with stabilization
+            adv_r = np.clip(u_r[i,j], -1e5, 1e5) * np.clip((omega[i+1,j] - omega[i-1,j]) / (2*dr), -1e5, 1e5)
+            adv_theta = np.clip((u_theta[i,j]/(r[i] + epsilon)), -1e5, 1e5) * \
+                        np.clip((omega[i,(j+1)%Ntheta] - omega[i,(j-1)%Ntheta]) / (2*dtheta), -1e5, 1e5)
+            
+            # Diffusion terms with stabilization
+            diff_r = nu * np.clip((omega[i+1,j] - 2*omega[i,j] + omega[i-1,j]) / (dr**2), -1e5, 1e5)
+            diff_theta = nu * np.clip((omega[i,(j+1)%Ntheta] - 2*omega[i,j] + omega[i,(j-1)%Ntheta]) / (dtheta**2), -1e5, 1e5)
+            
+            # Update with bounded values
+            omega_new[i,j] = np.clip(
+                omega[i,j] + dt * (-adv_r - adv_theta + diff_r + diff_theta),
+                -1e5, 1e5
+            )
+    
+    # Boundary conditions
+    # Inner boundary (cylinder surface)
+    omega_new[0,:] = np.clip(2 * (20 - psi[0,:]) / (dr**2), -1e5, 1e5)
+    
+    # Outer boundary
+    omega_new[-1,:] = 0
+    
+    # Update fields
+    omega = omega_new
+    
+    # Solve Poisson equation for streamfunction
+    A = sp.lil_matrix((Nr*Ntheta, Nr*Ntheta))
+    b = np.zeros(Nr*Ntheta)
+    
+    for i in range(Nr):
+        for j in range(Ntheta):
+            idx = i*Ntheta + j
+            
+            # Discretization of Poisson equation
+            if i == 0:  # Inner boundary
+                A[idx, idx] = 1
+                b[idx] = 20
+            elif i == Nr-1:  # Outer boundary 
+                A[idx, idx] = 1
+                b[idx] = v_inf * r[-1] * np.sin(theta[j]) + 20
+            else:
+                # Finite difference discretization
+                A[idx, idx] = -2*(1/dr**2 + 1/((r[i] + epsilon)**2 * dtheta**2))
+                
+                # r-direction neighbors
+                A[idx, (i-1)*Ntheta + j] = 1/dr**2 - 1/((r[i] + epsilon)*2*dr)
+                A[idx, (i+1)*Ntheta + j] = 1/dr**2 + 1/((r[i] + epsilon)*2*dr)
+                
+                # theta-direction neighbors (periodic)
+                A[idx, i*Ntheta + (j-1)%Ntheta] = 1/((r[i] + epsilon)**2 * dtheta**2)
+                A[idx, i*Ntheta + (j+1)%Ntheta] = 1/((r[i] + epsilon)**2 * dtheta**2)
+                
+                # Right-hand side
+                b[idx] = -omega[i,j]
+    
+    # Solve linear system
+    psi_flat = spla.spsolve(A.tocsr(), b)
+    psi = psi_flat.reshape((Nr, Ntheta))
+
+# Save final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/psi_Flow_Past_Circular_Cylinder.npy', psi)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/omega_Flow_Past_Circular_Cylinder.npy', omega)

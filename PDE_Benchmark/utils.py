@@ -313,7 +313,8 @@ def call_llm_api(llm_model, client, conversation_history, temperature, bedrock_r
 
 
 def generate_code(llm_model, task_name, prompt, client, temperature, bedrock_runtime, inference_profile_arn,
-                  output_folder, total_input_tokens, total_output_tokens, total_cost, max_retries=5):
+                  output_folder, total_input_tokens, total_output_tokens, total_input_tokens_cost,
+                  total_output_tokens_cost, total_cost, max_retries=5):
     retries = 0
     original_prompt = prompt  # Keep the original prompt unchanged
     # Initialize an empty list to store the conversation history
@@ -345,7 +346,7 @@ def generate_code(llm_model, task_name, prompt, client, temperature, bedrock_run
                 "---------------------------------INPUT TO LLM UPDATE----------------------------------------")
             logging.info(conversation_history)
 
-            # tracking the token usage and cost
+            # tracking the token usage will return input and output tokens each round
             update_token_usage(llm_model, original_prompt, response, total_input_tokens, total_output_tokens,
                                total_cost)
 
@@ -401,6 +402,8 @@ class LLMCodeGenerator:
         self.temperature = temperature
         self.total_input_tokens = 0
         self.total_output_tokens = 0
+        self.total_input_tokens_cost = 0
+        self.total_output_tokens_cost = 0
         self.total_cost = 0  # Optional: for tracking cost
         # Initialize AWS Bedrock client
         self.bedrock_runtime = boto3.client("bedrock-runtime", region_name="us-west-2")
@@ -450,6 +453,8 @@ class LLMCodeGenerator:
                 self.OUTPUT_FOLDER,
                 self.total_input_tokens,
                 self.total_output_tokens,
+                self.total_input_tokens_cost,
+                self.total_output_tokens_cost,
                 self.total_cost,
                 max_retries=5
             )

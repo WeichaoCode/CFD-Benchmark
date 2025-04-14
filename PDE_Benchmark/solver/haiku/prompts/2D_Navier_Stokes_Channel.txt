@@ -1,106 +1,75 @@
 ```python
 import numpy as np
 
-# Domain parameters
-Lx, Ly = 2.0, 2.0
-nx, ny = 100, 100
-nt = 1000
+# Grid parameters
+nx = 100
+ny = 100
+dx = 2.0 / (nx-1)
+dy = 2.0 / (ny-1)
+dt = 0.0001
+nt = int(0.1/dt)
 
-# Physical parameters
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize variables
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+p = np.zeros((ny, nx))
+un = np.zeros((ny, nx))
+vn = np.zeros((ny, nx))
+pn = np.zeros((ny, nx))
+
 rho = 1.0
 nu = 0.1
 F = 1.0
 
-# Grid setup
-dx = Lx / (nx - 1)
-dy = Ly / (ny - 1)
-dt = 0.1 / nt
-
-# Initialize fields
-u = np.zeros((ny, nx))
-v = np.zeros((ny, nx))
-p = np.zeros((ny, nx))
-
-# Time-stepping
-for n in range(nt):
-    # Store old values
-    u_old = u.copy()
-    v_old = v.copy()
-    p_old = p.copy()
+def pressure_poisson(p, u, v, dx, dy, rho):
+    pn = np.zeros_like(p)
     
-    # Compute derivatives using central differences
-    du_dx = np.zeros((ny, nx))
-    du_dy = np.zeros((ny, nx))
-    dv_dx = np.zeros((ny, nx))
-    dv_dy = np.zeros((ny, nx))
-    
-    # Central difference derivatives
-    du_dx[1:-1,1:-1] = (u_old[1:-1,2:] - u_old[1:-1,:-2]) / (2*dx)
-    du_dy[1:-1,1:-1] = (u_old[2:,1:-1] - u_old[:-2,1:-1]) / (2*dy)
-    dv_dx[1:-1,1:-1] = (v_old[1:-1,2:] - v_old[1:-1,:-2]) / (2*dx)
-    dv_dy[1:-1,1:-1] = (v_old[2:,1:-1] - v_old[:-2,1:-1]) / (2*dy)
-    
-    # Diffusion terms
-    d2u_dx2 = np.zeros((ny, nx))
-    d2u_dy2 = np.zeros((ny, nx))
-    d2v_dx2 = np.zeros((ny, nx))
-    d2v_dy2 = np.zeros((ny, nx))
-    
-    # Central difference second derivatives
-    d2u_dx2[1:-1,1:-1] = (u_old[1:-1,2:] - 2*u_old[1:-1,1:-1] + u_old[1:-1,:-2]) / (dx**2)
-    d2u_dy2[1:-1,1:-1] = (u_old[2:,1:-1] - 2*u_old[1:-1,1:-1] + u_old[:-2,1:-1]) / (dy**2)
-    d2v_dx2[1:-1,1:-1] = (v_old[1:-1,2:] - 2*v_old[1:-1,1:-1] + v_old[1:-1,:-2]) / (dx**2)
-    d2v_dy2[1:-1,1:-1] = (v_old[2:,1:-1] - 2*v_old[1:-1,1:-1] + v_old[:-2,1:-1]) / (dy**2)
-    
-    # Pressure gradient
-    dp_dx = np.zeros((ny, nx))
-    dp_dy = np.zeros((ny, nx))
-    dp_dx[1:-1,1:-1] = (p_old[1:-1,2:] - p_old[1:-1,:-2]) / (2*dx)
-    dp_dy[1:-1,1:-1] = (p_old[2:,1:-1] - p_old[:-2,1:-1]) / (2*dy)
-    
-    # Momentum equations
-    u[1:-1,1:-1] = (u_old[1:-1,1:-1] 
-                    - u_old[1:-1,1:-1] * du_dx[1:-1,1:-1] * dt
-                    - v_old[1:-1,1:-1] * du_dy[1:-1,1:-1] * dt
-                    + nu * (d2u_dx2[1:-1,1:-1] + d2u_dy2[1:-1,1:-1]) * dt
-                    - (1/rho) * dp_dx[1:-1,1:-1] * dt
-                    + F * dt)
-    
-    v[1:-1,1:-1] = (v_old[1:-1,1:-1] 
-                    - u_old[1:-1,1:-1] * dv_dx[1:-1,1:-1] * dt
-                    - v_old[1:-1,1:-1] * dv_dy[1:-1,1:-1] * dt
-                    + nu * (d2v_dx2[1:-1,1:-1] + d2v_dy2[1:-1,1:-1]) * dt
-                    - (1/rho) * dp_dy[1:-1,1:-1] * dt)
-    
-    # Pressure correction
-    p_rhs = np.zeros((ny, nx))
-    p_rhs[1:-1,1:-1] = -rho * (du_dx[1:-1,1:-1]**2 + 
-                               2*du_dy[1:-1,1:-1]*dv_dx[1:-1,1:-1] + 
-                               dv_dy[1:-1,1:-1]**2)
-    
-    # Solve Poisson equation for pressure using Jacobi method
-    p_new = np.zeros_like(p)
-    for _ in range(50):  # Jacobi iterations
-        p_new[1:-1,1:-1] = 0.25 * (p[1:-1,2:] + 
-                                   p[1:-1,:-2] + 
-                                   p[2:,1:-1] + 
-                                   p[:-2,1:-1] - 
-                                   dx**2 * p_rhs[1:-1,1:-1])
+    for it in range(50):
+        pn = p.copy()
+        p[1:-1,1:-1] = 0.25*(pn[1:-1,2:] + pn[1:-1,:-2] + pn[2:,1:-1] + pn[:-2,1:-1] - 
+                            rho*dx*dy*((u[1:-1,2:] - u[1:-1,:-2])/(2*dx))**2 -
+                            2*rho*dx*dy*((u[2:,1:-1] - u[:-2,1:-1])/(2*dy))*((v[1:-1,2:] - v[1:-1,:-2])/(2*dx)) -
+                            rho*dx*dy*((v[2:,1:-1] - v[:-2,1:-1])/(2*dy))**2)
         
         # Periodic BC in x
-        p_new[:,0] = p_new[:,-2]
-        p_new[:,-1] = p_new[:,1]
+        p[:,0] = p[:,-2]
+        p[:,-1] = p[:,1]
         
         # Neumann BC in y
-        p_new[0,:] = p_new[1,:]
-        p_new[-1,:] = p_new[-2,:]
+        p[0,1:-1] = p[1,1:-1]
+        p[-1,1:-1] = p[-2,1:-1]
         
-        p = p_new.copy()
+    return p
+
+# Time stepping
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
     
+    # Solve momentum equations
+    u[1:-1,1:-1] = un[1:-1,1:-1] - \
+                   dt*un[1:-1,1:-1]*(un[1:-1,2:] - un[1:-1,:-2])/(2*dx) - \
+                   dt*vn[1:-1,1:-1]*(un[2:,1:-1] - un[:-2,1:-1])/(2*dy) - \
+                   dt/(rho)*(p[1:-1,2:] - p[1:-1,:-2])/(2*dx) + \
+                   nu*dt*(un[1:-1,2:] - 2*un[1:-1,1:-1] + un[1:-1,:-2])/dx**2 + \
+                   nu*dt*(un[2:,1:-1] - 2*un[1:-1,1:-1] + un[:-2,1:-1])/dy**2 + \
+                   F*dt
+
+    v[1:-1,1:-1] = vn[1:-1,1:-1] - \
+                   dt*un[1:-1,1:-1]*(vn[1:-1,2:] - vn[1:-1,:-2])/(2*dx) - \
+                   dt*vn[1:-1,1:-1]*(vn[2:,1:-1] - vn[:-2,1:-1])/(2*dy) - \
+                   dt/(rho)*(p[2:,1:-1] - p[:-2,1:-1])/(2*dy) + \
+                   nu*dt*(vn[1:-1,2:] - 2*vn[1:-1,1:-1] + vn[1:-1,:-2])/dx**2 + \
+                   nu*dt*(vn[2:,1:-1] - 2*vn[1:-1,1:-1] + vn[:-2,1:-1])/dy**2
+
     # Periodic BC in x
     u[:,0] = u[:,-2]
     u[:,-1] = u[:,1]
-    v[:,0] = v[:,-2]
+    v[:,0] = v[:,-2] 
     v[:,-1] = v[:,1]
     
     # No-slip BC in y
@@ -108,18 +77,12 @@ for n in range(nt):
     u[-1,:] = 0
     v[0,:] = 0
     v[-1,:] = 0
+    
+    # Solve pressure Poisson equation
+    p = pressure_poisson(p, u, v, dx, dy, rho)
 
 # Save final solutions
 np.save('u.npy', u)
-np.save('v.npy', v)
+np.save('v.npy', v) 
 np.save('p.npy', p)
 ```
-
-The key modifications in this version:
-1. Explicitly calculate derivatives using central difference formulas
-2. Separate arrays for different derivative calculations
-3. Modify pressure Poisson solver to use explicit indexing
-4. Ensure proper boundary condition handling
-5. Use a separate array `p_new` for Jacobi iterations to avoid in-place modification issues
-
-This version should resolve the previous indexing and broadcasting errors while maintaining the numerical scheme for solving the 2D Navier-Stokes equations.

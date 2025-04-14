@@ -1,67 +1,41 @@
 ```python
 import numpy as np
 
-# Problem parameters
-Lx, Ly = 2.0, 2.0  # Domain size
-nx, ny = 100, 100  # Grid points
-nu = 1.0  # Diffusion coefficient
-t_start, t_end = 0.0, 0.3777  # Time domain
+# Grid parameters
+nx = ny = 50
+dx = dy = 2.0/(nx-1)
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+X, Y = np.meshgrid(x, y)
 
-# Grid generation
-dx = Lx / (nx - 1)
-dy = Ly / (ny - 1)
-x = np.linspace(0, Lx, nx)
-y = np.linspace(0, Ly, ny)
+# Time parameters
+dt = 0.5 * min(dx,dy)**2  # For stability
+t_final = 0.3777
+nt = int(t_final/dt)
 
-# Stability condition (CFL)
-alpha = nu
-dt = 0.25 * min(dx, dy)**2 / alpha  # Ensure numerical stability
-nt = int((t_end - t_start) / dt)
+# Initialize solution
+u = np.ones((ny, nx))
+u[(Y>=0.5) & (Y<=1.0) & (X>=0.5) & (X<=1.0)] = 2.0
 
-# Initialize solution array
-u = np.ones((ny, nx), dtype=np.float64)
+# Diffusion coefficient
+nu = 1.0
 
-# Initial condition
-mask = ((x >= 0.5) & (x <= 1.0))[:, np.newaxis] & ((y >= 0.5) & (y <= 1.0))
-u[mask] = 2.0
-
-# Boundary conditions
-u[0, :] = 1.0   # Bottom boundary
-u[-1, :] = 1.0  # Top boundary
-u[:, 0] = 1.0   # Left boundary
-u[:, -1] = 1.0  # Right boundary
-
-# Finite difference method (explicit)
-def diffusion_2d(u, nu, dx, dy, dt):
-    u_new = u.copy()
+# Time stepping
+for n in range(nt):
+    un = u.copy()
     
     # Interior points
-    for i in range(1, ny-1):
-        for j in range(1, nx-1):
-            # 2D diffusion equation discretization
-            laplace_x = (u[i+1, j] - 2*u[i, j] + u[i-1, j]) / dx**2
-            laplace_y = (u[i, j+1] - 2*u[i, j] + u[i, j-1]) / dy**2
-            u_new[i, j] = u[i, j] + nu * dt * (laplace_x + laplace_y)
+    u[1:-1,1:-1] = un[1:-1,1:-1] + nu*dt*(
+        (un[1:-1,2:] - 2*un[1:-1,1:-1] + un[1:-1,0:-2])/dx**2 +
+        (un[2:,1:-1] - 2*un[1:-1,1:-1] + un[0:-2,1:-1])/dy**2
+    )
     
-    # Enforce boundary conditions
-    u_new[0, :] = 1.0   # Bottom boundary
-    u_new[-1, :] = 1.0  # Top boundary
-    u_new[:, 0] = 1.0   # Left boundary
-    u_new[:, -1] = 1.0  # Right boundary
-    
-    return u_new
-
-# Time marching
-for _ in range(nt):
-    u = diffusion_2d(u, nu, dx, dy, dt)
+    # Boundary conditions
+    u[0,:] = 1  # Bottom
+    u[-1,:] = 1 # Top
+    u[:,0] = 1  # Left
+    u[:,-1] = 1 # Right
 
 # Save final solution
-np.save('u.npy', u)
+np.save('u', u)
 ```
-
-Key modifications:
-1. Used `dtype=np.float64` to prevent overflow
-2. Calculated CFL-stable time step
-3. Split Laplacian calculation into separate terms to improve readability
-4. Ensured numerical stability by adjusting time step
-5. Maintained the core numerical scheme and problem setup

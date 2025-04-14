@@ -386,7 +386,7 @@ def api_key_configuration(llm_model):
         inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/g47vfd2xvs5w"
     elif llm_model == "haiku":
         # Define Haiku profile Inference Profile ARN
-        inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/g47vfd2xvs5w"
+        inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/56i8iq1vib3e"
     elif llm_model in ["o3-mini", "gpt-4o", "gemini"]:
         inference_profile_arn = None
     else:
@@ -575,7 +575,7 @@ def open_log_save_execution_results(log_file, python_files, generate_solvers_dir
         log.write(f" {e}\n")
 
 
-def call_execute_solver(generated_solvers_dir, log_file):
+def call_execute_solver(generated_solvers_dir, log_file, pass_count, fail_count):
     try:
         # Define the directory where generated solver scripts are stored
         GENERATED_SOLVERS_DIR = generated_solvers_dir
@@ -593,8 +593,6 @@ def call_execute_solver(generated_solvers_dir, log_file):
             print("No Python solver scripts found in the directory.")
             exit()
         # Initialize counters for pass and fail
-        pass_count = 0
-        fail_count = 0
         # Open a log file to save execution results
         open_log_save_execution_results(LOG_FILE, python_files, GENERATED_SOLVERS_DIR, pass_count, fail_count)
     except Exception as e:
@@ -990,24 +988,31 @@ class SolverPostProcessor:
         os.makedirs(self.COMPARE_IMAGE_FOLDER, exist_ok=True)
         os.makedirs(self.SOLVER_FOLDER, exist_ok=True)
 
-    def run_all(self):
-        # STEP 1:
-        # post process to change the .npy save path to specific path
-        call_post_process(self.generated_solvers_dir, self.save_dir)
-        # STEP 2:
-        # execute LLM generated python code and save the results to log file
-        call_execute_solver(self.generated_solvers_dir, self.log_file)
-        # STEP 3:
-        # compute the numerical errors (MSE, MAE, RMSE, CosineSimilarity, R2) for shape mismatch / match array
-        call_compare_output_mismatch(self.ground_truth_dir, self.prediction_dir, self.compare_results_log_file)
-        # transfer the numerical errors to tables
-        call_create_table(self.compare_results_log_file, self.save_table_path)
-        # STEP 4:
-        # plot and save the images of gt and pred in different folder
-        call_save_image_different_dir(self.ground_truth_dir, self.prediction_dir, self.save_dir_gt, self.save_dir_pred)
-        # compare the images for mismatch shape, change the image to gray image, note the MSE is for pixel not
-        # the same with MSE of original images, it works like human eyes (this function is optional)
-        call_compare_image_mismatch(self.save_dir_gt, self.save_dir_pred, self.save_csv_path)
-        # save the gt and pred images in the same figure, each is sub-figure, this used for human view the images
-        # this function is optional
-        call_save_image_same_dir(self.save_image_dir, self.ground_truth_dir, self.prediction_dir)
+        self.pass_count = 0
+        self.fail_count = 0
+
+    def run_all(self, step1=True, step2=True, step3=True, step4=True):
+        if step1:
+            # STEP 1:
+            # post process to change the .npy save path to specific path
+            call_post_process(self.generated_solvers_dir, self.save_dir)
+        if step2:
+            # STEP 2:
+            # execute LLM generated python code and save the results to log file
+            call_execute_solver(self.generated_solvers_dir, self.log_file, self.pass_count, self.fail_count)
+        if step3:
+            # STEP 3:
+            # compute the numerical errors (MSE, MAE, RMSE, CosineSimilarity, R2) for shape mismatch / match array
+            call_compare_output_mismatch(self.ground_truth_dir, self.prediction_dir, self.compare_results_log_file)
+            # transfer the numerical errors to tables
+            call_create_table(self.compare_results_log_file, self.save_table_path)
+        if step4:
+            # STEP 4:
+            # plot and save the images of gt and pred in different folder
+            call_save_image_different_dir(self.ground_truth_dir, self.prediction_dir, self.save_dir_gt, self.save_dir_pred)
+            # compare the images for mismatch shape, change the image to gray image, note the MSE is for pixel not
+            # the same with MSE of original images, it works like human eyes (this function is optional)
+            call_compare_image_mismatch(self.save_dir_gt, self.save_dir_pred, self.save_csv_path)
+            # save the gt and pred images in the same figure, each is sub-figure, this used for human view the images
+            # this function is optional
+            call_save_image_same_dir(self.save_image_dir, self.ground_truth_dir, self.prediction_dir)

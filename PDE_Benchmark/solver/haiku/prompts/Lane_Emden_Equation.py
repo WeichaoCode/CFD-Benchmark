@@ -1,57 +1,53 @@
 import numpy as np
-import scipy.sparse as sp
-import scipy.sparse.linalg as spla
+from scipy.sparse import diags
+from scipy.sparse.linalg import spsolve
 
-def solve_lane_emden(Nr=200, n=3.0):
-    # Domain setup
-    r = np.linspace(0, 1, Nr)
-    dr = r[1] - r[0]
-    
-    # Initial guess
-    R0 = 5.0
-    f = R0**((2.0)/(n-1)) * (1 - r**2)**2
-    
-    # Nonlinear iteration parameters
-    max_iter = 500
-    tol = 1e-8
-    
-    # Finite difference matrix construction
-    main_diag = np.zeros(Nr)
-    lower_diag = np.zeros(Nr-1)
-    upper_diag = np.zeros(Nr-1)
-    
-    for iter in range(max_iter):
-        # Construct matrix for linearized problem
-        main_diag[0] = 1.0  # Symmetry at center
-        main_diag[1:-1] = -2.0 - (2.0/r[1:-1]) * (1.0/dr) - n * f[1:-1]**(n-1)
-        main_diag[-1] = 1.0  # Boundary condition
-        
-        lower_diag[:-1] = 1.0 + (1.0/r[1:-1]) * (1.0/dr)
-        upper_diag[1:] = 1.0 - (1.0/r[1:-1]) * (1.0/dr)
-        
-        # Construct sparse matrix in CSR format
-        diagonals = [main_diag, lower_diag, upper_diag]
-        offsets = [0, -1, 1]
-        A = sp.diags(diagonals, offsets, shape=(Nr, Nr)).tocsr()
-        
-        # Right-hand side
-        b = np.zeros(Nr)
-        b[-1] = 0.0  # Boundary condition
-        
-        # Solve linearized system
-        df = spla.spsolve(A, b)
-        
-        # Update solution
-        f_new = f + df
-        
-        # Check convergence
-        if np.max(np.abs(df)) < tol:
-            break
-        
-        f = f_new
-    
-    # Save solution
-    np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/f_Lane_Emden_Equation.npy', f)
+# Grid setup
+N = 1000  # Number of grid points
+r = np.linspace(0, 1, N)
+dr = r[1] - r[0]
 
-# Run solver
-solve_lane_emden()
+# Initial guess
+R0 = 5
+n = 3.0
+f = R0**(2/(n-1)) * (1 - r**2)**2
+
+# Setup sparse matrix for Laplacian operator in spherical coordinates
+# Central difference for interior points
+r_i = r[1:-1]
+main_diag = -2*np.ones(N-2)
+upper_diag = (1 + 1/r_i[:-1])*np.ones(N-3)
+lower_diag = (1 - 1/r_i[1:])*np.ones(N-3)
+
+# Create sparse matrix
+A = diags([lower_diag, main_diag, upper_diag], [-1, 0, 1], shape=(N-2, N-2))
+A = A/(dr**2)
+
+# Newton iteration
+max_iter = 100
+tol = 1e-10
+for iter in range(max_iter):
+    f_old = f.copy()
+    
+    # Interior points
+    b = -f[1:-1]**n
+    
+    # Boundary conditions
+    b[0] -= (1 - 1/r_i[0])*f[0]/(dr**2)  # Center regularity
+    b[-1] -= (1 + 1/r_i[-1])*0/(dr**2)    # Outer boundary f=0
+    
+    # Jacobian contribution from nonlinear term
+    J = diags([-n*f[1:-1]**(n-1)], [0])
+    
+    # Solve linear system
+    df = spsolve(A - J, b)
+    
+    # Update solution
+    f[1:-1] += df
+    
+    # Check convergence
+    if np.max(np.abs(f - f_old)) < tol:
+        break
+
+# Save solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/f_Lane_Emden_Equation.npy', f)

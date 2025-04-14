@@ -1,48 +1,55 @@
 import numpy as np
-import scipy.fft as fft
 
-# Problem parameters
+# Parameters
 nu = 0.07
-Lx = 2 * np.pi
-nx = 256
-nt = 400
-dt = 0.14 * np.pi / nt
-x = np.linspace(0, Lx, nx, endpoint=False)
+L = 2*np.pi
+T = 0.14*np.pi
+nx = 400
+nt = 1000
+dx = L/nx
+dt = T/nt
+x = np.linspace(0, L, nx)
 
 # Initial condition
-def initial_phi(x):
-    return np.exp(-x**2 / (4*nu)) + np.exp(-(x - Lx)**2 / (4*nu))
+def phi(x):
+    return np.exp(-x**2/(4*nu)) + np.exp(-(x-2*np.pi)**2/(4*nu))
 
-def initial_condition(x):
-    phi = initial_phi(x)
-    u0 = -2 * nu * np.gradient(phi, x) / phi + 4
-    return u0
+def dphi_dx(x):
+    return -x/(2*nu)*np.exp(-x**2/(4*nu)) + \
+           -(x-2*np.pi)/(2*nu)*np.exp(-(x-2*np.pi)**2/(4*nu))
 
-# Initial velocity field
-u = initial_condition(x)
+# Initialize u
+u = -2*nu/phi(x) * dphi_dx(x) + 4
 
-# Time integration using Fourier spectral method with careful scaling
-for _ in range(nt):
-    # Compute derivatives in Fourier space
-    u_hat = fft.rfft(u)
-    dx_hat = 1j * fft.rfftfreq(nx, Lx/nx)
+# Time stepping
+for n in range(nt):
+    # Periodic BC handled through array indexing
+    un = u.copy()
     
-    # Nonlinear term using spectral differentiation
-    du_dx_hat = dx_hat * u_hat
-    du_dx = fft.irfft(du_dx_hat)
+    # Space derivatives
+    du_dx = np.zeros_like(u)
+    d2u_dx2 = np.zeros_like(u)
     
-    # Prevent overflow by using np.clip and careful scaling
-    nonlinear = -0.5 * np.clip(du_dx, -1e4, 1e4) * np.clip(u, -1e4, 1e4)
-    nonlinear_hat = fft.rfft(nonlinear)
+    # Central difference for diffusion
+    d2u_dx2[1:-1] = (un[2:] - 2*un[1:-1] + un[:-2])/dx**2
+    d2u_dx2[0] = (un[1] - 2*un[0] + un[-1])/dx**2
+    d2u_dx2[-1] = d2u_dx2[0]
     
-    # Linear term (diffusion)
-    linear_hat = -nu * dx_hat**2 * u_hat
+    # Upwind difference for convection
+    for i in range(nx):
+        if un[i] > 0:
+            if i == 0:
+                du_dx[i] = (un[i] - un[-1])/dx
+            else:
+                du_dx[i] = (un[i] - un[i-1])/dx
+        else:
+            if i == nx-1:
+                du_dx[i] = (un[0] - un[i])/dx
+            else:
+                du_dx[i] = (un[i+1] - un[i])/dx
     
-    # Time stepping
-    u_hat = u_hat + dt * (linear_hat + nonlinear_hat)
-    
-    # Inverse transform back to physical space
-    u = fft.irfft(u_hat)
+    # Update
+    u = un - dt*(un*du_dx - nu*d2u_dx2)
 
 # Save final solution
-np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_1D_Burgers_Equation.npy', u)
+np.save('u', u)

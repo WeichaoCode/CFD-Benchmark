@@ -1,118 +1,101 @@
 ```python
 import numpy as np
 
-# Problem parameters
-gamma = 1.4  # Ratio of specific heats
-x_min, x_max = -1.0, 1.0  # Domain
-t_min, t_max = 0.0, 0.25  # Time domain
-nx = 200  # Number of spatial points
-nt = 200  # Number of time steps
+# Parameters
+gamma = 1.4
+nx = 400  # Number of grid points
+dx = 2.0/nx  # Grid spacing
+x = np.linspace(-1, 1, nx)  # Grid points
+CFL = 0.5
+t_final = 0.25
 
-# Grid setup
-dx = (x_max - x_min) / (nx - 1)
-x = np.linspace(x_min, x_max, nx)
-dt = (t_max - t_min) / nt
-
-# Initial conditions
+# Initialize arrays
 rho = np.zeros(nx)
-rho[x < 0] = 1.0  # Left region
-rho[x >= 0] = 0.125  # Right region
-
-u = np.zeros(nx)  # Velocity 
-
+u = np.zeros(nx)
 p = np.zeros(nx)
-p[x < 0] = 1.0  # Left region 
-p[x >= 0] = 0.1  # Right region
+E = np.zeros(nx)
 
-# Compute conservative variables
-E = p / ((gamma - 1.0)) + 0.5 * u**2
+# Set initial conditions
+rho[x < 0] = 1.0
+rho[x >= 0] = 0.125
+p[x < 0] = 1.0
+p[x >= 0] = 0.1
+E[x < 0] = p[x < 0]/(gamma-1)/rho[x < 0]
+E[x >= 0] = p[x >= 0]/(gamma-1)/rho[x >= 0]
+
+# Conservative variables
 U = np.zeros((3, nx))
-U[0, :] = rho
-U[1, :] = rho * u
-U[2, :] = rho * E
+F = np.zeros((3, nx))
+F_plus = np.zeros((3, nx))
+F_minus = np.zeros((3, nx))
 
-# Time integration (Forward Euler)
-for _ in range(nt):
-    # Compute fluxes
-    F = np.zeros((3, nx+1))
-    for j in range(nx):
-        if j == 0:
-            # Left boundary
-            UL = U[:, j]
-            UR = U[:, j+1]
-            pL = p[j]
-            pR = p[j+1]
-        elif j == nx-1:
-            # Right boundary
-            UL = U[:, j-1]
-            UR = U[:, j]
-            pL = p[j-1]
-            pR = p[j]
-        else:
-            # Interior points
-            UL = U[:, j]
-            UR = U[:, j+1]
-            pL = p[j]
-            pR = p[j+1]
-        
-        # Compute local Roe flux
-        rho_L, rho_R = UL[0], UR[0]
-        u_L = UL[1] / rho_L
-        u_R = UR[1] / rho_R
-        H_L = (UL[2] + pL) / rho_L
-        H_R = (UR[2] + pR) / rho_R
-        
-        # Roe average
-        sqrt_rho_L = np.sqrt(rho_L)
-        sqrt_rho_R = np.sqrt(rho_R)
-        u_avg = (sqrt_rho_L * u_L + sqrt_rho_R * u_R) / (sqrt_rho_L + sqrt_rho_R)
-        H_avg = (sqrt_rho_L * H_L + sqrt_rho_R * H_R) / (sqrt_rho_L + sqrt_rho_R)
-        
-        # Sound speed
-        a_avg = np.sqrt((gamma - 1.0) * (H_avg - 0.5 * u_avg**2))
-        
-        # Eigenvalues
-        lambda1 = u_avg - a_avg
-        lambda2 = u_avg
-        lambda3 = u_avg + a_avg
-        
-        # Flux computation
-        F_L = np.array([rho_L * u_L, 
-                        rho_L * u_L**2 + pL, 
-                        u_L * (UL[2] + pL)])
-        F_R = np.array([rho_R * u_R, 
-                        rho_R * u_R**2 + pR, 
-                        u_R * (UR[2] + pR)])
-        
-        # Numerical flux
-        dU = UR - UL
-        F[:, j] = 0.5 * (F_L + F_R - 
-                         np.abs(lambda1) * dU[0] - 
-                         np.abs(lambda2) * dU[1] - 
-                         np.abs(lambda3) * dU[2])
+def compute_conservatives(rho, u, E):
+    U[0] = rho
+    U[1] = rho*u
+    U[2] = rho*E
+
+def compute_fluxes(U):
+    rho = np.maximum(U[0], 1e-10)
+    u = U[1]/rho
+    E = U[2]/rho
+    p = (gamma-1)*rho*(E - 0.5*u*u)
+    p = np.maximum(p, 1e-10)
     
-    # Update conservative variables
-    U[:, 1:-1] = U[:, 1:-1] - dt/dx * (F[:, 1:-1] - F[:, :-2])
+    c = np.sqrt(gamma*p/rho)
+    lam = np.maximum(np.abs(u) + c, 1e-10)
+    
+    F[0] = rho*u
+    F[1] = rho*u*u + p
+    F[2] = u*(rho*E + p)
+    
+    return lam
+
+# Lax-Friedrich flux splitting
+def flux_splitting(U, lam):
+    for i in range(3):
+        F_plus[i] = 0.5*(F[i] + lam*U[i])
+        F_minus[i] = 0.5*(F[i] - lam*U[i])
+
+# Initial conservative variables
+compute_conservatives(rho, u, E)
+
+# Time stepping
+t = 0
+n_steps = 0
+max_steps = 10000  # Add maximum number of steps
+
+while t < t_final and n_steps < max_steps:
+    # Compute fluxes and maximum wave speed
+    lam = compute_fluxes(U)
+    dt = CFL * dx / np.max(lam)
+    
+    # Split fluxes
+    flux_splitting(U, np.max(lam))
+    
+    U_old = U.copy()
+    
+    # Update solution
+    for i in range(1, nx-1):
+        U[:,i] = U_old[:,i] - dt/dx*(F_plus[:,i] - F_plus[:,i-1]) - dt/dx*(F_minus[:,i+1] - F_minus[:,i])
     
     # Reflective boundary conditions
-    U[1, 0] = -U[1, 1]
-    U[1, -1] = -U[1, -2]
+    U[:,0] = U[:,1]
+    U[:,0][1] = -U[:,1][1]
+    U[:,-1] = U[:,-2]
+    U[:,-1][1] = -U[:,-2][1]
+    
+    t += dt
+    n_steps += 1
 
-# Extract final solution
-rho_final = U[0, :]
-u_final = U[1, :] / U[0, :]
-p_final = (gamma - 1.0) * (U[2, :] - 0.5 * U[1, :]**2 / U[0, :])
+# Compute final primitive variables
+rho = U[0]
+u = U[1]/U[0]
+E = U[2]/U[0]
+p = (gamma-1)*(U[2] - 0.5*rho*u*u)
 
-# Save results
-np.save('rho.npy', rho_final)
-np.save('u.npy', u_final)
-np.save('p.npy', p_final)
+# Save final solutions
+np.save('rho.npy', rho)
+np.save('u.npy', u)
+np.save('p.npy', p)
+np.save('E.npy', E)
 ```
-
-Key changes:
-1. Created F array with nx+1 points to handle flux computation
-2. Explicitly handled different regions (left boundary, interior, right boundary)
-3. Computed fluxes with local pressures and Roe averaging
-4. Modified flux subtraction to use F[:, 1:-1] - F[:, :-2]
-
-This version should resolve the previous broadcasting error while maintaining the core numerical scheme for the 1D Euler shock tube problem.

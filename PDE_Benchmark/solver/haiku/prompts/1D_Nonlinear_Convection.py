@@ -1,42 +1,31 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
-# Problem parameters
-L = 2 * np.pi  # Domain length
-T = 5.0        # Total simulation time
-nx = 200       # Number of spatial points 
-nt = 500       # Number of time steps
-
-# Grid setup
-dx = L / (nx - 1)
-dt = T / nt
-x = np.linspace(0, L, nx)
+# Grid parameters
+nx = 200  # Number of spatial points
+nt = 1000  # Number of time steps
+dx = 2*np.pi/nx
+dt = 0.001  # Reduced time step for stability
+x = np.linspace(0, 2*np.pi, nx)
+t = np.linspace(0, 5, nt)
 
 # Initial condition
-u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+u = np.sin(x) + 0.5*np.sin(0.5*x)
 
-# Lax-Wendroff method for solving advection equation
-def lax_wendroff_1d(u, dx, dt):
-    un = u.copy()
-    for _ in range(nt):
-        # Periodic boundary conditions
-        un[0] = u[-1]
-        un[-1] = u[0]
-        
-        # Lax-Wendroff scheme
-        f_plus = 0.5 * (un**2)
-        f_minus = 0.5 * (un**2)
-        
-        u[1:-1] = un[1:-1] - dt/(2*dx) * (f_plus[2:] - f_plus[:-2]) + \
-                  0.5 * (dt/dx)**2 * (un[2:] - 2*un[1:-1] + un[:-2])
-        
-        # Update
-        un = u.copy()
+# Time integration using upwind scheme
+for n in range(nt-1):
+    u_new = u.copy()
     
-    return u
+    for i in range(nx):
+        im1 = (i-1) % nx  # Periodic BC
+        
+        # First-order upwind scheme
+        if u[i] > 0:
+            u_new[i] = u[i] - dt*u[i]*(u[i] - u[im1])/dx
+        else:
+            ip1 = (i+1) % nx
+            u_new[i] = u[i] - dt*u[i]*(u[ip1] - u[i])/dx
+    
+    u = u_new.copy()
 
-# Solve the problem
-solution = lax_wendroff_1d(u, dx, dt)
-
-# Save the solution
-np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/solution_1D_Nonlinear_Convection.npy', solution)
+# Save final solution
+np.save('u', u)

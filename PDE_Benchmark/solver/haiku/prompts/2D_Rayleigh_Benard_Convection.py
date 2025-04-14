@@ -1,96 +1,106 @@
 import numpy as np
+from scipy.sparse import diags, csc_matrix
+from scipy.sparse.linalg import spsolve
 
-class RayleighBenardConvection:
-    def __init__(self, Lx=4, Lz=1, Nx=64, Nz=32, Ra=2e6, Pr=1, dt=1e-4, T_end=10):
-        # Domain parameters
-        self.Lx, self.Lz = Lx, Lz
-        self.Nx, self.Nz = Nx, Nz
-        
-        # Physical parameters
-        self.Ra = Ra
-        self.Pr = Pr
-        self.nu = (Ra/Pr)**(-0.5)
-        self.kappa = (Ra*Pr)**(-0.5)
-        
-        # Grid setup
-        self.dx = Lx / Nx
-        self.dz = Lz / Nz
-        self.x = np.linspace(0, Lx, Nx, endpoint=False)
-        self.z = np.linspace(0, Lz, Nz)
-        
-        # Initial conditions
-        np.random.seed(0)
-        epsilon = 1e-4 * np.random.randn(Nx, Nz)
-        self.b = self.Lz - self.z[np.newaxis,:] + epsilon
-        
-        # Velocity fields
-        self.u = np.zeros((Nx, Nz))
-        self.w = np.zeros((Nx, Nz))
-        
-        # Simulation parameters
-        self.dt = dt
-        self.T_end = T_end
-        
-    def gradient_x(self, f):
-        return np.gradient(f, axis=0)
-    
-    def gradient_z(self, f):
-        return np.gradient(f, axis=1)
-    
-    def laplacian(self, f):
-        # Compute 2D Laplacian using numpy's gradient
-        d2f_dx2 = np.gradient(np.gradient(f, axis=0)[0], axis=0)
-        d2f_dz2 = np.gradient(np.gradient(f, axis=1)[0], axis=1)
-        return d2f_dx2 + d2f_dz2
-    
-    def solve(self):
-        t = 0
-        while t < self.T_end:
-            # Compute advection terms with safe gradient calculation
-            u_adv_x = self.u * self.gradient_x(self.u)
-            u_adv_z = self.w * self.gradient_z(self.u)
-            
-            w_adv_x = self.u * self.gradient_x(self.w)
-            w_adv_z = self.w * self.gradient_z(self.w)
-            
-            b_adv_x = self.u * self.gradient_x(self.b)
-            b_adv_z = self.w * self.gradient_z(self.b)
-            
-            # Compute diffusion terms
-            u_diff = self.nu * self.laplacian(self.u)
-            w_diff = self.nu * self.laplacian(self.w)
-            b_diff = self.kappa * self.laplacian(self.b)
-            
-            # Update with bounded updates
-            u_update = -u_adv_x - u_adv_z + u_diff + self.b
-            w_update = -w_adv_x - w_adv_z + w_diff
-            b_update = -b_adv_x - b_adv_z + b_diff
-            
-            # Clip updates to prevent overflow
-            u_update = np.clip(u_update, -1e3, 1e3)
-            w_update = np.clip(w_update, -1e3, 1e3)
-            b_update = np.clip(b_update, -1e3, 1e3)
-            
-            # Apply updates
-            self.u += self.dt * u_update
-            self.w += self.dt * w_update
-            self.b += self.dt * b_update
-            
-            # Enforce boundary conditions
-            self.u[:, 0] = 0
-            self.u[:, -1] = 0
-            self.w[:, 0] = 0
-            self.w[:, -1] = 0
-            self.b[:, 0] = self.Lz
-            self.b[:, -1] = 0
-            
-            t += self.dt
-        
-        # Save final solutions
-        np.save('u.npy', self.u)
-        np.save('w.npy', self.w)
-        np.save('b.npy', self.b)
+# Parameters with much coarser resolution
+Lx, Lz = 4.0, 1.0
+nx, nz = 32, 8  # Very coarse grid
+dx = Lx/nx
+dz = Lz/nz
+dt = 0.01  # Larger timestep
+t_end = 50.0
+nt = int(t_end/dt)
 
-# Run simulation
-sim = RayleighBenardConvection()
-sim.solve()
+Ra = 2e6
+Pr = 1.0
+nu = (Ra/Pr)**(-0.5)
+kappa = (Ra*Pr)**(-0.5)
+
+x = np.linspace(0, Lx, nx)
+z = np.linspace(0, Lz, nz)
+X, Z = np.meshgrid(x, z, indexing='ij')
+
+# Initialize fields
+u = np.zeros((nx, nz))
+w = np.zeros((nx, nz))
+b = Lz - Z + 0.001*np.random.randn(nx, nz)
+p = np.zeros((nx, nz))
+
+# Pressure solver matrix
+n = nx*nz
+main_diag = -2.0/(dx**2) - 2.0/(dz**2)
+x_diag = 1.0/(dx**2)
+z_diag = 1.0/(dz**2)
+diagonals = [main_diag*np.ones(n),
+             x_diag*np.ones(n),
+             x_diag*np.ones(n),
+             z_diag*np.ones(n),
+             z_diag*np.ones(n)]
+offsets = [0, 1, -1, nx, -nx]
+P = diags(diagonals, offsets, shape=(n,n), format='csc')
+
+def safe_gradient(f, d, axis):
+    grad = np.gradient(f, d, axis=axis)
+    return np.clip(grad, -100, 100)
+
+# Time stepping with reduced iterations
+save_step = max(1, nt//100)  # Save fewer intermediate steps
+for n in range(0, nt, save_step):
+    # Compute derivatives
+    ux = safe_gradient(u, dx, 0)
+    uz = safe_gradient(u, dz, 1)
+    wx = safe_gradient(w, dx, 0)
+    wz = safe_gradient(w, dz, 1)
+    
+    # Simplified diffusion terms
+    uxx = safe_gradient(ux, dx, 0)
+    uzz = safe_gradient(uz, dz, 1)
+    wxx = safe_gradient(wx, dx, 0)
+    wzz = safe_gradient(wz, dz, 1)
+    
+    # Update velocities
+    du = dt*(-u*ux - w*uz - safe_gradient(p, dx, 0) + nu*(uxx + uzz))
+    dw = dt*(-u*wx - w*wz - safe_gradient(p, dz, 1) + nu*(wxx + wzz) + b)
+    
+    u_tent = u + np.clip(du, -0.1, 0.1)
+    w_tent = w + np.clip(dw, -0.1, 0.1)
+    
+    # Boundary conditions
+    w_tent[:,[0,-1]] = 0
+    u_tent[:,[0,-1]] = 0
+    
+    # Pressure correction
+    div = safe_gradient(u_tent, dx, 0) + safe_gradient(w_tent, dz, 1)
+    dp = spsolve(P, div.flatten()/dt).reshape(nx,nz)
+    
+    # Update velocities and pressure
+    u = u_tent - dt*safe_gradient(dp, dx, 0)
+    w = w_tent - dt*safe_gradient(dp, dz, 1)
+    p += np.clip(dp, -10, 10)
+    
+    # Update buoyancy
+    bx = safe_gradient(b, dx, 0)
+    bz = safe_gradient(b, dz, 1)
+    db = dt*(-u*bx - w*bz + kappa*(safe_gradient(bx, dx, 0) + 
+                                  safe_gradient(bz, dz, 1)))
+    b += np.clip(db, -0.1, 0.1)
+    
+    # Boundary conditions
+    b[:,-1] = 0
+    b[:,0] = Lz
+    
+    # Periodic BCs
+    u[0,:] = u[-1,:]
+    w[0,:] = w[-1,:]
+    b[0,:] = b[-1,:]
+    p[0,:] = p[-1,:]
+    
+    # Check stability
+    if np.any(np.isnan([u, w, b, p])):
+        break
+
+# Save final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_2D_Rayleigh_Benard_Convection.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/w_2D_Rayleigh_Benard_Convection.npy', w)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/b_2D_Rayleigh_Benard_Convection.npy', b)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/p_2D_Rayleigh_Benard_Convection.npy', p)

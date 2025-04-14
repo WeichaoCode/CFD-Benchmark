@@ -1,102 +1,96 @@
 ```python
 import numpy as np
+from scipy.fft import fft2, ifft2, fftfreq
 
-# Simulation parameters
-Lx, Lz = 1.0, 2.0
-nx, nz = 128, 256
-dx, dz = Lx/nx, Lz/nz
-x = np.linspace(0, Lx, nx, endpoint=False)
-z = np.linspace(-Lz/2, Lz/2, nz, endpoint=False)
-X, Z = np.meshgrid(x, z, indexing='ij')
-
-# Physical parameters
-nu = 1/5e4  # Kinematic viscosity
-D = nu  # Tracer diffusivity
+# Grid parameters
+Nx = 64
+Nz = 128
+Lx = 1.0
+Lz = 2.0
+dx = Lx/Nx
+dz = Lz/Nz
+x = np.linspace(0, Lx-dx, Nx)
+z = np.linspace(-1, 1-dz, Nz)
+X, Z = np.meshgrid(x, z)
 
 # Time parameters
-t_start = 0
-t_end = 20
-dt = 0.01
-nt = int((t_end - t_start) / dt)
+dt = 0.0001  # Further reduced timestep
+t_final = 20.0
+Nt = int(t_final/dt)
+
+# Physical parameters
+nu = 1/(5e4)
+D = nu/1
+
+# Wavenumbers
+kx = 2*np.pi*fftfreq(Nx, dx)
+kz = 2*np.pi*fftfreq(Nz, dz)
+KX, KZ = np.meshgrid(kx, kz)
+K2 = KX**2 + KZ**2
 
 # Initial conditions
-def initial_u(x, z):
-    return 0.5 * (1 + np.tanh((z - 0.5)/0.1) - np.tanh((z + 0.5)/0.1))
+u = 0.5*(1 + np.tanh((Z-0.5)/0.1) - np.tanh((Z+0.5)/0.1))
+w = 0.01*np.sin(2*np.pi*X)*np.exp(-(Z-0.5)**2/0.1**2) + 0.01*np.sin(2*np.pi*X)*np.exp(-(Z+0.5)**2/0.1**2)
+s = u.copy()
 
-def initial_w(x, z):
-    return 0.01 * np.sin(np.pi*z) * np.cos(2*np.pi*x)
+# FFT of initial fields
+u_hat = fft2(u).astype(np.complex128)
+w_hat = fft2(w).astype(np.complex128)
+s_hat = fft2(s).astype(np.complex128)
 
-# Initial fields
-u = initial_u(X, Z)
-w = initial_w(X, Z)
-s = initial_u(X, Z)
+# Dealiasing mask
+dealias = np.ones_like(K2)
+dealias[np.abs(KX) > 2/3*np.max(np.abs(kx))] = 0
+dealias[np.abs(KZ) > 2/3*np.max(np.abs(kz))] = 0
 
-# Time-stepping using spectral method
-for n in range(nt):
-    # Transform to spectral space
-    u_hat = np.fft.rfft2(u)
-    w_hat = np.fft.rfft2(w)
-    s_hat = np.fft.rfft2(s)
-
-    # Spectral method setup
-    kx = 2*np.pi*np.fft.rfftfreq(nx, d=dx)
-    kz = 2*np.pi*np.fft.fftfreq(nz, d=dz)
+# Time stepping
+for n in range(Nt):
+    # Real space fields
+    u = np.real(ifft2(u_hat)).astype(np.float64)
+    w = np.real(ifft2(w_hat)).astype(np.float64)
     
-    # Create wavenumber grids
-    KX, KZ = np.meshgrid(kx, kz, indexing='ij')
-    k2 = KX**2 + KZ**2
+    # Compute derivatives
+    dudx = np.real(ifft2(1j*KX*u_hat)).astype(np.float64)
+    dudz = np.real(ifft2(1j*KZ*u_hat)).astype(np.float64)
+    dwdx = np.real(ifft2(1j*KX*w_hat)).astype(np.float64)
+    dwdz = np.real(ifft2(1j*KZ*w_hat)).astype(np.float64)
+    dsdx = np.real(ifft2(1j*KX*s_hat)).astype(np.float64)
+    dsdz = np.real(ifft2(1j*KZ*s_hat)).astype(np.float64)
+    
+    # Compute nonlinear terms
+    NLu = fft2(-u*dudx - w*dudz).astype(np.complex128)
+    NLw = fft2(-u*dwdx - w*dwdz).astype(np.complex128)
+    NLs = fft2(-u*dsdx - w*dsdz).astype(np.complex128)
+    
+    # Apply dealiasing
+    NLu *= dealias
+    NLw *= dealias
+    NLs *= dealias
+    
+    # Pressure projection
+    div_hat = 1j*KX*u_hat + 1j*KZ*w_hat
+    p_hat = div_hat/(K2 + (K2==0))
+    p_hat[0,0] = 0
+    
+    # Update fields
+    u_hat_new = (u_hat + dt*NLu - dt*1j*KX*p_hat)/(1 + dt*nu*K2)
+    w_hat_new = (w_hat + dt*NLw - dt*1j*KZ*p_hat)/(1 + dt*nu*K2)
+    s_hat_new = (s_hat + dt*NLs)/(1 + dt*D*K2)
+    
+    # Apply dealiasing and update
+    u_hat = u_hat_new * dealias
+    w_hat = w_hat_new * dealias
+    s_hat = s_hat_new * dealias
 
-    # Nonlinear terms (spectral)
-    ux_hat = 1j * KX * u_hat
-    uz_hat = 1j * KZ * u_hat
-    wx_hat = 1j * KX * w_hat
-    wz_hat = 1j * KZ * w_hat
-    sx_hat = 1j * KX * s_hat
-    sz_hat = 1j * KZ * s_hat
+# Get final fields
+u = np.real(ifft2(u_hat))
+w = np.real(ifft2(w_hat))
+s = np.real(ifft2(s_hat))
+p = np.real(ifft2(p_hat))
 
-    # Inverse transform nonlinear terms
-    ux = np.fft.irfft2(ux_hat)
-    uz = np.fft.irfft2(uz_hat)
-    wx = np.fft.irfft2(wx_hat)
-    wz = np.fft.irfft2(wz_hat)
-    sx = np.fft.irfft2(sx_hat)
-    sz = np.fft.irfft2(sz_hat)
-
-    # Convective terms
-    u_conv = u * ux + w * uz
-    w_conv = u * wx + w * wz
-    s_conv = u * sx + w * sz
-
-    # Transform convective terms
-    u_conv_hat = np.fft.rfft2(u_conv)
-    w_conv_hat = np.fft.rfft2(w_conv)
-    s_conv_hat = np.fft.rfft2(s_conv)
-
-    # Diffusive terms
-    u_diff_hat = -nu * k2 * u_hat
-    w_diff_hat = -nu * k2 * w_hat
-    s_diff_hat = -D * k2 * s_hat
-
-    # Time integration
-    u_hat = u_hat - dt * (u_conv_hat + u_diff_hat)
-    w_hat = w_hat - dt * (w_conv_hat + w_diff_hat)
-    s_hat = s_hat - dt * (s_conv_hat + s_diff_hat)
-
-    # Back to physical space
-    u = np.fft.irfft2(u_hat)
-    w = np.fft.irfft2(w_hat)
-    s = np.fft.irfft2(s_hat)
-
-# Save final solutions
+# Save final fields
 np.save('u.npy', u)
 np.save('w.npy', w)
+np.save('p.npy', p)
 np.save('s.npy', s)
 ```
-
-Key changes:
-1. Removed explicit slicing of wavenumber arrays
-2. Directly multiply full wavenumber arrays with spectral transforms
-3. Compute wavenumber grids before spectral operations
-4. Ensure consistent multiplication of spectral transforms with wavenumbers
-
-This approach should resolve the previous dimension mismatch by using the full wavenumber arrays consistently with the spectral transforms.

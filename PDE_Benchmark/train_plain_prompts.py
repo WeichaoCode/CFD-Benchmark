@@ -29,11 +29,9 @@ generator_prompt.save_prompts(prompts)
 #     "haiku",
 #     "gemini"
 # ]
-llm_models = [
-    "sonnet-35",
-    "haiku",
-    "gemini"
-]
+
+# use gpt-4o to check the code
+llm_models = ["haiku"]
 prompt_json = "prompts.json"  # the file under ./prompt/
 # Loop over all models
 for llm_model in llm_models:
@@ -49,5 +47,6 @@ for llm_model in llm_models:
     processor = SolverPostProcessor(llm_model, prompt_json)
 
     # Run the full post-processing pipeline
+    # this time only run execute LLM generated python code and save the results to log file
     processor.run_all()
 

@@ -1,52 +1,37 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
-# Domain parameters
-Lx, Ly = 5, 4
-nx, ny = 100, 80  # Grid resolution
-
-# Create grid
-x = np.linspace(0, Lx, nx)
-y = np.linspace(0, Ly, ny)
-X, Y = np.meshgrid(x, y)
+# Grid parameters
+nx = 51  # Number of points in x direction
+ny = 41  # Number of points in y direction
+dx = 5.0/(nx-1)  # Grid spacing in x
+dy = 4.0/(ny-1)  # Grid spacing in y
 
 # Initialize temperature field
 T = np.zeros((ny, nx))
 
-# Apply boundary conditions
+# Set boundary conditions
 T[0, :] = 20  # Bottom boundary
-T[-1, :] = 0  # Top boundary
+T[-1, :] = 0  # Top boundary 
 T[:, 0] = 10  # Left boundary
 T[:, -1] = 40  # Right boundary
 
-# Solve using finite difference method (Poisson equation)
-def solve_laplace(T):
-    # Copy boundary conditions
-    T_new = T.copy()
-    
-    # Iterative solution using Jacobi method
-    max_iter = 10000
-    tolerance = 1e-4
-    
-    for _ in range(max_iter):
-        T_old = T_new.copy()
-        
-        # Update interior points
-        T_new[1:-1, 1:-1] = 0.25 * (
-            T_old[1:-1, 2:] +   # Right neighbor
-            T_old[1:-1, :-2] +  # Left neighbor
-            T_old[2:, 1:-1] +   # Bottom neighbor
-            T_old[:-2, 1:-1]    # Top neighbor
-        )
-        
-        # Check convergence
-        if np.max(np.abs(T_new - T_old)) < tolerance:
-            break
-    
-    return T_new
+# Iteration parameters
+max_iter = 10000
+tolerance = 1e-6
 
-# Solve the Laplace equation
-T_solution = solve_laplace(T)
+# Gauss-Seidel iteration
+for it in range(max_iter):
+    T_old = T.copy()
+    
+    # Update interior points
+    for i in range(1, ny-1):
+        for j in range(1, nx-1):
+            T[i,j] = 0.25*(T[i+1,j] + T[i-1,j] + T[i,j+1] + T[i,j-1])
+    
+    # Check convergence
+    error = np.max(np.abs(T - T_old))
+    if error < tolerance:
+        break
 
-# Save solution
-np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/T_solution_2D_Steady_Heat_Equation.npy', T_solution)
+# Save temperature field
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/T_2D_Steady_Heat_Equation.npy', T)

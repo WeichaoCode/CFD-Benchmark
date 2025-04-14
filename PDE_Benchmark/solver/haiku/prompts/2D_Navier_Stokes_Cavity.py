@@ -1,63 +1,85 @@
 import numpy as np
-import scipy.sparse as sp
-import scipy.sparse.linalg as spla
 
-# Problem parameters
-Lx, Ly = 2.0, 2.0
-rho = 1.0
-nu = 0.1
-t_end = 10.0
-nx, ny = 50, 50
-dx = Lx / (nx - 1)
-dy = Ly / (ny - 1)
-dt = 0.01
+# Grid parameters
+nx = 41
+ny = 41
+dx = 2.0/(nx-1)
+dy = 2.0/(ny-1)
+dt = 0.001
+nt = int(10.0/dt)
 
-# Grid generation
-x = np.linspace(0, Lx, nx)
-y = np.linspace(0, Ly, ny)
-X, Y = np.meshgrid(x, y)
-
-# Initialize fields
+# Initialize variables
 u = np.zeros((ny, nx))
 v = np.zeros((ny, nx))
 p = np.zeros((ny, nx))
+b = np.zeros((ny, nx))
 
-# Boundary conditions
-u[-1, :] = 1.0  # Top lid moving with u=1
+# Lid-driven cavity boundary condition
+u[-1,:] = 1.0  # Top wall moving with u = 1
 
-# Time-stepping
-for t in np.arange(0, t_end, dt):
-    # Predictor step (simplified Navier-Stokes solution)
-    u_old = u.copy()
-    v_old = v.copy()
+def build_up_b(u, v, dx, dy):
+    b = np.zeros_like(u)
+    b[1:-1,1:-1] = (rho * (1/dt * ((u[1:-1,2:] - u[1:-1,0:-2])/(2*dx) + 
+                                   (v[2:,1:-1] - v[0:-2,1:-1])/(2*dy)) -
+                          ((u[1:-1,2:] - u[1:-1,0:-2])/(2*dx))**2 -
+                          2*((u[2:,1:-1] - u[0:-2,1:-1])/(2*dy) *
+                             (v[1:-1,2:] - v[1:-1,0:-2])/(2*dx)) -
+                          ((v[2:,1:-1] - v[0:-2,1:-1])/(2*dy))**2))
+    return b
+
+def pressure_poisson(p, b, dx, dy):
+    pn = np.empty_like(p)
     
-    # Momentum equations (simplified explicit scheme)
-    u[1:-1, 1:-1] = u_old[1:-1, 1:-1] + dt * (
-        -u_old[1:-1, 1:-1] * np.gradient(u_old, axis=1)[1:-1, 1:-1]
-        -v_old[1:-1, 1:-1] * np.gradient(u_old, axis=0)[1:-1, 1:-1]
-        + nu * (np.gradient(np.gradient(u_old, axis=0), axis=0)[1:-1, 1:-1] 
-               + np.gradient(np.gradient(u_old, axis=1), axis=1)[1:-1, 1:-1])
-    )
+    for q in range(50):
+        pn = p.copy()
+        p[1:-1,1:-1] = ((pn[1:-1,2:] + pn[1:-1,0:-2])*dy**2 + 
+                        (pn[2:,1:-1] + pn[0:-2,1:-1])*dx**2 -
+                        b[1:-1,1:-1]*dx**2*dy**2)/(2*(dx**2 + dy**2))
+        
+        # Boundary conditions
+        p[:,-1] = p[:,-2]  # dp/dx = 0 at x = 2
+        p[:,0] = p[:,1]    # dp/dx = 0 at x = 0
+        p[0,:] = p[1,:]    # dp/dy = 0 at y = 0
+        p[-1,:] = 0        # p = 0 at y = 2
+        
+    return p
+
+# Main time loop
+rho = 1.0
+nu = 0.1
+
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
     
-    v[1:-1, 1:-1] = v_old[1:-1, 1:-1] + dt * (
-        -u_old[1:-1, 1:-1] * np.gradient(v_old, axis=1)[1:-1, 1:-1]
-        -v_old[1:-1, 1:-1] * np.gradient(v_old, axis=0)[1:-1, 1:-1]
-        + nu * (np.gradient(np.gradient(v_old, axis=0), axis=0)[1:-1, 1:-1]
-               + np.gradient(np.gradient(v_old, axis=1), axis=1)[1:-1, 1:-1])
-    )
+    b = build_up_b(u, v, dx, dy)
+    p = pressure_poisson(p, b, dx, dy)
     
-    # Pressure Poisson equation (simplified)
-    div_u = np.gradient(u, axis=1)[1:-1, 1:-1] + np.gradient(v, axis=0)[1:-1, 1:-1]
+    u[1:-1,1:-1] = (un[1:-1,1:-1] - 
+                    un[1:-1,1:-1]*dt/dx*(un[1:-1,1:-1] - un[1:-1,0:-2]) -
+                    vn[1:-1,1:-1]*dt/dy*(un[1:-1,1:-1] - un[0:-2,1:-1]) -
+                    dt/(2*rho*dx)*(p[1:-1,2:] - p[1:-1,0:-2]) +
+                    nu*(dt/dx**2*(un[1:-1,2:] - 2*un[1:-1,1:-1] + un[1:-1,0:-2]) +
+                        dt/dy**2*(un[2:,1:-1] - 2*un[1:-1,1:-1] + un[0:-2,1:-1])))
     
-    # Enforce boundary conditions
-    u[0, :] = 0
-    u[:, 0] = 0
-    u[:, -1] = 0
-    v[0, :] = 0
-    v[:, 0] = 0
-    v[:, -1] = 0
+    v[1:-1,1:-1] = (vn[1:-1,1:-1] -
+                    un[1:-1,1:-1]*dt/dx*(vn[1:-1,1:-1] - vn[1:-1,0:-2]) -
+                    vn[1:-1,1:-1]*dt/dy*(vn[1:-1,1:-1] - vn[0:-2,1:-1]) -
+                    dt/(2*rho*dy)*(p[2:,1:-1] - p[0:-2,1:-1]) +
+                    nu*(dt/dx**2*(vn[1:-1,2:] - 2*vn[1:-1,1:-1] + vn[1:-1,0:-2]) +
+                        dt/dy**2*(vn[2:,1:-1] - 2*vn[1:-1,1:-1] + vn[0:-2,1:-1])))
+    
+    # Boundary conditions
+    u[0,:] = 0
+    u[:,-1] = 0
+    u[:,0] = 0
+    u[-1,:] = 1    # Top lid u = 1
+    v[0,:] = 0
+    v[-1,:] = 0
+    v[:,0] = 0
+    v[:,-1] = 0
 
 # Save final solutions
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_2D_Navier_Stokes_Cavity.npy', u)
-np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/v_2D_Navier_Stokes_Cavity.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/v_2D_Navier_Stokes_Cavity.npy', v) 
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/p_2D_Navier_Stokes_Cavity.npy', p)

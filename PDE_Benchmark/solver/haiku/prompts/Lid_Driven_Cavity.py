@@ -1,93 +1,93 @@
 import numpy as np
 
-# Problem parameters
-Lx, Ly = 1.0, 1.0  # Domain dimensions
-rho = 1.0  # Density
-nu = 0.1  # Kinematic viscosity
-dt = 0.01  # Increased time step
-T = 5  # Further reduced simulation time
-nx, ny = 30, 30  # Reduced grid resolution
+# Parameters
+nx = 41  # number of points in x
+ny = 41  # number of points in y
+dx = 1.0/(nx-1)
+dy = 1.0/(ny-1)
+rho = 1.0
+nu = 0.1
+dt = 0.001
+nsteps = 1000
 
-# Grid generation
-dx, dy = Lx/(nx-1), Ly/(ny-1)
-
-# Initialize fields
+# Initialize variables
 u = np.zeros((ny, nx))
 v = np.zeros((ny, nx))
 p = np.zeros((ny, nx))
+b = np.zeros((ny, nx))
 
-# Boundary conditions
-u[-1, :] = 1.0  # Top lid moving with unit velocity
+# Set initial conditions
+u[:, :] = 0
+v[:, :] = 0
+p[:, :] = 0
 
-# Simplified semi-implicit time-stepping
-def compute_velocity(u_old, v_old, is_u_velocity):
-    field = np.zeros_like(u_old)
-    
-    for i in range(1, ny-1):
-        for j in range(1, nx-1):
-            if is_u_velocity:
-                # U-velocity update
-                conv_x = (
-                    (u_old[i, j] + u_old[i, j+1])**2/2 - 
-                    (u_old[i, j-1] + u_old[i, j])**2/2
-                ) / dx
-                
-                conv_y = (
-                    (u_old[i, j] + u_old[i+1, j]) * 
-                    (v_old[i, j] + v_old[i, j+1])/2 - 
-                    (u_old[i-1, j] + u_old[i, j]) * 
-                    (v_old[i-1, j] + v_old[i-1, j+1])/2
-                ) / dy
-                
-                diff = nu * (
-                    (u_old[i, j+1] - 2*u_old[i, j] + u_old[i, j-1]) / dx**2 +
-                    (u_old[i+1, j] - 2*u_old[i, j] + u_old[i-1, j]) / dy**2
-                )
-            else:
-                # V-velocity update
-                conv_x = (
-                    (u_old[i, j] + u_old[i, j+1]) * 
-                    (v_old[i, j] + v_old[i, j+1])/2 - 
-                    (u_old[i, j-1] + u_old[i, j]) * 
-                    (v_old[i, j-1] + v_old[i, j])/2
-                ) / dx
-                
-                conv_y = (
-                    (v_old[i, j] + v_old[i+1, j])**2/2 - 
-                    (v_old[i-1, j] + v_old[i, j])**2/2
-                ) / dy
-                
-                diff = nu * (
-                    (v_old[i, j+1] - 2*v_old[i, j] + v_old[i, j-1]) / dx**2 +
-                    (v_old[i+1, j] - 2*v_old[i, j] + v_old[i-1, j]) / dy**2
-                )
-            
-            field[i, j] = u_old[i, j] - dt * (conv_x + conv_y) + dt * diff
-    
-    return field
+# Top lid velocity
+u[-1, :] = 1.0
 
-# Time-stepping
-for _ in range(int(T/dt)):
-    # Store old velocities
-    u_old = u.copy()
-    v_old = v.copy()
+def pressure_poisson(p, b, dx, dy):
+    pn = np.empty_like(p)
+    for q in range(50):
+        pn = p.copy()
+        p[1:-1, 1:-1] = 0.25*(pn[1:-1, 2:] + pn[1:-1, :-2] + 
+                              pn[2:, 1:-1] + pn[:-2, 1:-1] - 
+                              dx*dy*b[1:-1, 1:-1])
+        # Neumann boundary conditions
+        p[-1, :] = p[-2, :]  # top
+        p[0, :] = p[1, :]    # bottom
+        p[:, -1] = p[:, -2]  # right
+        p[:, 0] = p[:, 1]    # left
+        
+    return p
+
+# Main time loop
+for n in range(nsteps):
+    un = u.copy()
+    vn = v.copy()
     
-    # Update velocities
-    u = compute_velocity(u_old, v_old, is_u_velocity=True)
-    v = compute_velocity(v_old, u_old, is_u_velocity=False)
+    # Compute tentative velocity field
+    u[1:-1, 1:-1] = (un[1:-1, 1:-1] - 
+                     dt/dx * un[1:-1, 1:-1] * (un[1:-1, 1:-1] - un[1:-1, :-2]) -
+                     dt/dy * vn[1:-1, 1:-1] * (un[1:-1, 1:-1] - un[:-2, 1:-1]) +
+                     nu*dt/dx**2 * (un[1:-1, 2:] - 2*un[1:-1, 1:-1] + un[1:-1, :-2]) +
+                     nu*dt/dy**2 * (un[2:, 1:-1] - 2*un[1:-1, 1:-1] + un[:-2, 1:-1]))
     
-    # Enforce boundary conditions
-    u[-1, :] = 1.0  # Top lid
-    u[0, :] = 0.0   # Bottom wall
-    u[:, 0] = 0.0   # Left wall
-    u[:, -1] = 0.0  # Right wall
+    v[1:-1, 1:-1] = (vn[1:-1, 1:-1] -
+                     dt/dx * un[1:-1, 1:-1] * (vn[1:-1, 1:-1] - vn[1:-1, :-2]) -
+                     dt/dy * vn[1:-1, 1:-1] * (vn[1:-1, 1:-1] - vn[:-2, 1:-1]) +
+                     nu*dt/dx**2 * (vn[1:-1, 2:] - 2*vn[1:-1, 1:-1] + vn[1:-1, :-2]) +
+                     nu*dt/dy**2 * (vn[2:, 1:-1] - 2*vn[1:-1, 1:-1] + vn[:-2, 1:-1]))
     
-    v[-1, :] = 0.0  # Top lid
-    v[0, :] = 0.0   # Bottom wall
-    v[:, 0] = 0.0   # Left wall
-    v[:, -1] = 0.0  # Right wall
+    # Velocity boundary conditions
+    u[-1, :] = 1.0    # top lid
+    u[0, :] = 0.0     # bottom wall
+    u[:, 0] = 0.0     # left wall
+    u[:, -1] = 0.0    # right wall
+    v[-1, :] = 0.0    # top lid
+    v[0, :] = 0.0     # bottom wall
+    v[:, 0] = 0.0     # left wall
+    v[:, -1] = 0.0    # right wall
+    
+    # Pressure correction
+    b[1:-1, 1:-1] = rho*(1/dt * ((u[1:-1, 2:] - u[1:-1, :-2])/(2*dx) + 
+                                 (v[2:, 1:-1] - v[:-2, 1:-1])/(2*dy)))
+    
+    p = pressure_poisson(p, b, dx, dy)
+    
+    # Velocity correction
+    u[1:-1, 1:-1] -= dt/(rho*dx) * (p[1:-1, 2:] - p[1:-1, :-2])
+    v[1:-1, 1:-1] -= dt/(rho*dy) * (p[2:, 1:-1] - p[:-2, 1:-1])
+    
+    # Velocity boundary conditions
+    u[-1, :] = 1.0    # top lid
+    u[0, :] = 0.0     # bottom wall
+    u[:, 0] = 0.0     # left wall
+    u[:, -1] = 0.0    # right wall
+    v[-1, :] = 0.0    # top lid
+    v[0, :] = 0.0     # bottom wall
+    v[:, 0] = 0.0     # left wall
+    v[:, -1] = 0.0    # right wall
 
 # Save final solutions
-save_values = ['u', 'v', 'p']
-for var in save_values:
-    np.save(f'{var}_final.npy', locals()[var])
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_Lid_Driven_Cavity.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/v_Lid_Driven_Cavity.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/p_Lid_Driven_Cavity.npy', p)

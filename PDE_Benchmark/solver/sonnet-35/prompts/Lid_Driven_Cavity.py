@@ -1,0 +1,78 @@
+import numpy as np
+
+# Problem parameters
+Lx, Ly = 1.0, 1.0  # Domain dimensions
+rho = 1.0  # Density
+nu = 0.1  # Kinematic viscosity
+dt = 0.001  # Time step
+T = 100  # Total simulation time
+nx, ny = 50, 50  # Grid resolution
+
+# Grid generation
+dx, dy = Lx/(nx-1), Ly/(ny-1)
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize fields
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+p = np.zeros((ny, nx))
+
+# Boundary conditions
+u[-1, :] = 1.0  # Top lid moving with unit velocity
+
+# Time-stepping loop
+for t in range(int(T/dt)):
+    # Store old velocities
+    u_old = u.copy()
+    v_old = v.copy()
+    
+    # Compute derivatives with careful indexing
+    du_dx = np.zeros_like(u)
+    du_dy = np.zeros_like(u)
+    d2u_dx2 = np.zeros_like(u)
+    d2u_dy2 = np.zeros_like(u)
+    
+    du_dx[1:-1, 1:-1] = (u_old[1:-1, 2:] - u_old[1:-1, :-2]) / (2*dx)
+    du_dy[1:-1, 1:-1] = (u_old[2:, 1:-1] - u_old[:-2, 1:-1]) / (2*dy)
+    d2u_dx2[1:-1, 1:-1] = (u_old[1:-1, 2:] - 2*u_old[1:-1, 1:-1] + u_old[1:-1, :-2]) / (dx**2)
+    d2u_dy2[1:-1, 1:-1] = (u_old[2:, 1:-1] - 2*u_old[1:-1, 1:-1] + u_old[:-2, 1:-1]) / (dy**2)
+    
+    # v-momentum derivatives
+    dv_dx = np.zeros_like(v)
+    dv_dy = np.zeros_like(v)
+    d2v_dx2 = np.zeros_like(v)
+    d2v_dy2 = np.zeros_like(v)
+    
+    dv_dx[1:-1, 1:-1] = (v_old[1:-1, 2:] - v_old[1:-1, :-2]) / (2*dx)
+    dv_dy[1:-1, 1:-1] = (v_old[2:, 1:-1] - v_old[:-2, 1:-1]) / (2*dy)
+    d2v_dx2[1:-1, 1:-1] = (v_old[1:-1, 2:] - 2*v_old[1:-1, 1:-1] + v_old[1:-1, :-2]) / (dx**2)
+    d2v_dy2[1:-1, 1:-1] = (v_old[2:, 1:-1] - 2*v_old[1:-1, 1:-1] + v_old[:-2, 1:-1]) / (dy**2)
+    
+    # Update velocities
+    u[1:-1, 1:-1] = u_old[1:-1, 1:-1] - dt * (
+        u_old[1:-1, 1:-1] * du_dx[1:-1, 1:-1] + 
+        v_old[1:-1, 1:-1] * du_dy[1:-1, 1:-1]
+    ) + nu * dt * (d2u_dx2[1:-1, 1:-1] + d2u_dy2[1:-1, 1:-1])
+    
+    v[1:-1, 1:-1] = v_old[1:-1, 1:-1] - dt * (
+        u_old[1:-1, 1:-1] * dv_dx[1:-1, 1:-1] + 
+        v_old[1:-1, 1:-1] * dv_dy[1:-1, 1:-1]
+    ) + nu * dt * (d2v_dx2[1:-1, 1:-1] + d2v_dy2[1:-1, 1:-1])
+    
+    # Enforce boundary conditions
+    u[-1, :] = 1.0  # Top lid
+    u[0, :] = 0.0   # Bottom wall
+    u[:, 0] = 0.0   # Left wall
+    u[:, -1] = 0.0  # Right wall
+    
+    v[-1, :] = 0.0  # Top lid
+    v[0, :] = 0.0   # Bottom wall
+    v[:, 0] = 0.0   # Left wall
+    v[:, -1] = 0.0  # Right wall
+
+# Save final solutions
+save_values = ['u', 'v', 'p']
+for var in save_values:
+    np.save(f'{var}_final.npy', locals()[var])

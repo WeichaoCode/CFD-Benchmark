@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+Re_tau = 395.0
+mu = 1.0 / Re_tau  # molecular viscosity
+rho = 1.0         # fluid density
+
+# Domain
+y_start = 0.0
+y_end = 2.0
+N = 101  # number of grid points
+y = np.linspace(y_start, y_end, N)
+dy = y[1] - y[0]
+
+# Turbulent eddy viscosity model (parabolic profile, zero at walls)
+# Here we assume a simple model: mu_t(y) = 100*mu * y*(2-y)
+mu_t = 100.0 * mu * y * (y_end - y)
+
+# Effective viscosity
+mu_eff = mu + mu_t
+
+# Build the linear system A * u_interior = b
+# Using finite differences:
+# For interior node i (corresponding to global index i, with i=1,...,N-2):
+#   (1/dy^2)[ m_{i+1/2}(u_{i+1}-u_i) - m_{i-1/2}(u_i-u_{i-1}) ] = -1
+# where m_{i+1/2} = 0.5*(mu_eff[i]+mu_eff[i+1]) and m_{i-1/2} = 0.5*(mu_eff[i]+mu_eff[i-1])
+
+n_interior = N - 2
+A = np.zeros((n_interior, n_interior))
+b = -np.ones(n_interior)
+
+for i in range(1, N-1):
+    idx = i - 1  # index in the interior system
+    m_iphalf = 0.5 * (mu_eff[i] + mu_eff[i+1])
+    m_imhalf = 0.5 * (mu_eff[i] + mu_eff[i-1])
+    A[idx, idx] = (m_iphalf + m_imhalf) / dy**2
+    if idx - 1 >= 0:
+        A[idx, idx-1] = - m_imhalf / dy**2
+    if idx + 1 < n_interior:
+        A[idx, idx+1] = - m_iphalf / dy**2
+
+# Solve the linear system
+u_interior = np.linalg.solve(A, b)
+
+# Construct the full velocity field with boundary conditions u(0)=0, u(2)=0.
+u = np.zeros(N)
+u[1:-1] = u_interior
+
+# Save the final solution as a 1D NumPy array in u.npy
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_Fully_Developed_Turbulent_Channel_Flow.npy', u)

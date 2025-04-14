@@ -1,0 +1,82 @@
+import numpy as np
+
+# Parameters
+nx = 128  # Number of points in x
+ny = 128  # Number of points in y
+Lx = 1.0  # Domain length in x
+Ly = 1.0  # Domain length in y
+nu = 0.001  # Kinematic viscosity
+dt = 0.001  # Time step
+t_final = 2.0  # Final time
+n_steps = int(t_final/dt)
+
+# Grid
+dx = Lx/nx
+dy = Ly/ny
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize fields
+psi = np.zeros((ny, nx))
+omega = np.zeros((ny, nx))
+
+# Initialize vortex layers
+y_mid = ny//2
+omega[y_mid-10:y_mid+10, nx//4:3*nx//4] = 1.0
+omega[y_mid-5:y_mid+5, nx//4:3*nx//4] = -1.0
+
+def solve_poisson(omega, psi):
+    psi_new = psi.copy()
+    for _ in range(100):  # Gauss-Seidel iterations
+        psi_new[1:-1,1:-1] = 0.25*(psi_new[1:-1,2:] + psi_new[1:-1,:-2] + 
+                                  psi_new[2:,1:-1] + psi_new[:-2,1:-1] + 
+                                  dx*dy*omega[1:-1,1:-1])
+        # Periodic BC in x
+        psi_new[1:-1,0] = psi_new[1:-1,-2]
+        psi_new[1:-1,-1] = psi_new[1:-1,1]
+        # Dirichlet BC in y
+        psi_new[0,:] = 0
+        psi_new[-1,:] = 0
+    return psi_new
+
+# Time stepping
+for n in range(n_steps):
+    # Solve Poisson equation for streamfunction
+    psi = solve_poisson(omega, psi)
+    
+    # Calculate velocities
+    u = np.zeros_like(psi)
+    v = np.zeros_like(psi)
+    u[1:-1,1:-1] = (psi[2:,1:-1] - psi[:-2,1:-1])/(2*dy)
+    v[1:-1,1:-1] = -(psi[1:-1,2:] - psi[1:-1,:-2])/(2*dx)
+    
+    # Periodic BC for velocities
+    u[:,0] = u[:,-2]
+    u[:,-1] = u[:,1]
+    v[:,0] = v[:,-2]
+    v[:,-1] = v[:,1]
+    
+    # Update vorticity
+    omega_new = omega.copy()
+    omega_new[1:-1,1:-1] = (omega[1:-1,1:-1] + 
+                           dt*(nu*((omega[1:-1,2:] - 2*omega[1:-1,1:-1] + omega[1:-1,:-2])/dx**2 +
+                                 (omega[2:,1:-1] - 2*omega[1:-1,1:-1] + omega[:-2,1:-1])/dy**2) -
+                               u[1:-1,1:-1]*(omega[1:-1,2:] - omega[1:-1,:-2])/(2*dx) -
+                               v[1:-1,1:-1]*(omega[2:,1:-1] - omega[:-2,1:-1])/(2*dy)))
+    
+    # Periodic BC in x for vorticity
+    omega_new[:,0] = omega_new[:,-2]
+    omega_new[:,-1] = omega_new[:,1]
+    
+    # Approximate BC for vorticity at top/bottom walls
+    omega_new[0,:] = -2*psi[1,:]/(dy**2)
+    omega_new[-1,:] = -2*psi[-2,:]/(dy**2)
+    
+    omega = omega_new
+
+# Save final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/psi_Vortex_Roll_Up.npy', psi)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/omega_Vortex_Roll_Up.npy', omega)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_Vortex_Roll_Up.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/v_Vortex_Roll_Up.npy', v)

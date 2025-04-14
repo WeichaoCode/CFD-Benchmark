@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+c = 1.0
+Lx = 2.0
+Ly = 2.0
+T_final = 0.50
+
+# Grid settings
+Nx = 101
+Ny = 101
+dx = Lx / (Nx - 1)
+dy = Ly / (Ny - 1)
+
+x = np.linspace(0, Lx, Nx)
+y = np.linspace(0, Ly, Ny)
+
+# Time stepping (choose dt based on CFL condition)
+# CFL condition: c*dt/dx + c*dt/dy < 1 => dt < 1/(c/dx + c/dy)
+dt = 0.005
+nsteps = int(T_final / dt)
+
+# Initialize u: u=1 everywhere, then set u=2 for 0.5 <= x <= 1 and 0.5 <= y <= 1
+u = np.ones((Ny, Nx))
+X, Y = np.meshgrid(x, y)
+mask = (X >= 0.5) & (X <= 1.0) & (Y >= 0.5) & (Y <= 1.0)
+u[mask] = 2.0
+
+# Enforce Dirichlet BC: u=1 on boundaries (x=0, x=2, y=0, y=2)
+u[0, :] = 1.0
+u[-1, :] = 1.0
+u[:, 0] = 1.0
+u[:, -1] = 1.0
+
+# Time integration using explicit upwind scheme
+for n in range(nsteps):
+    u_old = u.copy()
+    # Update interior points
+    # Use upwind differences in both x and y directions (assume c>0)
+    u[1:, 1:] = u_old[1:, 1:] - c * dt/dx * (u_old[1:, 1:] - u_old[1:, :-1]) - c * dt/dy * (u_old[1:, 1:] - u_old[:-1, 1:])
+    
+    # Re-enforce the Dirichlet boundary conditions
+    u[0, :] = 1.0
+    u[-1, :] = 1.0
+    u[:, 0] = 1.0
+    u[:, -1] = 1.0
+
+# Save the solution at final time step
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_2D_Linear_Convection.npy', u)

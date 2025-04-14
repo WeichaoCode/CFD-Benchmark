@@ -1,0 +1,49 @@
+import numpy as np
+
+# Parameters
+nu = 1.0
+Lx, Ly = 2.0, 2.0
+t_final = 0.3777
+
+# Discretization parameters
+nx, ny = 101, 101
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = 0.0001  # time step satisfying stability condition for explicit scheme
+
+# Create grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+# Initial condition: u = 2 in region 0.5 <= x, y <= 1, u = 1 elsewhere
+u = np.ones((ny, nx))
+X, Y = np.meshgrid(x, y)
+u[(X >= 0.5) & (X <= 1.0) & (Y >= 0.5) & (Y <= 1.0)] = 2.0
+
+# Enforce Dirichlet boundary conditions: u = 1 on all boundaries
+u[0, :] = 1.0
+u[-1, :] = 1.0
+u[:, 0] = 1.0
+u[:, -1] = 1.0
+
+# Time stepping loop
+t = 0.0
+while t < t_final:
+    u_old = u.copy()
+    
+    # Update interior points using explicit finite difference
+    u[1:-1,1:-1] = u_old[1:-1,1:-1] + dt * nu * (
+        (u_old[1:-1,2:] - 2*u_old[1:-1,1:-1] + u_old[1:-1,0:-2]) / dx**2 +
+        (u_old[2:,1:-1] - 2*u_old[1:-1,1:-1] + u_old[0:-2,1:-1]) / dy**2
+    )
+    
+    # Reapply Dirichlet boundary conditions: u = 1 on all boundaries
+    u[0, :] = 1.0
+    u[-1, :] = 1.0
+    u[:, 0] = 1.0
+    u[:, -1] = 1.0
+    
+    t += dt
+
+# Save the final solution as u.npy (2D array)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_2D_Diffusion.npy', u)

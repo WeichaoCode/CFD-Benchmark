@@ -1,3 +1,0 @@
-2025-03-25 14:24:45,488 - INFO - Adjust the prompt for 2D Steady Heat Equation to use the same nx, ny
-2025-03-25 14:24:45,488 - INFO - ====== Starting Comparison Process ======
-2025-03-25 14:24:45,488 - ERROR - The number of files in the ground truth and prediction directories do not match.

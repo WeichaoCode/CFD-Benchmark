@@ -1,4 +1,0 @@
-2025-04-13 16:12:27,150 - INFO - ####################################################################################################
-2025-04-13 16:12:27,150 - INFO - Using the gemini, change temperature to 0.0, use the prompt prompts.json
-2025-04-13 16:12:27,191 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow (Attempt 1/5)
-2025-04-13 16:12:27,191 - INFO - AFC is enabled with max remote calls: 10.

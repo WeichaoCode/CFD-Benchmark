@@ -73,3 +73,40 @@ To run the benchmark pipeline for all prompts and models:
 ```bash
 python train_plain_prompts.py
 ```
+This script performs the following steps:
+
+* **Load Prompts**  
+  Loads each task prompt from the `prompt/` directory.
+
+* **Call LLM to Generate Code**  
+  Uses the selected Large Language Model (LLM) (e.g., GPT-4o, Gemini, Claude, etc.) to generate solver code for the given PDE problem.
+
+* **Save Generated Code**  
+  Saves the generated Python solver scripts into the `solver/` directory.
+
+* **Execute and Evaluate**  
+  Runs each solver, compares the results with the ground-truth reference in the `solution/` directory.
+
+* **Log Results**  
+  * Performance metrics and runtime are logged into the `report/` folder.  
+  * Visual outputs are saved in the `image/` folder.  
+  * Final comparison results are stored in the `results/` directory.
+  * Final comparison results tables are stored in the `table/` directory.
+
+## 📊 Output and Evaluation
+* Execution results (error logs, pass/fail): saved in `report/`
+
+* Generated solvers: `solver/`
+
+* Reference solutions: `solution/`
+
+* Performance images: `image/`
+
+* Comparison tools: `compare/`, `compare_images/`
+
+* Summary tables: `table/`
+
+## 🧪 Add Your Own Task
+* Add a new `prompt_name.json` under `prompt/`
+
+* Add the corresponding ground truth solution under `solution/`

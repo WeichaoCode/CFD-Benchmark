@@ -28,4 +28,4 @@ for n in range(nt-1):
     u = u_new.copy()
 
 # Save final solution
-np.save('u', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_1D_Nonlinear_Convection.npy', u)

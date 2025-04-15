@@ -1,0 +1,39 @@
+import numpy as np
+
+# Problem parameters
+x_start, x_end = -5, 5
+Nx = 101
+epsilon = 5e-4
+c = 1.0
+T_final = 1.0
+
+# Grid setup
+x = np.linspace(x_start, x_end, Nx)
+dx = x[1] - x[0]
+
+# Initial condition
+u = np.exp(-x**2)
+
+# CFL condition and time stepping
+dt = 0.1 * dx / abs(c)
+Nt = int(T_final / dt)
+
+# Solve using explicit Euler method
+for _ in range(Nt):
+    # Compute spatial derivatives using central difference
+    du_dx = np.zeros_like(u)
+    d2u_dx2 = np.zeros_like(u)
+    
+    du_dx[1:-1] = (u[2:] - u[:-2]) / (2*dx)
+    du_dx[0] = (u[1] - u[-1]) / (2*dx)  # Periodic BC
+    du_dx[-1] = (u[0] - u[-2]) / (2*dx)  # Periodic BC
+    
+    d2u_dx2[1:-1] = (u[2:] + u[:-2] - 2*u[1:-1]) / (dx**2)
+    d2u_dx2[0] = (u[1] + u[-1] - 2*u[0]) / (dx**2)  # Periodic BC
+    d2u_dx2[-1] = (u[0] + u[-2] - 2*u[-1]) / (dx**2)  # Periodic BC
+    
+    # Update solution
+    u += dt * (-c * du_dx + epsilon * d2u_dx2)
+
+# Save final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-35/prompts_no_instruction/u_1D_Linear_Convection_explicit_euler.npy', u)

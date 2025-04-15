@@ -52,4 +52,4 @@ for n in range(nt):
     u = un - dt*(un*du_dx - nu*d2u_dx2)
 
 # Save final solution
-np.save('u', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_1D_Burgers_Equation.npy', u)

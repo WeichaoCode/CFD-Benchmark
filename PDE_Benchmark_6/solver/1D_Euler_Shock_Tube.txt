@@ -1,0 +1,64 @@
+Here is a Python code that implements the MacCormack method to solve the one-dimensional Euler equations for a shock tube problem:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define parameters
+L = 2.0
+Nx = 81
+CFL = 1.0
+T = 0.25
+gamma = 1.4
+x0 = 0.5 * L
+
+# Discretize the domain
+dx = L / (Nx - 1)
+x = np.linspace(-L/2, L/2, Nx)
+dt = CFL * dx / np.max(np.sqrt(gamma))
+
+# Initialize variables
+rho = np.where(x < x0, 1.0, 0.125)
+u = np.zeros_like(x)
+p = np.where(x < x0, 1.0, 0.1)
+U = np.array([rho, rho*u, rho*(0.5*u**2 + p/(gamma-1))])
+
+# Define helper functions
+def compute_F(U):
+    rho, rhou, rhoE = U
+    u = rhou / rho
+    p = (gamma - 1) * (rhoE - 0.5 * rho * u**2)
+    return np.array([rhou, rhou*u + p, u*(rhoE + p)])
+
+def update_primitive_variables(U):
+    rho, rhou, rhoE = U
+    u = rhou / rho
+    p = (gamma - 1) * (rhoE - 0.5 * rho * u**2)
+    return rho, u, p
+
+# Time integration
+for t in np.arange(0, T, dt):
+    F = compute_F(U)
+    U_star = U[:, :-1] - dt/dx * (F[:, 1:] - F[:, :-1])
+    F_star = compute_F(U_star)
+    U[:, 1:] = 0.5 * (U[:, 1:] + U_star - dt/dx * (F_star - F[:, 1:]))
+    rho, u, p = update_primitive_variables(U)
+
+# Visualization
+plt.figure(figsize=(12, 9))
+plt.subplot(311); plt.plot(x, rho); plt.ylabel('Density')
+plt.subplot(312); plt.plot(x, u); plt.ylabel('Velocity')
+plt.subplot(313); plt.plot(x, p); plt.ylabel('Pressure')
+plt.xlabel('x')
+plt.tight_layout()
+plt.show()
+
+# Save the results
+np.save('rho.npy', rho)
+np.save('u.npy', u)
+np.save('p.npy', p)
+np.save('U.npy', U)
+np.save('F.npy', F)
+```
+
+This code first initializes the variables and discretizes the domain. It then enters a time integration loop where it computes the flux, applies the predictor step, computes the flux again, and applies the corrector step. After the time integration, it updates the primitive variables and plots the results. Finally, it saves the computed density, velocity, and pressure profiles in `.npy` format.

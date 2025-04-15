@@ -1,0 +1,42 @@
+```python
+import numpy as np
+
+# Parameters
+nu = 0.3
+x_start = 0.0
+x_end = 2.0
+t_start = 0.0
+t_end = 0.0333
+
+# Discretization
+Nx = 201  # Number of spatial points
+dx = (x_end - x_start) / (Nx - 1)
+x = np.linspace(x_start, x_end, Nx)
+
+dt = 0.0001  # Time step
+Nt = int((t_end - t_start) / dt)
+
+# Initial condition
+u = np.ones(Nx)
+u_initial = np.where((x >= 0.5) & (x <= 1.0), 2.0, 1.0)
+u = u_initial.copy()
+
+# Boundary conditions: u=1 at both ends
+u[0] = 1.0
+u[-1] = 1.0
+
+# Precompute constant
+alpha = nu * dt / dx**2
+
+# Time-stepping loop (Explicit FTCS)
+for n in range(Nt):
+    u_new = u.copy()
+    u_new[1:-1] = u[1:-1] + alpha * (u[2:] - 2*u[1:-1] + u[:-2])
+    # Apply boundary conditions
+    u_new[0] = 1.0
+    u_new[-1] = 1.0
+    u = u_new.copy()
+
+# Save the final solution
+np.save('u.npy', u)
+```

@@ -1,0 +1,43 @@
+import numpy as np
+
+# Parameters
+nx = 31
+ny = 31
+dx = 2 / (nx - 1)
+dy = 1 / (ny - 1)
+
+# Initialize potential field
+p = np.zeros((ny, nx))
+
+# Boundary conditions
+y = np.linspace(0, 1, ny)
+p[:, -1] = y  # Right boundary p = y
+p[:, 0] = 0   # Left boundary p = 0
+
+# Iterative solver parameters
+tolerance = 1e-6
+max_iterations = 10000
+diff = 1.0
+iteration = 0
+
+# Iterative solver (Gauss-Seidel)
+while diff > tolerance and iteration < max_iterations:
+    p_old = p.copy()
+    
+    # Update interior points
+    p[1:-1, 1:-1] = 0.25 * (p[1:-1, 2:] + p[1:-1, 0:-2] + p[2:, 1:-1] + p[0:-2, 1:-1])
+    
+    # Neumann boundary conditions (top and bottom)
+    p[0, :] = p[1, :]      # Bottom boundary ∂p/∂y = 0
+    p[-1, :] = p[-2, :]    # Top boundary ∂p/∂y = 0
+    
+    # Reapply boundary conditions
+    p[:, 0] = 0
+    p[:, -1] = y
+    
+    # Compute the maximum difference
+    diff = np.max(np.abs(p - p_old))
+    iteration += 1
+
+# Save the final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/o1-mini/prompts_no_instruction/p_2D_Laplace_Equation.npy', p)

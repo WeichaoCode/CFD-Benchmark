@@ -1,0 +1,37 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+Lx, Ly, T = 1., 1., 1.
+nx, ny, nt = 100, 100, 100
+Δx, Δy, Δt = Lx/(nx-1), Ly/(ny-1), T/nt
+cfl= Δt /max( Δx, Δy)
+
+# Ensure CFL condition is met
+assert cfl < 1, "CFL condition not met!"
+
+# Discretize space-time
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+t = np.linspace(0, T, nt)
+
+# Initial velocity field
+u, v = np.zeros((ny, nx)), np.zeros((ny, nx))
+
+# Discretization using FDM
+for n in range(nt-1):
+    un = u.copy()
+    vn = v.copy()
+    
+    # central differences for velocity, forward Euler for time
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            u[j,i] = un[j,i] - un[j,i]*(Δt/Δx)*(un[j,i] - un[j, i-1]) \
+                            - vn[j,i]*(Δt/Δy)*(un[j,i] - un[j-1, i])
+                
+            v[j,i] = vn[j,i] - un[j,i]*(Δt/Δx)*(vn[j,i] - vn[j, i-1]) \
+                            - vn[j,i]*(Δt/Δy)*(vn[j,i] - vn[j-1, i])
+
+# Plotting final velocity field
+plt.quiver(x[::3], y[::3], u[::3,::3], v[::3,::3])
+plt.show()

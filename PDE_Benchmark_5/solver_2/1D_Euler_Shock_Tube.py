@@ -1,0 +1,45 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Define parameters
+L = 4.0
+T = 0.2
+nx = 401
+nt = 800
+gamma = 1.4
+CFL = 0.9
+dx = L / (nx - 1)
+dt = CFL * dx
+x = np.linspace(0, L, nx)
+
+# 2. Initialize primitive and conserved variables
+rho = np.where(x < 0.5, 1.0, 0.125)
+u = np.zeros_like(rho)
+p = np.where(x < 0.5, 1.0, 0.1)
+U = np.array([rho, rho * u, p / (gamma - 1) + 0.5 * rho * u**2])
+
+# 3. MacCormack method
+for n in range(nt):
+    F = np.array([U[1, :], (U[1, :]**2 / U[0, :] + (gamma - 1) * (U[2, :] - 0.5 * U[1, :]**2 / U[0, :])), U[1, :] * ((U[2, :] / U[0, :]) + (gamma - 1) * (U[2, :] - 0.5 * U[1, :]**2 / U[0, :]))])
+    U_star = U[:, :-1] - dt / dx * (F[:, 1:] - F[:, :-1])
+    F_star = np.array([U_star[1, :], (U_star[1, :]**2 / U_star[0, :] + (gamma - 1) * (U_star[2, :] - 0.5 * U_star[1, :]**2 / U_star[0, :])), U_star[1, :] * ((U_star[2, :] / U_star[0, :]) + (gamma - 1) * (U_star[2, :] - 0.5 * U_star[1, :]**2 / U_star[0, :]))])
+    U[:, 1:] = 0.5 * (U[:, 1:] + U_star - dt / dx * (F_star - F[:, :-1]))
+
+# 4. Converting back to primitive variables
+rho = U[0, :]
+u = U[1, :] / U[0, :]
+p = (gamma - 1) * (U[2, :] - 0.5 * U[1, :]**2 / U[0, :])
+
+# 5. Visualize the results
+plt.figure(figsize=(12, 9))
+plt.subplot(3, 1, 1)
+plt.plot(x, rho, 'k-')
+plt.ylabel('Density')
+plt.subplot(3, 1, 2)
+plt.plot(x, u, 'k-')
+plt.ylabel('Velocity')
+plt.subplot(3, 1, 3)
+plt.plot(x, p, 'k-')
+plt.ylabel('Pressure')
+plt.xlabel('x')
+plt.show()

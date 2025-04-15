@@ -1,0 +1,78 @@
+Here is some sample code to get you started:
+
+Please install required libraries (numpy, matplotlib) by this command:
+
+> pip install numpy matplotlib
+
+Import the necessary libraries:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+Create function to define your source term:
+
+```python
+def source_term(x, y, Q_0, sigma):
+    return Q_0 * np.exp(-1 * (x**2 + y**2) / (2*sigma**2))
+```
+
+Initialize your parameters like heat diffusivity, max heating, sigma, etc:
+
+```python
+alpha = 0.1
+Q_0 = 200
+sigma = 0.1
+```
+
+Create a spatial grid:
+
+```python
+x = np.linspace(-1, 1, 100)
+y = np.linspace(-1, 1, 100)
+x, y = np.meshgrid(x, y)
+```
+
+Compute source term:
+
+```python
+q = source_term(x, y, Q_0, sigma)
+```
+
+Next, define functions for your implicit and explicit methods:
+
+```python
+def explicit_method(params):
+    # code for explicit method
+    pass
+    
+def implicit_method(params):
+    # code for implicit method
+    pass
+```
+
+Now, call these methods within a time-stepping loop and pass whatever parameters you should:
+
+```python
+for i in range(max_iter):
+    explicit_sol = explicit_method(params)
+    implicit_sol = implicit_method(params)
+```
+
+At last, visualize the solutions using matplotlib:
+
+```python
+plt.figure()
+plt.contourf(x, y, explicit_sol)
+plt.title('Explicit Method')
+    
+plt.figure()
+plt.contourf(x, y, implicit_sol)
+plt.title('Implicit Method')
+plt.show()
+```
+
+Remember to replace the `params` placeholders with your actual parameters. You should implement the discrete form of the heat equation in the 'explicit_method' and 'implicit_method' functions. Keep in mind, explicit methods require satisfying the CFL condition to ensure numerical stability, otherwise, solutions could be unstable or inaccurate. Implicit methods are unconditionally stable but require solving a system of linear equations at each time step which could be computationally demanding for large systems. 
+
+This is just a basic structure, you have to complete the code according to your needs. It does not include any stop conditions (like reaching a steady state) and does not compute time, so you may need to include a time grid and its respective computations.

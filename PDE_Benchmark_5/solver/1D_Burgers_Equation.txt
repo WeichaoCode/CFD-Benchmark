@@ -1,0 +1,72 @@
+Sure, here is a python script detailing the proposed steps using NumPy library. Let's begin by importing the necessary libraries:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+```
+1. Define parameters (L, T, nx, nt, ν):
+```python
+# Define parameters
+L = 2.0*np.pi  # length of domain
+T = 0.5        # time of run
+nx = 128       # number of spatial points
+nt = 1000      # number of time steps
+ν = 0.07       # viscosity
+```
+2. Discretize the space & time, ensuring CFL stability:
+```python
+# Discretize the domain
+dx = L/nx                # spatial resolution
+dt = T/nt                # time step
+cfl = ν*dt/dx**2         # CFL condition
+x = np.linspace(0, L, nx)# spatial grid points
+```
+3. Initialize the velocity field using the given initial condition:
+```python
+# Define functions for initial conditions
+def φ(x, ν):
+    return np.exp(-x**2/(4*ν)) + np.exp(-(x-2*np.pi)**2/(4*ν))
+
+def dφ(x, ν):
+    return -x/(2*ν)*np.exp(-x**2/(4*ν)) - (x-2*np.pi)/(2*ν)*np.exp(-(x-2*np.pi)**2/(4*ν))
+
+# Initial conditions
+u = -2*ν*dφ(x, ν)/φ(x, ν) + 4
+```
+4. Iterate using the finite difference scheme:
+```python
+# Finite difference scheme iteration
+for t in range(nt):
+    un = u.copy()
+    for i in range(1, nx-1):
+        u[i] = un[i] - un[i] * dt/dx *(un[i] - un[i-1]) + ν*dt/dx**2*\
+                (un[i+1]-2*un[i]+un[i-1])
+```
+5. Apply periodic boundary conditions:
+```python
+    u[0] = un[0] - un[0] * dt/dx * (un[0] - un[-2]) + ν*dt/dx**2*\
+            (un[1] - 2*un[0] + un[-2])
+    u[-1] = u[0]
+```
+6. Compare the numerical solution with the analytical solution:
+```python
+# Analytical solution
+u_exact = -2*ν*dφ(x, ν)/φ(x, ν) + 4
+
+# Compare with numerical solution
+error = np.abs(u - u_exact).mean()
+print('Mean error:', error)
+```
+7. Plot and visualize the solution evolution over time:
+```python
+# Plot solution
+plt.figure(figsize=(8,5))
+plt.plot(x,u, label='Numerical')
+plt.plot(x,u_exact, label='Exact')
+plt.legend()
+plt.xlabel('x')
+plt.ylabel('u')
+plt.grid(True)
+plt.show()
+```
+Please note that for this particular situation, due to the non-linearity of the equation and the finite difference techniques used, the numerical solution will drift away from the exact solution leading to accumulation of error over time. This is expected and often the case for such complex problems. Using different techniques or more sophisticated methods can help reduce this error.

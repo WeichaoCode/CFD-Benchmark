@@ -1,0 +1,45 @@
+```python
+import numpy as np
+from scipy.sparse import diags, csc_matrix
+from scipy.sparse.linalg import spsolve
+
+# Constants
+H = 2.0
+n = 100
+mu = 1.0  # Molecular viscosity, assumed constant for simplicity
+
+# Non-uniform grid clustering near the walls
+y = np.linspace(0, 1, n)
+y = H * (np.sinh(3 * y) / np.sinh(3))
+
+# Compute dy and dy_mid
+dy = np.diff(y)
+dy_mid = (dy[:-1] + dy[1:]) / 2
+
+# Initialize velocity
+u = np.zeros(n)
+
+# Spalart-Allmaras model parameters (simplified for this example)
+nu_t = np.zeros(n)  # Eddy viscosity, initialized to zero
+
+# Effective viscosity
+mu_eff = mu + nu_t
+
+# Construct the coefficient matrix A and right-hand side vector b
+A = diags([1/dy[:-1], -(1/dy[:-1] + 1/dy[1:]), 1/dy[1:]], [-1, 0, 1], shape=(n-2, n-2))
+A = csc_matrix(A)  # Convert to CSC format for spsolve
+b = np.full(n-2, -1.0)
+
+# Apply boundary conditions
+# u[0] = 0 and u[-1] = 0 are implicitly applied by not modifying the first and last rows of A
+
+# Solve the linear system
+u_inner = spsolve(A, b)
+
+# Insert boundary conditions
+u[1:-1] = u_inner
+
+# Save the solution
+save_values = ['u']
+np.save('u.npy', u)
+```

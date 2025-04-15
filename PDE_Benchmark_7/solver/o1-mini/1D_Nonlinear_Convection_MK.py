@@ -1,0 +1,54 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+nu = 0.5          # CFL number
+dt = 0.01         # Time step
+T = 500           # Number of time steps
+dx = dt / nu      # Space step
+L = 2 * np.pi     # Domain length
+N = int(L / dx)   # Number of spatial points
+x = np.linspace(0, L, N, endpoint=False)  # Spatial grid
+
+# Initial condition
+u_initial = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# Initialize solutions for MacCormack, Lax-Friedrichs, and Lax-Wendroff
+u_mc = u_initial.copy()
+u_lf = u_initial.copy()
+u_lw = u_initial.copy()
+
+# Time-stepping loop
+for _ in range(T):
+    # MacCormack Method
+    F_mc = 0.5 * u_mc**2
+    # Predictor step
+    u_star = u_mc - (dt/dx) * (np.roll(F_mc, -1) - F_mc)
+    # Corrector step
+    F_star = 0.5 * u_star**2
+    u_mc = 0.5 * (u_mc + u_star - (dt/dx) * (F_star - np.roll(F_star, 1)))
+    
+    # Lax-Friedrichs Method
+    F_lf = 0.5 * u_lf**2
+    u_lf = 0.5 * (np.roll(u_lf, -1) + np.roll(u_lf, 1)) - (dt/(2*dx)) * (np.roll(F_lf, -1) - np.roll(F_lf, 1))
+    
+    # Lax-Wendroff Method
+    F_lw = 0.5 * u_lw**2
+    u_lw = (u_lw - (dt/(2*dx)) * (np.roll(F_lw, -1) - np.roll(F_lw, 1)) +
+            (dt**2)/(2*dx**2) * (u_lw * (np.roll(F_lw, -1) - F_lw) - np.roll(u_lw, 1) * (F_lw - np.roll(F_lw, 1))))
+    
+# Save the MacCormack solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/results/prediction/o1-mini/u_mc_1D_Nonlinear_Convection_MK.npy', u_mc)
+
+# Plotting the results
+plt.figure(figsize=(10, 6))
+plt.plot(x, u_initial, label='Initial Condition', linestyle='--')
+plt.plot(x, u_mc, label='MacCormack')
+plt.plot(x, u_lf, label='Lax-Friedrichs')
+plt.plot(x, u_lw, label='Lax-Wendroff')
+plt.xlabel('x')
+plt.ylabel('u(x, T)')
+plt.title('Nonlinear Convection Equation Solutions at Final Time Step')
+plt.legend()
+plt.grid(True)
+plt.show()

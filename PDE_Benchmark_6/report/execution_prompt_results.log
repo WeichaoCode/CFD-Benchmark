@@ -1,0 +1,290 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: generate_prompt_Fully_Developed_Turbulent_Channel_Flow_KE.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Diffusion_FVM.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_1D_Linear_Convection_corr.py ---
+Exit Code: 0
+Output:
+1D_Linear_Convection_Predictor_Corrector' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_1D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+Burgers' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_1D_Nonlinear_Convection_MK.py ---
+Exit Code: 0
+Output:
+1D_Nonlinear_Convection_MacCormack' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Laplace_Equation.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_Fully_Developed_Turbulent_Channel_Flow_CESS.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_1D_Nonlinear_Convection_LW.py ---
+Exit Code: 0
+Output:
+1D_Nonlinear_Convection_Lax_Wendroff' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_1D_Linear_Convection_adams.py ---
+Exit Code: 0
+Output:
+1D_Linear_Convection_Explicit_Euler' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Navier_Stokes_Channel.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Diffusion.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Steady_Heat_Equation_Gauss.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_1D_Euler_Shock_Tube.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Unsteady_Heat_Equation_SE.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Steady_Heat_Equation_Jac.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Inviscid_Burgers_FOU.py ---
+Exit Code: 0
+Output:
+2D_Inviscid_Burgers_FOU' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_Fully_Developed_Turbulent_Channel_Flow_SA.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+2D_Burgers_Equation_Explicit_Euler' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_1D_Linear_Conection_explicit_euler.py ---
+Exit Code: 0
+Output:
+1D_Linear_Convection_Explicit_Euler' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Navier_Stokes_Cavity.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Inviscid_Burgers_MK.py ---
+Exit Code: 0
+Output:
+2D_Inviscid_Burgers_MK' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_1D_Diffusion.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Unsteady_Heat_Equation_ADI.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_1D_Linear_Convection_rk.py ---
+Exit Code: 0
+Output:
+1D_Linear_Convection_Runge_Kutta' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_1D_Nonlinear_Convection_Lax.py ---
+Exit Code: 0
+Output:
+1D_Nonlinear_Convection_Lax' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Unsteady_Heat_Equation_DF.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Convection.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Possion.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_2D_Steady_Heat_Equation_SOR.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_Fully_Developed_Turbulent_Channel_Flow_SST.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: generate_prompt_Fully_Developed_Turbulent_Channel_Flow_V2F.py ---
+Exit Code: 0
+Output:
+1D Diffusion' equation prompt added to /opt/CFD-Benchmark/PDE_Benchmark_6/prompt/PDE_TASK_PROMPT.json
+
+Errors:
+
+--------------------------------------------------
+

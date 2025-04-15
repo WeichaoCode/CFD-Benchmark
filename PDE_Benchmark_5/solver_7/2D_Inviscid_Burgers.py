@@ -1,0 +1,35 @@
+import numpy as np 
+import matplotlib.pyplot as plt
+
+# parameters
+Lx, Ly, T = 2.0, 2.0, 1.0
+nx, ny, nt = 101, 101, 100
+
+dx, dy = Lx / (nx - 1), Ly / (ny - 1)
+dt = T / (nt - 1)
+
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+t = np.linspace(0, T, nt)
+
+cfl = dt * np.max([np.max(x/dx), np.max(y/dy)])
+
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+
+# initial condition
+u[:, :] = 1.0
+v[:, :] = 1.0
+
+for n in range(nt - 1):
+    un = u.copy()
+    vn = v.copy()
+
+    for j in range(1, ny - 1):
+        for i in range(1, nx - 1):
+            u[j, i] = un[j, i] - un[j, i] * dt / dx * (un[j, i] - un[j, i - 1]) - vn[j, i] * dt / dy * (un[j, i] - un[j - 1, i])
+            v[j, i] = vn[j, i] - un[j, i] * dt / dx * (vn[j, i] - vn[j, i - 1]) - vn[j, i] * dt / dy * (vn[j, i] - vn[j - 1, i])
+
+Q = plt.quiver(x, y, u, v)
+plt.quiverkey(Q, X=0.3, Y=1.1, U=10, label='Quiver key', labelpos='E')
+plt.show()

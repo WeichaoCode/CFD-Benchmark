@@ -1,0 +1,103 @@
+2025-03-25 13:27:59,519 - INFO - ####################################################################################################
+2025-03-25 13:27:59,519 - INFO - Using the o1-mini, change temperature to 1.0, remove max_tokens
+2025-03-25 13:27:59,540 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 1/5)
+2025-03-25 13:28:00,465 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:00,468 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_KE: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:00,468 - INFO - 🔹 Generating code for: 2D_Diffusion_FVM (Attempt 1/5)
+2025-03-25 13:28:00,874 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:00,875 - INFO - ❌ API Call Error for 2D_Diffusion_FVM: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:00,875 - INFO - 🔹 Generating code for: 1D_Linear_Convection_corr (Attempt 1/5)
+2025-03-25 13:28:00,983 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:00,984 - INFO - ❌ API Call Error for 1D_Linear_Convection_corr: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:00,984 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/5)
+2025-03-25 13:28:01,103 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:01,105 - INFO - ❌ API Call Error for 1D_Burgers_Equation: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:01,105 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_MK (Attempt 1/5)
+2025-03-25 13:28:01,218 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:01,219 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_MK: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:01,220 - INFO - 🔹 Generating code for: 2D_Laplace_Equation (Attempt 1/5)
+2025-03-25 13:28:01,341 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:01,342 - INFO - ❌ API Call Error for 2D_Laplace_Equation: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:01,343 - INFO - 🔹 Generating code for: 2D_Linear_Convection (Attempt 1/5)
+2025-03-25 13:28:01,896 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:01,898 - INFO - ❌ API Call Error for 2D_Linear_Convection: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:01,898 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_CESS (Attempt 1/5)
+2025-03-25 13:28:01,992 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:01,993 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_CESS: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:01,994 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_LW (Attempt 1/5)
+2025-03-25 13:28:02,109 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:02,111 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_LW: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:02,111 - INFO - 🔹 Generating code for: 1D_Linear_Convection_adams (Attempt 1/5)
+2025-03-25 13:28:02,306 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:02,307 - INFO - ❌ API Call Error for 1D_Linear_Convection_adams: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:02,308 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Channel (Attempt 1/5)
+2025-03-25 13:28:02,411 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:02,413 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Channel: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:02,413 - INFO - 🔹 Generating code for: 2D_Diffusion (Attempt 1/5)
+2025-03-25 13:28:02,613 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:02,615 - INFO - ❌ API Call Error for 2D_Diffusion: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:02,615 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Gauss (Attempt 1/5)
+2025-03-25 13:28:02,922 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:02,923 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_Gauss: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:02,924 - INFO - 🔹 Generating code for: 1D_Euler_Shock_Tube (Attempt 1/5)
+2025-03-25 13:28:03,227 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:03,227 - INFO - ❌ API Call Error for 1D_Euler_Shock_Tube: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:03,227 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_SE (Attempt 1/5)
+2025-03-25 13:28:03,433 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:03,434 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_SE: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:03,434 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Jac (Attempt 1/5)
+2025-03-25 13:28:03,518 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:03,518 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_Jac: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:03,518 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_FOU (Attempt 1/5)
+2025-03-25 13:28:03,616 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:03,618 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_FOU: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:03,618 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SA (Attempt 1/5)
+2025-03-25 13:28:03,716 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:03,716 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SA: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:03,716 - INFO - 🔹 Generating code for: 2D_Burgers_Equation (Attempt 1/5)
+2025-03-25 13:28:03,887 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:03,889 - INFO - ❌ API Call Error for 2D_Burgers_Equation: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:03,889 - INFO - 🔹 Generating code for: 1D_Linear_Convection_explicit_euler (Attempt 1/5)
+2025-03-25 13:28:03,992 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:03,992 - INFO - ❌ API Call Error for 1D_Linear_Convection_explicit_euler: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:03,992 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Cavity (Attempt 1/5)
+2025-03-25 13:28:04,094 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:04,094 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Cavity: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:04,094 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_MK (Attempt 1/5)
+2025-03-25 13:28:04,197 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:04,199 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_MK: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:04,199 - INFO - 🔹 Generating code for: 1D_Diffusion (Attempt 1/5)
+2025-03-25 13:28:04,354 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:04,356 - INFO - ❌ API Call Error for 1D_Diffusion: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:04,356 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_ADI (Attempt 1/5)
+2025-03-25 13:28:04,457 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:04,457 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_ADI: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:04,457 - INFO - 🔹 Generating code for: 1D_Linear_Convection_rk (Attempt 1/5)
+2025-03-25 13:28:04,552 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:04,553 - INFO - ❌ API Call Error for 1D_Linear_Convection_rk: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:04,554 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_Lax (Attempt 1/5)
+2025-03-25 13:28:04,765 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:04,766 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_Lax: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:04,766 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_DF (Attempt 1/5)
+2025-03-25 13:28:05,072 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:05,074 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_DF: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:05,074 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 1/5)
+2025-03-25 13:28:05,174 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:05,175 - INFO - ❌ API Call Error for 2D_Convection: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:05,176 - INFO - 🔹 Generating code for: 2D_Poisson_Equation (Attempt 1/5)
+2025-03-25 13:28:05,378 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:05,380 - INFO - ❌ API Call Error for 2D_Poisson_Equation: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:05,380 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_SOR (Attempt 1/5)
+2025-03-25 13:28:05,499 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:05,500 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_SOR: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:05,500 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SST (Attempt 1/5)
+2025-03-25 13:28:05,622 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:05,623 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SST: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:05,623 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_V2F (Attempt 1/5)
+2025-03-25 13:28:05,741 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-25 13:28:05,742 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_V2F: Error code: 400 - {'error': {'message': "Unsupported value: 'messages[0].role' does not support 'system' with this model.", 'type': 'invalid_request_error', 'param': 'messages[0].role', 'code': 'unsupported_value'}}
+2025-03-25 13:28:05,743 - INFO - 
+🎯 Execution completed. Check the solver directory for generated files.
+2025-03-25 13:28:05,743 - INFO - Total Input Tokens: 0
+2025-03-25 13:28:05,743 - INFO - Total Output Tokens: 0
+2025-03-25 13:28:05,743 - INFO - Total Estimated Cost: $0.000000

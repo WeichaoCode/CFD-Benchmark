@@ -1,0 +1,66 @@
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+nx = 41              # Number of grid points in x
+nt = 20              # Number of time steps
+dx = 2 / (nx - 1)    # Grid spacing
+nu = 0.3             # Diffusion coefficient
+sigma = 0.2
+dt = sigma * dx**2 / nu  # Time step
+
+# Spatial grid
+x = np.linspace(0, 2, nx)
+
+# Initial condition
+u = np.ones(nx)
+u[np.where((x >= 0.5) & (x <= 1.0))] = 2
+
+# Apply boundary conditions
+u[0] = 1
+u[-1] = 0
+
+# Store the initial state for plotting
+u_initial = u.copy()
+solutions = [u_initial]
+
+# Time-stepping loop
+for n in range(nt):
+    u_new = u.copy()
+    # Update interior points
+    for i in range(1, nx-1):
+        u_new[i] = u[i] + nu * dt / dx**2 * (u[i+1] - 2*u[i] + u[i-1])
+    # Re-apply boundary conditions
+    u_new[0] = 1
+    u_new[-1] = 0
+    # Update u
+    u = u_new.copy()
+    # Store the solution
+    solutions.append(u.copy())
+
+# Plotting the results
+plt.figure(figsize=(8,6))
+for i, sol in enumerate(solutions):
+    if i % 5 == 0 or i == nt:
+        plt.plot(x, sol, label=f't={i*dt:.2f}')
+plt.xlabel('x')
+plt.ylabel('u')
+plt.title('1D Diffusion Equation Solution')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot the final solution
+plt.figure(figsize=(8,6))
+plt.plot(x, u, label='Final Solution')
+plt.xlabel('x')
+plt.ylabel('u')
+plt.title(f'Final Solution at t={nt*dt:.2f}')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Save the final solution
+np.save('diffusion_final_solution.npy', u)
+```

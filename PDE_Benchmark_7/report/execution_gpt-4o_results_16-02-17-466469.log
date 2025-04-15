@@ -1,0 +1,200 @@
+2025-03-20 16:02:17,466 - INFO - ####################################################################################################
+2025-03-20 16:02:17,466 - INFO - Using the GPT-4o
+2025-03-20 16:02:17,488 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 1/5)
+2025-03-20 16:02:34,029 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-20 16:02:34,033 - INFO - Input Tokens: 465, Output Tokens: 1648
+2025-03-20 16:02:34,033 - INFO - Estimated cost for this request: $0.017643
+2025-03-20 16:02:34,408 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 105, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 80, in main
+    k = solve_linear_system(A_k, b_k)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 58, in solve_linear_system
+    return solve(A, b)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 223, in solve
+    _solve_check(n, info)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 29, in _solve_check
+    raise LinAlgError('Matrix is singular.')
+numpy.linalg.LinAlgError: Matrix is singular.
+2025-03-20 16:02:34,408 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_KE, refining prompt...
+2025-03-20 16:02:34,408 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 105, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 80, in main
+    k = solve_linear_system(A_k, b_k)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 58, in solve_linear_system
+    return solve(A, b)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 223, in solve
+    _solve_check(n, info)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 29, in _solve_check
+    raise LinAlgError('Matrix is singular.')
+numpy.linalg.LinAlgError: Matrix is singular.
+Please correct it.
+2025-03-20 16:02:34,408 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 2/5)
+2025-03-20 16:02:51,639 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-20 16:02:51,643 - INFO - Input Tokens: 465, Output Tokens: 1558
+2025-03-20 16:02:51,643 - INFO - Estimated cost for this request: $0.016743
+2025-03-20 16:02:52,018 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 103, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 82, in main
+    k = solve_linear_system(A_k, b_k)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 56, in solve_linear_system
+    return solve(A, b)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 223, in solve
+    _solve_check(n, info)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 29, in _solve_check
+    raise LinAlgError('Matrix is singular.')
+numpy.linalg.LinAlgError: Matrix is singular.
+2025-03-20 16:02:52,019 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_KE, refining prompt...
+2025-03-20 16:02:52,019 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 103, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 82, in main
+    k = solve_linear_system(A_k, b_k)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 56, in solve_linear_system
+    return solve(A, b)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 223, in solve
+    _solve_check(n, info)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 29, in _solve_check
+    raise LinAlgError('Matrix is singular.')
+numpy.linalg.LinAlgError: Matrix is singular.
+Please correct it.
+2025-03-20 16:02:52,019 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 3/5)
+2025-03-20 16:03:08,336 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-20 16:03:08,338 - INFO - Input Tokens: 465, Output Tokens: 1567
+2025-03-20 16:03:08,338 - INFO - Estimated cost for this request: $0.016833
+2025-03-20 16:03:08,715 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 101, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 80, in main
+    k = solve_linear_system(A_k, b_k)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 54, in solve_linear_system
+    return solve(A, b)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 223, in solve
+    _solve_check(n, info)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 29, in _solve_check
+    raise LinAlgError('Matrix is singular.')
+numpy.linalg.LinAlgError: Matrix is singular.
+2025-03-20 16:03:08,715 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_KE, refining prompt...
+2025-03-20 16:03:08,715 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 101, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 80, in main
+    k = solve_linear_system(A_k, b_k)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 54, in solve_linear_system
+    return solve(A, b)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 223, in solve
+    _solve_check(n, info)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 29, in _solve_check
+    raise LinAlgError('Matrix is singular.')
+numpy.linalg.LinAlgError: Matrix is singular.
+Please correct it.
+2025-03-20 16:03:08,715 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 4/5)
+2025-03-20 16:03:33,169 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-20 16:03:33,172 - INFO - Input Tokens: 465, Output Tokens: 1761
+2025-03-20 16:03:33,173 - INFO - Estimated cost for this request: $0.018773
+2025-03-20 16:03:33,555 - ERROR - Execution failed with errors:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py:64: LinAlgWarning: Ill-conditioned matrix (rcond=5.19769e-23): result may not be accurate.
+  k = solve(mesh.D2, P_k / rho + mu_t / sigma_k * (mesh.D2 @ k))
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py:65: RuntimeWarning: divide by zero encountered in divide
+  epsilon = solve(mesh.D2, (C_e1 * P_k - C_e2 * rho * epsilon) / k + mu_t / sigma_epsilon * (mesh.D2 @ epsilon))
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 106, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 90, in main
+    k, epsilon, mu_t = compute_k_epsilon(mesh, mu, rho)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 65, in compute_k_epsilon
+    epsilon = solve(mesh.D2, (C_e1 * P_k - C_e2 * rho * epsilon) / k + mu_t / sigma_epsilon * (mesh.D2 @ epsilon))
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 144, in solve
+    b1 = atleast_1d(_asarray_validated(b, check_finite=check_finite))
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/_lib/_util.py", line 252, in _asarray_validated
+    a = toarray(a)
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/function_base.py", line 628, in asarray_chkfinite
+    raise ValueError(
+ValueError: array must not contain infs or NaNs
+2025-03-20 16:03:33,555 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_KE, refining prompt...
+2025-03-20 16:03:33,555 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py:64: LinAlgWarning: Ill-conditioned matrix (rcond=5.19769e-23): result may not be accurate.
+  k = solve(mesh.D2, P_k / rho + mu_t / sigma_k * (mesh.D2 @ k))
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py:65: RuntimeWarning: divide by zero encountered in divide
+  epsilon = solve(mesh.D2, (C_e1 * P_k - C_e2 * rho * epsilon) / k + mu_t / sigma_epsilon * (mesh.D2 @ epsilon))
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 106, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 90, in main
+    k, epsilon, mu_t = compute_k_epsilon(mesh, mu, rho)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 65, in compute_k_epsilon
+    epsilon = solve(mesh.D2, (C_e1 * P_k - C_e2 * rho * epsilon) / k + mu_t / sigma_epsilon * (mesh.D2 @ epsilon))
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 144, in solve
+    b1 = atleast_1d(_asarray_validated(b, check_finite=check_finite))
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/_lib/_util.py", line 252, in _asarray_validated
+    a = toarray(a)
+  File "/home/weichao/.local/lib/python3.8/site-packages/numpy/lib/function_base.py", line 628, in asarray_chkfinite
+    raise ValueError(
+ValueError: array must not contain infs or NaNs
+Please correct it.
+2025-03-20 16:03:33,555 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 5/5)
+2025-03-20 16:03:49,917 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-20 16:03:49,929 - INFO - Input Tokens: 465, Output Tokens: 1654
+2025-03-20 16:03:49,929 - INFO - Estimated cost for this request: $0.017703
+2025-03-20 16:03:50,321 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 101, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 85, in main
+    k, epsilon, mu_t = solve_k_epsilon(mesh, mu, rho)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 66, in solve_k_epsilon
+    k = solve(A_k, b_k)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 223, in solve
+    _solve_check(n, info)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 29, in _solve_check
+    raise LinAlgError('Matrix is singular.')
+numpy.linalg.LinAlgError: Matrix is singular.
+2025-03-20 16:03:50,321 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_KE, refining prompt...
+2025-03-20 16:03:50,321 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 101, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 85, in main
+    k, epsilon, mu_t = solve_k_epsilon(mesh, mu, rho)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 66, in solve_k_epsilon
+    k = solve(A_k, b_k)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 223, in solve
+    _solve_check(n, info)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_basic.py", line 29, in _solve_check
+    raise LinAlgError('Matrix is singular.')
+numpy.linalg.LinAlgError: Matrix is singular.
+Please correct it.
+2025-03-20 16:03:50,321 - INFO - ⚠️ Max retries reached for Fully_Developed_Turbulent_Channel_Flow_KE. Check logs for remaining errors.
+2025-03-20 16:03:50,321 - INFO - 🔹 Generating code for: 2D_Diffusion_FVM (Attempt 1/5)
+2025-03-20 16:03:59,191 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-20 16:03:59,194 - INFO - Input Tokens: 443, Output Tokens: 1036
+2025-03-20 16:03:59,194 - INFO - Estimated cost for this request: $0.011468
+2025-03-20 16:04:59,200 - WARNING - ⚠️ Timeout Error: Script took too long to execute.
+2025-03-20 16:04:59,200 - INFO - ❌ Error detected in 2D_Diffusion_FVM, refining prompt...
+2025-03-20 16:04:59,200 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+⚠️ Timeout Error: Script took too long to execute.
+Please correct it.
+2025-03-20 16:04:59,200 - INFO - 🔹 Generating code for: 2D_Diffusion_FVM (Attempt 2/5)
+2025-03-20 16:05:09,198 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-20 16:05:09,200 - INFO - Input Tokens: 443, Output Tokens: 1013
+2025-03-20 16:05:09,200 - INFO - Estimated cost for this request: $0.011238

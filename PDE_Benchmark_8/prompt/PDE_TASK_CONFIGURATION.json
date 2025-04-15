@@ -1,0 +1,323 @@
+{
+  "1D_Burgers_Equation": {
+    "equation": "\\[\n  \\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} = \\nu \\frac{\\partial^2 u}{\\partial x^2}\n\\]\n\nwhere:\n- \\( u(x,t) \\) is the velocity field\n- \\( \\nu = 0.07 \\) is the viscosity coefficient\n- \\( x \\) is the spatial coordinate\n- \\( t \\) is time",
+    "boundary conditions": "Periodic boundary conditions:\n\\[\n  u(0) = u(2\\pi)\n\\]",
+    "initial conditions": "\\[\n  u = -\\frac{2\\nu}{\\phi} \\frac{\\partial \\phi}{\\partial x} + 4\n\\]\nwhere:\n\\[\n  \\phi = \\exp\\left(\\frac{-x^2}{4\\nu}\\right) + \\exp\\left(\\frac{-(x - 2\\pi)^2}{4\\nu}\\right)\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [0, 2\\pi] \\), discretized into \\( nx = 101 \\) grid points\n- Temporal domain: \\( nt = 100 \\) time steps\n- Spatial resolution: \\( dx = \\frac{2\\pi}{nx - 1} \\)\n- Time step: \\( dt = dx \\times \\nu \\)",
+    "numerical method": "Use a finite difference scheme to discretize the PDE.\n",
+    "save values": "u",
+    "expert instruction group 1": "Use a finite difference scheme to discretize the PDE.\n- Convection term: upwind or Lax-Friedrichs scheme (ensure nonlinear convection handled carefully)\n- Diffusion term: second-order central difference\n- Time integration: forward Euler method\n- Ensure stability with appropriate choice of \\( dt \\) relative to \\( dx \\) and \\( \\nu \\)",
+    "expert instruction group 2": "1. Numerically solve Burgers' equation over the defined spatial and temporal domain.\n2. Apply periodic boundary conditions.\n3. Use the given initial condition involving \\( \\phi \\).\n4. Compare the numerical result to the analytical solution:\n\\[\n  u = -\\frac{2\\nu}{\\phi} \\frac{\\partial \\phi}{\\partial x} + 4\n\\]\nwhere:\n\\[\n  \\phi = \\exp\\left(\\frac{-(x - 4t)^2}{4\\nu(t + 1)}\\right) + \\exp\\left(\\frac{-(x - 4t - 2\\pi)^2}{4\\nu(t + 1)}\\right)\n\\]\n5. Save the final velocity field \\( u(x, t_{final}) \\) to a .npy file.\n6. Return only the Python code that implements the above."
+  },
+  "1D_Diffusion": {
+    "equation": "\\[\n  \\frac{\\partial u}{\\partial t} = \\nu \\frac{\\partial^2 u}{\\partial x^2}\n\\]\n\nwhere:\n- \\( u(x,t) \\) is the diffused quantity (e.g., temperature, concentration)\n- \\( \\nu = 0.3 \\) is the diffusion coefficient\n- \\( x \\) is the spatial coordinate\n- \\( t \\) is time",
+    "boundary conditions": " ",
+    "initial conditions": "\\[ u(x, 0) = \\begin{cases} 2, & \\text{if } 0.5 \\leq x \\leq 1 \\\\ 1, & \\text{elsewhere} \\end{cases} \\]",
+    "domain": "- Spatial domain: \\( x \\in [0, 2] \\), discretized into \\( nx = 41 \\) grid points\n- Temporal domain: \\( nt = 20 \\) time steps\n- Spatial resolution: \\( dx = 2 / (nx - 1) \\)\n- Time step: \\( dt = \\sigma \\cdot dx^2 / \\nu \\), with \\( \\sigma = 0.2 \\)",
+    "numerical method": "Use a finite difference scheme to discretize the PDE.",
+    "save values": "u",
+    "expert instruction group 1": "- Diffusion term: second-order central difference\n- Time integration: forward Euler method\n- Ensure stability by satisfying the CFL-like condition with \\( \\sigma = 0.2 \\)\n- Save the final solution to a `.npy` file",
+    "expert instruction group 2": "1. Numerically solve the 1D diffusion equation over the defined spatial and temporal domain.\n2. Apply Dirichlet boundary conditions.\n3. Use the provided piecewise initial condition.\n4. Visualize the evolution of the solution \\( u(x,t) \\) over time.\n5. Plot the final solution at \\( t = T \\).\n6. Save the final result as a `.npy` file.\n7. Return only the Python code that implements the above."
+  },
+  "1D_Euler_Shock_Tube": {
+    "equation": "\\[\n  \\frac{\\partial \\mathbf{U}}{\\partial t} + \\frac{\\partial \\mathbf{F}}{\\partial x} = 0\n\\]\n\nwhere:\n- \\( \\rho \\): Density  \n- \\( u \\): Velocity  \n- \\( p \\): Pressure  \n- \\( E = \\frac{p}{(\\gamma - 1)\\rho} + \\frac{u^2}{2} \\): Total energy per unit mass  \n- \\( \\gamma = 1.4 \\): Ratio of specific heats (for air)\n- \\( \\mathbf{U} = [\\rho, \\rho u, \\rho E]^T \\): Conservative variables\n- \\( \\mathbf{F} = [\\rho u, \\rho u^2 + p, u(\\rho E + p)]^T \\): Flux vector",
+    "boundary conditions": "Reflective (no-flux) boundary conditions at both ends of the tube.",
+    "initial conditions": "Shock tube initially divided at \\( x = 0 \\):\n- Left region (\\( x < 0 \\)):\n  - \\( \\rho_L = 1.0 \\)\n  - \\( u_L = 0.0 \\)\n  - \\( p_L = 1.0 \\)\n- Right region (\\( x \\geq 0 \\)):\n  - \\( \\rho_R = 0.125 \\)\n  - \\( u_R = 0.0 \\)\n  - \\( p_R = 0.1 \\)",
+    "domain": "- Spatial domain: \\( x \\in [-1, 1] \\), discretized into \\( N_x = 81 \\) grid points\n- Temporal domain: \\( t \\in [0, 0.25] \\)\n- Tube length: \\( L = 2.0 \\)\n- CFL = 1.0\n- Time step \\( \\Delta t \\) determined using CFL",
+    "numerical method": "MacCormack method (predictor-corrector scheme) for solving hyperbolic systems.",
+    "save values": ["E", "rho", "u"],
+    "expert instruction group 1": "- Discretize domain with uniform grid and time steps\n- Initialize \\( \\rho \\), \\( u \\), \\( p \\), and compute \\( \\mathbf{U} \\)\n- Compute flux \\( \\mathbf{F} \\) at each step\n- Apply predictor-corrector updates to \\( \\mathbf{U} \\)\n- Convert back to primitive variables after each time step\n- Use reflective boundary conditions",
+    "expert instruction group 2": "1. Numerically solve the 1D Euler equations using MacCormack method.\n2. Set up initial conditions with left/right states as specified.\n3. Apply reflective boundary conditions.\n4. At each time step:\n   - Compute conservative variables and fluxes\n   - Use predictor-corrector steps to advance solution\n   - Update primitive variables from conservative form\n5. Visualize \\( \\rho \\), \\( u \\), and \\( p \\) at different time steps\n6. Save final fields (\\( \\rho \\), \\( u \\), \\( p \\), \\( \\mathbf{U} \\), \\( \\mathbf{F} \\)) as `.npy` files\n7. Return only the Python code that implements the above."
+  },
+  "1D_Linear_Convection_explicit_euler": {
+    "equation": "\\[\n  \\frac{\\partial u}{\\partial t} + c \\frac{\\partial u}{\\partial x} = \\epsilon \\frac{\\partial^2 u}{\\partial x^2}\n\\]\n\nwhere:\n- \\( u(x,t) \\): wave amplitude\n- \\( c = 1 \\): convection speed\n- \\( \\epsilon \\): damping factor (5e-4 for damped)",
+    "boundary conditions": "Periodic boundary conditions:\n\\[\n  u(x_{start}) = u(x_{end})\n\\]",
+    "initial conditions": "\\[\n  u(x,0) = e^{-x^2}\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [-5, 5] \\), with \\( N_x = 101 \\) grid points\n- Time step \\( \\Delta t \\): determined using CFL condition\n- Damping cases: \\( \\epsilon = 5 \\times 10^{-4} \\)",
+    "numerical method": "Explicit Euler method for time integration and 2nd-order central difference for spatial discretization.",
+    "save values": "u",
+    "expert instruction group 1": "- Compute spatial derivatives using central differences\n- Use Explicit Euler method to advance solution in time\n- Apply periodic boundary conditions at each time step\n- Ensure stability by choosing an appropriate \\( \\Delta t \\)",
+    "expert instruction group 2": "1. Define domain and discretize spatial and temporal grids\n2. Initialize the wave profile with \\( u(x,0) = e^{-x^2} \\)\n3. Solve using Explicit Euler with central difference for space\n4. Handle both undamped (\\( \\epsilon = 0 \\)) and damped (\\( \\epsilon = 5 \\times 10^{-4} \\)) cases\n5. Apply periodic boundary conditions\n6. Visualize wave evolution over time and compare cases\n7. Save the final solution to a `.npy` file\n8. Return only the Python code that implements the above"
+  },
+  "1D_Linear_Convection_adams": {
+    "equation": "\\[\n  \\frac{\\partial u}{\\partial t} + c \\frac{\\partial u}{\\partial x} = \\epsilon \\frac{\\partial^2 u}{\\partial x^2}\n\\]\n\nwhere:\n- \\( u(x,t) \\): wave amplitude\n- \\( c = 1 \\): convection speed\n- \\( \\epsilon \\): damping factor (5e-4 for damped)",
+    "boundary conditions": "Periodic boundary conditions:\n\\[\n  u(x_{start}) = u(x_{end})\n\\]",
+    "initial conditions": "\\[\n  u(x,0) = e^{-x^2}\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [-5, 5] \\), with \\( N_x = 101 \\) grid points\n- Time step \\( \\Delta t \\): determined using CFL condition\n- Damping cases: \\( \\epsilon = 5 \\times 10^{-4} \\)",
+    "numerical method": "Adams-Bashforth method for time integration and 2nd-order central difference for spatial discretization. First step is computed using Explicit Euler.",
+    "save values": "u",
+    "expert instruction group 1": "- Compute spatial derivatives using central differences\n- Use Explicit Euler method for the first time step\n- Use 2-step Adams-Bashforth for the remaining time steps:\n  \\[\n    u^{n+1} = u^n + \\frac{\\Delta t}{2} (3 f^n - f^{n-1})\n  \\]\n- Apply periodic boundary conditions\n- Ensure stability by selecting an appropriate \\( \\Delta t \\)",
+    "expert instruction group 2": "1. Define domain and discretize spatial and temporal grids\n2. Initialize the wave profile with \\( u(x,0) = e^{-x^2} \\)\n3. Compute first time step using Explicit Euler\n4. Use Adams-Bashforth method for subsequent steps\n5. Apply periodic boundary conditions\n6. Compare damped and undamped results visually\n7. Save the final solution to a `.npy` file\n8. Return only the Python code that implements the above"
+  },
+  "1D_Linear_Convection_corr": {
+    "equation": "\\[\n  \\frac{\\partial u}{\\partial t} + c \\frac{\\partial u}{\\partial x} = \\epsilon \\frac{\\partial^2 u}{\\partial x^2}\n\\]\n\nwhere:\n- \\( u(x,t) \\): wave amplitude\n- \\( c = 1 \\): convection speed\n- \\( \\epsilon \\): damping factor (5e-4 for damped)",
+    "boundary conditions": "Periodic boundary conditions:\n\\[\n  u(x_{start}) = u(x_{end})\n\\]",
+    "initial conditions": "\\[\n  u(x,0) = e^{-x^2}\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [-5, 5] \\), with \\( N_x = 101 \\) grid points\n- Time step \\( \\Delta t \\): determined using CFL condition\n- Damping cases: \\( \\epsilon = 5 \\times 10^{-4} \\)",
+    "numerical method": "Predictor-Corrector method for time integration and 2nd-order central difference for spatial discretization.",
+    "save values": "u",
+    "expert instruction group 1": "- Compute spatial derivatives using central differences\n- Predictor step (Euler):\n  \\[\n    u^* = u^n + \\Delta t \\cdot f(t_n, u^n)\n  \\]\n- Corrector step (Trapezoidal Rule):\n  \\[\n    u^{n+1} = u^n + \\frac{\\Delta t}{2} [f(t_n, u^n) + f(t_{n+1}, u^*)]\n  \\]\n- Apply periodic boundary conditions\n- Ensure stability by choosing an appropriate \\( \\Delta t \\)",
+    "expert instruction group 2": "1. Define the domain and discretize the grid\n2. Set initial condition: \\( u(x,0) = e^{-x^2} \\)\n3. Perform time integration using predictor-corrector method\n4. Compare results of damped and undamped cases\n5. Visualize the wave profiles over time\n6. Save final wave profile to a `.npy` file\n7. Return only the Python code that implements the above"
+  },
+  "1D_Linear_Convection_rk": {
+    "equation": "\\[\n  \\frac{\\partial u}{\\partial t} + c \\frac{\\partial u}{\\partial x} = \\epsilon \\frac{\\partial^2 u}{\\partial x^2}\n\\]\n\nwhere:\n- \\( u(x,t) \\): wave amplitude\n- \\( c = 1 \\): convection speed\n- \\( \\epsilon \\): damping factor (5e-4 for damped)",
+    "boundary conditions": "Periodic boundary conditions:\n\\[\n  u(x_{start}) = u(x_{end})\n\\]",
+    "initial conditions": "\\[\n  u(x,0) = e^{-x^2}\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [-5, 5] \\), with \\( N_x = 101 \\) grid points\n- Time step \\( \\Delta t \\): determined using CFL condition\n- Damping cases: \\( \\epsilon = 5 \\times 10^{-4} \\)",
+    "numerical method": "4th-order Runge-Kutta (RK4) method for time integration and 2nd-order central difference for spatial discretization.",
+    "save values": "u",
+    "expert instruction group 1": "- Compute spatial derivatives using central differences\n- Runge-Kutta time integration steps:\n  \\[\n  \\begin{aligned}\n  &k_1 = f(t_n, u^n) \\\\\n  &k_2 = f(t_n + \\frac{\\Delta t}{2}, u^n + \\frac{\\Delta t}{2} k_1) \\\\\n  &k_3 = f(t_n + \\frac{\\Delta t}{2}, u^n + \\frac{\\Delta t}{2} k_2) \\\\\n  &k_4 = f(t_n + \\Delta t, u^n + \\Delta t k_3) \\\\\n  &u^{n+1} = u^n + \\frac{\\Delta t}{6} (k_1 + 2k_2 + 2k_3 + k_4)\n  \\end{aligned}\n  \\]\n- Apply periodic boundary conditions\n- Ensure stability by selecting a suitable \\( \\Delta t \\)",
+    "expert instruction group 2": "1. Define the domain and discretize the grid\n2. Set initial condition: \\( u(x,0) = e^{-x^2} \\)\n3. Perform RK4 time integration\n4. Simulate both damped and undamped scenarios\n5. Visualize wave propagation over time\n6. Save final solution to a `.npy` file\n7. Return only the Python code that implements the above"
+  },
+  "1D_Nonlinear_Convection_Lax": {
+    "equation": "\\[\n  \\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} = 0\n\\]\n\nwhere:\n- \\( u(x,t) \\): wave amplitude\n- \\( x \\): spatial coordinate\n- \\( t \\): time",
+    "boundary conditions": "Periodic boundary conditions:\n\\[\n  u(0, t) = u(2\\pi, t)\n\\]",
+    "initial conditions": "\\[\n  u(x, 0) = \\sin(x) + 0.5 \\sin(0.5x)\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [0, 2\\pi] \\), discretized using:\n  \\[\n  x = \\text{np.linspace}(0, L, \\text{math.ceil}(L / (dt / \\nu)))\n  \\]\n  with \\( L = 2\\pi \\), \\( \\nu = 0.5 \\), \\( dt = 0.01 \\), so \\( dx = dt / \\nu \\)\n- Temporal domain: \\( T = 500 \\) time steps",
+    "numerical method": "Lax method for time integration",
+    "save values": "u",
+    "expert instruction group 1": "- Discretize spatial domain based on \\( dx = dt / \\nu \\)\n- Use the **Lax Method**:\n  \\[\n  u^{n+1}_j = \\frac{u^n_{j+1} + u^n_{j-1}}{2} - \\frac{\\Delta t}{2\\Delta x} (F^n_{j+1} - F^n_{j-1})\n  \\]\n  where \\( F = \\frac{u^2}{2} \\) is the nonlinear flux\n- Apply periodic boundary conditions\n- Ensure stability using \\( dt = 0.01 \\) and CFL number \\( \\nu = 0.5 \\)",
+    "expert instruction group 2": "1. Implement the Lax method to update \\( u(x,t) \\) over time\n2. Apply periodic boundary conditions at each step\n3. Simulate wave propagation for \\( T = 500 \\) time steps\n4. Visualize and analyze the solution to observe numerical dissipation\n5. Save final solution in `.npy` format\n6. Return only the Python code that implements the above"
+  },
+  "1D_Nonlinear_Convection_LW": {
+    "equation": "\\[\n  \\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} = 0\n\\]\n\nwhere:\n- \\( u(x,t) \\): wave amplitude\n- \\( x \\): spatial coordinate\n- \\( t \\): time",
+    "boundary conditions": "Periodic boundary conditions:\n\\[\n  u(0, t) = u(2\\pi, t)\n\\]",
+    "initial conditions": "\\[\n  u(x, 0) = \\sin(x) + 0.5 \\sin(0.5x)\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [0, 2\\pi] \\), discretized using:\n  \\[\n  x = \\text{np.linspace}(0, L, \\text{math.ceil}(L / (dt / \\nu)))\n  \\]\n  with \\( L = 2\\pi \\), \\( \\nu = 0.5 \\), \\( dt = 0.01 \\), so \\( dx = dt / \\nu \\)\n- Temporal domain: \\( T = 500 \\) time steps",
+    "numerical method": "Lax-Wendroff method for time integration",
+    "save values": "u",
+    "expert instruction group 1": "- Discretize spatial domain based on \\( dx = dt / \\nu \\)\n- Use the **Lax-Wendroff Method**:\n  \\[\n  u^{n+1}_j = u^n_j - \\frac{\\Delta t}{2 \\Delta x} (F^n_{j+1} - F^n_{j-1}) \n  + \\frac{\\Delta t^2}{2 \\Delta x^2} \\left(A_{j+1/2} (F^n_{j+1} - F^n_j) - A_{j-1/2} (F^n_j - F^n_{j-1}) \\right)\n  \\]\n  where \\( F = \\frac{u^2}{2} \\) is the nonlinear flux, and \\( A \\) is the Jacobian \\( A = \\partial F / \\partial u = u \\)\n- Apply periodic boundary conditions\n- Ensure numerical stability using \\( dt = 0.01 \\) and CFL number \\( \\nu = 0.5 \\)",
+    "expert instruction group 2": "1. Implement the Lax-Wendroff method to update \\( u(x,t) \\) over time\n2. Apply periodic boundary conditions at each step\n3. Simulate wave propagation for \\( T = 500 \\) time steps\n4. Visualize and compare the results to the Lax method\n5. Save final solution in `.npy` format\n6. Return only the Python code that implements the above"
+  },
+  "1D_Nonlinear_Convection_MK": {
+    "equation": "\\[\n  \\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} = 0\n\\]\n\nwhere:\n- \\( u(x,t) \\): wave amplitude\n- \\( x \\): spatial coordinate\n- \\( t \\): time",
+    "boundary conditions": "Periodic boundary conditions:\n\\[\n  u(0, t) = u(2\\pi, t)\n\\]",
+    "initial conditions": "\\[\n  u(x, 0) = \\sin(x) + 0.5 \\sin(0.5x)\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [0, 2\\pi] \\), discretized using:\n  \\[\n  x = \\text{np.linspace}(0, L, \\text{math.ceil}(L / (dt / \\nu)))\n  \\]\n  with \\( L = 2\\pi \\), \\( \\nu = 0.5 \\), \\( dt = 0.01 \\), so \\( dx = dt / \\nu \\)\n- Temporal domain: \\( T = 500 \\) time steps",
+    "numerical method": "MacCormack method for time integration",
+    "save values": "u",
+    "expert instruction group 1": "- Discretize spatial domain based on \\( dx = dt / \\nu \\)\n- Use the **MacCormack Method**, a predictor-corrector scheme:\n  - Predictor Step:\n    \\[\n    u^*_j = u^n_j - \\frac{\\Delta t}{\\Delta x} (F^n_{j+1} - F^n_j)\n    \\]\n  - Corrector Step:\n    \\[\n    u^{n+1}_j = \\frac{1}{2} \\left[ u^n_j + u^*_j - \\frac{\\Delta t}{\\Delta x} (F^*_j - F^*_{j-1}) \\right]\n    \\]\n  where \\( F = \\frac{u^2}{2} \\) is the nonlinear flux\n- Apply periodic boundary conditions\n- Ensure stability using \\( dt = 0.01 \\) and CFL number \\( \\nu = 0.5 \\)",
+    "expert instruction group 2": "1. Implement the MacCormack method to update \\( u(x,t) \\) over time\n2. Apply periodic boundary conditions at each step\n3. Simulate wave propagation for \\( T = 500 \\) time steps\n4. Compare the solution with results from Lax and Lax-Wendroff methods\n5. Save final solution in `.npy` format\n6. Return only the Python code that implements the above"
+  },
+  "2D_Burgers_Equation": {
+    "equation": "\\[\n\\begin{align*}\n\\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} + v \\frac{\\partial u}{\\partial y} &= \\nu \\left( \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} \\right) \\\\\n\\frac{\\partial v}{\\partial t} + u \\frac{\\partial v}{\\partial x} + v \\frac{\\partial v}{\\partial y} &= \\nu \\left( \\frac{\\partial^2 v}{\\partial x^2} + \\frac{\\partial^2 v}{\\partial y^2} \\right)\n\\end{align*}\n\\]\n\nwhere:\n- \\( u(x,y,t) \\), \\( v(x,y,t) \\): velocity components in x and y\n- \\( \\nu = 0.01 \\): kinematic viscosity",
+    "boundary conditions": "Dirichlet boundary conditions:\n\\[\n  u = 1, \\quad v = 1 \\text{ on all boundaries}\n\\]",
+    "initial conditions": "Set \\( u = 1 \\), \\( v = 1 \\) throughout the domain, except:\n\\[\n  u = v = 2 \\quad \\text{for } 0.5 \\leq x, y \\leq 1\n\\]",
+    "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\)\n- Grid size: \\( n_x = n_y = 41 \\), \\( dx = dy = \\frac{2}{n_x - 1} \\)\n- Time domain: \\( nt = 120 \\) time steps\n- CFL-related values: \\( \\sigma = 0.0009 \\), \\( dt = \\sigma \\cdot dx \\cdot dy / \\nu \\)",
+    "numerical method": "Use a finite difference scheme to discretize the PDE.",
+    "save values": ["u", "v"],
+    "expert instruction group 1": "- Discretize the domain using the provided grid settings\n- Use **Explicit Euler Method** for time integration\n- Use **2nd-order central differences** for all spatial derivatives in both u and v equations\n- Apply Dirichlet boundary conditions at every time step\n- Ensure stability using \\( dt = \\sigma \\cdot dx \\cdot dy / \\nu \\) with \\( \\sigma = 0.0009 \\)",
+    "expert instruction group 2": "1. Initialize 2D velocity fields \\( u \\), \\( v \\) with specified initial condition\n2. For each of the 120 time steps:\n   - Compute temporary variables for updated velocity using central differences and Explicit Euler\n   - Apply Dirichlet boundary conditions to enforce \\( u = v = 1 \\) at all edges\n3. Visualize final results using 3D surface plots (use `fig.add_subplot(111, projection='3d')`, not `fig.gca()`)\n4. Save final arrays `u` and `v` to `.npy` files\n5. Return only the Python code that implements the above"
+  },
+  "2D_Convection": {
+    "equation": "\\[\n\\begin{align*}\n\\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} + v \\frac{\\partial u}{\\partial y} &= 0 \\\\\n\\frac{\\partial v}{\\partial t} + u \\frac{\\partial v}{\\partial x} + v \\frac{\\partial v}{\\partial y} &= 0\n\\end{align*}\n\\]\n\nwhere:\n- \\( u(x,y,t) \\), \\( v(x,y,t) \\): velocity components in x and y",
+    "boundary conditions": "Dirichlet boundary conditions:\n\\[\n  u = 1, \\quad v = 1 \\text{ on all boundaries}\n\\]",
+    "initial conditions": "Set \\( u = 1 \\), \\( v = 1 \\) throughout the domain, except:\n\\[\n  u = v = 2 \\quad \\text{for } 0.5 \\leq x, y \\leq 1\n\\]",
+    "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\)\n- Grid size: \\( n_x = n_y = 101 \\), \\( dx = dy = \\frac{2}{n_x - 1} \\)\n- Time domain: \\( nt = 80 \\) time steps\n- CFL-related values: \\( \\sigma = 0.2 \\), \\( dt = \\sigma \\cdot dx \\)",
+    "numerical method": "Use a finite difference scheme to discretize the PDE.",
+    "save values": ["u", "v"],
+    "expert instruction group 1": "- Discretize the domain using the provided grid settings\n- Use **Explicit Euler Method** for time integration\n- Use **1st-order upwind differences** for spatial derivatives in convection terms\n- Apply Dirichlet boundary conditions at every time step\n- Compute time step using \\( dt = \\sigma \\cdot dx \\) with \\( \\sigma = 0.2 \\)",
+    "expert instruction group 2": "1. Initialize 2D velocity fields \\( u \\), \\( v \\) with specified initial condition\n2. For each of the 80 time steps:\n   - Update \\( u \\) and \\( v \\) using upwind scheme and Explicit Euler\n   - Apply Dirichlet boundary conditions to enforce \\( u = v = 1 \\) at all edges\n3. Visualize final results using 3D surface plots (use `fig.add_subplot(111, projection='3d')`)\n4. Save final arrays `u` and `v` to `.npy` files\n5. Return only the Python code that implements the above"
+  },
+  "2D_Diffusion": {
+    "equation": "\\[\n\\frac{\\partial u}{\\partial t} = \\nu \\left( \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} \\right)\n\\]\n\nwhere:\n- \\( u(x,y,t) \\): diffused scalar field (e.g., temperature, concentration)\n- \\( \\nu = 1.0 \\): diffusion coefficient",
+    "boundary conditions": "Dirichlet boundary conditions:\n\\[\n  u = 1 \\quad \\text{on all boundaries}\n\\]",
+    "initial conditions": "Set \\( u = 2 \\) in region \\( 0.5 \\leq x, y \\leq 1 \\), \\( u = 1 \\) elsewhere",
+    "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\)\n- Grid size: \\( n_x = n_y = 31 \\), \\( dx = dy = \\frac{2}{n_x - 1} \\)\n- Time domain: \\( nt = 50 \\) time steps\n- CFL-related values: \\( \\sigma = 0.25 \\), \\( dt = \\sigma \\cdot dx \\cdot dy / \\nu \\)",
+    "numerical method": "Use a finite difference scheme to discretize the PDE.",
+    "save values": "p",
+    "expert instruction group 1": "- Discretize the spatial domain using the provided grid settings\n- Use **Explicit Euler Method** for time integration\n- Use **2nd-order central differences** for the spatial derivatives in the diffusion equation\n- Apply Dirichlet boundary conditions at every time step\n- Compute time step using \\( dt = \\sigma \\cdot dx \\cdot dy / \\nu \\) with \\( \\sigma = 0.25 \\)",
+    "expert instruction group 2": "1. Initialize 2D field \\( u \\) with specified initial condition\n2. For each of the 50 time steps:\n   - Compute temporary updates using central differences and Explicit Euler\n   - Apply Dirichlet boundary conditions: \\( u = 1 \\) at all boundaries\n3. Visualize results using 2D contour plots of \\( u \\)\n4. Save final array `u` to `.npy` file\n5. Return only the Python code that implements the above"
+  },
+  "2D_Diffusion_FVM": {
+    "equation": "\\[\n\\nabla \\cdot ( \\mu \\nabla w ) - \\frac{dP}{dz} = 0\n\\]\n\nwhere:\n- \\( w(x,y) \\): velocity component in the z-direction\n- \\( \\mu = 1 \\times 10^{-3} \\): dynamic viscosity (Pa·s)\n- \\( \\frac{dP}{dz} = -3.2 \\): pressure gradient (Pa/m)\n- \\( \\nabla \\): 2D gradient operator",
+    "boundary conditions": "Dirichlet boundary conditions:\n\\[\n  w = 0 \\text{ (no-slip) on all boundaries}\n\\]",
+    "initial conditions": "Initialize \\( w = 0 \\) throughout the domain",
+    "domain": "- Spatial domain: square duct with \\( h = 0.1 \\) m\n- Grid size: \\( n_x = n_y = 80 \\), \\( dx = dy = h / (n_x - 1) \\)\n- Steady-state problem: no time stepping",
+    "numerical method": "Finite Volume Method (FVM)",
+    "save values": "w",
+    "expert instruction group 1": "- Discretize the domain into a uniform Cartesian grid with control volumes centered at each point\n- Apply Gauss divergence theorem to convert PDE to algebraic equations\n- Use centered differences to compute fluxes at control volume faces\n- Use Jacobi iteration to solve the resulting system of equations\n- Compute coefficients:\n  \\[\n  a_E = a_W = \\frac{\\mu \\Delta y}{\\Delta x}, \\quad a_N = a_S = \\frac{\\mu \\Delta x}{\\Delta y},\n  \\quad a_P = a_E + a_W + a_N + a_S\n  \\]\n- Source term:\n  \\[\n  S_u = \\frac{dP}{dz} \\Delta x \\Delta y\n  \\]",
+    "expert instruction group 2": "1. Initialize 2D field \\( w \\) with zeros\n2. Construct coefficient matrix using FVM and centered differences\n3. Iteratively solve using Jacobi iteration until convergence\n4. Visualize final solution with a contour plot\n5. Save final field `w` to `.npy` file\n6. Return only the Python code that implements the above"
+  },
+  "2D_Inviscid_Burgers_FOU": {
+    "equation": "\\[\n\\begin{align*}\n\\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} + v \\frac{\\partial u}{\\partial y} &= 0 \\\\\n\\frac{\\partial v}{\\partial t} + u \\frac{\\partial v}{\\partial x} + v \\frac{\\partial v}{\\partial y} &= 0\n\\end{align*}\n\\]\n\nwhere:\n- \\( u(x,y,t), v(x,y,t) \\): velocity components in the x and y directions",
+    "boundary conditions": "Dirichlet boundary conditions:\n\\[\n  u = 1, \\quad v = 1 \\text{ on all boundaries}\n\\]",
+    "initial conditions": "Set \\( u = v = 2 \\) for \\( 0.5 \\leq x \\leq 1 \\) and \\( 0.5 \\leq y \\leq 1 \\); else set \\( u = v = 1 \\)",
+    "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\)\n- Grid size: \\( nx = ny = 151 \\), \\( dx = \\frac{2}{nx - 1} \\), \\( dy = \\frac{2}{ny - 1} \\)\n- Time domain: \\( nt = 300 \\) steps, \\( \\sigma = 0.2 \\), \\( dt = \\sigma \\cdot \\frac{\\min(dx, dy)}{2} \\)",
+    "numerical method": "Finite Difference Method: First-Order Upwind scheme",
+    "save values": ["u", "v"],
+    "expert instruction group 1": "- Discretize domain into a uniform grid using the given nx, ny, dx, dy\n- Use forward difference in time and backward difference in space (First-Order Upwind scheme)\n- Update u and v with:\n  \\[\n  u_{i,j}^{n+1} = u_{i,j}^n - \\Delta t (u_{i,j}^n \\frac{u_{i,j}^n - u_{i-1,j}^n}{\\Delta x} + v_{i,j}^n \\frac{u_{i,j}^n - u_{i,j-1}^n}{\\Delta y})\n  \\]\n  \\[\n  v_{i,j}^{n+1} = v_{i,j}^n - \\Delta t (u_{i,j}^n \\frac{v_{i,j}^n - v_{i-1,j}^n}{\\Delta x} + v_{i,j}^n \\frac{v_{i,j}^n - v_{i,j-1}^n}{\\Delta y})\n  \\]\n- Apply Dirichlet boundary conditions: u = v = 1 at all edges\n- Choose \\( dt \\) based on CFL condition for stability",
+    "expert instruction group 2": "1. Initialize u and v fields using the hat function in the region [0.5, 1] × [0.5, 1]\n2. Iterate for 300 time steps, updating u and v using First-Order Upwind differences\n3. Apply boundary conditions at each time step\n4. Visualize the final velocity field using quiver plots\n5. Save u and v as `.npy` files\n6. Return only the Python code that implements the above"
+  },
+  "2D_Inviscid_Burgers_MK": {
+    "equation": "\\[\n\\begin{align*}\n\\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} + v \\frac{\\partial u}{\\partial y} &= 0 \\\\\n\\frac{\\partial v}{\\partial t} + u \\frac{\\partial v}{\\partial x} + v \\frac{\\partial v}{\\partial y} &= 0\n\\end{align*}\n\\]\n\nwhere:\n- \\( u(x,y,t), v(x,y,t) \\): velocity components in the x and y directions",
+    "boundary conditions": "Dirichlet boundary conditions:\n\\[\n  u = 1, \\quad v = 1 \\text{ on all boundaries}\n\\]",
+    "initial conditions": "Set \\( u = v = 2 \\) for \\( 0.5 \\leq x \\leq 1 \\) and \\( 0.5 \\leq y \\leq 1 \\); else set \\( u = v = 1 \\)",
+    "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\)\n- Grid size: \\( nx = ny = 151 \\), \\( dx = \\frac{2}{nx - 1} \\), \\( dy = \\frac{2}{ny - 1} \\)\n- Time domain: \\( nt = 300 \\), \\( \\sigma = 0.2 \\), \\( dt = \\sigma \\cdot \\frac{\\min(dx, dy)}{2} \\)",
+    "numerical method": "Finite Difference Method: MacCormack Method",
+    "save values": ["u", "v"],
+    "expert instruction group 1": "- Use the **MacCormack Method**, a predictor-corrector FDM scheme:\n  - **Predictor step**:\n    \\[\n    u^* = u^n - \\Delta t \\left( u^n \\frac{\\partial u^n}{\\partial x} + v^n \\frac{\\partial u^n}{\\partial y} \\right)\n    \\]\n  - **Corrector step**:\n    \\[\n    u^{n+1} = \\frac{1}{2}(u^n + u^* - \\Delta t (u^* \\frac{\\partial u^*}{\\partial x} + v^* \\frac{\\partial u^*}{\\partial y}))\n    \\]\n  - Apply same for \\( v \\) using the MacCormack steps\n- Use backward differences for predictors and forward for correctors\n- Apply Dirichlet boundary conditions after each step\n- Ensure time step meets stability condition from CFL",
+    "expert instruction group 2": "1. Initialize 2D velocity fields \\( u, v \\) with hat function (2 in center, 1 elsewhere)\n2. For 300 time steps, apply MacCormack predictor and corrector steps for u and v\n3. Enforce boundary values \\( u = v = 1 \\) at all edges after each step\n4. Visualize final field using quiver plot\n5. Save \\( u, v \\) as `.npy` files\n6. Return only the Python code that implements the above"
+  },
+  "2D_Laplace_Equation": {
+    "equation": "\\[\n\\frac{\\partial^2 p}{\\partial x^2} + \\frac{\\partial^2 p}{\\partial y^2} = 0\n\\]\n\nwhere:\n- \\( p(x,y) \\): scalar potential field (e.g., temperature, electric potential)",
+    "boundary conditions": "- Left boundary \\( (x = 0) \\): \\( p = 0 \\)\n- Right boundary \\( (x = 2) \\): \\( p = y \\)\n- Top and bottom boundaries \\( (y = 0, 1) \\): Neumann condition \\( \\partial p / \\partial y = 0 \\)",
+    "initial conditions": "Set \\( p = 0 \\) throughout the domain initially",
+    "domain": "- Spatial domain: \\( x \\in [0, 2], y \\in [0, 1] \\)\n- Grid resolution: \\( nx = 31, ny = 31 \\)\n- Spatial steps: \\( dx = 2 / (nx - 1), dy = 1 / (ny - 1) \\)",
+    "numerical method": "Finite Difference Method",
+    "save values": "p",
+    "expert instruction group 1": "- Discretize using the 5-point finite difference stencil:\n  \\[\n  p_{i,j} = \\frac{\\Delta y^2(p_{i+1,j} + p_{i-1,j}) + \\Delta x^2(p_{i,j+1} + p_{i,j-1})}{2(\\Delta x^2 + \\Delta y^2)}\n  \\]\n- Apply appropriate Dirichlet and Neumann boundary conditions\n- Use an iterative solver (Jacobi, Gauss-Seidel, or SOR)\n- Check for convergence when the maximum change between iterations is below a specified tolerance",
+    "expert instruction group 2": "1. Initialize \\( p \\) with zeros\n2. Implement FDM with iterative updates until convergence\n3. Apply mixed boundary conditions during each iteration\n4. Save the final 2D solution to `.npy` file\n5. Visualize \\( p(x,y) \\) with contour plots\n6. Optionally compare with analytical solution:\n\\[\np(x, y) = \\frac{x}{4} - \\frac{4}{\\pi} \\sum_{n=1,\\text{odd}}^{\\infty} \\frac{1}{(n \\pi)^2} \\sinh(2 n \\pi) \\cos(n \\pi y)\n\\]\n7. Return only the Python code that implements the above"
+  },
+  "2D_Linear_Convection": {
+    "equation": "\\[\n\\frac{\\partial u}{\\partial t} + c \\frac{\\partial u}{\\partial x} + c \\frac{\\partial u}{\\partial y} = 0\n\\]\n\nwhere:\n- \\( u(x, y, t) \\): scalar quantity being transported\n- \\( c \\): convection speed in both x and y directions",
+    "boundary conditions": "Dirichlet boundary conditions:\n\\[\n  u = 1 \\quad \\text{for } x = 0, 2 \\text{ and } y = 0, 2\n\\]",
+    "initial conditions": "Set \\( u = 2 \\) for \\( 0.5 \\leq x \\leq 1 \\) and \\( 0.5 \\leq y \\leq 1 \\); \\( u = 1 \\) elsewhere",
+    "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\)\n- Grid size: \\( nx = ny = 81 \\), \\( dx = dy = \\frac{2}{80} \\)\n- Time domain: \\( nt = 100 \\) time steps\n- CFL-related values: \\( \\sigma = 0.2 \\), \\( dt = \\sigma \\cdot \\min(dx, dy) / c \\)",
+    "numerical method": "Finite Difference Method",
+    "save values": "u",
+    "expert instruction group 1": "- Discretize the time derivative using forward differences\n- Discretize spatial derivatives using first-order upwind (backward) differences:\n  \\[\n  u_{i,j}^{n+1} = u_{i,j}^{n} - \\frac{\\Delta t}{\\Delta x} c (u_{i,j}^{n} - u_{i-1,j}^{n}) - \\frac{\\Delta t}{\\Delta y} c (u_{i,j}^{n} - u_{i,j-1}^{n})\n  \\]\n- Apply Dirichlet boundary conditions at each boundary\n- Ensure numerical stability with CFL condition using \\( \\sigma = 0.2 \\)",
+    "expert instruction group 2": "1. Initialize \\( u(x, y) \\) with hat-shaped initial condition\n2. For each of the 100 time steps:\n   - Update \\( u \\) using the FDM scheme\n   - Enforce boundary conditions after each update\n3. Save final solution to `.npy` file\n4. Visualize solution field using contour plots\n5. Return only the Python code that implements the above"
+  },
+  "2D_Navier_Stokes_Cavity": {
+    "equation": "\\[\n\\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} + v \\frac{\\partial u}{\\partial y} = -\\frac{1}{\\rho} \\frac{\\partial p}{\\partial x} + \\nu \\left( \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} \\right)\n\\]\n\\[\n\\frac{\\partial v}{\\partial t} + u \\frac{\\partial v}{\\partial x} + v \\frac{\\partial v}{\\partial y} = -\\frac{1}{\\rho} \\frac{\\partial p}{\\partial y} + \\nu \\left( \\frac{\\partial^2 v}{\\partial x^2} + \\frac{\\partial^2 v}{\\partial y^2} \\right)\n\\]\n\\[\n\\frac{\\partial^2 p}{\\partial x^2} + \\frac{\\partial^2 p}{\\partial y^2} = -\\rho \\left( \\frac{\\partial u}{\\partial x} \\frac{\\partial u}{\\partial x} + 2 \\frac{\\partial u}{\\partial y} \\frac{\\partial v}{\\partial x} + \\frac{\\partial v}{\\partial y} \\frac{\\partial v}{\\partial y} \\right)\n\\]\n\nwhere:\n- \\( u, v \\): velocity components in x and y directions\n- \\( p \\): pressure field\n- \\( \\rho = 1 \\): fluid density\n- \\( \\nu = 0.1 \\): kinematic viscosity",
+    "boundary conditions": "- Top boundary (lid-driven): \\( u = 1, v = 0 \\)\n- Other walls: no-slip (\\( u = 0, v = 0 \\))\n- Pressure:\n  - \\( \\frac{\\partial p}{\\partial y} = 0 \\) at \\( y = 0 \\)\n  - \\( p = 0 \\) at \\( y = 2 \\)\n  - \\( \\frac{\\partial p}{\\partial x} = 0 \\) at \\( x = 0, 2 \\)",
+    "initial conditions": "\\[\n  u = 0, \\quad v = 0, \\quad p = 0 \\text{ everywhere in the domain}\n\\]",
+    "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\)\n- Grid size: \\( nx = ny = 51 \\), \\( dx = dy = \\frac{2}{50} \\)\n- Time domain: \\( nt = 500 \\), \\( dt = 0.001 \\)",
+    "numerical method": "Finite Difference Method",
+    "save values": ["u", "v", "p"],
+    "expert instruction group 1": "- Use FDM to discretize the Navier-Stokes equations and pressure Poisson equation\n- Solve for \\( u, v \\) using explicit time-stepping\n- Solve pressure \\( p \\) iteratively using Jacobi or Gauss-Seidel method\n- Apply appropriate boundary conditions at each iteration",
+    "expert instruction group 2": "1. Initialize \\( u, v, p \\) to zero\n2. For each time step:\n   - Update intermediate velocity fields using convection and diffusion terms\n   - Solve pressure Poisson equation to enforce incompressibility\n   - Correct velocity fields using pressure gradients\n   - Apply lid-driven and no-slip boundary conditions\n3. Save \\( u, v, p \\) in `.npy` format\n4. Visualize with:\n   - Quiver plot for velocity field\n   - Contour plot for pressure field\n5. Return only the Python code that implements the above"
+  },
+  "2D_Navier_Stokes_Channel": {
+    "equation": "\\[\n\\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} + v \\frac{\\partial u}{\\partial y} = -\\frac{1}{\\rho} \\frac{\\partial p}{\\partial x} + \\nu \\left( \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} \\right) + F\n\\]\n\\[\n\\frac{\\partial v}{\\partial t} + u \\frac{\\partial v}{\\partial x} + v \\frac{\\partial v}{\\partial y} = -\\frac{1}{\\rho} \\frac{\\partial p}{\\partial y} + \\nu \\left( \\frac{\\partial^2 v}{\\partial x^2} + \\frac{\\partial^2 v}{\\partial y^2} \\right)\n\\]\n\\[\n\\frac{\\partial^2 p}{\\partial x^2} + \\frac{\\partial^2 p}{\\partial y^2} = -\\rho \\left( \\frac{\\partial u}{\\partial x}^2 + 2 \\frac{\\partial u}{\\partial y} \\frac{\\partial v}{\\partial x} + \\frac{\\partial v}{\\partial y}^2 \\right)\n\\]\n\nwhere:\n- \\( u(x,y,t) \\), \\( v(x,y,t) \\): velocity components\n- \\( p(x,y,t) \\): pressure field\n- \\( \\rho = 1 \\): fluid density\n- \\( \\nu = 0.1 \\): kinematic viscosity\n- \\( F = 1 \\): external force in the x-direction",
+    "boundary conditions": "- Periodic boundary conditions in x-direction for \\( u, v, p \\)\n- No-slip boundary conditions in y-direction: \\( u = 0, v = 0 \\)\n- \\( \\frac{\\partial p}{\\partial y} = 0 \\) at \\( y = 0, 2 \\)",
+    "initial conditions": "\\[\n  u = 0, \\quad v = 0, \\quad p = 0 \\text{ everywhere in the domain}\n\\]",
+    "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\)\n- Grid size: \\( nx = ny = 41 \\), \\( dx = dy = \\frac{2}{40} \\)\n- Time domain: \\( nt = 10 \\)",
+    "numerical method": "Finite Difference Method",
+    "save values": ["u", "v", "p"],
+    "expert instruction group 1": "- Use FDM to discretize the Navier-Stokes equations and pressure Poisson equation\n- Solve for \\( u, v \\) using explicit time-stepping\n- Add source term \\( F = 1 \\) to x-momentum equation\n- Solve pressure \\( p \\) iteratively using Jacobi or Gauss-Seidel method\n- Apply periodic BCs in x-direction and no-slip/Neumann BCs in y-direction",
+    "expert instruction group 2": "1. Initialize \\( u, v, p \\) to zero\n2. For each time step:\n   - Update intermediate velocity fields using convection, diffusion, and source terms\n   - Solve pressure Poisson equation to enforce incompressibility\n   - Correct velocity fields using pressure gradients\n   - Apply periodic and no-slip boundary conditions\n3. Save \\( u, v, p \\) in `.npy` format\n4. Visualize with:\n   - Quiver plot for velocity field\n   - Contour plot for pressure field\n5. Return only the Python code that implements the above"
+  },
+  "2D_Poisson_Equation": {
+    "equation": "\\[\n\\frac{\\partial^2 p}{\\partial x^2} + \\frac{\\partial^2 p}{\\partial y^2} = b(x, y)\n\\]\n\nwhere:\n- \\( p(x, y) \\): scalar potential (e.g., pressure)\n- \\( b(x, y) \\): source term defined as:\n  - \\( b = 100 \\) at \\( x = \\frac{1}{4}L_x, y = \\frac{1}{4}L_y \\)\n  - \\( b = -100 \\) at \\( x = \\frac{3}{4}L_x, y = \\frac{3}{4}L_y \\)\n  - \\( b = 0 \\) elsewhere",
+    "boundary conditions": "- Dirichlet boundary conditions:\n  \\( p = 0 \\) at \\( x = 0, 2 \\) and \\( y = 0, 1 \\)",
+    "initial conditions": "\\[\n  p(x, y) = 0 \\text{ everywhere in the domain}\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [0, 2], y \\in [0, 1] \\)\n- Grid size: \\( nx = ny = 50 \\), \\( dx = \\frac{2}{49}, dy = \\frac{1}{49} \\)",
+    "numerical method": "Finite Difference Method",
+    "save values": "p",
+    "expert instruction group 1": "- Discretize the 2D Poisson equation using second-order central differences in both spatial directions\n- Update formula:\n  \\[\n  p_{i,j}^{n} = \\frac{(p_{i+1,j}^{n} + p_{i-1,j}^{n}) \\Delta y^2 + (p_{i,j+1}^{n} + p_{i,j-1}^{n}) \\Delta x^2 - b_{i,j} \\Delta x^2 \\Delta y^2}{2(\\Delta x^2 + \\Delta y^2)}\n  \\]\n- Use iterative solvers like Jacobi or Gauss-Seidel to converge to the steady-state solution\n- Apply Dirichlet BCs on all edges of the domain during each iteration",
+    "expert instruction group 2": "1. Initialize \\( p = 0 \\) everywhere and define the source term \\( b \\):\n   - \\( b = 100 \\) at grid index \\( i = \\frac{1}{4} nx, j = \\frac{1}{4} ny \\)\n   - \\( b = -100 \\) at grid index \\( i = \\frac{3}{4} nx, j = \\frac{3}{4} ny \\)\n   - Set \\( b = 0 \\) elsewhere in the domain\n2. Loop over time or iterations until the change in \\( p \\) between steps is below a convergence tolerance (e.g., \\( 10^{-4} \\))\n3. Apply Dirichlet boundary conditions at each iteration\n4. Save final pressure field \\( p \\) to a `.npy` file\n5. Visualize the final result with a contour plot to show how the source term disturbs the field\n6. Return only the Python code that implements the above"
+  },
+  "2D_Steady_Heat_Equation_Gauss": {
+    "equation": "\\[\n\\frac{\\partial^2 T}{\\partial x^2} + \\frac{\\partial^2 T}{\\partial y^2} = 0\n\\]\n\nwhere:\n- \\( T(x, y) \\): temperature field over the domain",
+    "boundary conditions": "- Dirichlet boundary conditions applied on all boundaries of a rectangular domain (width = 5, height = 4):\n  - Left boundary (AB, at x = 0): \\( T = 10^\\circ C \\)\n  - Right boundary (EF, at x = 5): \\( T = 40^\\circ C \\)\n  - Top boundary (CD, at y = 4): \\( T = 0^\\circ C \\)\n  - Bottom boundary (G, at y = 0): \\( T = 20^\\circ C \\)",
+    "initial conditions": "\\[\n  T(x, y) = 0 \\text{ everywhere except at the boundaries}\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [0, 5], y \\in [0, 4] \\)\n- Grid spacing: \\( dx = 0.05, dy = 0.05 \\)\n- Grid size: \\( nx = 101, ny = 81 \\)",
+    "numerical method": "Finite Difference Method using Gauss-Seidel iteration",
+    "save values": "T",
+    "expert instruction group 1": "- Use Gauss-Seidel method to solve the steady-state heat equation\n- Discretize the Laplacian using second-order central differences:\n  \\[\n  T_{i,j}^{k+1} = \\frac{T_{i+1,j}^{k} + T_{i-1,j}^{k} + \\beta^2 (T_{i,j+1}^{k+1} + T_{i,j-1}^{k+1})}{2(1 + \\beta^2)}\n  \\]\n  where \\( \\beta = dx/dy \\)\n- Iterate until the maximum residual or change in \\( T \\) is below a chosen convergence threshold (e.g., \\( 10^{-4} \\))\n- Enforce the given Dirichlet boundary conditions after every iteration",
+    "expert instruction group 2": "1. Initialize \\( T(x, y) = 0 \\) except on boundaries with specified values\n2. For each iteration:\n   - Update \\( T \\) using Gauss-Seidel formula\n   - Apply Dirichlet boundary conditions\n   - Compute residual and check for convergence\n3. Save final temperature field \\( T \\) in `.npy` format\n4. Generate a contour plot to visualize the temperature distribution\n5. Return only the Python code that implements the above"
+  },
+  "2D_Steady_Heat_Equation_Jac": {
+    "equation": "\\[\n\\frac{\\partial^2 T}{\\partial x^2} + \\frac{\\partial^2 T}{\\partial y^2} = 0\n\\]\n\nwhere:\n- \\( T(x, y) \\): temperature field over the domain",
+    "boundary conditions": "- Dirichlet boundary conditions applied on all boundaries of a rectangular domain (width = 5, height = 4):\n  - Left boundary (AB, at x = 0): \\( T = 10^\\circ C \\)\n  - Right boundary (EF, at x = 5): \\( T = 40^\\circ C \\)\n  - Top boundary (CD, at y = 4): \\( T = 0^\\circ C \\)\n  - Bottom boundary (G, at y = 0): \\( T = 20^\\circ C \\)",
+    "initial conditions": "\\[\n  T(x, y) = 0 \\text{ everywhere except at the boundaries}\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [0, 5], y \\in [0, 4] \\)\n- Grid spacing: \\( dx = 0.05, dy = 0.05 \\)\n- Grid size: \\( nx = 101, ny = 81 \\)",
+    "numerical method": "Finite Difference Method using Jacobi iteration",
+    "save values": "T",
+    "expert instruction group 1": "- Use Jacobi method to solve the steady-state heat equation\n- Discretize the Laplacian using second-order central differences:\n  \\[\n  T_{i,j}^{k+1} = \\frac{T_{i+1,j}^{k} + T_{i-1,j}^{k} + \\beta^2 (T_{i,j+1}^{k} + T_{i,j-1}^{k})}{2(1 + \\beta^2)}\n  \\]\n  where \\( \\beta = dx/dy \\)\n- Iterate until the maximum residual or change in \\( T \\) is below a chosen convergence threshold (e.g., \\( 10^{-4} \\))\n- Enforce the given Dirichlet boundary conditions after every iteration",
+    "expert instruction group 2": "1. Initialize \\( T(x, y) = 0 \\) except on boundaries with specified values\n2. For each iteration:\n   - Update \\( T \\) using Jacobi formula\n   - Apply Dirichlet boundary conditions\n   - Compute residual and check for convergence\n3. Save final temperature field \\( T \\) in `.npy` format\n4. Generate a contour plot to visualize the temperature distribution\n5. Return only the Python code that implements the above"
+  },
+  "2D_Steady_Heat_Equation_SOR": {
+    "equation": "\\[\n\\frac{\\partial^2 T}{\\partial x^2} + \\frac{\\partial^2 T}{\\partial y^2} = 0\n\\]\n\nwhere:\n- \\( T(x, y) \\): temperature field over the domain",
+    "boundary conditions": "- Dirichlet boundary conditions applied on all boundaries of a rectangular domain (width = 5, height = 4):\n  - Left boundary (AB, at x = 0): \\( T = 10^\\circ C \\)\n  - Right boundary (EF, at x = 5): \\( T = 40^\\circ C \\)\n  - Top boundary (CD, at y = 4): \\( T = 0^\\circ C \\)\n  - Bottom boundary (G, at y = 0): \\( T = 20^\\circ C \\)",
+    "initial conditions": "\\[\n  T(x, y) = 0 \\text{ everywhere except at the boundaries}\n\\]",
+    "domain": "- Spatial domain: \\( x \\in [0, 5], y \\in [0, 4] \\)\n- Grid spacing: \\( dx = 0.05, dy = 0.05 \\)\n- Grid size: \\( nx = 101, ny = 81 \\)",
+    "numerical method": "Finite Difference Method using Successive Over-Relaxation (SOR)",
+    "save values": "T",
+    "expert instruction group 1": "- Use the SOR method to solve the steady-state heat equation\n- Discretize the Laplacian using second-order central differences:\n  \\[\n  T_{i,j}^{k+1} = \\omega \\frac{T_{i+1,j}^{k} + T_{i-1,j}^{k} + \\beta^2 (T_{i,j+1}^{k+1} + T_{i,j-1}^{k+1})}{2(1 + \\beta^2)} + (1 - \\omega)T_{i,j}^{k}\n  \\]\n  where \\( \\beta = dx/dy \\) and \\( 1 < \\omega < 2 \\) (e.g., \\( \\omega = 1.5 \\))\n- Iterate until the maximum residual or change in \\( T \\) is below a chosen convergence threshold (e.g., \\( 10^{-4} \\))\n- Enforce the given Dirichlet boundary conditions after every iteration",
+    "expert instruction group 2": "1. Initialize \\( T(x, y) = 0 \\) except on boundaries with specified values\n2. For each iteration:\n   - Update \\( T \\) using the SOR formula\n   - Apply Dirichlet boundary conditions\n   - Compute residual and check for convergence\n3. Save final temperature field \\( T \\) in `.npy` format\n4. Generate a contour plot to visualize the temperature distribution\n5. Return only the Python code that implements the above"
+  },
+  "2D_Unsteady_Heat_Equation_ADI": {
+    "equation": "\\[\n\\frac{\\partial T}{\\partial t} - \\alpha \\left( \\frac{\\partial^2 T}{\\partial x^2} + \\frac{\\partial^2 T}{\\partial y^2} \\right) = q(x, y, t)\n\\]\n\nwhere:\n- \\( T(x, y, t) \\): temperature field over time\n- \\( q(x, y, t) = Q_0 \\exp\\left(-\\frac{x^2 + y^2}{2\\sigma^2} \\right) \\): source term, with \\( Q_0 = 200°C/s \\) and \\( \\sigma = 0.1 \\)",
+    "boundary conditions": "\\[ T(x, y, t) = 1 \\quad \\text{on all boundaries} \\]",
+    "initial conditions": "\\[ T(x, y, 0) = 1 + 200 \\cdot \\exp\\left(-\\frac{x^2 + y^2}{2 \\cdot 0.1^2}\\right) \\]",
+    "domain": "- Spatial domain: \\( x, y \\in [-1, 1] \\)\n- Grid resolution: \\( nx = 41, ny = 41 \\)\n- Time step: \\( dt = r \\cdot \\frac{dx^2}{\\alpha} \\)\n- Maximum time: \\( t_{max} = 3 \\) seconds",
+    "numerical method": "Alternating Direction Implicit (ADI) Method",
+    "save values": "T",
+    "expert instruction group 1": "- Use the ADI method to solve the unsteady heat equation in two dimensions\n- Discretize the equation using the following steps:\n  1. Solve implicitly in the \\( x \\)-direction, explicitly in the \\( y \\)-direction\n  2. Solve implicitly in the \\( y \\)-direction, explicitly in the \\( x \\)-direction\n- Intermediate step: \\[ T_{i,j}^{n+1/2} = 0.5r (T_{i+1,j}^{n+1/2} - 2T_{i,j}^{n+1/2} + T_{i-1,j}^{n+1/2}) + 0.5\\beta^2 r (T_{i,j+1}^{n} - 2T_{i,j}^{n} + T_{i,j-1}^{n}) + T_{i,j}^{n} + 0.5 \\Delta t q \\]\n- Final step: \\[ T_{i,j}^{n+1} = 0.5r (T_{i+1,j}^{n+1} - 2T_{i,j}^{n+1} + T_{i-1,j}^{n+1}) + 0.5\\beta^2 r (T_{i,j+1}^{n+1/2} - 2T_{i,j}^{n+1/2} + T_{i,j-1}^{n+1/2}) + T_{i,j}^{n+1/2} + 0.5 \\Delta t q \\]",
+    "expert instruction group 2": "1. Initialize \\( T(x, y, 0) = 0 \\) and define the source term \\( q(x, y, t) \\)\n2. For each time step, alternate between implicit solution in the \\( x \\)-direction and implicit solution in the \\( y \\)-direction\n3. Update the temperature field using the ADI formula\n4. Apply Dirichlet boundary conditions after each iteration\n5. Save final solution in `.npy` format\n6. Visualize the temperature distribution evolution over time with a contour plot\n7. Return only the Python code that implements the above"
+  },
+  "2D_Unsteady_Heat_Equation_DF": {
+    "equation": "\\[\n\\frac{\\partial T}{\\partial t} - \\alpha \\left( \\frac{\\partial^2 T}{\\partial x^2} + \\frac{\\partial^2 T}{\\partial y^2} \\right) = q(x, y, t)\n\\]\n\nwhere:\n- \\( T(x, y, t) \\): temperature field over time\n- \\( q(x, y, t) = Q_0 \\exp\\left(-\\frac{x^2 + y^2}{2\\sigma^2} \\right) \\): source term, with \\( Q_0 = 200°C/s \\) and \\( \\sigma = 0.1 \\)",
+    "boundary conditions": "\\[ T(x, y, t) = 1 \\quad \\text{on all boundaries} \\]",
+    "initial conditions": "\\[ T(x, y, 0) = 1 + 200 \\cdot \\exp\\left(-\\frac{x^2 + y^2}{2 \\cdot 0.1^2}\\right) \\]",
+    "domain": "- Spatial domain: \\( x, y \\in [-1, 1] \\)\n- Grid resolution: \\( nx = 41, ny = 41 \\)\n- Time step: \\( dt = r \\cdot \\frac{dx^2}{\\alpha} \\)\n- Maximum time: \\( t_{max} = 3 \\) seconds",
+    "numerical method": "DuFort-Frankel Method",
+    "save values": "T",
+    "expert instruction group 1": "- Use DuFort-Frankel method to solve the unsteady heat equation\n- Discretize the equation using the following steps:\n  1. Apply central difference for spatial derivatives\n  2. Apply the formula:\n    \\[ T_{i,j}^{n+1} = \\frac{2r (T_{i+1,j}^{n} + T_{i-1,j}^{n}) + 2\\beta^2 r (T_{i,j+1}^{n} + T_{i,j-1}^{n}) + T_{i,j}^{n-1} + 2 \\Delta t q}{1 + 2r + 2\\beta^2 r} \\]\n- Ensure that the method is applied iteratively until convergence is reached",
+    "expert instruction group 2": "1. Initialize \\( T(x, y, 0) = 0 \\) and define the source term \\( q(x, y, t) \\)\n2. Use DuFort-Frankel method for each time step:\n   - First, update the temperature field based on the current and previous time steps\n   - Apply the update formula for each grid point\n3. Apply Dirichlet boundary conditions after each iteration\n4. Ensure stability and convergence, and stop when the residual is sufficiently small\n5. Save final temperature field in `.npy` format\n6. Visualize the temperature field evolution with a contour plot\n7. Return only the Python code that implements the above"
+  },
+  "2D_Unsteady_Heat_Equation_SE": {
+    "equation": "\\[\n\\frac{\\partial T}{\\partial t} - \\alpha \\left( \\frac{\\partial^2 T}{\\partial x^2} + \\frac{\\partial^2 T}{\\partial y^2} \\right) = q(x, y, t)\n\\]\n\nwhere:\n- \\( T(x, y, t) \\): temperature field over time\n- \\( q(x, y, t) = Q_0 \\exp\\left(-\\frac{x^2 + y^2}{2\\sigma^2} \\right) \\): source term, with \\( Q_0 = 200°C/s \\) and \\( \\sigma = 0.1 \\)",
+    "boundary conditions": "\\[ T(x, y, t) = 1 \\quad \\text{on all boundaries} \\]",
+    "initial conditions": "\\[ T(x, y, 0) = 1 + 200 \\cdot \\exp\\left(-\\frac{x^2 + y^2}{2 \\cdot 0.1^2}\\right) \\]",
+    "domain": "- Spatial domain: \\( x, y \\in [-1, 1] \\)\n- Grid resolution: \\( nx = 41, ny = 41 \\)\n- Time step: \\( dt = r \\cdot \\frac{dx^2}{\\alpha} \\)\n- Maximum time: \\( t_{max} = 3 \\) seconds",
+    "numerical method": "Simple Explicit Method",
+    "save values": "T",
+    "expert instruction group 1": "- Use the Simple Explicit Method to solve the unsteady heat equation\n- Discretize the equation using the following steps:\n  1. Apply forward difference for time derivative\n  2. Apply central difference for spatial derivatives\n  3. Apply the formula:\n    \\[ T_{i,j}^{n+1} = r (T_{i+1,j}^{n} - 2T_{i,j}^{n} + T_{i-1,j}^{n}) + \\beta^2 r (T_{i,j+1}^{n} - 2T_{i,j}^{n} + T_{i,j-1}^{n}) + T_{i,j}^{n} + \\Delta t q \\]\n- Ensure that the stability condition \\( (1 + \\beta^2) r \\leq \\frac{1}{2} \\) is met",
+    "expert instruction group 2": "1. Initialize \\( T(x, y, 0) = 0 \\) and define the source term \\( q(x, y, t) \\)\n2. For each time step, update \\( T(x, y) \\) using the explicit scheme\n3. Apply Dirichlet boundary conditions at each iteration\n4. Ensure the stability condition is met and adjust \\( r \\) accordingly\n5. Save final temperature field in `.npy` format\n6. Visualize the temperature field evolution with a contour plot\n7. Return only the Python code that implements the above"
+  },
+  "Fully_Developed_Turbulent_Channel_Flow_CESS": {
+    "equation": "\\[\n\\frac{d}{dy} \\left( (\\mu + \\mu_t) \\frac{d\\bar{u}}{dy} \\right) = -1.\n\\]\n\nwhere:\n- \\( \\mu \\): molecular viscosity\n- \\( \\mu_t \\): turbulent eddy viscosity, computed using the Cess turbulence model\n- The effective viscosity is defined as \\( \\mu_{\\text{eff}} = \\mu + \\mu_t \\)",
+    "boundary conditions": "- Dirichlet boundary conditions for velocity: \\( \\bar{u} = 0 \\) at both walls\n- Pressure boundary condition is implicit through the linear system",
+    "initial conditions": "\\[\n  \\bar{u}(y) = 0 \\text{ everywhere in the domain}\n\\]",
+    "domain": "- Spatial domain: \\( y \\in [0, H] \\) where \\( H = 2 \\)\n- Grid size: \\( n = 100 \\), with non-uniform mesh clustered near the walls",
+    "numerical method": "Finite Difference Method (FDM) using the Cess algebraic turbulence model",
+    "save values": "u",
+    "expert instruction group 1": "- Discretize the governing equation using FDM\n- Compute effective viscosity using the Cess algebraic turbulence model formula:\n  \\[ \\frac{\\mu_{\\text{eff}}}{\\mu} = \\frac{1}{2} \\left(1 + \\frac{1}{9} \\kappa^2 Re_{\\tau}^2 (2y - y^2)^2 (3 - 4y + 2y^2)^2 \\left[ 1 - \\exp\\left(-\\frac{y^+}{A}\\right) \\right] \\right)^{1/2} - \\frac{1}{2} \\]\n- Solve for \\( u \\) using finite difference discretization, forming a linear system \\( A u = b \\)",
+    "expert instruction group 2": "1. Initialize the mesh using the MESH class with clustering near the walls\n2. Compute \\( \\mu_{\\text{eff}} \\) using the Cess turbulence model for each grid point\n3. Discretize the governing equation and form the linear system \\( A u = b \\)\n4. Solve the linear system using direct solvers or iterative methods (under-relaxation if needed)\n5. Plot the velocity profile \\( \\bar{u}(y) \\)\n6. Compare the turbulent velocity profile to a laminar parabolic profile\n7. Return only the Python code that implements the above"
+  },
+  "Fully_Developed_Turbulent_Channel_Flow_KE": {
+    "equation": "\\[\n0 = P_k - \\rho \\epsilon + \\frac{d}{dy} \\left[ \\left( \\mu + \\frac{\\mu_t}{\\sigma_k} \\right) \\frac{dk}{dy} \\right]\n\\]\n\\[\n0 = \\frac{\\epsilon}{k} \\left( C_{e1} f_1 P_k - C_{e2} f_2 \\epsilon \\right) + \\frac{d}{dy} \\left[ \\left( \\mu + \\frac{\\mu_t}{\\sigma_\\epsilon} \\right) \\frac{d \\epsilon}{dy} \\right]\n\\]\n\\[\n\\mu_t = C_{\\mu} f_\\mu \\rho \\frac{k^2}{\\epsilon}\n\\]\n\nwhere:\n- \\( P_k \\): turbulent production term\n- \\( \\mu_t \\): turbulent eddy viscosity\n- \\( C_{e1}, C_{e2}, C_{\\mu} \\): model constants\n- \\( f_1, f_2 \\): functions for near-wall effects\n- \\( k \\): turbulent kinetic energy\n- \\( \\epsilon \\): turbulent dissipation",
+    "boundary conditions": "- Dirichlet boundary conditions for velocity at the walls\n- Implicit pressure boundary condition through the linear system",
+    "initial conditions": "\\[\n  k = 0, \\quad \\epsilon = 0 \\text{ everywhere in the domain}\n\\]",
+    "domain": "- Spatial domain: \\( y \\in [0, H] \\) where \\( H = 2 \\)\n- Grid size: \\( n = 100 \\), with non-uniform mesh clustered near the walls",
+    "numerical method": "Finite Difference Method (FDM) using the Myong and Kasagi k-ε turbulence model",
+    "save values": "u",
+    "expert instruction group 1": "- Discretize the governing equations for \\( k \\) and \\( \\epsilon \\) using FDM\n- Compute \\( \\mu_t \\) using the Myong and Kasagi model formula:\n  \\[ \\mu_t = C_{\\mu} f_\\mu \\rho \\frac{k^2}{\\epsilon} \\]\n- Solve for \\( k \\) and \\( \\epsilon \\) using finite difference discretization, forming a linear system \\( A u = b \\)",
+    "expert instruction group 2": "1. Initialize the mesh using the MESH class with clustering near the walls\n2. Compute \\( k \\) and \\( \\epsilon \\) using the Myong and Kasagi model\n3. Discretize the governing equations and form the linear system \\( A u = b \\)\n4. Solve the linear system using direct solvers or iterative methods (under-relaxation if needed)\n5. Plot the velocity profile \\( u(y) \\)\n6. Compare the turbulent velocity profile to a laminar parabolic profile\n7. Return only the Python code that implements the above"
+  },
+  "Fully_Developed_Turbulent_Channel_Flow_SA": {
+    "equation": "\\[\n\\frac{d}{dy} \\left( (\\mu + \\mu_t) \\frac{d\\bar{u}}{dy} \\right) = -1.\n\\]\n\nwhere:\n- \\( \\mu \\): molecular viscosity\n- \\( \\mu_t \\): turbulent eddy viscosity, computed using the Spalart-Allmaras turbulence model\n- The effective viscosity is defined as \\( \\mu_{\\text{eff}} = \\mu + \\mu_t \\)",
+    "boundary conditions": "- Dirichlet boundary conditions for velocity: \\( \\bar{u} = 0 \\) at both walls\n- Pressure boundary condition is implicit through the linear system",
+    "initial conditions": "\\[\n  \\bar{u}(y) = 0 \\text{ everywhere in the domain}\n\\]",
+    "domain": "- Spatial domain: \\( y \\in [0, H] \\) where \\( H = 2 \\)\n- Grid size: \\( n = 100 \\), with non-uniform mesh clustered near the walls",
+    "numerical method": "Finite Difference Method (FDM) using the Spalart-Allmaras turbulence model",
+    "save values": "u",
+    "expert instruction group 1": "- Discretize the governing equation using FDM\n- Compute effective viscosity using the Spalart-Allmaras turbulence model formula:\n  \\[ \\mu_t = \\rho \\tilde{\\nu} f_{\\nu 1} \\]\n- Solve for \\( \\bar{u}(y) \\) using finite difference discretization, forming a linear system \\( A u = b \\)",
+    "expert instruction group 2": "1. Initialize the mesh using the MESH class with clustering near the walls\n2. Compute \\( \\mu_t \\) using the Spalart-Allmaras turbulence model for each grid point\n3. Discretize the governing equation and form the linear system \\( A u = b \\)\n4. Solve the linear system using direct solvers or iterative methods (under-relaxation if needed)\n5. Plot the velocity profile \\( \\bar{u}(y) \\)\n6. Compare the turbulent velocity profile to a laminar parabolic profile\n7. Return only the Python code that implements the above"
+  },
+    "Fully_Developed_Turbulent_Channel_Flow_SST": {
+    "equation": "\\[\n0 = P_k - \\beta^* \\rho k \\omega + \\frac{d}{dy} \\left[ \\left( \\mu + \\frac{\\mu_t}{\\sigma_k} \\right) \\frac{d k}{dy} \\right]\n\\]\n\\[\n0 = \\frac{\\rho P_k}{\\mu_t} - \\beta \\omega^2 + \\frac{d}{dy} \\left[ \\left( \\mu + \\mu_t \\omega \\right) \\frac{d \\omega}{dy} \\right] + (1 - F_1) C_D k \\omega\n\\]\n\\[\n\\mu_t = \\rho k \\min \\left( \\frac{1}{\\omega}, \\frac{a_1}{\\|S\\| F_2} \\right)\n\\]\n\nwhere:\n- \\( P_k \\): turbulent production term\n- \\( \\mu_t \\): turbulent eddy viscosity\n- \\( C_D \\): constant\n- \\( F_1, F_2 \\): blending functions\n- \\( k \\): turbulent kinetic energy\n- \\( \\omega \\): specific turbulent dissipation\n- \\( S \\): strain rate tensor\n- \\( a_1 \\), constants",
+    "boundary conditions": "- Dirichlet boundary conditions for velocity at the walls\n- Implicit pressure boundary condition through the linear system",
+    "initial conditions": "\\[\n  k = 0, \\quad \\omega = 0 \\text{ everywhere in the domain}\n\\]",
+    "domain": "- Spatial domain: \\( y \\in [0, H] \\) where \\( H = 2 \\)\n- Grid size: \\( n = 100 \\), with non-uniform mesh clustered near the walls",
+    "numerical method": "Finite Difference Method (FDM) using the Menter Shear-Stress Transport (SST) turbulence model",
+      "save values": "u",
+    "expert instruction group 1": "- Discretize the governing equations for \\( k \\) and \\( \\omega \\) using FDM\n- Compute \\( \\mu_t \\) using the SST model formula:\n  \\[ \\mu_t = \\rho k \\min \\left( \\frac{1}{\\omega}, \\frac{a_1}{\\|S\\| F_2} \\right) \\]\n- Solve for \\( k \\) and \\( \\omega \\) using finite difference discretization, forming a linear system \\( A u = b \\)",
+    "expert instruction group 2": "1. Initialize the mesh using the MESH class with clustering near the walls\n2. Compute \\( k \\) and \\( \\omega \\) using the SST model\n3. Discretize the governing equations and form the linear system \\( A u = b \\)\n4. Solve the linear system using direct solvers or iterative methods (under-relaxation if needed)\n5. Plot the velocity profile \\( \\bar{u}(y) \\)\n6. Compare the turbulent velocity profile to a laminar parabolic profile\n7. Return only the Python code that implements the above"
+  },
+    "Fully_Developed_Turbulent_Channel_Flow_V2F": {
+    "equation": "\\[\n0 = P_k - \\rho \\epsilon + \\frac{d}{dy} \\left[ \\left( \\mu + \\frac{\\mu_t}{\\sigma_k} \\right) \\frac{d k}{dy} \\right]\n\\]\n\\[\n0 = \\frac{1}{T} \\left( C_{e1} P_k - C_{e2} \\rho \\epsilon \\right) + \\frac{d}{dy} \\left[ \\left( \\mu + \\frac{\\mu_t}{\\sigma_\\epsilon} \\right) \\frac{d \\epsilon}{dy} \\right]\n\\]\n\\[\n0 = \\rho k f - 6 \\rho v^2 \\frac{\\epsilon}{k} + \\frac{d}{dy} \\left[ \\left( \\mu + \\frac{\\mu_t}{\\sigma_k} \\right) \\frac{d v^2}{dy} \\right]\n\\]\n\\[\nL^2 \\frac{d^2 f}{dy^2} - f = \\frac{1}{T} \\left[ C_1 \\left( 6 - v^2 \\right) - \\frac{2}{3} \\left( C_1 - 1 \\right) \\right] - C_2 P_k\n\\]\n\\[\n\\mu_t = C_\\mu \\rho \\left( \\frac{\\epsilon}{k} \\right)^{1/2} T_t\n\\]\n\nwhere:\n- \\( P_k \\): turbulent production term\n- \\( \\mu_t \\): turbulent eddy viscosity\n- \\( C_1, C_2 \\): model constants\n- \\( f \\): wall-normal fluctuation component\n- \\( v^2 \\): wall-normal fluctuation component\n- \\( L \\): characteristic length scale\n- \\( T_t \\): turbulent temperature",
+    "boundary conditions": "- Dirichlet boundary conditions for velocity at the walls\n- Implicit pressure boundary condition through the linear system",
+    "initial conditions": "\\[\n  k = 0, \\quad \\epsilon = 0, \\quad v^2 = 0 \\text{ everywhere in the domain}\n\\]",
+    "domain": "- Spatial domain: \\( y \\in [0, H] \\) where \\( H = 2 \\)\n- Grid size: \\( n = 100 \\), with non-uniform mesh clustered near the walls",
+    "numerical method": "Finite Difference Method (FDM) using the V2F turbulence model",
+      "save values": "u",
+      "expert instruction group 1": "- Discretize the governing equations for \\( k \\), \\( \\epsilon \\), and \\( v^2 \\) using FDM\n- Compute \\( \\mu_t \\) using the V2F model formula:\n  \\[ \\mu_t = C_\\mu \\rho \\left( \\frac{\\epsilon}{k} \\right)^{1/2} T_t \\]\n- Solve for \\( k \\), \\( \\epsilon \\), and \\( v^2 \\) using finite difference discretization, forming a linear system \\( A u = b \\)",
+    "expert instruction group 2": "1. Initialize the mesh using the MESH class with clustering near the walls\n2. Compute \\( k \\), \\( \\epsilon \\), and \\( v^2 \\) using the V2F model\n3. Discretize the governing equations and form the linear system \\( A u = b \\)\n4. Solve the linear system using direct solvers or iterative methods (under-relaxation if needed)\n5. Plot the velocity profile \\( \\bar{u}(y) \\)\n6. Compare the turbulent velocity profile to a laminar parabolic profile\n7. Return only the Python code that implements the above"
+  }
+}
+

@@ -481,7 +481,9 @@ def call_post_process(generated_solvers_dir, save_dir):
     folder_path = generated_solvers_dir
     os.makedirs(save_dir, exist_ok=True)
 
-    pattern = r"np\.save\((['\"])(.+?\.npy)\1\s*,\s*(\w+)\s*\)"
+    # pattern = r"np\.save\((['\"])(.+?\.npy)\1\s*,\s*(\w+)\s*\)"
+    # Match np.save("something", variable) — with or without .npy
+    pattern = r"np\.save\((['\"])(.+?)\1\s*,\s*(\w+)\s*\)"
 
     for filename in os.listdir(folder_path):
         if filename.endswith(".py"):
@@ -505,7 +507,7 @@ def call_post_process(generated_solvers_dir, save_dir):
                 print(f"ℹ️ No np.save calls updated in {filename}")
 
 
-def write_execute_results_to_log(log, script, result, pass_count, fail_count):
+def write_execute_results_to_log(log, script, result, status_counts):
     try:
         # Write execution results to log file
         log.write(f"--- Running: {script} ---\n")
@@ -519,36 +521,36 @@ def write_execute_results_to_log(log, script, result, pass_count, fail_count):
         # Print execution status
         if result.returncode == 0:
             print(f"✅ {script} executed successfully.")
-            pass_count += 1  # Increment pass count
+            status_counts['pass'] += 1  # Increment pass count
         else:
             print(f"❌ {script} encountered an error (check logs).")
-            fail_count += 1  # Increment fail count
+            status_counts['fail'] += 1  # Increment fail count
     except Exception as e:
         log.write(f" {e}\n")
 
 
-def write_execute_error_to_log(log, script, fail_count):
+def write_execute_error_to_log(log, script, status_counts):
     try:
         log.write(f"--- Running: {script} ---\n")
         log.write("⚠️ Timeout Error: Script took too long to execute.\n")
         log.write("-" * 50 + "\n\n")
         print(f"⚠️ Timeout: {script} took too long and was skipped.")
-        fail_count += 1  # Increment fail count for timeout
+        status_counts['fail'] += 1  # Increment fail count for timeout
     except Exception as e:
         log.write(f" {e}\n")
 
 
-def write_execute_summary_to_log(log, pass_count, fail_count):
+def write_execute_summary_to_log(log, status_counts):
     try:
         # Log the summary of pass and fail counts
         log.write("\n\n====== Execution Summary ======\n")
-        log.write(f"Total Scripts Passed: {pass_count}\n")
-        log.write(f"Total Scripts Failed: {fail_count}\n")
+        log.write(f"Total Scripts Passed: {status_counts['pass']}\n")
+        log.write(f"Total Scripts Failed: {status_counts['fail']}\n")
     except Exception as e:
         log.write(f" {e}\n")
 
 
-def open_log_save_execution_results(log_file, python_files, generate_solvers_dir, pass_count, fail_count):
+def open_log_save_execution_results(log_file, python_files, generate_solvers_dir, status_counts):
     try:
         with open(log_file, "w") as log:
             log.write("====== Execution Results for Generated Solvers ======\n\n")
@@ -562,20 +564,20 @@ def open_log_save_execution_results(log_file, python_files, generate_solvers_dir
                     _, result = execute_python_script(script_path)
 
                     # Write execution results to log file
-                    write_execute_results_to_log(log, script, result, pass_count, fail_count)
+                    write_execute_results_to_log(log, script, result, status_counts)
 
                 except subprocess.TimeoutExpired:
-                    write_execute_error_to_log(log, script, fail_count)
+                    write_execute_error_to_log(log, script, status_counts)
 
                 # Log the summary of pass and fail counts
-                write_execute_summary_to_log(log, pass_count, fail_count)
+                write_execute_summary_to_log(log, status_counts)
 
         print(f"\n🎯 Execution completed. Results saved in: {log_file}")
     except Exception as e:
         log.write(f" {e}\n")
 
 
-def call_execute_solver(generated_solvers_dir, log_file, pass_count, fail_count):
+def call_execute_solver(generated_solvers_dir, log_file, status_counts):
     try:
         # Define the directory where generated solver scripts are stored
         GENERATED_SOLVERS_DIR = generated_solvers_dir
@@ -594,7 +596,7 @@ def call_execute_solver(generated_solvers_dir, log_file, pass_count, fail_count)
             exit()
         # Initialize counters for pass and fail
         # Open a log file to save execution results
-        open_log_save_execution_results(LOG_FILE, python_files, GENERATED_SOLVERS_DIR, pass_count, fail_count)
+        open_log_save_execution_results(LOG_FILE, python_files, GENERATED_SOLVERS_DIR, status_counts)
     except Exception as e:
         print(f" {e}\n")
 
@@ -988,8 +990,7 @@ class SolverPostProcessor:
         os.makedirs(self.COMPARE_IMAGE_FOLDER, exist_ok=True)
         os.makedirs(self.SOLVER_FOLDER, exist_ok=True)
 
-        self.pass_count = 0
-        self.fail_count = 0
+        self.status_counts = {"pass": 0, "fail": 0}
 
     def run_all(self, step1=True, step2=True, step3=True, step4=True):
         if step1:
@@ -999,7 +1000,7 @@ class SolverPostProcessor:
         if step2:
             # STEP 2:
             # execute LLM generated python code and save the results to log file
-            call_execute_solver(self.generated_solvers_dir, self.log_file, self.pass_count, self.fail_count)
+            call_execute_solver(self.generated_solvers_dir, self.log_file, self.status_counts)
         if step3:
             # STEP 3:
             # compute the numerical errors (MSE, MAE, RMSE, CosineSimilarity, R2) for shape mismatch / match array

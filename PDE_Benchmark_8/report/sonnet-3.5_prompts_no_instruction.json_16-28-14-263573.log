@@ -1,0 +1,71 @@
+2025-04-01 16:28:14,263 - INFO - ####################################################################################################
+2025-04-01 16:28:14,263 - INFO - Using the sonnet-3.5, change temperature to 0.0, use the prompt prompts_no_instruction.json
+2025-04-01 16:28:14,284 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/5)
+2025-04-01 16:28:14,284 - INFO - ❌ API Call Error for 1D_Burgers_Equation: Unable to locate credentials
+2025-04-01 16:28:14,285 - INFO - 🔹 Generating code for: 1D_Diffusion (Attempt 1/5)
+2025-04-01 16:28:14,285 - INFO - ❌ API Call Error for 1D_Diffusion: Unable to locate credentials
+2025-04-01 16:28:14,285 - INFO - 🔹 Generating code for: 1D_Euler_Shock_Tube (Attempt 1/5)
+2025-04-01 16:28:14,285 - INFO - ❌ API Call Error for 1D_Euler_Shock_Tube: Unable to locate credentials
+2025-04-01 16:28:14,285 - INFO - 🔹 Generating code for: 1D_Linear_Convection_explicit_euler (Attempt 1/5)
+2025-04-01 16:28:14,285 - INFO - ❌ API Call Error for 1D_Linear_Convection_explicit_euler: Unable to locate credentials
+2025-04-01 16:28:14,285 - INFO - 🔹 Generating code for: 1D_Linear_Convection_adams (Attempt 1/5)
+2025-04-01 16:28:14,286 - INFO - ❌ API Call Error for 1D_Linear_Convection_adams: Unable to locate credentials
+2025-04-01 16:28:14,286 - INFO - 🔹 Generating code for: 1D_Linear_Convection_corr (Attempt 1/5)
+2025-04-01 16:28:14,286 - INFO - ❌ API Call Error for 1D_Linear_Convection_corr: Unable to locate credentials
+2025-04-01 16:28:14,286 - INFO - 🔹 Generating code for: 1D_Linear_Convection_rk (Attempt 1/5)
+2025-04-01 16:28:14,286 - INFO - ❌ API Call Error for 1D_Linear_Convection_rk: Unable to locate credentials
+2025-04-01 16:28:14,286 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_Lax (Attempt 1/5)
+2025-04-01 16:28:14,286 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_Lax: Unable to locate credentials
+2025-04-01 16:28:14,286 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_LW (Attempt 1/5)
+2025-04-01 16:28:14,287 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_LW: Unable to locate credentials
+2025-04-01 16:28:14,287 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_MK (Attempt 1/5)
+2025-04-01 16:28:14,287 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection_MK: Unable to locate credentials
+2025-04-01 16:28:14,287 - INFO - 🔹 Generating code for: 2D_Burgers_Equation (Attempt 1/5)
+2025-04-01 16:28:14,287 - INFO - ❌ API Call Error for 2D_Burgers_Equation: Unable to locate credentials
+2025-04-01 16:28:14,287 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 1/5)
+2025-04-01 16:28:14,287 - INFO - ❌ API Call Error for 2D_Convection: Unable to locate credentials
+2025-04-01 16:28:14,287 - INFO - 🔹 Generating code for: 2D_Diffusion (Attempt 1/5)
+2025-04-01 16:28:14,288 - INFO - ❌ API Call Error for 2D_Diffusion: Unable to locate credentials
+2025-04-01 16:28:14,288 - INFO - 🔹 Generating code for: 2D_Diffusion_FVM (Attempt 1/5)
+2025-04-01 16:28:14,288 - INFO - ❌ API Call Error for 2D_Diffusion_FVM: Unable to locate credentials
+2025-04-01 16:28:14,288 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_FOU (Attempt 1/5)
+2025-04-01 16:28:14,288 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_FOU: Unable to locate credentials
+2025-04-01 16:28:14,288 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_MK (Attempt 1/5)
+2025-04-01 16:28:14,288 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_MK: Unable to locate credentials
+2025-04-01 16:28:14,288 - INFO - 🔹 Generating code for: 2D_Laplace_Equation (Attempt 1/5)
+2025-04-01 16:28:14,289 - INFO - ❌ API Call Error for 2D_Laplace_Equation: Unable to locate credentials
+2025-04-01 16:28:14,289 - INFO - 🔹 Generating code for: 2D_Linear_Convection (Attempt 1/5)
+2025-04-01 16:28:14,289 - INFO - ❌ API Call Error for 2D_Linear_Convection: Unable to locate credentials
+2025-04-01 16:28:14,289 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Cavity (Attempt 1/5)
+2025-04-01 16:28:14,289 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Cavity: Unable to locate credentials
+2025-04-01 16:28:14,289 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Channel (Attempt 1/5)
+2025-04-01 16:28:14,289 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Channel: Unable to locate credentials
+2025-04-01 16:28:14,289 - INFO - 🔹 Generating code for: 2D_Poisson_Equation (Attempt 1/5)
+2025-04-01 16:28:14,290 - INFO - ❌ API Call Error for 2D_Poisson_Equation: Unable to locate credentials
+2025-04-01 16:28:14,290 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Gauss (Attempt 1/5)
+2025-04-01 16:28:14,290 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_Gauss: Unable to locate credentials
+2025-04-01 16:28:14,290 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Jac (Attempt 1/5)
+2025-04-01 16:28:14,290 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_Jac: Unable to locate credentials
+2025-04-01 16:28:14,290 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_SOR (Attempt 1/5)
+2025-04-01 16:28:14,290 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation_SOR: Unable to locate credentials
+2025-04-01 16:28:14,290 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_ADI (Attempt 1/5)
+2025-04-01 16:28:14,291 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_ADI: Unable to locate credentials
+2025-04-01 16:28:14,291 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_DF (Attempt 1/5)
+2025-04-01 16:28:14,291 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_DF: Unable to locate credentials
+2025-04-01 16:28:14,291 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_SE (Attempt 1/5)
+2025-04-01 16:28:14,291 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation_SE: Unable to locate credentials
+2025-04-01 16:28:14,291 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_CESS (Attempt 1/5)
+2025-04-01 16:28:14,291 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_CESS: Unable to locate credentials
+2025-04-01 16:28:14,291 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 1/5)
+2025-04-01 16:28:14,292 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_KE: Unable to locate credentials
+2025-04-01 16:28:14,292 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SA (Attempt 1/5)
+2025-04-01 16:28:14,292 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SA: Unable to locate credentials
+2025-04-01 16:28:14,292 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SST (Attempt 1/5)
+2025-04-01 16:28:14,292 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SST: Unable to locate credentials
+2025-04-01 16:28:14,292 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_V2F (Attempt 1/5)
+2025-04-01 16:28:14,292 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_V2F: Unable to locate credentials
+2025-04-01 16:28:14,292 - INFO - 
+🎯 Execution completed. Check the solver directory for generated files.
+2025-04-01 16:28:14,292 - INFO - Total Input Tokens: 0
+2025-04-01 16:28:14,292 - INFO - Total Output Tokens: 0
+2025-04-01 16:28:14,292 - INFO - Total Estimated Cost: $0.000000

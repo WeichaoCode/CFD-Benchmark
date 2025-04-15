@@ -1,0 +1,250 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_Diffusion.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Diffusion.py", line 31, in <module>
+    u = np.zeros((len(t), nx))
+NameError: name 't' is not defined
+
+--------------------------------------------------
+
+--- Running: 2D_Nonlinear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Nonlinear_Convection.py:48: RuntimeWarning: overflow encountered in scalar multiply
+  u[j, i] = (un[j,i] - un[j,i]*dt/dx*(un[j,i]-un[j,i-1]) - vn[j,i]*dt/dy*(un[j,i]-un[j-1,i])) + dt*f[j,i]
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Nonlinear_Convection.py:48: RuntimeWarning: invalid value encountered in scalar subtract
+  u[j, i] = (un[j,i] - un[j,i]*dt/dx*(un[j,i]-un[j,i-1]) - vn[j,i]*dt/dy*(un[j,i]-un[j-1,i])) + dt*f[j,i]
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Nonlinear_Convection.py:49: RuntimeWarning: overflow encountered in scalar multiply
+  v[j, i] = (vn[j,i] - un[j,i]*dt/dx*(vn[j,i]-vn[j,i-1]) - vn[j,i]*dt/dy*(vn[j,i]-vn[j-1,i])) + dt*f_v[j,i]
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Nonlinear_Convection.py:49: RuntimeWarning: invalid value encountered in scalar subtract
+  v[j, i] = (vn[j,i] - un[j,i]*dt/dx*(vn[j,i]-vn[j,i-1]) - vn[j,i]*dt/dy*(vn[j,i]-vn[j-1,i])) + dt*f_v[j,i]
+
+--------------------------------------------------
+
+--- Running: 2D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 1D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Wave_Equation.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Wave_Equation.py", line 29, in <module>
+    assert dt <= dx/(np.sqrt(2.0)*c), "CFL condition not met!"
+AssertionError: CFL condition not met!
+
+--------------------------------------------------
+
+--- Running: 2D_Navier_Stokes.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Navier_Stokes.py", line 49, in <module>
+    u, v, p, absolute_error = solver(nt, nx, ny, dt, dx, dy, nu, rho)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Navier_Stokes.py", line 31, in solver
+    u[0, :], u[-1, :], u[:, 0], u[:, -1] = mms_solution(x[0], y, dt*t)
+ValueError: not enough values to unpack (expected 4, got 3)
+
+--------------------------------------------------
+
+--- Running: 2D_Euler_Equations.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Euler_Equations.py", line 92, in <module>
+    solve()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Euler_Equations.py", line 86, in solve
+    rho[:,:], u[:,:], v[:,:], p[:,:] = euler_forward(rho, u, v, p, t)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Euler_Equations.py", line 47, in euler_forward
+    rho_new = rho + DT * src_rho(rho, u, v, t)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Euler_Equations.py", line 33, in src_rho
+    return -rho - pi*exp(-t)*(u*cos(pi*x) + v*sin(pi*y))
+NameError: name 'x' is not defined
+
+--------------------------------------------------
+
+--- Running: 1D_Korteweg_de_Vries.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Korteweg_de_Vries.py", line 47, in <module>
+    rhs = B.dot(u_old) + dt*KdV(u_old, t[n-1], f)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Korteweg_de_Vries.py", line 11, in KdV
+    uxxx = (ue[2:] - 3*ue[1:-1] + 3*ue[:-2] - ue[:-3]) / dx**3
+ValueError: operands could not be broadcast together with shapes (100,) (99,) 
+
+--------------------------------------------------
+
+--- Running: 1D_Nonlinear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 2D_Linear_Convection.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Linear_Convection.py", line 60, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+
+--------------------------------------------------
+
+--- Running: 1D_Wave_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+--- Running: 1D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Burgers_Equation.py:34: RuntimeWarning: overflow encountered in multiply
+  un[1:-1] * dt / dx * (un[1:-1] - un[:-2]) +
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Burgers_Equation.py:34: RuntimeWarning: invalid value encountered in subtract
+  un[1:-1] * dt / dx * (un[1:-1] - un[:-2]) +
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Burgers_Equation.py:33: RuntimeWarning: invalid value encountered in subtract
+  u[1:-1] = (un[1:-1] -
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Burgers_Equation.py:35: RuntimeWarning: invalid value encountered in subtract
+  nu * dt / dx**2 * (un[2:] - 2 * un[1:-1] + un[:-2]))
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Burgers_Equation.py:35: RuntimeWarning: invalid value encountered in add
+  nu * dt / dx**2 * (un[2:] - 2 * un[1:-1] + un[:-2]))
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Burgers_Equation.py:33: RuntimeWarning: invalid value encountered in add
+  u[1:-1] = (un[1:-1] -
+
+--------------------------------------------------
+
+--- Running: 1D_Kuramoto_Sivashinsky.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Kuramoto_Sivashinsky.py:51: RuntimeWarning: overflow encountered in square
+  rhs = nu2 * u_xx + nu4 * u_xxxx + 0.5 * u_x**2 - f(x_grid, t)
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Kuramoto_Sivashinsky.py:43: RuntimeWarning: invalid value encountered in subtract
+  u_xx = np.roll(u, -1) - 2*u + np.roll(u, 1)
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Kuramoto_Sivashinsky.py:43: RuntimeWarning: invalid value encountered in add
+  u_xx = np.roll(u, -1) - 2*u + np.roll(u, 1)
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Kuramoto_Sivashinsky.py:45: RuntimeWarning: invalid value encountered in subtract
+  u_xxxx = np.roll(u, -2) - 4*np.roll(u, -1) + 6*u - 4*np.roll(u, 1) + np.roll(u, 2)
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Kuramoto_Sivashinsky.py:45: RuntimeWarning: invalid value encountered in add
+  u_xxxx = np.roll(u, -2) - 4*np.roll(u, -1) + 6*u - 4*np.roll(u, 1) + np.roll(u, 2)
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Kuramoto_Sivashinsky.py:48: RuntimeWarning: invalid value encountered in subtract
+  u_x = np.where(u > 0, u - np.roll(u, 1), np.roll(u, -1) - u)
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Kuramoto_Sivashinsky.py:46: RuntimeWarning: overflow encountered in divide
+  u_xxxx /= dx**4
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Kuramoto_Sivashinsky.py:51: RuntimeWarning: invalid value encountered in add
+  rhs = nu2 * u_xx + nu4 * u_xxxx + 0.5 * u_x**2 - f(x_grid, t)
+
+--------------------------------------------------
+
+--- Running: 1D_Euler_Equations.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Euler_Equations.py:15: RuntimeWarning: invalid value encountered in scalar divide
+  u = Q[1] / Q[0]
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Euler_Equations.py:16: RuntimeWarning: invalid value encountered in scalar divide
+  p = (gamma - 1.0) * (Q[2] - 0.5 * Q[1]**2 / Q[0])
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Euler_Equations.py:25: RuntimeWarning: invalid value encountered in scalar divide
+  Q[1] ** 2 / Q[0] + p,
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Euler_Equations.py:15: RuntimeWarning: overflow encountered in scalar divide
+  u = Q[1] / Q[0]
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Euler_Equations.py:16: RuntimeWarning: overflow encountered in scalar power
+  p = (gamma - 1.0) * (Q[2] - 0.5 * Q[1]**2 / Q[0])
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Euler_Equations.py:25: RuntimeWarning: overflow encountered in scalar power
+  Q[1] ** 2 / Q[0] + p,
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Euler_Equations.py:25: RuntimeWarning: invalid value encountered in scalar add
+  Q[1] ** 2 / Q[0] + p,
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Euler_Equations.py:50: RuntimeWarning: invalid value encountered in add
+  Q_new[:, i] =(Q[:, i] - 0.5 * dt / dx *
+/home/weichao/.local/lib/python3.8/site-packages/matplotlib/text.py:1279: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+  if s != self._text:
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/1D_Euler_Equations.py:63: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all axes decorations.
+  plt.tight_layout()
+
+--------------------------------------------------
+
+--- Running: 2D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:56: RuntimeWarning: overflow encountered in scalar multiply
+  u_new[i, j] = u[i, j] + dt * (-u[i, j] * u_x - v[i, j] * u_y + nu * lapl_u + fu[i, j])
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:57: RuntimeWarning: overflow encountered in scalar multiply
+  v_new[i, j] = v[i, j] + dt * (-u[i, j] * v_x - v[i, j] * v_y + nu * lapl_v + fv[i, j])
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:56: RuntimeWarning: invalid value encountered in scalar subtract
+  u_new[i, j] = u[i, j] + dt * (-u[i, j] * u_x - v[i, j] * u_y + nu * lapl_u + fu[i, j])
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:57: RuntimeWarning: invalid value encountered in scalar subtract
+  v_new[i, j] = v[i, j] + dt * (-u[i, j] * v_x - v[i, j] * v_y + nu * lapl_v + fv[i, j])
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:53: RuntimeWarning: invalid value encountered in scalar subtract
+  lapl_u = (u[i+1, j] - 2 * u[i, j] + u[i-1, j]) / dt**2 + (u[i, j+1] - 2 * u[i, j] + u[i, j-1]) / dt**2
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:54: RuntimeWarning: invalid value encountered in scalar subtract
+  lapl_v = (v[i+1, j] - 2 * v[i, j] + v[i-1, j]) / dt**2 + (v[i, j+1] - 2 * v[i, j] + v[i, j-1]) / dt**2
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:50: RuntimeWarning: invalid value encountered in scalar subtract
+  u_y = (u[i, j+1] - u[i, j-1]) / (2 * dt)
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:54: RuntimeWarning: invalid value encountered in scalar add
+  lapl_v = (v[i+1, j] - 2 * v[i, j] + v[i-1, j]) / dt**2 + (v[i, j+1] - 2 * v[i, j] + v[i, j-1]) / dt**2
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:52: RuntimeWarning: invalid value encountered in scalar subtract
+  v_y = (v[i, j+1] - v[i, j-1]) / (2 * dt)
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:53: RuntimeWarning: invalid value encountered in scalar add
+  lapl_u = (u[i+1, j] - 2 * u[i, j] + u[i-1, j]) / dt**2 + (u[i, j+1] - 2 * u[i, j] + u[i, j-1]) / dt**2
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:53: RuntimeWarning: overflow encountered in scalar divide
+  lapl_u = (u[i+1, j] - 2 * u[i, j] + u[i-1, j]) / dt**2 + (u[i, j+1] - 2 * u[i, j] + u[i, j-1]) / dt**2
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:54: RuntimeWarning: overflow encountered in scalar divide
+  lapl_v = (v[i+1, j] - 2 * v[i, j] + v[i-1, j]) / dt**2 + (v[i, j+1] - 2 * v[i, j] + v[i, j-1]) / dt**2
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:57: RuntimeWarning: invalid value encountered in scalar add
+  v_new[i, j] = v[i, j] + dt * (-u[i, j] * v_x - v[i, j] * v_y + nu * lapl_v + fv[i, j])
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:49: RuntimeWarning: invalid value encountered in scalar subtract
+  u_x = (u[i+1, j] - u[i-1, j]) / (2 * dt)
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:51: RuntimeWarning: invalid value encountered in scalar subtract
+  v_x = (v[i+1, j] - v[i-1, j]) / (2 * dt)
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:54: RuntimeWarning: overflow encountered in scalar add
+  lapl_v = (v[i+1, j] - 2 * v[i, j] + v[i-1, j]) / dt**2 + (v[i, j+1] - 2 * v[i, j] + v[i, j-1]) / dt**2
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:56: RuntimeWarning: invalid value encountered in scalar add
+  u_new[i, j] = u[i, j] + dt * (-u[i, j] * u_x - v[i, j] * u_y + nu * lapl_u + fu[i, j])
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:56: RuntimeWarning: overflow encountered in scalar subtract
+  u_new[i, j] = u[i, j] + dt * (-u[i, j] * u_x - v[i, j] * u_y + nu * lapl_u + fu[i, j])
+/opt/CFD-Benchmark/PDE_Benchmark_2/solver/2D_Burgers_Equation.py:53: RuntimeWarning: overflow encountered in scalar add
+  lapl_u = (u[i+1, j] - 2 * u[i, j] + u[i-1, j]) / dt**2 + (u[i, j+1] - 2 * u[i, j] + u[i, j-1]) / dt**2
+
+--------------------------------------------------
+

@@ -1,0 +1,669 @@
+2025-03-22 15:51:16,180 - INFO - ####################################################################################################
+2025-03-22 15:51:16,180 - INFO - Using the GPT-4, change temperature to 0.5
+2025-03-22 15:51:16,201 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 1/5)
+2025-03-22 15:51:40,685 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:51:40,689 - INFO - Input Tokens: 465, Output Tokens: 1343
+2025-03-22 15:51:40,689 - INFO - Estimated cost for this request: $0.014593
+2025-03-22 15:51:41,328 - WARNING - Execution completed with warnings:
+/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:214: SparseEfficiencyWarning: spsolve requires A be CSC or CSR matrix format
+  warn('spsolve requires A be CSC or CSR matrix format',
+2025-03-22 15:51:41,328 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_KE, refining prompt...
+2025-03-22 15:51:41,328 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+⚠️ Execution completed with warnings:
+/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:214: SparseEfficiencyWarning: spsolve requires A be CSC or CSR matrix format
+  warn('spsolve requires A be CSC or CSR matrix format',
+Please correct it.
+2025-03-22 15:51:41,328 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 2/5)
+2025-03-22 15:52:02,499 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:52:02,503 - INFO - Input Tokens: 465, Output Tokens: 1287
+2025-03-22 15:52:02,503 - INFO - Estimated cost for this request: $0.014033
+2025-03-22 15:52:03,107 - WARNING - Execution completed with warnings:
+/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:214: SparseEfficiencyWarning: spsolve requires A be CSC or CSR matrix format
+  warn('spsolve requires A be CSC or CSR matrix format',
+2025-03-22 15:52:03,107 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_KE, refining prompt...
+2025-03-22 15:52:03,107 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+⚠️ Execution completed with warnings:
+/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:214: SparseEfficiencyWarning: spsolve requires A be CSC or CSR matrix format
+  warn('spsolve requires A be CSC or CSR matrix format',
+Please correct it.
+2025-03-22 15:52:03,107 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 3/5)
+2025-03-22 15:52:24,514 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:52:24,518 - INFO - Input Tokens: 465, Output Tokens: 1229
+2025-03-22 15:52:24,518 - INFO - Estimated cost for this request: $0.013453
+2025-03-22 15:52:24,877 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 67, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 50, in main
+    A = mesh.d2y + diags([mu_t / mesh.dy], [0], shape=(mesh.n, mesh.n))
+TypeError: unsupported operand type(s) for /: 'numpy.ndarray' and 'dia_matrix'
+2025-03-22 15:52:24,878 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_KE, refining prompt...
+2025-03-22 15:52:24,878 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 67, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 50, in main
+    A = mesh.d2y + diags([mu_t / mesh.dy], [0], shape=(mesh.n, mesh.n))
+TypeError: unsupported operand type(s) for /: 'numpy.ndarray' and 'dia_matrix'
+Please correct it.
+2025-03-22 15:52:24,878 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 4/5)
+2025-03-22 15:52:46,940 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:52:46,944 - INFO - Input Tokens: 465, Output Tokens: 1323
+2025-03-22 15:52:46,944 - INFO - Estimated cost for this request: $0.014393
+2025-03-22 15:52:47,331 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 52, in <module>
+    k = solve_linear_system(A, b)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 37, in solve_linear_system
+    x = lu_solve((lu, piv), b)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_decomp_lu.py", line 147, in lu_solve
+    x, info = getrs(lu, piv, b1, trans=trans, overwrite_b=overwrite_b)
+_flapack.error: (shape(lu,0)==shape(lu,1)) failed for 1st argument lu
+2025-03-22 15:52:47,331 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_KE, refining prompt...
+2025-03-22 15:52:47,331 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 52, in <module>
+    k = solve_linear_system(A, b)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_KE.py", line 37, in solve_linear_system
+    x = lu_solve((lu, piv), b)
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/linalg/_decomp_lu.py", line 147, in lu_solve
+    x, info = getrs(lu, piv, b1, trans=trans, overwrite_b=overwrite_b)
+_flapack.error: (shape(lu,0)==shape(lu,1)) failed for 1st argument lu
+Please correct it.
+2025-03-22 15:52:47,331 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_KE (Attempt 5/5)
+2025-03-22 15:53:07,010 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:53:07,014 - INFO - Input Tokens: 465, Output Tokens: 1276
+2025-03-22 15:53:07,014 - INFO - Estimated cost for this request: $0.013923
+2025-03-22 15:53:07,624 - WARNING - Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_KE.py:48: RuntimeWarning: divide by zero encountered in divide
+  A = mu * mesh.dyy + (mu_t / mesh.dy)
+/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:214: SparseEfficiencyWarning: spsolve requires A be CSC or CSR matrix format
+  warn('spsolve requires A be CSC or CSR matrix format',
+/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:276: MatrixRankWarning: Matrix is exactly singular
+  warn("Matrix is exactly singular", MatrixRankWarning)
+2025-03-22 15:53:07,624 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_KE, refining prompt...
+2025-03-22 15:53:07,624 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+⚠️ Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_KE.py:48: RuntimeWarning: divide by zero encountered in divide
+  A = mu * mesh.dyy + (mu_t / mesh.dy)
+/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:214: SparseEfficiencyWarning: spsolve requires A be CSC or CSR matrix format
+  warn('spsolve requires A be CSC or CSR matrix format',
+/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:276: MatrixRankWarning: Matrix is exactly singular
+  warn("Matrix is exactly singular", MatrixRankWarning)
+Please correct it.
+2025-03-22 15:53:07,624 - INFO - ⚠️ Max retries reached for Fully_Developed_Turbulent_Channel_Flow_KE. Check logs for remaining errors.
+2025-03-22 15:53:07,624 - INFO - 🔹 Generating code for: 2D_Diffusion_FVM (Attempt 1/5)
+2025-03-22 15:53:20,555 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:53:20,558 - INFO - Input Tokens: 443, Output Tokens: 904
+2025-03-22 15:53:20,559 - INFO - Estimated cost for this request: $0.010148
+2025-03-22 15:53:46,049 - INFO - Execution successful, no errors detected.
+2025-03-22 15:53:46,049 - INFO - 🎯 2D_Diffusion_FVM executed successfully without syntax errors.
+2025-03-22 15:53:46,049 - INFO - 🔹 Generating code for: 1D_Linear_Convection_corr (Attempt 1/5)
+2025-03-22 15:54:04,255 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:54:04,258 - INFO - Input Tokens: 366, Output Tokens: 1114
+2025-03-22 15:54:04,258 - INFO - Estimated cost for this request: $0.012055
+2025-03-22 15:54:04,890 - INFO - Execution successful, no errors detected.
+2025-03-22 15:54:04,890 - INFO - 🎯 1D_Linear_Convection_corr executed successfully without syntax errors.
+2025-03-22 15:54:04,890 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/5)
+2025-03-22 15:54:32,415 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:54:32,418 - INFO - Input Tokens: 252, Output Tokens: 1278
+2025-03-22 15:54:32,419 - INFO - Estimated cost for this request: $0.013410
+2025-03-22 15:54:32,874 - WARNING - Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/1D_Burgers_Equation.py:19: RuntimeWarning: invalid value encountered in divide
+  u = -2 * nu * dphi / phi + 4
+2025-03-22 15:54:32,874 - INFO - ❌ Error detected in 1D_Burgers_Equation, refining prompt...
+2025-03-22 15:54:32,875 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+⚠️ Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/1D_Burgers_Equation.py:19: RuntimeWarning: invalid value encountered in divide
+  u = -2 * nu * dphi / phi + 4
+Please correct it.
+2025-03-22 15:54:32,875 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 2/5)
+2025-03-22 15:54:53,303 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:54:53,307 - INFO - Input Tokens: 252, Output Tokens: 1118
+2025-03-22 15:54:53,307 - INFO - Estimated cost for this request: $0.011810
+2025-03-22 15:54:53,855 - INFO - Execution successful, no errors detected.
+2025-03-22 15:54:53,855 - INFO - 🎯 1D_Burgers_Equation executed successfully without syntax errors.
+2025-03-22 15:54:53,855 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_MK (Attempt 1/5)
+2025-03-22 15:55:09,995 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:55:09,998 - INFO - Input Tokens: 250, Output Tokens: 872
+2025-03-22 15:55:09,998 - INFO - Estimated cost for this request: $0.009345
+2025-03-22 15:55:10,308 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/1D_Nonlinear_Convection_MK.py", line 39, in <module>
+    u = maccormack(u, dt, dx)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/1D_Nonlinear_Convection_MK.py", line 33, in maccormack
+    u_new = 0.5*(u + u_star - dt/dx * (F_star - F_star.roll(-1)))
+AttributeError: 'numpy.ndarray' object has no attribute 'roll'
+2025-03-22 15:55:10,308 - INFO - ❌ Error detected in 1D_Nonlinear_Convection_MK, refining prompt...
+2025-03-22 15:55:10,308 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/1D_Nonlinear_Convection_MK.py", line 39, in <module>
+    u = maccormack(u, dt, dx)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/1D_Nonlinear_Convection_MK.py", line 33, in maccormack
+    u_new = 0.5*(u + u_star - dt/dx * (F_star - F_star.roll(-1)))
+AttributeError: 'numpy.ndarray' object has no attribute 'roll'
+Please correct it.
+2025-03-22 15:55:10,308 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_MK (Attempt 2/5)
+2025-03-22 15:55:24,334 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:55:24,335 - INFO - Input Tokens: 250, Output Tokens: 873
+2025-03-22 15:55:24,335 - INFO - Estimated cost for this request: $0.009355
+2025-03-22 15:55:24,897 - INFO - Execution successful, no errors detected.
+2025-03-22 15:55:24,897 - INFO - 🎯 1D_Nonlinear_Convection_MK executed successfully without syntax errors.
+2025-03-22 15:55:24,897 - INFO - 🔹 Generating code for: 2D_Laplace_Equation (Attempt 1/5)
+2025-03-22 15:55:49,521 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:55:49,525 - INFO - Input Tokens: 411, Output Tokens: 1314
+2025-03-22 15:55:49,525 - INFO - Estimated cost for this request: $0.014168
+2025-03-22 15:55:50,137 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Laplace_Equation.py", line 58, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+2025-03-22 15:55:50,137 - INFO - ❌ Error detected in 2D_Laplace_Equation, refining prompt...
+2025-03-22 15:55:50,137 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Laplace_Equation.py", line 58, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+Please correct it.
+2025-03-22 15:55:50,137 - INFO - 🔹 Generating code for: 2D_Laplace_Equation (Attempt 2/5)
+2025-03-22 15:56:09,080 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:56:09,084 - INFO - Input Tokens: 411, Output Tokens: 1110
+2025-03-22 15:56:09,084 - INFO - Estimated cost for this request: $0.012128
+2025-03-22 15:56:09,755 - INFO - Execution successful, no errors detected.
+2025-03-22 15:56:09,755 - INFO - 🎯 2D_Laplace_Equation executed successfully without syntax errors.
+2025-03-22 15:56:09,755 - INFO - 🔹 Generating code for: 2D_Linear_Convection (Attempt 1/5)
+2025-03-22 15:56:24,339 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:56:24,343 - INFO - Input Tokens: 441, Output Tokens: 1045
+2025-03-22 15:56:24,343 - INFO - Estimated cost for this request: $0.011553
+2025-03-22 15:56:24,949 - INFO - Execution successful, no errors detected.
+2025-03-22 15:56:24,949 - INFO - 🎯 2D_Linear_Convection executed successfully without syntax errors.
+2025-03-22 15:56:24,949 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_CESS (Attempt 1/5)
+2025-03-22 15:56:25,157 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-22 15:56:25,159 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_CESS: Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 8235 tokens (1235 in the messages, 7000 in the completion). Please reduce the length of the messages or completion.", 'type': 'invalid_request_error', 'param': 'messages', 'code': 'context_length_exceeded'}}
+2025-03-22 15:56:25,159 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_LW (Attempt 1/5)
+2025-03-22 15:56:41,235 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:56:41,239 - INFO - Input Tokens: 247, Output Tokens: 960
+2025-03-22 15:56:41,239 - INFO - Estimated cost for this request: $0.010218
+2025-03-22 15:56:41,841 - INFO - Execution successful, no errors detected.
+2025-03-22 15:56:41,841 - INFO - 🎯 1D_Nonlinear_Convection_LW executed successfully without syntax errors.
+2025-03-22 15:56:41,841 - INFO - 🔹 Generating code for: 1D_Linear_Convection_adams (Attempt 1/5)
+2025-03-22 15:57:01,100 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:57:01,104 - INFO - Input Tokens: 382, Output Tokens: 1150
+2025-03-22 15:57:01,104 - INFO - Estimated cost for this request: $0.012455
+2025-03-22 15:57:01,812 - INFO - Execution successful, no errors detected.
+2025-03-22 15:57:01,812 - INFO - 🎯 1D_Linear_Convection_adams executed successfully without syntax errors.
+2025-03-22 15:57:01,812 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Channel (Attempt 1/5)
+2025-03-22 15:58:07,559 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:58:07,563 - INFO - Input Tokens: 506, Output Tokens: 2998
+2025-03-22 15:58:07,563 - INFO - Estimated cost for this request: $0.031245
+2025-03-22 15:58:08,165 - INFO - Execution successful, no errors detected.
+2025-03-22 15:58:08,165 - INFO - 🎯 2D_Navier_Stokes_Channel executed successfully without syntax errors.
+2025-03-22 15:58:08,165 - INFO - 🔹 Generating code for: 2D_Diffusion (Attempt 1/5)
+2025-03-22 15:58:21,295 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:58:21,298 - INFO - Input Tokens: 401, Output Tokens: 965
+2025-03-22 15:58:21,298 - INFO - Estimated cost for this request: $0.010653
+2025-03-22 15:58:21,732 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Diffusion.py", line 39, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+2025-03-22 15:58:21,732 - INFO - ❌ Error detected in 2D_Diffusion, refining prompt...
+2025-03-22 15:58:21,732 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Diffusion.py", line 39, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+Please correct it.
+2025-03-22 15:58:21,732 - INFO - 🔹 Generating code for: 2D_Diffusion (Attempt 2/5)
+2025-03-22 15:58:37,461 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:58:37,465 - INFO - Input Tokens: 401, Output Tokens: 1023
+2025-03-22 15:58:37,465 - INFO - Estimated cost for this request: $0.011233
+2025-03-22 15:58:38,051 - INFO - Execution successful, no errors detected.
+2025-03-22 15:58:38,051 - INFO - 🎯 2D_Diffusion executed successfully without syntax errors.
+2025-03-22 15:58:38,052 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Gauss (Attempt 1/5)
+2025-03-22 15:58:50,156 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 15:58:50,157 - INFO - Input Tokens: 368, Output Tokens: 897
+2025-03-22 15:58:50,157 - INFO - Estimated cost for this request: $0.009890
+2025-03-22 15:59:41,306 - INFO - Execution successful, no errors detected.
+2025-03-22 15:59:41,307 - INFO - 🎯 2D_Steady_Heat_Equation_Gauss executed successfully without syntax errors.
+2025-03-22 15:59:41,307 - INFO - 🔹 Generating code for: 1D_Euler_Shock_Tube (Attempt 1/5)
+2025-03-22 16:00:10,850 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:00:10,854 - INFO - Input Tokens: 530, Output Tokens: 1548
+2025-03-22 16:00:10,854 - INFO - Estimated cost for this request: $0.016805
+2025-03-22 16:00:11,645 - INFO - Execution successful, no errors detected.
+2025-03-22 16:00:11,645 - INFO - 🎯 1D_Euler_Shock_Tube executed successfully without syntax errors.
+2025-03-22 16:00:11,645 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_SE (Attempt 1/5)
+2025-03-22 16:00:28,975 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:00:28,976 - INFO - Input Tokens: 332, Output Tokens: 1038
+2025-03-22 16:00:28,976 - INFO - Estimated cost for this request: $0.011210
+2025-03-22 16:00:29,847 - INFO - Execution successful, no errors detected.
+2025-03-22 16:00:29,847 - INFO - 🎯 2D_Unsteady_Heat_Equation_SE executed successfully without syntax errors.
+2025-03-22 16:00:29,847 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_Jac (Attempt 1/5)
+2025-03-22 16:00:42,794 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:00:42,797 - INFO - Input Tokens: 384, Output Tokens: 881
+2025-03-22 16:00:42,797 - INFO - Estimated cost for this request: $0.009770
+2025-03-22 16:00:44,090 - INFO - Execution successful, no errors detected.
+2025-03-22 16:00:44,090 - INFO - 🎯 2D_Steady_Heat_Equation_Jac executed successfully without syntax errors.
+2025-03-22 16:00:44,091 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_FOU (Attempt 1/5)
+2025-03-22 16:00:44,540 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-22 16:00:44,542 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_FOU: Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 8272 tokens (1272 in the messages, 7000 in the completion). Please reduce the length of the messages or completion.", 'type': 'invalid_request_error', 'param': 'messages', 'code': 'context_length_exceeded'}}
+2025-03-22 16:00:44,542 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SA (Attempt 1/5)
+2025-03-22 16:00:44,628 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-22 16:00:44,629 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_SA: Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 8420 tokens (1420 in the messages, 7000 in the completion). Please reduce the length of the messages or completion.", 'type': 'invalid_request_error', 'param': 'messages', 'code': 'context_length_exceeded'}}
+2025-03-22 16:00:44,629 - INFO - 🔹 Generating code for: 2D_Burgers_Equation (Attempt 1/5)
+2025-03-22 16:01:12,291 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:01:12,294 - INFO - Input Tokens: 465, Output Tokens: 1451
+2025-03-22 16:01:12,294 - INFO - Estimated cost for this request: $0.015672
+2025-03-22 16:01:13,151 - INFO - Execution successful, no errors detected.
+2025-03-22 16:01:13,151 - INFO - 🎯 2D_Burgers_Equation executed successfully without syntax errors.
+2025-03-22 16:01:13,151 - INFO - 🔹 Generating code for: 1D_Linear_Convection_explicit_euler (Attempt 1/5)
+2025-03-22 16:01:28,163 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:01:28,167 - INFO - Input Tokens: 356, Output Tokens: 950
+2025-03-22 16:01:28,167 - INFO - Estimated cost for this request: $0.010390
+2025-03-22 16:01:28,712 - INFO - Execution successful, no errors detected.
+2025-03-22 16:01:28,712 - INFO - 🎯 1D_Linear_Convection_explicit_euler executed successfully without syntax errors.
+2025-03-22 16:01:28,712 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Cavity (Attempt 1/5)
+2025-03-22 16:02:18,033 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:02:18,035 - INFO - Input Tokens: 487, Output Tokens: 2249
+2025-03-22 16:02:18,035 - INFO - Estimated cost for this request: $0.023708
+2025-03-22 16:02:19,337 - INFO - Execution successful, no errors detected.
+2025-03-22 16:02:19,338 - INFO - 🎯 2D_Navier_Stokes_Cavity executed successfully without syntax errors.
+2025-03-22 16:02:19,338 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers_MK (Attempt 1/5)
+2025-03-22 16:02:19,429 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-22 16:02:19,430 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers_MK: Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 8284 tokens (1284 in the messages, 7000 in the completion). Please reduce the length of the messages or completion.", 'type': 'invalid_request_error', 'param': 'messages', 'code': 'context_length_exceeded'}}
+2025-03-22 16:02:19,430 - INFO - 🔹 Generating code for: 1D_Diffusion (Attempt 1/5)
+2025-03-22 16:02:34,007 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:02:34,010 - INFO - Input Tokens: 245, Output Tokens: 693
+2025-03-22 16:02:34,011 - INFO - Estimated cost for this request: $0.007543
+2025-03-22 16:02:34,560 - INFO - Execution successful, no errors detected.
+2025-03-22 16:02:34,560 - INFO - 🎯 1D_Diffusion executed successfully without syntax errors.
+2025-03-22 16:02:34,560 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_ADI (Attempt 1/5)
+2025-03-22 16:02:59,300 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:02:59,304 - INFO - Input Tokens: 345, Output Tokens: 1359
+2025-03-22 16:02:59,304 - INFO - Estimated cost for this request: $0.014453
+2025-03-22 16:03:14,532 - INFO - Execution successful, no errors detected.
+2025-03-22 16:03:14,532 - INFO - 🎯 2D_Unsteady_Heat_Equation_ADI executed successfully without syntax errors.
+2025-03-22 16:03:14,532 - INFO - 🔹 Generating code for: 1D_Linear_Convection_rk (Attempt 1/5)
+2025-03-22 16:03:42,514 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:03:42,518 - INFO - Input Tokens: 408, Output Tokens: 1125
+2025-03-22 16:03:42,518 - INFO - Estimated cost for this request: $0.012270
+2025-03-22 16:03:43,443 - INFO - Execution successful, no errors detected.
+2025-03-22 16:03:43,443 - INFO - 🎯 1D_Linear_Convection_rk executed successfully without syntax errors.
+2025-03-22 16:03:43,443 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection_Lax (Attempt 1/5)
+2025-03-22 16:03:56,440 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:03:56,444 - INFO - Input Tokens: 234, Output Tokens: 757
+2025-03-22 16:03:56,444 - INFO - Estimated cost for this request: $0.008155
+2025-03-22 16:03:57,042 - INFO - Execution successful, no errors detected.
+2025-03-22 16:03:57,042 - INFO - 🎯 1D_Nonlinear_Convection_Lax executed successfully without syntax errors.
+2025-03-22 16:03:57,042 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_DF (Attempt 1/5)
+2025-03-22 16:04:30,745 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:04:30,749 - INFO - Input Tokens: 290, Output Tokens: 1159
+2025-03-22 16:04:30,749 - INFO - Estimated cost for this request: $0.012315
+2025-03-22 16:04:31,441 - WARNING - Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:34: RuntimeWarning: overflow encountered in add
+  T_new[1:-1, 1:-1] = ((2*r*(T[2:, 1:-1] + T[:-2, 1:-1]) +
+2025-03-22 16:04:31,441 - INFO - ❌ Error detected in 2D_Unsteady_Heat_Equation_DF, refining prompt...
+2025-03-22 16:04:31,441 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+⚠️ Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:34: RuntimeWarning: overflow encountered in add
+  T_new[1:-1, 1:-1] = ((2*r*(T[2:, 1:-1] + T[:-2, 1:-1]) +
+Please correct it.
+2025-03-22 16:04:31,441 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_DF (Attempt 2/5)
+2025-03-22 16:04:48,358 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:04:48,362 - INFO - Input Tokens: 290, Output Tokens: 1023
+2025-03-22 16:04:48,362 - INFO - Estimated cost for this request: $0.010955
+2025-03-22 16:04:48,973 - ERROR - Execution failed with errors:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:28: RuntimeWarning: overflow encountered in add
+  T[1:-1, 1:-1, n+1] = ((2 * r * (T[2:, 1:-1, n] + T[:-2, 1:-1, n]) +
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:29: RuntimeWarning: overflow encountered in add
+  2 * beta**2 * r * (T[1:-1, 2:, n] + T[1:-1, :-2, n]) +
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py", line 28, in <module>
+    T[1:-1, 1:-1, n+1] = ((2 * r * (T[2:, 1:-1, n] + T[:-2, 1:-1, n]) +
+IndexError: index 6000 is out of bounds for axis 2 with size 6000
+2025-03-22 16:04:48,973 - INFO - ❌ Error detected in 2D_Unsteady_Heat_Equation_DF, refining prompt...
+2025-03-22 16:04:48,974 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:28: RuntimeWarning: overflow encountered in add
+  T[1:-1, 1:-1, n+1] = ((2 * r * (T[2:, 1:-1, n] + T[:-2, 1:-1, n]) +
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:29: RuntimeWarning: overflow encountered in add
+  2 * beta**2 * r * (T[1:-1, 2:, n] + T[1:-1, :-2, n]) +
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py", line 28, in <module>
+    T[1:-1, 1:-1, n+1] = ((2 * r * (T[2:, 1:-1, n] + T[:-2, 1:-1, n]) +
+IndexError: index 6000 is out of bounds for axis 2 with size 6000
+Please correct it.
+2025-03-22 16:04:48,974 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_DF (Attempt 3/5)
+2025-03-22 16:05:12,425 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:05:12,428 - INFO - Input Tokens: 290, Output Tokens: 1267
+2025-03-22 16:05:12,428 - INFO - Estimated cost for this request: $0.013395
+2025-03-22 16:05:13,194 - WARNING - Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:43: RuntimeWarning: overflow encountered in add
+  2 * r * (T[2:, 1:-1] + T[:-2, 1:-1]) +
+2025-03-22 16:05:13,195 - INFO - ❌ Error detected in 2D_Unsteady_Heat_Equation_DF, refining prompt...
+2025-03-22 16:05:13,195 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+⚠️ Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:43: RuntimeWarning: overflow encountered in add
+  2 * r * (T[2:, 1:-1] + T[:-2, 1:-1]) +
+Please correct it.
+2025-03-22 16:05:13,195 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_DF (Attempt 4/5)
+2025-03-22 16:05:35,463 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:05:35,466 - INFO - Input Tokens: 290, Output Tokens: 1214
+2025-03-22 16:05:35,466 - INFO - Estimated cost for this request: $0.012865
+2025-03-22 16:05:36,180 - WARNING - Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:17: RuntimeWarning: overflow encountered in add
+  T_new[1:-1, 1:-1] = (2*r*(T[2:, 1:-1] + T[:-2, 1:-1]) + 2*(beta**2)*r*(T[1:-1, 2:] + T[1:-1, :-2]) + T_old[1:-1, 1:-1] + 2*dt*q[1:-1, 1:-1]) / (1 + 2*r + 2*(beta**2)*r)
+2025-03-22 16:05:36,180 - INFO - ❌ Error detected in 2D_Unsteady_Heat_Equation_DF, refining prompt...
+2025-03-22 16:05:36,180 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+⚠️ Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:17: RuntimeWarning: overflow encountered in add
+  T_new[1:-1, 1:-1] = (2*r*(T[2:, 1:-1] + T[:-2, 1:-1]) + 2*(beta**2)*r*(T[1:-1, 2:] + T[1:-1, :-2]) + T_old[1:-1, 1:-1] + 2*dt*q[1:-1, 1:-1]) / (1 + 2*r + 2*(beta**2)*r)
+Please correct it.
+2025-03-22 16:05:36,180 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation_DF (Attempt 5/5)
+2025-03-22 16:05:53,012 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:05:53,027 - INFO - Input Tokens: 290, Output Tokens: 1042
+2025-03-22 16:05:53,027 - INFO - Estimated cost for this request: $0.011145
+2025-03-22 16:06:27,755 - WARNING - Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:31: RuntimeWarning: overflow encountered in scalar add
+  T_new[i, j] = (2*r*(T[i+1, j, 1] + T[i-1, j, 1]) + 2*beta**2*r*(T[i, j+1, 1] + T[i, j-1, 1]) + T[i, j, 0] + 2*dt*q(i*dx, j*dy)) / (1 + 2*r + 2*beta**2*r)
+2025-03-22 16:06:27,755 - INFO - ❌ Error detected in 2D_Unsteady_Heat_Equation_DF, refining prompt...
+2025-03-22 16:06:27,755 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+⚠️ Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Unsteady_Heat_Equation_DF.py:31: RuntimeWarning: overflow encountered in scalar add
+  T_new[i, j] = (2*r*(T[i+1, j, 1] + T[i-1, j, 1]) + 2*beta**2*r*(T[i, j+1, 1] + T[i, j-1, 1]) + T[i, j, 0] + 2*dt*q(i*dx, j*dy)) / (1 + 2*r + 2*beta**2*r)
+Please correct it.
+2025-03-22 16:06:27,755 - INFO - ⚠️ Max retries reached for 2D_Unsteady_Heat_Equation_DF. Check logs for remaining errors.
+2025-03-22 16:06:27,755 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 1/5)
+2025-03-22 16:06:51,957 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:06:51,960 - INFO - Input Tokens: 470, Output Tokens: 1228
+2025-03-22 16:06:51,960 - INFO - Estimated cost for this request: $0.013455
+2025-03-22 16:06:52,411 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Convection.py", line 40, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+2025-03-22 16:06:52,411 - INFO - ❌ Error detected in 2D_Convection, refining prompt...
+2025-03-22 16:06:52,411 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Convection.py", line 40, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+Please correct it.
+2025-03-22 16:06:52,411 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 2/5)
+2025-03-22 16:07:16,466 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:07:16,482 - INFO - Input Tokens: 470, Output Tokens: 1368
+2025-03-22 16:07:16,482 - INFO - Estimated cost for this request: $0.014855
+2025-03-22 16:07:16,929 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Convection.py", line 58, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+2025-03-22 16:07:16,929 - INFO - ❌ Error detected in 2D_Convection, refining prompt...
+2025-03-22 16:07:16,929 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Convection.py", line 58, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+Please correct it.
+2025-03-22 16:07:16,929 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 3/5)
+2025-03-22 16:07:35,784 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:07:35,788 - INFO - Input Tokens: 470, Output Tokens: 1219
+2025-03-22 16:07:35,788 - INFO - Estimated cost for this request: $0.013365
+2025-03-22 16:07:36,238 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Convection.py", line 43, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+2025-03-22 16:07:36,238 - INFO - ❌ Error detected in 2D_Convection, refining prompt...
+2025-03-22 16:07:36,238 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Convection.py", line 43, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+Please correct it.
+2025-03-22 16:07:36,238 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 4/5)
+2025-03-22 16:07:59,233 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:07:59,234 - INFO - Input Tokens: 470, Output Tokens: 1252
+2025-03-22 16:07:59,234 - INFO - Estimated cost for this request: $0.013695
+2025-03-22 16:07:59,543 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Convection.py", line 22, in <module>
+    (un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1])) -
+NameError: name 'dt' is not defined
+2025-03-22 16:07:59,543 - INFO - ❌ Error detected in 2D_Convection, refining prompt...
+2025-03-22 16:07:59,543 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Convection.py", line 22, in <module>
+    (un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1])) -
+NameError: name 'dt' is not defined
+Please correct it.
+2025-03-22 16:07:59,543 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 5/5)
+2025-03-22 16:08:24,629 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:08:24,629 - INFO - Input Tokens: 470, Output Tokens: 1380
+2025-03-22 16:08:24,629 - INFO - Estimated cost for this request: $0.014975
+2025-03-22 16:08:25,074 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Convection.py", line 52, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+2025-03-22 16:08:25,074 - INFO - ❌ Error detected in 2D_Convection, refining prompt...
+2025-03-22 16:08:25,074 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/2D_Convection.py", line 52, in <module>
+    ax = fig.gca(projection='3d')
+TypeError: gca() got an unexpected keyword argument 'projection'
+Please correct it.
+2025-03-22 16:08:25,074 - INFO - ⚠️ Max retries reached for 2D_Convection. Check logs for remaining errors.
+2025-03-22 16:08:25,074 - INFO - 🔹 Generating code for: 2D_Poisson_Equation (Attempt 1/5)
+2025-03-22 16:08:48,693 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:08:48,695 - INFO - Input Tokens: 391, Output Tokens: 1221
+2025-03-22 16:08:48,695 - INFO - Estimated cost for this request: $0.013188
+2025-03-22 16:08:49,593 - INFO - Execution successful, no errors detected.
+2025-03-22 16:08:49,594 - INFO - 🎯 2D_Poisson_Equation executed successfully without syntax errors.
+2025-03-22 16:08:49,594 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation_SOR (Attempt 1/5)
+2025-03-22 16:09:09,887 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:09:09,891 - INFO - Input Tokens: 396, Output Tokens: 1128
+2025-03-22 16:09:09,891 - INFO - Estimated cost for this request: $0.012270
+2025-03-22 16:09:36,062 - INFO - Execution successful, no errors detected.
+2025-03-22 16:09:36,063 - INFO - 🎯 2D_Steady_Heat_Equation_SOR executed successfully without syntax errors.
+2025-03-22 16:09:36,063 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SST (Attempt 1/5)
+2025-03-22 16:10:03,448 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:10:03,451 - INFO - Input Tokens: 482, Output Tokens: 1461
+2025-03-22 16:10:03,452 - INFO - Estimated cost for this request: $0.015815
+2025-03-22 16:10:03,812 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 65, in <module>
+    mesh = Mesh(n, H)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 19, in __init__
+    self.second_derivative_matrix = self.compute_second_derivative_matrix()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 37, in compute_second_derivative_matrix
+    D2 = np.diag(2.0 / (dy[:-1] * (dy[:-1] + dy[1:])), -1) \
+ValueError: operands could not be broadcast together with shapes (99,99) (98,98)
+2025-03-22 16:10:03,812 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_SST, refining prompt...
+2025-03-22 16:10:03,812 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 65, in <module>
+    mesh = Mesh(n, H)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 19, in __init__
+    self.second_derivative_matrix = self.compute_second_derivative_matrix()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 37, in compute_second_derivative_matrix
+    D2 = np.diag(2.0 / (dy[:-1] * (dy[:-1] + dy[1:])), -1) \
+ValueError: operands could not be broadcast together with shapes (99,99) (98,98)
+Please correct it.
+2025-03-22 16:10:03,812 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SST (Attempt 2/5)
+2025-03-22 16:10:30,379 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:10:30,382 - INFO - Input Tokens: 482, Output Tokens: 1423
+2025-03-22 16:10:30,382 - INFO - Estimated cost for this request: $0.015435
+2025-03-22 16:10:30,745 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/_construct.py", line 187, in diags
+    data_arr[j, k:k+length] = diagonal[...,:length]
+ValueError: could not broadcast input array from shape (98,) into shape (100,)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 58, in <module>
+    mesh = Mesh(n=100, H=2)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 12, in __init__
+    self.d2y = self.generate_d2y()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 27, in generate_d2y
+    return diags([d2y[:-1], -2 * d2y[1:-1], d2y[2:]], [-1, 0, 1], shape=(self.n, self.n))
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/_construct.py", line 190, in diags
+    raise ValueError(
+ValueError: Diagonal length (index 1: 98 at offset 0) does not agree with matrix size (100, 100).
+2025-03-22 16:10:30,746 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_SST, refining prompt...
+2025-03-22 16:10:30,746 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/_construct.py", line 187, in diags
+    data_arr[j, k:k+length] = diagonal[...,:length]
+ValueError: could not broadcast input array from shape (98,) into shape (100,)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 58, in <module>
+    mesh = Mesh(n=100, H=2)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 12, in __init__
+    self.d2y = self.generate_d2y()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 27, in generate_d2y
+    return diags([d2y[:-1], -2 * d2y[1:-1], d2y[2:]], [-1, 0, 1], shape=(self.n, self.n))
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/_construct.py", line 190, in diags
+    raise ValueError(
+ValueError: Diagonal length (index 1: 98 at offset 0) does not agree with matrix size (100, 100).
+Please correct it.
+2025-03-22 16:10:30,746 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SST (Attempt 3/5)
+2025-03-22 16:10:51,885 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:10:51,888 - INFO - Input Tokens: 482, Output Tokens: 1209
+2025-03-22 16:10:51,889 - INFO - Estimated cost for this request: $0.013295
+2025-03-22 16:10:52,203 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 69, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 46, in main
+    mu_t = compute_turbulent_viscosity(rho, k, omega, a1, S, F2)
+NameError: name 'k' is not defined
+2025-03-22 16:10:52,203 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_SST, refining prompt...
+2025-03-22 16:10:52,203 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 69, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 46, in main
+    mu_t = compute_turbulent_viscosity(rho, k, omega, a1, S, F2)
+NameError: name 'k' is not defined
+Please correct it.
+2025-03-22 16:10:52,203 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SST (Attempt 4/5)
+2025-03-22 16:11:10,623 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:11:10,626 - INFO - Input Tokens: 482, Output Tokens: 1300
+2025-03-22 16:11:10,626 - INFO - Estimated cost for this request: $0.014205
+2025-03-22 16:11:10,984 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/_construct.py", line 187, in diags
+    data_arr[j, k:k+length] = diagonal[...,:length]
+ValueError: could not broadcast input array from shape (98,) into shape (99,)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 64, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 40, in main
+    mesh = Mesh(100, 2)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 16, in __init__
+    self.dy, self.d2y = self.generate_fd_matrices()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 26, in generate_fd_matrices
+    d2y = diags([1 / dy[:-1], -1 / dy[:-1] - 1 / dy[1:], 1 / dy[1:]], [-1, 0, 1], shape=(self.n, self.n)).toarray()
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/_construct.py", line 190, in diags
+    raise ValueError(
+ValueError: Diagonal length (index 0: 98 at offset -1) does not agree with matrix size (100, 100).
+2025-03-22 16:11:10,984 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_SST, refining prompt...
+2025-03-22 16:11:10,984 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+Traceback (most recent call last):
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/_construct.py", line 187, in diags
+    data_arr[j, k:k+length] = diagonal[...,:length]
+ValueError: could not broadcast input array from shape (98,) into shape (99,)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 64, in <module>
+    main()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 40, in main
+    mesh = Mesh(100, 2)
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 16, in __init__
+    self.dy, self.d2y = self.generate_fd_matrices()
+  File "/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py", line 26, in generate_fd_matrices
+    d2y = diags([1 / dy[:-1], -1 / dy[:-1] - 1 / dy[1:], 1 / dy[1:]], [-1, 0, 1], shape=(self.n, self.n)).toarray()
+  File "/home/weichao/.local/lib/python3.8/site-packages/scipy/sparse/_construct.py", line 190, in diags
+    raise ValueError(
+ValueError: Diagonal length (index 0: 98 at offset -1) does not agree with matrix size (100, 100).
+Please correct it.
+2025-03-22 16:11:10,984 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_SST (Attempt 5/5)
+2025-03-22 16:11:26,701 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-22 16:11:26,704 - INFO - Input Tokens: 482, Output Tokens: 1168
+2025-03-22 16:11:26,704 - INFO - Estimated cost for this request: $0.012885
+2025-03-22 16:11:27,321 - WARNING - Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py:41: LinAlgWarning: Diagonal number 1 is exactly zero. Singular matrix.
+  lu, piv = lu_factor(A)
+2025-03-22 16:11:27,321 - INFO - ❌ Error detected in Fully_Developed_Turbulent_Channel_Flow_SST, refining prompt...
+2025-03-22 16:11:27,321 - INFO - 
+
+[Feedback]: The previous generated code had the following error:
+⚠️ Execution completed with warnings:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4/Fully_Developed_Turbulent_Channel_Flow_SST.py:41: LinAlgWarning: Diagonal number 1 is exactly zero. Singular matrix.
+  lu, piv = lu_factor(A)
+Please correct it.
+2025-03-22 16:11:27,321 - INFO - ⚠️ Max retries reached for Fully_Developed_Turbulent_Channel_Flow_SST. Check logs for remaining errors.
+2025-03-22 16:11:27,321 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow_V2F (Attempt 1/5)
+2025-03-22 16:11:27,620 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2025-03-22 16:11:27,620 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow_V2F: Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 8250 tokens (1250 in the messages, 7000 in the completion). Please reduce the length of the messages or completion.", 'type': 'invalid_request_error', 'param': 'messages', 'code': 'context_length_exceeded'}}
+2025-03-22 16:11:27,620 - INFO - 
+🎯 Execution completed. Check the solver directory for generated files.
+2025-03-22 16:11:27,620 - INFO - Total Input Tokens: 18489
+2025-03-22 16:11:27,620 - INFO - Total Output Tokens: 57192
+2025-03-22 16:11:27,620 - INFO - Total Estimated Cost: $0.618143

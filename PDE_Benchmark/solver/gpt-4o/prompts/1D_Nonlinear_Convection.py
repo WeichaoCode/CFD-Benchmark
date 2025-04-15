@@ -22,4 +22,4 @@ for n in range(nt):
     u = u_next
 
 # Save the final solution
-np.save('u', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gpt-4o/prompts/u_1D_Nonlinear_Convection.npy', u)

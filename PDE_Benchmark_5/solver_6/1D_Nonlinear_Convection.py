@@ -1,0 +1,27 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define parameters
+L = 2.0   # Length of domain
+T = 1.0   # Time of solution
+nx = 81   # Number of spatial points
+nt = 81   # Number of time steps
+cfl = 0.5 # Courant-Friedrichs-Lewy number
+
+dx = L / (nx - 1)  # Spatial discretization size
+dt = cfl * dx      # Time discretization size (CFL condition)
+
+# Initial wave profile
+u = np.ones(nx)
+u[int(.5 / dx):int(1 / dx + 1)] = 2
+
+# Finite difference scheme
+un = np.ones(nx)   
+for n in range(nt):
+    un = u.copy()
+    for i in range(1, nx):
+        u[i] = un[i] - un[i] * dt / dx * (un[i] - un[i - 1])
+
+# Plot evolution
+plt.plot(np.linspace(0, L, nx), u)
+plt.show()

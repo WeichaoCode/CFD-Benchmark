@@ -1,0 +1,40 @@
+Here is a Python code that implements the solution using the MacCormack method:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+nu = 0.5
+dt = 0.01
+T = 500
+dx = dt / nu
+x = np.arange(0, 2*np.pi, dx)
+u = np.sin(x) + 0.5*np.sin(0.5*x)  # initial condition
+
+# MacCormack method
+for t in range(T):
+    u_star = u.copy()
+    F = 0.5 * u**2  # Flux
+    u_star[:-1] = u[:-1] - dt/dx * (F[1:] - F[:-1])
+    F_star = 0.5 * u_star**2
+    u[1:] = 0.5 * (u[1:] + u_star[1:] - dt/dx * (F_star[1:] - F_star[:-1]))
+    u[0] = u[-1]  # periodic boundary condition
+
+# Save the solution
+np.save('solution.npy', u)
+
+# Plot the solution
+plt.figure(figsize=(10, 6))
+plt.plot(x, u, label='MacCormack')
+plt.xlabel('x')
+plt.ylabel('u')
+plt.title('Solution of the 1D Nonlinear Convection Equation')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+This code first sets up the parameters and the initial condition. Then it enters a loop over time steps, where it applies the MacCormack method to update the solution `u`. The periodic boundary condition is applied by setting `u[0]` equal to `u[-1]` after each update. The solution is saved in a `.npy` file and also plotted using Matplotlib.
+
+Please note that the comparison with the Lax and Lax-Wendroff methods is not included in this code. You would need to implement these methods separately and plot their solutions on the same graph for comparison.

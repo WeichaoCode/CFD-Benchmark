@@ -1,0 +1,36 @@
+```python
+import numpy as np
+import math
+
+# Parameters
+L = 2 * np.pi
+nu = 0.5
+dt = 0.01
+dx = dt / nu
+nx = math.ceil(L / dx)
+T = 500
+
+# Discretize the spatial domain
+x = np.linspace(0, L, nx, endpoint=False)
+
+# Initial condition
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# MacCormack method
+for n in range(T):
+    # Predictor step
+    u_pred = np.empty_like(u)
+    u_pred[:-1] = u[:-1] - dt * u[:-1] * (u[1:] - u[:-1]) / dx
+    u_pred[-1] = u[-1] - dt * u[-1] * (u[0] - u[-1]) / dx  # Periodic BC
+
+    # Corrector step
+    u_corr = np.empty_like(u)
+    u_corr[1:] = 0.5 * (u[1:] + u_pred[1:] - dt * u_pred[1:] * (u_pred[1:] - u_pred[:-1]) / dx)
+    u_corr[0] = 0.5 * (u[0] + u_pred[0] - dt * u_pred[0] * (u_pred[0] - u_pred[-1]) / dx)  # Periodic BC
+
+    # Update solution
+    u = u_corr
+
+# Save the final solution
+np.save('u.npy', u)
+```

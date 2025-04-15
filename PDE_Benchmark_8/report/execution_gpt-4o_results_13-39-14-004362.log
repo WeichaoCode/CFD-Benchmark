@@ -1,0 +1,13 @@
+2025-03-26 13:39:14,004 - INFO - ####################################################################################################
+2025-03-26 13:39:14,004 - INFO - Using the o1-mini, change temperature to 1.0, remove max_tokens
+2025-03-26 13:39:14,025 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/5)
+2025-03-26 13:39:24,724 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-26 13:39:24,740 - INFO - Input Tokens: 416, Output Tokens: 1026
+2025-03-26 13:39:24,740 - INFO - Estimated cost for this request: $0.011300
+2025-03-26 13:39:24,896 - INFO - Execution successful, no errors detected.
+2025-03-26 13:39:24,896 - INFO - 🎯 1D_Burgers_Equation executed successfully without syntax errors.
+2025-03-26 13:39:24,896 - INFO - 
+🎯 Execution completed. Check the solver directory for generated files.
+2025-03-26 13:39:24,896 - INFO - Total Input Tokens: 416
+2025-03-26 13:39:24,896 - INFO - Total Output Tokens: 1026
+2025-03-26 13:39:24,896 - INFO - Total Estimated Cost: $0.011300

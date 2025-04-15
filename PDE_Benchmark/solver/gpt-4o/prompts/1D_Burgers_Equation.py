@@ -29,4 +29,4 @@ for n in range(nt):
     u[-1] = u[0]
 
 # Save the final solution
-np.save('u', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gpt-4o/prompts/u_1D_Burgers_Equation.npy', u)

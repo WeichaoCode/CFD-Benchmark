@@ -54,5 +54,5 @@ for n in range(nt):
     v[:, -1] = 1 # Right
 
 # Save final solutions
-np.save('u', u)
-np.save('v', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_2D_Burgers_Equation.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/v_2D_Burgers_Equation.npy', v)

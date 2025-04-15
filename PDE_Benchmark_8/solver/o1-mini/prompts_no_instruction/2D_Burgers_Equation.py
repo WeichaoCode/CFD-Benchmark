@@ -1,0 +1,59 @@
+import numpy as np
+
+# Parameters
+nx, ny = 41, 41
+nt = 120
+sigma = 0.0009
+nu = 0.01
+dx = 2 / (nx - 1)
+dy = 2 / (ny - 1)
+dt = sigma * dx * dy / nu
+
+# Grid
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initial conditions
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+u[np.logical_and(X >= 0.5, X <=1) & np.logical_and(Y >=0.5, Y <=1)] = 2
+v[np.logical_and(X >= 0.5, X <=1) & np.logical_and(Y >=0.5, Y <=1)] = 2
+
+# Time-stepping
+for _ in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    
+    # Compute u
+    u[1:-1,1:-1] = (un[1:-1,1:-1] +
+                    dt * (-un[1:-1,1:-1] * 
+                          (un[2:,1:-1] - un[:-2,1:-1]) / (2*dx) -
+                          vn[1:-1,1:-1] * 
+                          (un[1:-1,2:] - un[1:-1,:-2]) / (2*dy) +
+                          nu * ((un[2:,1:-1] - 2*un[1:-1,1:-1] + un[:-2,1:-1]) / dx**2 +
+                                (un[1:-1,2:] - 2*un[1:-1,1:-1] + un[1:-1,:-2]) / dy**2)))
+    
+    # Compute v
+    v[1:-1,1:-1] = (vn[1:-1,1:-1] +
+                    dt * (-un[1:-1,1:-1] * 
+                          (vn[2:,1:-1] - vn[:-2,1:-1]) / (2*dx) -
+                          vn[1:-1,1:-1] * 
+                          (vn[1:-1,2:] - vn[1:-1,:-2]) / (2*dy) +
+                          nu * ((vn[2:,1:-1] - 2*vn[1:-1,1:-1] + vn[:-2,1:-1]) / dx**2 +
+                                (vn[1:-1,2:] - 2*vn[1:-1,1:-1] + vn[1:-1,:-2]) / dy**2)))
+    
+    # Boundary conditions
+    u[0,:] = 1
+    u[-1,:] = 1
+    u[:,0] = 1
+    u[:,-1] = 1
+    
+    v[0,:] = 1
+    v[-1,:] = 1
+    v[:,0] = 1
+    v[:,-1] = 1
+
+# Save the final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/o1-mini/prompts_no_instruction/u_2D_Burgers_Equation.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/o1-mini/prompts_no_instruction/v_2D_Burgers_Equation.npy', v)

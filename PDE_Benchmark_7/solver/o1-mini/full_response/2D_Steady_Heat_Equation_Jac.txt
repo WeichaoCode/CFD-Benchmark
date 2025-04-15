@@ -1,0 +1,73 @@
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Domain parameters
+Lx = 5.0       # Length in x-direction
+Ly = 4.0       # Length in y-direction
+dx = 0.05      # Grid spacing in x
+dy = 0.05      # Grid spacing in y
+nx = int(Lx / dx) + 1  # Number of grid points in x
+ny = int(Ly / dy) + 1  # Number of grid points in y
+beta = dx / dy          # Grid aspect ratio
+
+# Initialize temperature grid
+T = np.zeros((ny, nx))
+
+# Apply boundary conditions
+T[:, 0] = 10.0   # Left boundary (AB)
+T[:, -1] = 40.0  # Right boundary (EF)
+T[0, :] = 0.0    # Top boundary (CD)
+T[-1, :] = 20.0  # Bottom boundary (G)
+
+# Iterative parameters
+tolerance = 1e-6
+max_iterations = 10000
+iteration = 0
+converged = False
+
+# Jacobi iterative method
+while not converged and iteration < max_iterations:
+    T_new = T.copy()
+    # Update interior points
+    T_new[1:-1, 1:-1] = (
+        T[2:, 1:-1] + T[:-2, 1:-1] + beta**2 * (T[1:-1, 2:] + T[1:-1, :-2])
+    ) / (2 * (1 + beta**2))
+    
+    # Compute the maximum difference from the previous iteration
+    diff = np.max(np.abs(T_new - T))
+    
+    if diff < tolerance:
+        converged = True
+    
+    T = T_new
+    iteration += 1
+    
+    # Optional: print progress every 100 iterations
+    if iteration % 100 == 0:
+        print(f"Iteration {iteration}, max difference = {diff:.2e}")
+
+# Print convergence information
+if converged:
+    print(f"Converged after {iteration} iterations with max difference = {diff:.2e}")
+else:
+    print(f"Did not converge after {max_iterations} iterations. Last max difference = {diff:.2e}")
+
+# Create coordinate grids for plotting
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Plot the steady-state temperature distribution
+plt.figure(figsize=(8, 6))
+contour = plt.contourf(X, Y, T, 50, cmap='hot')
+plt.colorbar(contour, label='Temperature (°C)')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Steady-state Temperature Distribution')
+plt.tight_layout()
+plt.show()
+
+# Save the temperature field as a .npy file
+np.save('temperature_field.npy', T)
+```

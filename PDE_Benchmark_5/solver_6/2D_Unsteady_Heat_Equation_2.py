@@ -1,0 +1,64 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def initial_condition(x, y, Q_0=200, sigma=0.1):
+    return Q_0 * np.exp(- (x**2 + y**2) / (2*sigma**2))
+
+def boundary_condition(T):
+    T[0, :] = 0
+    T[-1, :] = 0
+    T[:, 0] = 0
+    T[:, -1] = 0
+    return T
+
+def dufort_frankel(T, dt, dx, dy, alpha):
+    T_new = T.copy()
+    rx = alpha*dt/dx**2
+    ry = alpha*dt/dy**2
+    for i in range(1, len(T)-1):
+        for j in range(1, len(T[i])-1):
+            T_new[i,j] = ((1-rx-ry)*T[i,j] + rx/2*(T[i+1,j]+T[i-1,j]) + ry/2*(T[i,j+1]+T[i,j-1])) / (1+rx+ry)
+    
+    return T_new
+
+# ADI methodology
+def adi(T, dt, dx, dy, alpha):
+    T_new = T.copy()
+    rx = alpha*dt/dx**2
+    ry = alpha*dt/dy**2
+    
+    # solving in x direction first
+    for i in range(1, len(T)-1):
+        a = -rx/2*np.ones(len(T)-2)
+        b = (1+rx)*np.ones(len(T)-2)
+        c = -rx/2*np.ones(len(T)-2)
+        d = T[i, 1:-1] + ry/2*(T[i+1, 1:-1] + T[i-1, 1:-1])
+        T_new[i, 1:-1] = thomas_algorithm(a, b, c, d)
+
+    # then solving in y direction
+    for j in range(1, len(T[i])-1):
+        a = -ry/2*np.ones(len(T)-2)
+        b = (1+ry)*np.ones(len(T)-2)
+        c = -ry/2*np.ones(len(T)-2)
+        d = T_new[1:-1, j] + rx/2*(T_new[1:-1, j+1] + T_new[1:-1, j-1])
+        T_new[1:-1, j] = thomas_algorithm(a, b, c, d)
+    
+    return T_new
+
+# A simple implementation of Thomas Algorithm to solve tridiagonal matrix system
+def thomas_algorithm(a, b, c, d):
+    n = len(d)
+    c_ = np.zeros(n-1)
+    d_ = np.zeros(n)
+    c_[0] = c[0] / b[0]
+    d_[0] = d[0] / b[0]
+    for i in range(1, n-1):
+        c_[i] = c[i] / (b[i] - a[i-1]*c_[i-1])
+    for i in range(1, n):
+        d_[i] = (d[i] - a[i-1]*d_[i-1]) / (b[i] - a[i-1]*c_[i-1])
+    y = np.zeros(n)
+    y[-1] = d_[-1]
+    for i in range(n-2, -1, -1):
+        y[i] = d_[i] - c_[i]*y[i+1]
+    
+    return y

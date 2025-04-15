@@ -1,0 +1,50 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+nx = 101
+nt = 100
+viscosity_nu = 0.07
+dx = 2 * np.pi / (nx - 1)
+dt = dx * viscosity_nu
+
+# Spatial domain
+x = np.linspace(0, 2 * np.pi, nx)
+
+# Initial Conditions
+phi = np.exp(-(x**2) / (4 * viscosity_nu)) + np.exp(-((x - 2 * np.pi)**2) / (4 * viscosity_nu))
+u_initial = -2 * viscosity_nu * (np.gradient(phi, x)) / phi + 4
+
+# Allocate memory for the velocity field
+u = u_initial.copy()
+
+# Helper function to apply periodic boundary conditions
+def apply_periodic_bc(u):
+    u[0] = u[-1]  # periodic boundary condition
+
+# Time-stepping using FTCS scheme with periodic boundary conditions
+for n in range(nt):
+    u_prev = u.copy()
+    for i in range(1, nx - 1):
+        u[i] = (u_prev[i] - dt / dx * u_prev[i] * (u_prev[i] - u_prev[i-1]) +
+                viscosity_nu * dt / dx**2 * (u_prev[i+1] - 2*u_prev[i] + u_prev[i-1]))
+    apply_periodic_bc(u)
+
+# Analytical Solution
+phi_analytical = np.exp(-(x - 4*nt*dt)**2 / (4 * viscosity_nu * (nt*dt + 1))) + \
+                 np.exp(-((x - 4*nt*dt - 2 * np.pi)**2) / (4 * viscosity_nu * (nt*dt + 1)))
+u_analytical = -2 * viscosity_nu * (np.gradient(phi_analytical, x)) / phi_analytical + 4
+
+# Plotting the numerical and analytical solution
+plt.figure(figsize=(12, 6))
+plt.plot(x, u, label='Numerical Solution', linestyle='--')
+plt.plot(x, u_analytical, label='Analytical Solution', linestyle='-')
+plt.title('Comparison of Numerical and Analytical Solutions for Burgers\' Equation')
+plt.xlabel('x')
+plt.ylabel('u')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Save the final numerical solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/u_1D_Burgers_Equation.npy', u)

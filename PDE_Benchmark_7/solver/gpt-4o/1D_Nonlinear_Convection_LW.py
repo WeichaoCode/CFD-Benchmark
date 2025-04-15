@@ -1,0 +1,70 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+
+# Define parameters
+nu = 0.5        # CFL number
+dt = 0.01       # Time step
+dx = dt / nu    # Space step
+T = 500         # Maximum number of time steps
+L = 2 * np.pi   # Domain length
+nx = math.ceil(L / dx)  # Number of spatial grid points
+x = np.linspace(0, L, nx, endpoint=False)  # Spatial grid
+
+# Initial condition
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# Storage for computed data
+u_storage = []
+
+# Main simulation loop
+for n in range(T):
+    # Apply Lax-Wendroff Method
+    u_np1 = np.empty_like(u)
+
+    # Compute numerical fluxes and variables for Lax-Wendroff
+    F_n = 0.5 * u**2
+    A_half_plus = (u + np.roll(u, -1)) / 2
+    A_half_minus = (u + np.roll(u, 1)) / 2
+
+    # Update the solution at n+1
+    u_np1[1:-1] = u[1:-1] - dt / (2 * dx) * (F_n[2:] - F_n[:-2]) \
+                  + (dt**2) / (2 * dx**2) * (
+                      A_half_plus[1:-1] * (F_n[2:] - F_n[1:-1]) -
+                      A_half_minus[1:-1] * (F_n[1:-1] - F_n[:-2]))
+
+    # Apply periodic boundary conditions
+    u_np1[0] = u[0] - dt / (2 * dx) * (F_n[1] - F_n[-1]) \
+               + (dt**2) / (2 * dx**2) * (
+                   A_half_plus[0] * (F_n[1] - F_n[0]) -
+                   A_half_minus[0] * (F_n[0] - F_n[-1]))
+    
+    u_np1[-1] = u[-1] - dt / (2 * dx) * (F_n[0] - F_n[-2]) \
+                + (dt**2) / (2 * dx**2) * (
+                    A_half_plus[-1] * (F_n[0] - F_n[-1]) -
+                    A_half_minus[-1] * (F_n[-1] - F_n[-2]))
+
+    # Update solution
+    u[:] = u_np1[:]
+    
+    # Append the current state to the storage
+    u_storage.append(u.copy())
+    
+    # Optional plotting at each step or save occasional steps
+
+# Convert storage to a numpy array for saving
+u_storage = np.array(u_storage)
+
+# Save the solution
+np.save("/PDE_Benchmark_7/results/prediction/u_1D_Nonlinear_Convection_LW.npy", u_storage[-1])
+
+# Plot initial and final state
+plt.figure(figsize=(8, 4))
+plt.plot(x, np.sin(x) + 0.5 * np.sin(0.5 * x), label="Initial Condition")
+plt.plot(x, u_storage[-1], label="Lax-Wendroff t={}".format(T*dt))
+plt.xlabel("x")
+plt.ylabel("u")
+plt.title("1D Nonlinear Convection using Lax-Wendroff Method")
+plt.legend()
+plt.grid()
+plt.show()

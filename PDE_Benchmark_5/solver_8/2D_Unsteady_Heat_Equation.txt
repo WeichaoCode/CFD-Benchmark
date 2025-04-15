@@ -1,0 +1,74 @@
+You'll first need to import the necessary libraries for computation and visualization.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import linalg
+```
+
+Set physical parameters and initial conditions:
+
+```python
+alpha = 0.1  # thermal diffusivity
+Q_0 = 200.0  # heat source maximum
+sigma = 0.1  # controls radial decay of heat source
+L = 2.0  # size of domain
+T_boundary = 0.0  # boundary temperature
+```
+
+Set discretization parameters:
+
+```python
+nx, ny = 51, 51  # number of spatial points in each direction
+dx = L / (nx - 1)  # spatial grid spacing in x direction
+dy = L / (ny - 1)  # spatial grid spacing in y direction
+dt = 0.1 * min(dx, dy)**2 / (2 * alpha)  # time-step size based on stability criterion
+
+X, Y = np.meshgrid(np.linspace(-L/2, L/2, nx), np.linspace(-L/2, L/2, ny))  # set up computational grid
+```
+
+Define the heat source term and the functions for the explicit and implicit methods:
+
+```python
+def compute_source_term(Q_0, sigma, X, Y):
+    return Q_0 * np.exp(-0.5 * ((X**2 + Y**2) / sigma**2))
+
+def solve_explicit(T, q, alpha, dt, dx, dy):
+    T_new = T + alpha * dt * (
+        (np.roll(T, shift=1, axis=0) - 2*T + np.roll(T, shift=-1, axis=0)) / dx**2
+        + (np.roll(T, shift=1, axis=1) - 2*T + np.roll(T, shift=-1, axis=1)) / dy**2)
+    # Add source term
+    T_new += dt * q
+    # Apply boundary conditions
+    T_new[:, [0, -1]] = T_new[[0, -1], :] = T_boundary
+    return T_new
+
+def solve_implicit(T, q, alpha, dt, dx, dy):
+    # Generate the system of linear equations to be solved for the implicit method
+    A = generate_lhs_matrix(nx, ny, alpha, dt, dx, dy)
+    b = generate_rhs_vector(T, q, alpha, dt, dx, dy)
+    # Solve the system
+    T_vec = np.linalg.solve(A, b)
+    # Convert back to 2D
+    T_new = map_1D_to_2D(T_vec)
+    return T_new
+```
+Initialize the temperature field and the source term:
+
+```python
+T = np.zeros((nx, ny))  # initialize temperature field
+q = compute_source_term(Q_0, sigma, X, Y)
+```
+Finally, add a time-stepping loop and call the relevant function to compute the solution:
+
+```python
+for n in range(nt):
+    if method == 'explicit':
+        T = solve_explicit(T, q, alpha, dt, dx, dy)
+    elif method == 'implicit':
+        T = solve_implicit(T, q, alpha, dt, dx, dy)
+```
+The explicit method is generally faster but less accurate, and may be unstable for large time-step sizes. The implicit method has no stability constraint, but is more computationally intensive.
+To visualize, use matplotlib's contour or heatmap functions. 
+
+Please note that these codes will not run as functions like generate_lhs_matrix(), generate_rhs_vector() and map_1D_to_2D() are not defined here. These need to be implemented according to the chosen implicit scheme. This code only gives an overall structure or framework to solve the PDE.

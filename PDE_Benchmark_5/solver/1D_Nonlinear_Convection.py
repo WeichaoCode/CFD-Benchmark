@@ -1,0 +1,42 @@
+import numpy as np 
+import matplotlib.pyplot as plt 
+
+# 1. Define parameters
+L = 2.0    # length of the computational domain
+T = 1.0    # total simulation time
+nx = 101   # number of grid points in x
+nt = 100   # number of time steps
+dx = L / (nx - 1)  # spatial discretization size
+dt = T / nt  # time discretization size
+
+u_max = 1.0  # maximum velocity
+
+# 2. Discretize space and time
+x = np.linspace(0, L, nx)
+u = np.ones(nx)
+lbound = np.where(x >= 0.5)
+ubound = np.where(x <= 1)
+u[np.intersect1d(lbound, ubound)] = u_max
+
+un = np.ones(nx) # to hold the time-stepping solution
+
+# 3. Set up the initial wave profile 
+plt.figure(figsize=(11, 7), dpi=100)
+plt.plot(x, u, label='Initial condition')
+plt.title('1D Nonlinear Convection')
+plt.xlabel('x')
+plt.ylabel('u')
+plt.legend()
+
+# 4. Iterate using the finite difference scheme.
+for n in range(nt):
+    un = u.copy()
+    for i in range(1, len(u)):
+        u[i] = un[i] - un[i] * dt / dx * (un[i] - un[i-1])
+
+# 5. Plot the wave evolution.
+plt.plot(x, u, label='Solution after nt time steps')
+plt.legend()
+
+# 6. Display the graph
+plt.show()

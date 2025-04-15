@@ -1,0 +1,162 @@
+"""
+2D Burgers Equation Solver using MMS (Conditional Stable)
+---------------------------------------------------------------
+- MMS Solution: u(x, y, t) = exp(-t) * sin(pi * x) * sin(pi * y)
+                v(x, y, t) = exp(-t) * cos(pi * x) * cos(pi * y)
+- Finite Difference Method (Explicit Scheme)
+- CFL condition enforced for stability
+- Boundary conditions from MMS
+- Need to use implicit method: Backward Euler (in future)
+---------------------------------------------------------------
+Author: Weichao Li
+Date: 2025/02/27
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# ---------------- PARAMETERS ----------------
+nx, ny = 70, 70  # Grid points
+nt = 600  # Time steps
+T = 0.5  # Final time
+Lx, Ly = 1.0, 1.0  # Domain size
+nu = 0.05  # Diffusion coefficient
+
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = T / (nt - 1)
+
+# ---------------- ENSURE CFL CONDITION ----------------
+dt_max = min(dx ** 2, dy ** 2) / (4 * nu)
+if dt > dt_max:
+    print(f"Reducing dt from {dt:.6f} to {dt_max:.6f} for stability.")
+    dt = dt_max
+
+# Define spatial and temporal grids
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+t = np.linspace(0, T, nt)
+
+X, Y = np.meshgrid(x, y, indexing="ij")  # 2D grid
+
+
+# ---------------- SOURCE TERM FROM MMS ----------------
+def f_u(x_f, y_f, t_f):
+    return ((np.pi * np.cos(np.pi * x_f) + (2 * nu * np.pi ** 2 - 1) * np.exp(t_f) * np.sin(np.pi * y_f))
+            * np.exp(-2 * t_f) * np.sin(np.pi * x_f))
+
+
+def f_v(x_f, y_f, t_f):
+    return (-np.pi * np.sin(np.pi * y_f) + (2 * nu * np.pi ** 2 - 1) * np.exp(t_f) * np.cos(np.pi * x_f)) * np.exp(
+        -2 * t_f) * np.cos(np.pi * y_f)
+
+
+# ---------------- INITIAL AND BOUNDARY CONDITIONS FROM MMS ----------------
+u = np.zeros((nx, ny, nt))  # Store full time history
+u[:, :, 0] = np.exp(-t[0]) * np.sin(np.pi * X) * np.sin(np.pi * Y)  # Initial condition
+v = np.zeros((nx, ny, nt))  # Store full time history
+v[:, :, 0] = np.exp(-t[0]) * np.cos(np.pi * X) * np.cos(np.pi * Y)  # Initial condition
+
+# ---------------- SOLVE USING FINITE DIFFERENCE ----------------
+for n in range(nt - 1):
+    # Compute source term at current time step
+    fu_t = f_u(X, Y, t[n])
+    fv_t = f_v(X, Y, t[n])
+    # Apply finite difference scheme (Explicit Euler)
+    u_new = np.copy(u[:, :, n])
+    v_new = np.copy(v[:, :, n])
+
+    for i in range(1, nx - 1):
+        for j in range(1, ny - 1):
+            u_new[i, j] = (u[i, j, n] - dt / dx * u[i, j, n] * (u[i, j, n] - u[i - 1, j, n]) - dt / dy * v[i, j, n] *
+                           (u[i, j, n] - u[i, j - 1, n]) + nu * dt / dx ** 2 * (u[i + 1, j, n] - 2 * u[i, j, n] + u[i - 1, j, n])
+                           + nu * dt / dy ** 2 * (u[i, j + 1, n] - 2 * u[i, j, n] + u[i, j - 1, n]) + dt * fu_t[i, j])
+
+            v_new[i, j] = (v[i, j, n] - dt / dx * u[i, j, n] * (v[i, j, n] - v[i - 1, j, n]) - dt / dy *
+                           v[i, j, n] * (v[i, j, n] - v[i, j - 1, n]) + nu * dt / dx ** 2 * (v[i + 1, j, n] - 2 * v[i, j, n]
+                                                                                    + v[
+                                                                                        i - 1, j, n] + nu * dt / dy ** 2 * (
+                                                                                            v[i, j + 1, n] - 2 * v[
+                                                                                        i, j, n] + v[i, j - 1, n])) + dt * fv_t[i, j])
+
+    # Apply MMS boundary conditions at next time step
+    u_new[0, :] = np.exp(-t[n + 1]) * np.sin(np.pi * x[0]) * np.sin(np.pi * y)  # x = 0
+    u_new[-1, :] = np.exp(-t[n + 1]) * np.sin(np.pi * x[-1]) * np.sin(np.pi * y)  # x = Lx
+    u_new[:, 0] = np.exp(-t[n + 1]) * np.sin(np.pi * x) * np.sin(np.pi * y[0])  # y = 0
+    u_new[:, -1] = np.exp(-t[n + 1]) * np.sin(np.pi * x) * np.sin(np.pi * y[-1])  # y = Ly
+
+    v_new[0, :] = np.exp(-t[n + 1]) * np.cos(np.pi * x[0]) * np.cos(np.pi * y)  # x = 0
+    v_new[-1, :] = np.exp(-t[n + 1]) * np.cos(np.pi * x[-1]) * np.cos(np.pi * y)  # x = Lx
+    v_new[:, 0] = np.exp(-t[n + 1]) * np.cos(np.pi * x) * np.cos(np.pi * y[0])  # y = 0
+    v_new[:, -1] = np.exp(-t[n + 1]) * np.cos(np.pi * x) * np.cos(np.pi * y[-1])  # y = Ly
+
+    # Store updated values
+    u[:, :, n + 1] = u_new
+    v[:, :, n + 1] = v_new
+
+# ---------------- COMPUTE EXACT SOLUTION FOR COMPARISON ----------------
+u_exact = np.zeros((nx, ny, nt))
+for n in range(nt):
+    u_exact[:, :, n] = np.exp(-t[n]) * np.sin(np.pi * X) * np.sin(np.pi * Y)
+
+v_exact = np.zeros((nx, ny, nt))
+for n in range(nt):
+    v_exact[:, :, n] = np.exp(-t[n]) * np.cos(np.pi * X) * np.cos(np.pi * Y)
+
+# ---------------- ERROR ANALYSIS ----------------
+error_u = np.abs(u - u_exact)
+error_v = np.abs(v - v_exact)
+
+fig, axes = plt.subplots(2, 3, figsize=(18, 10))
+
+# Numerical solution at final time step
+ax1 = axes[0, 0]
+c1 = ax1.contourf(X, Y, u[:, :, -1], cmap="viridis")
+plt.colorbar(c1, ax=ax1)
+ax1.set_title("Numerical Solution at t = T")
+ax1.set_xlabel("x")
+ax1.set_ylabel("y")
+
+# MMS (exact) solution at final time step
+ax2 = axes[0, 1]
+c2 = ax2.contourf(X, Y, u_exact[:, :, -1], cmap="viridis")
+plt.colorbar(c2, ax=ax2)
+ax2.set_title("MMS (Exact) Solution at t = T")
+ax2.set_xlabel("x")
+ax2.set_ylabel("y")
+
+# Absolute Error at final time step
+ax3 = axes[0, 2]
+c3 = ax3.contourf(X, Y, error_u[:, :, -1], cmap="inferno")  # Using 'inferno' to highlight errors
+plt.colorbar(c3, ax=ax3)
+ax3.set_title("Absolute Error |u - MMS| at t = T")
+ax3.set_xlabel("x")
+ax3.set_ylabel("y")
+
+# Numerical solution at final time step
+ax1 = axes[1, 0]
+c1 = ax1.contourf(X, Y, v[:, :, -1], cmap="viridis")
+plt.colorbar(c1, ax=ax1)
+ax1.set_title("Numerical Solution at t = T")
+ax1.set_xlabel("x")
+ax1.set_ylabel("y")
+
+# MMS (exact) solution at final time step
+ax2 = axes[1, 1]
+c2 = ax2.contourf(X, Y, v_exact[:, :, -1], cmap="viridis")
+plt.colorbar(c2, ax=ax2)
+ax2.set_title("MMS (Exact) Solution at t = T")
+ax2.set_xlabel("x")
+ax2.set_ylabel("y")
+
+# Absolute Error at final time step
+ax3 = axes[1, 2]
+c3 = ax3.contourf(X, Y, error_v[:, :, -1], cmap="inferno")  # Using 'inferno' to highlight errors
+plt.colorbar(c3, ax=ax3)
+ax3.set_title("Absolute Error |u - MMS| at t = T")
+ax3.set_xlabel("x")
+ax3.set_ylabel("y")
+
+plt.suptitle(f"Comparison at t = {T}", fontsize=14)
+plt.tight_layout()
+plt.show()

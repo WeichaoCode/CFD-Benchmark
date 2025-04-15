@@ -36,4 +36,4 @@ for n in range(nt):
     u[:,-1] = 1 # Right
 
 # Save final solution
-np.save('u', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_2D_Diffusion.npy', u)

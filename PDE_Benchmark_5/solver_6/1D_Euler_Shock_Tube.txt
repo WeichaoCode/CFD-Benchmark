@@ -1,0 +1,67 @@
+Here is your Python code. This code simulates the behavior of a shock tube using the MacCormack method and plots the results of density, velocity, and temperature over time.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define parameters
+L = 1.0
+T = 0.2
+nx = 101
+nt = 80
+gamma = 1.4
+CFL = 0.5
+
+dx = L / (nx - 1)
+dt = CFL * dx
+
+# Initialize variables
+u = np.zeros((nt, nx, 3))  # conserved variables [ρ, ρu, ρE]
+u_initial = np.zeros((nx, 3))
+
+# Left initial condition
+u_initial[:int((nx - 1) / 2), :] = [1, 0, 1 / (gamma - 1)]
+# Right initial conditions
+u_initial[int((nx - 1) / 2):, :] = [0.125, 0, 0.1 / (gamma - 1)]
+
+# Compute the flux F = [f1, f2, f3]
+def compute_f(u):
+    f = np.zeros((nx, 3))
+    f[:, 0] = u[:, 1]
+    f[:, 1] = ((u[:, 1] ** 2) / u[:, 0]) + (gamma - 1) * (u[:, 2] - 0.5 * (u[:, 1] ** 2 / u[:, 0]))
+    f[:, 2] = (u[:, 2] + (gamma - 1) * (u[:, 2] - 0.5 * (u[:, 1] ** 2 / u[:, 0]))) * (u[:, 1] / u[:, 0])
+    return f
+
+u[0] = u_initial
+
+for t in range(nt - 1):
+    f = compute_f(u[t])
+
+    # Predictor step
+    u_bar = np.zeros((nx, 3))
+    u_bar[:-1] = u[t, :-1] - dt / dx * (f[1:] - f[:-1])
+
+    # Corrector step
+    f_bar = compute_f(u_bar)
+    u[t+1, 1:] = 0.5 * (u[t, 1:] + u_bar[1:] - dt / dx * (f_bar[1:] - f_bar[:-1]))
+
+# Convert to primitive variables
+rho = u[:, :, 0]
+v = u[:, :, 1] / rho
+p = (gamma - 1) * (u[:, :, 2] - rho * v ** 2 / 2)
+
+# Plot the results
+for var, var_name in zip([rho, v, p], ['Density', 'Velocity', 'Pressure']):
+    plt.figure()
+    for t in range(nt):
+        if t % 20 == 0:  # Only plot every 20th time step
+            plt.plot(np.linspace(0, L, nx), var[t], label=f't = {round(t * dt, 2)}')
+    plt.title(f'{var_name} profiles over time')
+    plt.xlabel('x')
+    plt.ylabel(var_name)
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+```
+
+This code will generate plots of density, pressure, and velocity over the range of x at various time steps. It uses matplotlib for creating the plots. The logic for implementing the MacCormack method is encapsulated in the compute_f function. This function is used in the iterative loop that evolves the values of u over time. The results are then converted back to the primitive variables before plotting.

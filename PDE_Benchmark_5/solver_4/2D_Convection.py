@@ -1,0 +1,47 @@
+import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib import cm
+
+# Problem parameters
+Lx, Ly = 2.0, 2.0
+nx, ny = 41, 41  # number of grid points
+nt = 25          # number of time steps
+dx = Lx / (nx - 1)  # grid size along x
+dy = Ly / (ny - 1)  # grid size along y
+c = 1.0            # wave speed
+dt = 0.02          # time step size
+
+# Create grid
+x = np.linspace(0.0, Lx, num=nx)
+y = np.linspace(0.0, Ly, num=ny)
+
+# Initial conditions
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+mask = np.where(np.logical_and(x>=0.5, x<=1.0))
+u[mask] = 2.0
+v[mask] = 2.0
+
+# Perform time integration
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    u[1:, 1:] = un[1:, 1:] - un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1]) - vn[1:, 1:] * dt / dy * (un[1:, 1:] - un[:-1, 1:])
+    v[1:, 1:] = vn[1:, 1:] - un[1:, 1:] * dt / dx * (vn[1:, 1:] - vn[1:, :-1]) - vn[1:, 1:] * dt / dy * (vn[1:, 1:] - vn[:-1, 1:])
+    u[0, :] = 1
+    u[-1, :] = 1
+    u[:, 0] = 1
+    u[:, -1] = 1
+    v[0, :] = 1
+    v[-1, :] = 1
+    v[:, 0] = 1
+    v[:, -1] = 1
+
+# Create quiver plot
+plt.quiver(x, y, u, v, cmap=cm.viridis, norm=plt.Normalize(0, 2))
+plt.colorbar()
+plt.streamplot(x, y, u, v, density=2, linewidth=1, arrowsize=1, arrowstyle='->')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('2D Convection')
+plt.show()

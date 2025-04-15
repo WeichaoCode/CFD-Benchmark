@@ -1,0 +1,63 @@
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Domain parameters
+Lx, Ly = 5.0, 4.0
+dx, dy = 0.05, 0.05
+nx, ny = int(Lx/dx) + 1, int(Ly/dy) + 1
+
+# Grid generation
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+# Parameters for the iterative solver
+tolerance = 1e-6
+max_iterations = 10000
+beta = dx / dy
+
+# Initialize temperature array
+T = np.zeros((ny, nx))
+
+# Applying Dirichlet boundary conditions
+T[:, 0] = 10   # Left boundary (AB)
+T[0, :] = 20   # Bottom boundary (G)
+T[:, -1] = 40  # Right boundary (EF)
+T[-1, :] = 0   # Top boundary (CD)
+
+def gauss_seidel(T, max_iterations, tolerance):
+    for iteration in range(max_iterations):
+        T_old = T.copy()
+        for j in range(1, ny - 1):
+            for i in range(1, nx - 1):
+                T[j, i] = (
+                    T[j, i + 1] + T[j, i - 1] +
+                    beta**2 * (T[j + 1, i] + T[j - 1, i])
+                ) / (2 * (1 + beta**2))
+        
+        # Compute the residual
+        residual = np.linalg.norm(T - T_old, ord='fro')
+        if residual < tolerance:
+            print(f"Converged after {iteration+1} iterations with residual {residual:.2e}.")
+            break
+
+    return T
+
+# Solving the system
+T = gauss_seidel(T, max_iterations, tolerance)
+
+# Save the temperature field
+np.save('temperature_field.npy', T)
+
+# Visualization
+plt.figure(figsize=(8, 6))
+cp = plt.contourf(x, y, T, 50, cmap='hot')
+plt.colorbar(cp)
+plt.title('Steady-state Temperature Distribution')
+plt.xlabel('x (m)')
+plt.ylabel('y (m)')
+plt.gca().invert_yaxis()
+plt.show()
+```
+
+This Python code solves the 2D steady-state heat equation using the Gauss-Seidel iterative method. It initializes the grid, applies Dirichlet boundary conditions, and iteratively updates the interior points until convergence is achieved based on a defined tolerance. The final temperature distribution is saved as a `.npy` file and is visualized using a contour plot. The code uses NumPy for numerical computations and Matplotlib for visualization.

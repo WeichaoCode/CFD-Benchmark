@@ -1,0 +1,110 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+gamma = 1.4  # Ratio of specific heats
+nx = 200     # Number of spatial points
+nt = 100     # Number of time steps
+x_min, x_max = -1.0, 1.0
+t_min, t_max = 0.0, 0.25
+
+# Grid setup
+dx = (x_max - x_min) / (nx - 1)
+x = np.linspace(x_min, x_max, nx)
+dt = (t_max - t_min) / nt
+
+# Initial conditions
+rho = np.zeros(nx)
+rho[x < 0] = 1.0   # Left region density 
+rho[x >= 0] = 0.125  # Right region density
+
+u = np.zeros(nx)  # Velocity 
+
+p = np.zeros(nx)
+p[x < 0] = 1.0    # Left region pressure
+p[x >= 0] = 0.1   # Right region pressure
+
+# Compute conservative variables
+E = p / ((gamma - 1.0) * rho + 1e-15) + 0.5 * u**2
+U = np.zeros((3, nx))
+U[0, :] = rho
+U[1, :] = rho * u 
+U[2, :] = rho * E
+
+# Roe Riemann solver
+def roe_flux(UL, UR):
+    # Prevent division by zero and negative values
+    rho_L = max(UL[0], 1e-15)
+    rho_R = max(UR[0], 1e-15)
+    
+    # Compute primitive variables with numerical stability
+    u_L = np.clip(UL[1] / rho_L, -1e10, 1e10)
+    u_R = np.clip(UR[1] / rho_R, -1e10, 1e10)
+    
+    p_L = max((gamma-1)*(UL[2] - 0.5*UL[1]**2/(rho_L + 1e-15)), 1e-15)
+    p_R = max((gamma-1)*(UR[2] - 0.5*UR[1]**2/(rho_R + 1e-15)), 1e-15)
+    
+    # Roe averages with safeguards
+    rho_avg = np.sqrt(max(rho_L * rho_R, 1e-15))
+    u_avg = np.clip((np.sqrt(rho_L)*u_L + np.sqrt(rho_R)*u_R) / (np.sqrt(rho_L) + np.sqrt(rho_R)), 
+                    -1e10, 1e10)
+    
+    # Enthalpy calculation with clipping
+    H_L = np.clip((UL[2] + p_L) / (rho_L + 1e-15), -1e10, 1e10)
+    H_R = np.clip((UR[2] + p_R) / (rho_R + 1e-15), -1e10, 1e10)
+    H_avg = np.clip((np.sqrt(rho_L)*H_L + np.sqrt(rho_R)*H_R) / (np.sqrt(rho_L) + np.sqrt(rho_R)), 
+                    -1e10, 1e10)
+    
+    # Sound speed with safeguards
+    a_avg = np.sqrt(max(np.abs((gamma-1)*(H_avg - 0.5*u_avg**2)), 1e-15))
+    
+    # Eigenvalues with clipping
+    lambda1 = np.clip(u_avg - a_avg, -1e10, 1e10)
+    lambda2 = np.clip(u_avg, -1e10, 1e10)
+    lambda3 = np.clip(u_avg + a_avg, -1e10, 1e10)
+    
+    # Compute flux with numerical stability
+    FL = np.array([
+        np.clip(rho_L*u_L, -1e10, 1e10),
+        np.clip(rho_L*u_L**2 + p_L, -1e10, 1e10),
+        np.clip(u_L*(UL[2] + p_L), -1e10, 1e10)
+    ])
+    
+    FR = np.array([
+        np.clip(rho_R*u_R, -1e10, 1e10),
+        np.clip(rho_R*u_R**2 + p_R, -1e10, 1e10), 
+        np.clip(u_R*(UR[2] + p_R), -1e10, 1e10)
+    ])
+    
+    # Flux calculation with additional safeguards
+    diff_flux = np.clip(np.abs(lambda1)*(UR[0] - UL[0]), -1e10, 1e10)
+    diff_flux1 = np.clip(np.abs(lambda2)*(UR[1] - UL[1]), -1e10, 1e10)
+    diff_flux2 = np.clip(np.abs(lambda3)*(UR[2] - UL[2]), -1e10, 1e10)
+    
+    return np.clip(0.5*(FL + FR - diff_flux - diff_flux1 - diff_flux2), -1e10, 1e10)
+
+# Time integration (Forward Euler)
+for _ in range(nt):
+    # Compute fluxes
+    F = np.zeros_like(U)
+    for j in range(1, nx-1):
+        UL = U[:, j-1]
+        UR = U[:, j]
+        F[:, j] = roe_flux(UL, UR)
+    
+    # Apply boundary conditions (reflective)
+    F[:, 0] = 0
+    F[:, -1] = 0
+    
+    # Update conservative variables with clipping
+    U[:, 1:-1] = np.clip(U[:, 1:-1] - dt/dx * (F[:, 2:] - F[:, 1:-1]), -1e10, 1e10)
+    
+    # Primitive variable recovery with robust handling
+    rho = np.clip(U[0, :], 1e-15, 1e10)
+    u = np.clip(U[1, :] / (rho + 1e-15), -1e10, 1e10)
+    p = np.clip((gamma - 1) * (U[2, :] - 0.5 * rho * u**2), 1e-15, 1e10)
+
+# Save final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/rho_1D_Euler_Shock_Tube.npy', rho)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/u_1D_Euler_Shock_Tube.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/haiku/prompts/p_1D_Euler_Shock_Tube.npy', p)

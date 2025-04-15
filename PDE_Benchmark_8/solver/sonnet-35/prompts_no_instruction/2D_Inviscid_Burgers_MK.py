@@ -1,0 +1,59 @@
+import numpy as np
+
+# Problem parameters
+nx, ny = 151, 151
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+dx = x[1] - x[0]
+dy = y[1] - y[0]
+
+# Time parameters
+nt = 300
+sigma = 0.2
+dt = sigma * min(dx, dy) / 2
+
+# Initialize solution arrays
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+
+# Initial conditions
+u[(y >= 0.5) & (y <= 1), (x >= 0.5) & (x <= 1)] = 2
+v[(y >= 0.5) & (y <= 1), (x >= 0.5) & (x <= 1)] = 2
+
+# MacCormack Method
+for _ in range(nt):
+    # Predictor step
+    u_pred = np.copy(u)
+    v_pred = np.copy(v)
+    
+    for i in range(1, ny-1):
+        for j in range(1, nx-1):
+            u_pred[i,j] = u[i,j] - dt/dx * u[i,j]*(u[i,j+1]-u[i,j-1]) - \
+                          dt/dy * v[i,j]*(u[i+1,j]-u[i-1,j])
+            v_pred[i,j] = v[i,j] - dt/dx * u[i,j]*(v[i,j+1]-v[i,j-1]) - \
+                          dt/dy * v[i,j]*(v[i+1,j]-v[i-1,j])
+    
+    # Corrector step
+    for i in range(1, ny-1):
+        for j in range(1, nx-1):
+            u[i,j] = 0.5 * (u[i,j] + u_pred[i,j] - 
+                     dt/dx * u_pred[i,j]*(u_pred[i,j+1]-u_pred[i,j-1]) - 
+                     dt/dy * v_pred[i,j]*(u_pred[i+1,j]-u_pred[i-1,j]))
+            v[i,j] = 0.5 * (v[i,j] + v_pred[i,j] - 
+                     dt/dx * u_pred[i,j]*(v_pred[i,j+1]-v_pred[i,j-1]) - 
+                     dt/dy * v_pred[i,j]*(v_pred[i+1,j]-v_pred[i-1,j]))
+    
+    # Apply boundary conditions
+    u[0,:] = 1
+    u[-1,:] = 1
+    u[:,0] = 1
+    u[:,-1] = 1
+    
+    v[0,:] = 1
+    v[-1,:] = 1
+    v[:,0] = 1
+    v[:,-1] = 1
+
+# Save final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-35/prompts_no_instruction/u_2D_Inviscid_Burgers_MK.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-35/prompts_no_instruction/v_2D_Inviscid_Burgers_MK.npy', v)

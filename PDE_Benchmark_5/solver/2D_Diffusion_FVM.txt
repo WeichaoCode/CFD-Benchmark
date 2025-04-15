@@ -1,0 +1,83 @@
+The error `numpy.linalg.LinAlgError: Matrix is singular` is thrown when you attempt to perform a matrix operation that requires the inverse of a matrix that is singular. A singular matrix is one where the determinant is zero and thus the matrix does not have an inverse.
+
+Since this error is occurring in the `solve(A, b)` call, the issue is with the `A` matrix, which is singular. This issue might have occurred due to the boundary conditions not being properly implemented, or due to the initialization of the `w` variable.
+
+Here's how you might approach fixing the issue:
+
+1. **Check your Boundary Conditions**: In your problem set, you're given no-slip boundary conditions for the `w` velocity at the walls. This means `w=0`.
+   
+2. **Check your initial conditions**: Your initial guess for `_w` can heavily impact the convergence of your calculation. However, the initialization should not play a role in whether or not `A` is singular.
+
+3. **Check your equation Assembly**: When you assembled your discretized equations into the matrix `A` and the vector `b`, you likely made a mistake, leading to a singular matrix.
+   
+Here is an example code with corrections by considering the boundary conditions and initial conditions in the formulation:
+
+```python
+import numpy as np
+from scipy.linalg import solve
+import matplotlib.pyplot as plt
+
+# Define parameters
+h = 0.1
+nx, ny = 100, 100
+dP_dz, mu = -3.2, 1.0e-3
+dx = h / (nx - 1)
+dy = h / (ny - 1)
+
+# Initialize the w-velocity
+w = np.zeros((nx, ny))
+
+# Assemble the system of equations
+A = np.zeros((nx * ny, nx * ny))
+b = np.zeros(nx * ny)
+
+for i in range(1, nx-1):
+    for j in range(1, ny-1):
+
+        west = i - 1 + j * nx
+        east = i + 1 + j * nx
+        north = i + (j+1) * nx
+        south = i + (j-1) * nx
+        center = i + j * nx
+
+        aw = mu/dx**2
+        ae = mu/dx**2
+        an = mu/dy**2
+        aso = mu/dy**2
+        ac = aw + ae + an + aso
+
+        A[center, west] = -aw
+        A[center, east] = -ae
+        A[center, north] = -an
+        A[center, south] = -aso
+        A[center, center] = ac
+
+        b[center] = - dP_dz
+
+# Apply boundary conditions
+for i in range(nx):
+    for j in [0, ny-1]:
+        center = i + j * nx
+        A[center, :] = 0
+        A[center, center] = 1.0
+        b[center] = 0
+        
+for j in range(ny):
+    for i in [0, nx-1]:
+        center = i + j * nx
+        A[center, :] = 0
+        A[center, center] = 1.0
+        b[center] = 0
+
+w = solve(A, b)
+
+# Reshape the solution to a 2D array for plotting
+w = w.reshape((nx, ny))
+
+# Visualize the velocity distribution
+plt.contourf(w, levels=50)
+plt.colorbar()
+plt.show()
+```
+
+This should avoid issues related to the singularity of the matrix since boundary cells are accounted for properly this time around. The solution `w` visualized using `pyplot`'s `contourf` should represent the velocity distribution.

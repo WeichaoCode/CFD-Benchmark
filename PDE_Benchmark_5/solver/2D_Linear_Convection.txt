@@ -1,0 +1,52 @@
+Here is the python script that solves the 2D Linear Convection Equation using the Finite Difference method. Note that it uses the numpy and matplotlib.pyplot libraries. 
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Defining parameters
+Lx, Ly = 2.0, 2.0
+T = 2.0
+nx, ny, nt = 81, 81, 51
+c = 1.0
+
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = T / (nt - 1)
+
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+u = np.ones((ny, nx))
+mask = np.where(np.logical_and(x >= 0.5, x <= 1))
+u[:, mask] = 2.0
+
+# Discretize
+for n in range(nt):
+    un = u.copy()
+    row, col = u.shape
+    for i in range(1, row):
+        for j in range(1, col):
+            u[j, i] = (un[j, i] -
+                       (c * dt / dx * (un[j, i] - un[j, i - 1])) -
+                       (c * dt / dy * (un[j, i] - un[j - 1, i])))
+            u[0, :] = 1
+            u[-1, :] = 1
+            u[:, 0] = 1
+            u[:, -1] = 1
+
+# Visualize
+plt.figure(figsize=(11, 7), dpi=100)
+plt.gca().set_aspect('equal')
+plt.contourf(x, y, u)
+plt.colorbar()
+plt.title('2D Linear Convection')
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.show()
+```
+Please, install matplotlib and numpy before running the script if you have not done so yet. You can use pip for installation:
+
+```python
+pip install matplotlib numpy
+```

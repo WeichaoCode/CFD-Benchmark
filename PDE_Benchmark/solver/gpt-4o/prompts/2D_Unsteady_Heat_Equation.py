@@ -47,4 +47,4 @@ for n in range(Nt):
     T[-1, :] = 1
 
 # Save the final temperature field
-np.save('T', T)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gpt-4o/prompts/T_2D_Unsteady_Heat_Equation.npy', T)

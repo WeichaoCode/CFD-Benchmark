@@ -1,0 +1,55 @@
+Solution Template
+
+Given the objectives, the Python code for the explicit and implicit methods would look something like the one shown below. This code won't run on this platform. It's just a guidance to solve this problem.
+
+```python
+# Importing necessary libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Define the size of the grid
+N = 50 
+x = np.linspace(-1, 1, N)
+y = np.linspace(-1, 1, N)
+X, Y = np.meshgrid(x, y)
+
+# Define time parameters and thermal diffusivity
+dt = 0.001
+t_final = 0.1
+alpha = 0.1
+t_grid = np.arange(0, t_final, dt)
+Q_0 = 200
+sigma = 0.1
+
+# Initialize temperature and heat source
+T = np.zeros((N, N, len(t_grid)))
+q = Q_0 * np.exp( - (X**2 + Y**2) / (2*sigma**2) )
+
+# Set boundary conditions
+T[:,:,0] = 0
+T[0,:,:] = 0
+T[N-1,:,:] = 0
+T[:,0,:] = 0
+T[:,N-1,:] = 0
+
+# Explicit Scheme
+for t in range(len(t_grid)-1):
+    T[:,:,t+1] = T[:,:,t] + dt * ( alpha * ( np.roll(T[:,:,t], -1, axis=0) - 2 * T[:,:,t] 
+        + np.roll(T[:,:,t], 1, axis=0) + np.roll(T[:,:,t], -1, axis=1) - 2 * T[:,:,t] + np.roll(T[:,:,t], 1, axis=1) ) + q )
+
+# This is where you would implement the Implicit Scheme
+# It involves solving a system of linear equations at each timestep, commonly done with scipy.linalg's solve methods
+
+# Visualizing the results using a 3d plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(X, Y, T[:,:,-1])
+
+plt.show()
+
+```
+
+Above code solves the heat equation using the explicit method and plots the final temperature distribution. The implicit method is more involved as it requires solving a system of linear equations at each time step which can be done using scipy.linalg's solve methods. 
+
+This simple program will help you to understand the temporal evolution of heat conduction in a two-dimensional space. This is performed in Python using both explicit and implicit methods. The explicit technique involves guessing a solution, solving the derivatives based on that guess, and then using these derivatives to update the original guess. The implicit method solves the derivative equations and the original differential equation simultaneously using a linear algebra approach.

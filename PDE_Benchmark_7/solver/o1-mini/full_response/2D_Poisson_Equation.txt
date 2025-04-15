@@ -1,0 +1,68 @@
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+nx, ny = 50, 50
+Lx, Ly = 2.0, 1.0
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+# Initialize pressure field
+p = np.zeros((ny, nx))
+
+# Initialize source term
+b = np.zeros((ny, nx))
+
+# Set source spikes
+i1, j1 = int(0.25 * (nx - 1)), int(0.25 * (ny - 1))
+i2, j2 = int(0.75 * (nx - 1)), int(0.75 * (ny - 1))
+b[j1, i1] = 100
+b[j2, i2] = -100
+
+# Iterative solver parameters
+tolerance = 1e-6
+max_iterations = 10000
+iteration = 0
+diff = np.inf
+
+# Precompute constants
+dx2 = dx**2
+dy2 = dy**2
+denominator = 2 * (dx2 + dy2)
+
+# Iterative solver
+while diff > tolerance and iteration < max_iterations:
+    p_old = p.copy()
+    
+    # Update internal points
+    p[1:-1, 1:-1] = ((p_old[1:-1, 2:] + p_old[1:-1, :-2]) * dy2 +
+                     (p_old[2:, 1:-1] + p_old[:-2, 1:-1]) * dx2 -
+                     b[1:-1, 1:-1] * dx2 * dy2) / denominator
+    
+    # Compute the maximum difference from the old values
+    diff = np.max(np.abs(p - p_old))
+    iteration += 1
+
+    if iteration % 500 == 0:
+        print(f"Iteration: {iteration}, Residual: {diff:.2e}")
+
+print(f"Converged after {iteration} iterations with residual {diff:.2e}")
+
+# Visualization
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+plt.figure(figsize=(8, 4))
+cp = plt.contourf(X, Y, p, levels=50, cmap='jet')
+plt.colorbar(cp)
+plt.title('Pressure Field')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.tight_layout()
+plt.show()
+
+# Save the pressure field
+np.save('pressure_field.npy', p)
+```

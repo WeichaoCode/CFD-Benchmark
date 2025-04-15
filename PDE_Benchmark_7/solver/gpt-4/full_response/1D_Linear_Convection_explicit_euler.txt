@@ -1,0 +1,47 @@
+Sure, here is the Python code that solves the given one-dimensional linear convection equation using the finite difference method. I have included comments to explain the code and make it easier to understand.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define parameters
+Nx = 101  # Number of grid points
+x = np.linspace(-5, 5, Nx)  # Spatial grid
+dx = x[1] - x[0]  # Spatial step size
+c = 1.0  # Convection speed
+epsilon = [0.0, 5e-4]  # Damping factor for undamped and damped cases
+
+# Define time step based on CFL condition
+dt = 0.5 * dx / c  # Time step size
+
+# Initialize wave profile
+u0 = np.exp(-x**2)
+
+# Function to compute the derivative using central difference scheme
+def compute_derivative(u, dx, epsilon):
+    du_dx = (np.roll(u, -1) - np.roll(u, 1)) / (2.0 * dx)
+    d2u_dx2 = (np.roll(u, -1) - 2.0 * u + np.roll(u, 1)) / dx**2
+    return du_dx, d2u_dx2
+
+# Time integration using Explicit Euler method
+for eps in epsilon:
+    u = u0.copy()
+    t = 0.0
+    while t <= 1.0:
+        du_dx, d2u_dx2 = compute_derivative(u, dx, eps)
+        u_new = u - dt * c * du_dx + dt * eps * d2u_dx2  # Update u using Explicit Euler method
+        u = u_new
+        t += dt
+
+    # Save the solution to a .npy file
+    np.save('wave_profile_eps_{}.npy'.format(eps), u)
+
+    # Plot the wave profile
+    plt.plot(x, u, label='epsilon = {}'.format(eps))
+
+# Show the plot with a legend
+plt.legend()
+plt.show()
+```
+
+This script will solve the one-dimensional linear convection equation for both the undamped and damped cases. It will also save the final wave profiles to `.npy` files and plot the wave profiles over the spatial domain.

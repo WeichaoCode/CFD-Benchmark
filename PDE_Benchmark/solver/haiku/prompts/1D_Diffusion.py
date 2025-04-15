@@ -30,4 +30,4 @@ for n in range(nt):
     u[-1] = u[-2]  # du/dx = 0 at x=L
 
 # Save final solution
-np.save('u', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/u_1D_Diffusion.npy', u)

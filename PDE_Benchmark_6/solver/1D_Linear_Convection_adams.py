@@ -1,0 +1,44 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define parameters
+Nx = 101
+c = 1
+epsilons = [0, 5e-4]
+x = np.linspace(-5, 5, Nx)
+dx = x[1] - x[0]
+dt = 0.5 * dx / c  # CFL condition
+T = 1.0
+Nt = int(T / dt) + 1
+
+# Initialize variables
+u = np.zeros((2, Nt, Nx))
+u[:, 0, :] = np.exp(-x**2)
+
+# Explicit Euler for the first step
+for i, epsilon in enumerate(epsilons):
+    u_x = np.roll(u[i, 0, :], -1) - np.roll(u[i, 0, :], 1)
+    u_xx = np.roll(u[i, 0, :], -1) - 2*u[i, 0, :] + np.roll(u[i, 0, :], 1)
+    u[i, 1, :] = u[i, 0, :] - c*dt*u_x/(2*dx) + epsilon*dt*u_xx/dx**2
+
+# Time integration using Adams-Bashforth method
+for i, epsilon in enumerate(epsilons):
+    for n in range(1, Nt-1):
+        u_x = np.roll(u[i, n, :], -1) - np.roll(u[i, n, :], 1)
+        u_xx = np.roll(u[i, n, :], -1) - 2*u[i, n, :] + np.roll(u[i, n, :], 1)
+        u_x_old = np.roll(u[i, n-1, :], -1) - np.roll(u[i, n-1, :], 1)
+        u_xx_old = np.roll(u[i, n-1, :], -1) - 2*u[i, n-1, :] + np.roll(u[i, n-1, :], 1)
+        u[i, n+1, :] = u[i, n, :] - 3*c*dt*u_x/(2*dx) + c*dt*u_x_old/(2*dx) + 3*epsilon*dt*u_xx/dx**2 - epsilon*dt*u_xx_old/dx**2
+
+# Save the solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_6/results/prediction/u_1D_Linear_Convection_adams.npy', u)
+
+# Visualization
+for i, epsilon in enumerate(epsilons):
+    plt.figure()
+    plt.plot(x, u[i, 0, :], label='t=0')
+    plt.plot(x, u[i, Nt//2, :], label='t=T/2')
+    plt.plot(x, u[i, -1, :], label='t=T')
+    plt.legend()
+    plt.title(f'Wave profile, epsilon={epsilon}')
+    plt.show()

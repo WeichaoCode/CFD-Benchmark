@@ -1,0 +1,49 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Step 1: Define parameters
+L = 2.0*np.pi  # domain size
+T = 1.0  # time period
+nx = 101  # number of divisions in x
+nt = 100  # number of divisions in t
+nu = 0.07  # viscosity
+
+dx = L / (nx - 1)  # x step size
+dt = T / (nt - 1)  # time step size
+
+# Step 2: Discretize space and time
+x = np.linspace(0.0, L, num=nx)
+
+# Step 3: Initialize the velocity field
+def initial_condition(x, nu):
+    phi = np.exp(-x**2 / (4 * nu)) + np.exp(-(x - 2*np.pi)**2 / (4 * nu))
+    dphi_dx = -x / (2 * nu) * np.exp(-x**2 / (4 * nu)) - (x - 2 * np.pi) / (2 * nu) * np.exp(-(x - 2*np.pi)**2 / (4 * nu))
+    u = -2 * nu * dphi_dx / phi + 4.0
+    return u
+
+u = initial_condition(x, nu)
+
+# Step 4: Iterate using the finite difference scheme
+for n in range(nt):
+    un = u.copy()
+    u[1:-1] = (un[1:-1] -
+               un[1:-1] * dt / dx * (un[1:-1] - un[:-2]) +
+               nu * dt / dx**2 * (un[2:] - 2 * un[1:-1] + un[:-2]))
+
+    # Step 5: Apply periodic boundary conditions
+    u[0] = un[0] - un[0] * dt / dx * (un[0] - un[-2]) + nu * dt / dx**2 * (un[1] - 2*un[0] + un[-2])
+    u[-1] = u[0]
+
+# Step 6: Compute analytical solution   
+u_analytical = initial_condition((x - 4.0 * T) % (2.0 * np.pi), nu)
+
+# Step 7: Plot and visualize
+plt.figure(figsize=(11, 7))
+plt.plot(x,u, 'bo-', lw=2, label='Numerical')
+plt.plot(x,u_analytical, 'k--', lw=2, label='Analytical')
+plt.legend()
+plt.xlim([0, L])
+plt.ylim([0, 10])
+plt.xlabel('X')
+plt.ylabel('u')
+plt.show()

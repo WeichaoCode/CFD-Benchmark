@@ -1,0 +1,51 @@
+Sure, I can provide a basic Python script for you. Note, this Python script will use the NumPy library for numerical operations and Matplotlib for visualization. Install these libraries using pip if they are not already installed.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define parameters
+h = 0.1
+nx, ny = 10, 10
+dpdz = -3.2
+mu = 1e-3
+rho = 1.0
+dx = dy = h / nx
+
+# initialize w-velocity
+w = np.zeros((nx+1, ny+1))
+
+# Gauss-Seidel method for linear system
+for iteration in range(0, 500):
+    for i in range(1, nx):
+        for j in range(1, ny):
+            Aw = rho / mu * dx**2 * dy**2
+            An = Aw / dy**2
+            As = Aw / dy**2
+            Ae = Aw / dx**2
+            Ap = An + As + Ae + Aw / dx**2
+            b = Aw * dpdz
+            w[i,j] = (An*w[i,j+1] + As*w[i,j-1] + Ae*w[i-1,j] + Aw*w[i+1,j] - b) / Ap
+            
+# Apply boundary condition w = 0 on all solid boundaries
+w[0, :] = 0
+w[-1, :] = 0
+w[:, 0] = 0
+w[:, -1] = 0
+
+x = np.linspace(0, h, nx+1)
+y = np.linspace(0, h, ny+1)
+X, Y = np.meshgrid(x, y)
+
+# Create contour plot
+plt.figure(figsize=(7, 6))
+plt.contourf(X, Y, w.T, 50, cmap='jet')
+plt.colorbar(label='w-velocity (m/s)')
+plt.xlabel('x (m)')
+plt.ylabel('y (m)')
+plt.title('w-velocity distribution')
+plt.show()
+```
+This program will output a contour plot showing the w-velocity distribution across the square duct after 500 iterations.
+
+This code may not perfectly meet the conditions of your problem scenario, but it should be a good starting point for you. If you are facing any specific issues, feel free to ask for help!

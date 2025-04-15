@@ -1,0 +1,73 @@
+import numpy as np
+from scipy.sparse import diags, csr_matrix
+from scipy.sparse.linalg import spsolve
+
+# Domain parameters
+Lx, Ly = 2.0, 1.0
+nx, ny = 50, 50
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+# Create grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+# Initialize solution array
+p = np.zeros((ny, nx))
+
+# Source term
+b = np.zeros((ny, nx))
+b[int(ny/4), int(nx/4)] = 100
+b[int(3*ny/4), int(3*nx/4)] = -100
+
+# Construct matrix A and vector b for linear system
+def build_matrix():
+    # Number of interior points
+    N = (nx-2) * (ny-2)
+    
+    # Create diagonal entries
+    main_diag = np.zeros(N)
+    lower_diag = np.zeros(N-1)
+    upper_diag = np.zeros(N-1)
+    lower_diag_2 = np.zeros(N-(nx-2))
+    upper_diag_2 = np.zeros(N-(nx-2))
+    
+    # Fill diagonals
+    for i in range(N):
+        main_diag[i] = -(2/dx**2 + 2/dy**2)
+    
+    # Off-diagonal entries for x-direction
+    for i in range(N-1):
+        if (i+1) % (nx-2) != 0:
+            lower_diag[i] = 1/dx**2
+            upper_diag[i] = 1/dx**2
+    
+    # Off-diagonal entries for y-direction
+    for i in range(N-(nx-2)):
+        lower_diag_2[i] = 1/dy**2
+        upper_diag_2[i] = 1/dy**2
+    
+    # Create sparse matrix
+    diagonals = [main_diag, lower_diag, upper_diag, lower_diag_2, upper_diag_2]
+    offsets = [0, -1, 1, -(nx-2), nx-2]
+    A = diags(diagonals, offsets, shape=(N, N)).tocsr()
+    
+    return A
+
+# Construct right-hand side
+def build_rhs():
+    rhs = np.zeros((ny-2, nx-2))
+    rhs[int(ny/4)-1, int(nx/4)-1] = 100 * (1/dx**2 + 1/dy**2)
+    rhs[int(3*ny/4)-1, int(3*nx/4)-1] = -100 * (1/dx**2 + 1/dy**2)
+    return rhs.flatten()
+
+# Solve Poisson equation
+A = build_matrix()
+rhs = build_rhs()
+x_interior = spsolve(A, rhs)
+
+# Reconstruct full solution with boundary conditions
+p[1:-1, 1:-1] = x_interior.reshape(ny-2, nx-2)
+
+# Save solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark_8/results/prediction/sonnet-35/prompts_no_instruction/p_2D_Poisson_Equation.npy', p)

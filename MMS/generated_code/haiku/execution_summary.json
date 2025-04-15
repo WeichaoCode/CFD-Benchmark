@@ -1,0 +1,69 @@
+{
+    "summary": {
+        "passed": 4,
+        "failed": 4,
+        "warnings": 4
+    },
+    "details": {
+        "1D_Burgers'_equation_10.py": {
+            "status": "warning",
+            "error_type": "RuntimeWarning",
+            "error_message": "/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_10.py:42: RuntimeWarning: overflow encountered in scalar multiply\n  u_flux_plus = max(u_old[i], 0) * u_old[i] - min(u_old[i], 0) * u_old[i+1]\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_10.py:43: RuntimeWarning: overflow encountered in scalar multiply\n  u_flux_minus = max(u_old[i-1], 0) * u_old[i-1] - min(u_old[i-1], 0) * u_old[i]\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_10.py:49: RuntimeWarning: invalid value encountered in scalar subtract\n  u[i] = u_old[i] - dt * (u_flux_plus - u_flux_minus) / dx + dt * u_diff + dt * source_term(x[i], t[n-1])\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_10.py:42: RuntimeWarning: invalid value encountered in scalar multiply\n  u_flux_plus = max(u_old[i], 0) * u_old[i] - min(u_old[i], 0) * u_old[i+1]\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_10.py:43: RuntimeWarning: invalid value encountered in scalar multiply\n  u_flux_minus = max(u_old[i-1], 0) * u_old[i-1] - min(u_old[i-1], 0) * u_old[i]\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_10.py:49: RuntimeWarning: invalid value encountered in scalar add\n  u[i] = u_old[i] - dt * (u_flux_plus - u_flux_minus) / dx + dt * u_diff + dt * source_term(x[i], t[n-1])\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_10.py:46: RuntimeWarning: invalid value encountered in scalar subtract\n  u_diff = nu * (u_old[i+1] - 2*u_old[i] + u_old[i-1]) / (dx**2)"
+        },
+        "1D_diffusion_equation_8.py": {
+            "status": "failed",
+            "error_type": "ExecutionError",
+            "error_message": "Traceback (most recent call last):\n  File \"/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_diffusion_equation_8.py\", line 19, in <module>\n    raise ValueError(\"Method is unstable. Reduce dt or increase dx.\")\nValueError: Method is unstable. Reduce dt or increase dx."
+        },
+        "1D_Burgers'_equation_11.py": {
+            "status": "warning",
+            "error_type": "RuntimeWarning",
+            "error_message": "/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_11.py:47: RuntimeWarning: overflow encountered in scalar power\n  convective_term = 0.5 * (u[n, i+1]**2 - u[n, i-1]**2) / (2*dx)\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_11.py:47: RuntimeWarning: invalid value encountered in scalar subtract\n  convective_term = 0.5 * (u[n, i+1]**2 - u[n, i-1]**2) / (2*dx)\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_11.py:44: RuntimeWarning: invalid value encountered in scalar subtract\n  viscous_term = nu * (u[n, i+1] - 2*u[n, i] + u[n, i-1]) / (dx**2)"
+        },
+        "1D_linear_convection_2.py": {
+            "status": "passed",
+            "error_type": null,
+            "error_message": null
+        },
+        "1D_nonlinear_convection_4.py": {
+            "status": "failed",
+            "error_type": "ExecutionError",
+            "error_message": "Traceback (most recent call last):\n  File \"/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_nonlinear_convection_4.py\", line 70, in <module>\n    nonlinear_convection_1d()\n  File \"/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_nonlinear_convection_4.py\", line 61, in nonlinear_convection_1d\n    plt.plot(x, u[idx, :], label=labels[idx])\nIndexError: list index out of range"
+        },
+        "1D_Burgers'_equation_12.py": {
+            "status": "warning",
+            "error_type": "RuntimeWarning",
+            "error_message": "/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_12.py:56: RuntimeWarning: overflow encountered in scalar multiply\n  u[n, i] * u_x_minus1\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_12.py:47: RuntimeWarning: invalid value encountered in scalar subtract\n  u_xx = (u[n, i+1] - 2*u[n, i] + u[n, i-1]) / (dx**2)\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_12.py:43: RuntimeWarning: invalid value encountered in scalar subtract\n  u_x_minus1 = (u[n, i] - u[n, i-1]) / dx\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_12.py:47: RuntimeWarning: invalid value encountered in scalar add\n  u_xx = (u[n, i+1] - 2*u[n, i] + u[n, i-1]) / (dx**2)\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_12.py:44: RuntimeWarning: invalid value encountered in scalar subtract\n  u_x_minus2 = (u[n, i-1] - u[n, i-2]) / dx\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_12.py:56: RuntimeWarning: invalid value encountered in scalar subtract\n  u[n, i] * u_x_minus1\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_Burgers'_equation_12.py:55: RuntimeWarning: invalid value encountered in scalar subtract\n  u[n+1, i] = u[n, i] - dt * ("
+        },
+        "1D_linear_convection_3.py": {
+            "status": "passed",
+            "error_type": null,
+            "error_message": null
+        },
+        "1D_nonlinear_convection_5.py": {
+            "status": "passed",
+            "error_type": null,
+            "error_message": null
+        },
+        "1D_diffusion_equation_7.py": {
+            "status": "failed",
+            "error_type": "ExecutionError",
+            "error_message": "Traceback (most recent call last):\n  File \"/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_diffusion_equation_7.py\", line 61, in <module>\n    solution = solve_diffusion_equation()\n  File \"/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_diffusion_equation_7.py\", line 25, in solve_diffusion_equation\n    raise ValueError(\"Numerical scheme is unstable!\")\nValueError: Numerical scheme is unstable!"
+        },
+        "1D_nonlinear_convection_6.py": {
+            "status": "warning",
+            "error_type": "RuntimeWarning",
+            "error_message": "/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_nonlinear_convection_6.py:43: RuntimeWarning: overflow encountered in scalar multiply\n  convection_term = u_i * (3 * u_i - 4 * u_i_minus_1 + u_i_minus_2) / (2 * dx)\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_nonlinear_convection_6.py:46: RuntimeWarning: invalid value encountered in scalar subtract\n  u[n+1, i] = u[n, i] - dt * convection_term + dt * source_term\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_nonlinear_convection_6.py:43: RuntimeWarning: invalid value encountered in scalar add\n  convection_term = u_i * (3 * u_i - 4 * u_i_minus_1 + u_i_minus_2) / (2 * dx)\n/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_nonlinear_convection_6.py:43: RuntimeWarning: invalid value encountered in scalar subtract\n  convection_term = u_i * (3 * u_i - 4 * u_i_minus_1 + u_i_minus_2) / (2 * dx)"
+        },
+        "1D_diffusion_equation_9.py": {
+            "status": "failed",
+            "error_type": "ExecutionError",
+            "error_message": "Traceback (most recent call last):\n  File \"/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_diffusion_equation_9.py\", line 86, in <module>\n    main()\n  File \"/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_diffusion_equation_9.py\", line 66, in main\n    x, t, u = beam_warming_diffusion(nu, nx, nt, x_start, x_end, t_start, t_end)\n  File \"/opt/CFD-Benchmark/MMS/generated_code/haiku/1/1D_diffusion_equation_9.py\", line 27, in beam_warming_diffusion\n    raise ValueError(f\"Unstable scheme. Reduce time step. Current condition: {stability_condition}\")\nValueError: Unstable scheme. Reduce time step. Current condition: 3.6378787878787886"
+        },
+        "1D_linear_convection_1.py": {
+            "status": "passed",
+            "error_type": null,
+            "error_message": null
+        }
+    }
+}

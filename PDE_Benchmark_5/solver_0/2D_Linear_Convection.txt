@@ -1,0 +1,44 @@
+Sure, here is a sketch of a Python solution for this problem. This script solves a 2D convection equation using central difference for spatial discretization and forward difference for time discretization.
+
+```Python
+import numpy as np
+from matplotlib import pyplot as plt, cm
+
+Lx, Ly = 2., 2.  # length of the domain in the x and y directions
+nx, ny = 101, 101  # number of points in the x and y directions
+nt = 120  # number of time steps
+c = 1.  # wave speed
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+# Initialize grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+u = np.ones((ny, nx))
+
+# Apply initial condition
+u[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
+
+# Advancing in time
+for _ in range(nt):
+    un = u.copy()
+    u[1:, 1:] = un[1:, 1:] - c * dt / dx * (un[1:, 1:] - un[1:, :-1]) - c * dt / dy * (un[1:, 1:] - un[:-1, 1:])
+    u[0, :] = 1
+    u[-1, :] = 1
+    u[:, 0] = 1
+    u[:, -1] = 1
+
+fig = plt.figure(figsize=(11, 7), dpi=100)
+ax = fig.gca(projection='3d')
+x, y = np.meshgrid(x, y)
+
+ax.plot_surface(x, y, u, cmap=cm.viridis, rstride=2, cstride=2)
+ax.set_xlabel('$x$')
+ax.set_ylabel('$y$')
+plt.show()
+```
+The time step `dt` is not defined in your problem, in order to make sure the solution is stable, the CFL condition (Courant–Friedrichs–Lewy condition), `dt <= dx * dy / (4 * c)` should be satisfied. Please insert proper `dt` based on your requirement and the CFL condition into this code. This simple solution is for a first order accurate in both space and time. For better accuracy, you could use different schemes.
+
+This should provide a steady visualization of a wave propagating over a 2x2 grid. The wave starts at the square defined by the points (0.5,0.5), (0.5,1), (1,1), (1,0.5) and propagates outwards due to the convection term in the PDE. 
+
+Please let me know if you need any further clarification.

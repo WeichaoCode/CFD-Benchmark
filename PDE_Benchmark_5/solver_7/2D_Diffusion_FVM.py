@@ -1,0 +1,49 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define parameters
+h = 0.1
+nx, ny = 50, 50
+dPdz = -3.2
+mu = 1e-3
+dx = h/nx
+dy = h/ny
+
+# Create the grid
+x = np.linspace(0, h, nx)
+y = np.linspace(0, h, ny)
+w = np.zeros((nx, ny))
+
+# Iteration parameters
+max_iter = 10000
+eps = 1e-6
+
+# Perform the Gauss-Seidel iteration
+for it in range(max_iter):
+    wn = w.copy()
+    
+    for i in range(1, ny-1):
+        for j in range(1, nx-1):
+            w[i, j] = ((wn[i+1, j] + wn[i-1, j])*dy**2 + \
+                       (wn[i, j+1] + wn[i, j-1])*dx**2 - dPdz*dx**2*dy**2/mu) \
+                      / (2*(dx**2 + dy**2))
+            
+    # Enforce boundary conditions
+    w[:, 0] = 0    # west
+    w[0, :] = 0    # south
+    w[-1, :] = 0    # north
+    w[:, -1] = 0    # east
+    
+    # Check convergence
+    if np.sqrt(np.mean((w - wn)**2)) < eps:
+        print("Converged in %d iterations" % it)
+        break
+
+# Plot the solution
+xx, yy = np.meshgrid(x, y)
+plt.contourf(xx, yy, w)
+plt.colorbar()
+plt.title("2D Diffusion equation solution")
+plt.xlabel("X (m)")
+plt.ylabel("Y (m)")
+plt.show()

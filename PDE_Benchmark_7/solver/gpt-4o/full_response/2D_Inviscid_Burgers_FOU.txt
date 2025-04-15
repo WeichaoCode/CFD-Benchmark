@@ -1,0 +1,83 @@
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def initialize_domain(nx, ny):
+    """Initialize the velocity field with the hat function initial condition."""
+    u = np.ones((ny, nx))
+    v = np.ones((ny, nx))
+
+    u[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
+    v[int(0.5 / dy):int(1 / dy + 1), int(0.5 / dx):int(1 / dx + 1)] = 2
+    
+    return u, v
+
+def apply_boundary_conditions(u, v):
+    """Apply Dirichlet boundary conditions to the velocity fields."""
+    u[:, 0] = 1
+    u[:, -1] = 1
+    u[0, :] = 1
+    u[-1, :] = 1
+    
+    v[:, 0] = 1
+    v[:, -1] = 1
+    v[0, :] = 1
+    v[-1, :] = 1
+
+def solve_burgers_2d(nx, ny, dx, dy, nt, dt):
+    """Solve the 2D inviscid Burgers' equation using the upwind method."""
+    u, v = initialize_domain(nx, ny)
+
+    for n in range(nt):
+        un = u.copy()
+        vn = v.copy()
+
+        u[1:, 1:] = (un[1:, 1:] - un[1:, 1:] * dt / dx * (un[1:, 1:] - un[1:, :-1])
+                                - vn[1:, 1:] * dt / dy * (un[1:, 1:] - un[:-1, 1:]))
+        v[1:, 1:] = (vn[1:, 1:] - un[1:, 1:] * dt / dx * (vn[1:, 1:] - vn[1:, :-1])
+                                - vn[1:, 1:] * dt / dy * (vn[1:, 1:] - vn[:-1, 1:]))
+
+        apply_boundary_conditions(u, v)
+
+    return u, v
+
+def plot_velocity_field(u, v, dx, dy):
+    """Plot the velocity field using quiver plot."""
+    x = np.linspace(0, 2, nx)
+    y = np.linspace(0, 2, ny)
+    X, Y = np.meshgrid(x, y)
+
+    plt.figure(figsize=(10, 7))
+    plt.quiver(X, Y, u, v)
+    plt.title('Velocity Field')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.xlim(0, 2)
+    plt.ylim(0, 2)
+    plt.show()
+
+def save_velocity_field(u, v):
+    """Save the velocity fields to .npy files."""
+    np.save('velocity_u.npy', u)
+    np.save('velocity_v.npy', v)
+
+# Computational domain and parameters
+Lx = 2.0
+Ly = 2.0
+nx = 151
+ny = 151
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+sigma = 0.2
+dt = sigma * min(dx, dy) / 2
+nt = 300
+
+# Solve the Burgers' equation
+u_final, v_final = solve_burgers_2d(nx, ny, dx, dy, nt, dt)
+
+# Plot the final velocity field
+plot_velocity_field(u_final, v_final, dx, dy)
+
+# Save the velocity field
+save_velocity_field(u_final, v_final)
+```

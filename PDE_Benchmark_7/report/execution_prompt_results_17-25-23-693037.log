@@ -1,0 +1,426 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_Nonlinear_Convection_MK.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 1
+Total Scripts Failed: 0
+--- Running: Fully_Developed_Turbulent_Channel_Flow_KE.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 0
+--- Running: 1D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 0
+--- Running: 1D_Linear_Convection_corr.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 4
+Total Scripts Failed: 0
+--- Running: 2D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 5
+Total Scripts Failed: 0
+--- Running: 2D_Inviscid_Burgers_MK.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 6
+Total Scripts Failed: 0
+--- Running: 2D_Steady_Heat_Equation_Jac.py ---
+Exit Code: 0
+Output:
+Converged after 5365 iterations with residual 9.98e-07
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 7
+Total Scripts Failed: 0
+--- Running: 2D_Navier_Stokes_Cavity.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 8
+Total Scripts Failed: 0
+--- Running: Fully_Developed_Turbulent_Channel_Flow_V2F.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 9
+Total Scripts Failed: 0
+--- Running: 2D_Unsteady_Heat_Equation_DF.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/2D_Unsteady_Heat_Equation_DF.py:32: RuntimeWarning: overflow encountered in scalar add
+  T_new[i, j] = ((2 * r * (T[i + 1, j] + T[i - 1, j]) +
+/opt/CFD-Benchmark/PDE_Benchmark_7/solver/gpt-4o/2D_Unsteady_Heat_Equation_DF.py:33: RuntimeWarning: overflow encountered in scalar add
+  2 * beta_sq * r * (T[i, j + 1] + T[i, j - 1]) +
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 10
+Total Scripts Failed: 0
+--- Running: 2D_Unsteady_Heat_Equation_SE.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 11
+Total Scripts Failed: 0
+--- Running: 1D_Linear_Convection_adams.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 12
+Total Scripts Failed: 0
+--- Running: 2D_Unsteady_Heat_Equation_ADI.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 13
+Total Scripts Failed: 0
+--- Running: 2D_Steady_Heat_Equation_Gauss.py ---
+Exit Code: 0
+Output:
+Converged after 2815 iterations with residual 9.97e-07
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 14
+Total Scripts Failed: 0
+--- Running: Fully_Developed_Turbulent_Channel_Flow_CESS.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 15
+Total Scripts Failed: 0
+--- Running: 1D_Nonlinear_Convection_LW.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 16
+Total Scripts Failed: 0
+--- Running: Fully_Developed_Turbulent_Channel_Flow_SA.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 17
+Total Scripts Failed: 0
+--- Running: 2D_Inviscid_Burgers_FOU.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 18
+Total Scripts Failed: 0
+--- Running: 2D_Diffusion_FVM.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 19
+Total Scripts Failed: 0
+--- Running: 2D_Navier_Stokes_Channel.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 20
+Total Scripts Failed: 0
+--- Running: 2D_Poisson_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 21
+Total Scripts Failed: 0
+--- Running: 2D_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 22
+Total Scripts Failed: 0
+--- Running: 1D_Euler_Shock_Tube.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 23
+Total Scripts Failed: 0
+--- Running: 2D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 24
+Total Scripts Failed: 0
+--- Running: 2D_Laplace_Equation.py ---
+Exit Code: 0
+Output:
+Converged after 177 iterations with maximum difference 9.836106915659532e-06
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 25
+Total Scripts Failed: 0
+--- Running: 1D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 26
+Total Scripts Failed: 0
+--- Running: 1D_Nonlinear_Convection_Lax.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 27
+Total Scripts Failed: 0
+--- Running: 1D_Linear_Convection_explicit_euler.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 28
+Total Scripts Failed: 0
+--- Running: 2D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 29
+Total Scripts Failed: 0
+--- Running: Fully_Developed_Turbulent_Channel_Flow_SST.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 30
+Total Scripts Failed: 0
+--- Running: 2D_Steady_Heat_Equation_SOR.py ---
+Exit Code: 0
+Output:
+Converged after 1000 iterations with residual 9.91e-07
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 31
+Total Scripts Failed: 0
+--- Running: 1D_Linear_Convection_rk.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 32
+Total Scripts Failed: 0

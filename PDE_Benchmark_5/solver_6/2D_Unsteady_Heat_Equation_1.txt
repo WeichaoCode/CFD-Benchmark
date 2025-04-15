@@ -1,0 +1,55 @@
+Below is a Python codesnip that solves the given PDE for the given boundary conditions.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import ndimage
+
+# Parameters
+alpha = 0.1      # thermal diffusivity
+Q_0 = 200        # Maximum heat source term
+sigma = 0.1      # Controls radial decay of heat source
+dx = 0.1         # spatial step size
+dt = 0.005       # time step size
+t_end = 1.0      # final time
+
+# Derived parameters
+Nx = int(2/dx) + 1    # number of x grid points
+Ny = int(2/dx) + 1    # number of y grid points
+Nt = int(t_end/dt)    # number of time steps
+stability_limit = 0.5 * dx**2 / alpha    # for explicit scheme
+
+if dt > stability_limit:
+    raise ValueError('Time step size is above the stability limit (%g).' % stability_limit)
+
+# Grid
+x = np.linspace(-1, 1, Nx)
+y = np.linspace(-1, 1, Ny)
+X, Y = np.meshgrid(x, y)
+
+# Initial condition
+T = np.zeros_like(X)
+
+# Source term
+q = Q_0 * np.exp(- (X**2 + Y**2) / (2*sigma**2))
+
+# Time-stepping loop
+for n in range(Nt):
+    T_new = T + alpha * dt * (np.roll(T, 1, axis=0) + np.roll(T, -1, axis=0) + np.roll(T, 1, axis=1) + np.roll(T, -1, axis=1) - 4*T) / dx**2 + q*dt
+    T_new[0,:] = T_new[-1,:] = T_new[:,0] = T_new[:,-1] = 0    # boundary conditions
+    T = T_new
+
+    # visualization every 10 time steps
+    if n % 10 == 0:
+        plt.figure()
+        plt.contourf(X, Y, T, 50)
+        plt.title('Temperature at t = %.2f' % (n*dt))
+        plt.colorbar()
+        plt.show()
+```
+
+Please ensure that you have necessary Python packages installed. If not, please install them using pip:
+
+```shell
+pip install numpy matplotlib
+```

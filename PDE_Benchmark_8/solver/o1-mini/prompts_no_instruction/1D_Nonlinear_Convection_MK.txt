@@ -1,0 +1,33 @@
+```python
+import numpy as np
+import math
+
+# Parameters
+L = 2 * np.pi
+nu = 0.5
+dt = 0.01
+dx = dt / nu
+N = math.ceil(L / dx)
+x = np.linspace(0, L, N, endpoint=False)
+T = 500
+
+# Initial condition
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# Time integration using MacCormack method
+for _ in range(T):
+    # Predictor step
+    f = 0.5 * u**2
+    f_predict = np.roll(f, -1)
+    u_predict = u - dt * (f_predict - f) / dx
+    
+    # Corrector step
+    f_p = 0.5 * u_predict**2
+    f_correct = (f_p - np.roll(f_p, 1)) / dx
+    u_correct = 0.5 * (u + u_predict - dt * f_correct)
+    
+    u = u_correct
+
+# Save the final solution
+np.save('u', u)
+```

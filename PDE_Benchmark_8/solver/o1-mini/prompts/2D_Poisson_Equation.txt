@@ -1,0 +1,60 @@
+```python
+import numpy as np
+from scipy.sparse import lil_matrix
+from scipy.sparse.linalg import spsolve
+
+# Domain
+Lx, Ly = 2.0, 1.0
+Nx, Ny = 50, 25
+dx, dy = Lx / (Nx - 1), Ly / (Ny - 1)
+x = np.linspace(0, Lx, Nx)
+y = np.linspace(0, Ly, Ny)
+
+# Initialize p
+p = np.zeros((Ny, Nx))
+
+# Source term
+b = np.zeros((Ny, Nx))
+# Locate source points
+i1 = int(0.25 * (Nx - 1))
+j1 = int(0.25 * (Ny - 1))
+i2 = int(0.75 * (Nx - 1))
+j2 = int(0.75 * (Ny - 1))
+b[j1, i1] = 100
+b[j2, i2] = -100
+
+# Flatten b
+b_flat = b.flatten()
+
+# Construct A matrix
+A = lil_matrix((Nx * Ny, Nx * Ny))
+for j in range(Ny):
+    for i in range(Nx):
+        index = j * Nx + i
+        if i == 0 or i == Nx-1 or j == 0 or j == Ny-1:
+            A[index, index] = 1
+        else:
+            A[index, index] = -2 / dx**2 -2 / dy**2
+            A[index, index-1] = 1 / dx**2
+            A[index, index+1] = 1 / dx**2
+            A[index, index-Nx] = 1 / dy**2
+            A[index, index+Nx] = 1 / dy**2
+
+A = A.tocsr()
+
+# Apply boundary conditions
+b_system = b_flat.copy()
+boundary_indices = []
+for j in range(Ny):
+    for i in range(Nx):
+        if i == 0 or i == Nx-1 or j == 0 or j == Ny-1:
+            boundary_indices.append(j * Nx + i)
+            b_system[j * Nx + i] = 0
+
+# Solve the linear system
+p_flat = spsolve(A, b_system)
+p = p_flat.reshape((Ny, Nx))
+
+# Save the solution
+np.save('p.npy', p)
+```

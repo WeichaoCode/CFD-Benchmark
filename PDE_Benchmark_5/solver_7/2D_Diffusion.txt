@@ -1,0 +1,63 @@
+Sure, let's start by importing the necessary libraries for numerical computation and visualization.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+Next, we define the the necessary parameters and the grid.
+
+```python
+# Parameters
+Lx = Ly = 1.0
+T = 0.1
+nx = ny = 21
+nt = 30
+ν = 0.05
+
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+# Ensure Stability using CFL like condition
+dt = dx * dy / (4 * ν)
+
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+# Initialize solution: u(x, y,t=0) = 0
+u = np.zeros((ny, nx))
+
+# Set Initial condition U=2 at (0.5<=x<=0.6, 0.5<=y<=0.6)
+u[int(0.5 / dy):int(0.6 / dy), int(0.5 / dx):int(0.6 / dx)] = 2
+```
+
+Then we iterate over the timesteps to advance the solution in time. We apply the finite difference discretization scheme while also enforcing the boundary conditions.
+
+```python
+for n in range(nt + 1):
+    un = u.copy()
+    u[1:-1, 1:-1] = (un[1:-1, 1:-1] + ν * dt / dx**2 * (un[1:-1, 2:] - 2 * un[1:-1, 1:-1] + un[1:-1, :-2])
+                     + ν * dt / dy**2 * (un[2:, 1:-1] - 2 * un[1:-1, 1:-1] + un[:-2, 1:-1]))
+
+   # Enforce Neumann BC along x=0 and x=Lx
+    u[:, -1] = u[:, -2]  # x = Lx
+    u[:, 0] = u[:, 1]  # x = 0
+
+   # Enforce Neumann BC along y=0 and y=Ly
+    u[-1, :] = u[-2, :]  # y = Ly
+    u[0, :] = u[1, :]  # y = 0
+```
+
+Finally, we visualize the solution using a heatmap. 
+
+```python
+plt.figure(figsize=(8,5))
+plt.contourf(x,y,u, cmap='plasma')
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.colorbar(label='U')
+plt.title('Heatmap of Diffusion Equation')
+plt.show()
+```
+
+With this Python program, you'll be able to see the diffusion of a scalar field (initially set at a certain location) over a 2D space with time. The output is a heatmap that shows how the scalar field evolves over time.

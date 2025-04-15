@@ -89,3 +89,63 @@ ValueError: operands could not be broadcast together with shapes (65,256) (128,1
 2025-04-14 20:26:59,608 - INFO - Execution successful, no errors detected.
 2025-04-14 20:26:59,856 - INFO - Execution successful, no errors detected.
 2025-04-14 20:27:00,178 - INFO - Execution successful, no errors detected.
+2025-04-15 14:23:28,104 - INFO - ====== Starting Comparison ======
+2025-04-15 14:23:28,104 - INFO - Found 27 common files.
+2025-04-15 14:23:28,106 - INFO - T_2D_Unsteady_Heat_Equation.npy: MSE=1.068e+03, MAE=1.127e+01, RMSE=3.267e+01, Cosine=0.691, R2=-1386.801
+2025-04-15 14:23:28,106 - ERROR - ❌ f_Lane_Emden_Equation.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-15 14:23:28,107 - INFO - p_2D_Laplace_Equation.npy: MSE=1.879e-03, MAE=3.234e-02, RMSE=4.335e-02, Cosine=0.990, R2=0.948
+2025-04-15 14:23:28,109 - INFO - p_2D_Navier_Stokes_Cavity.npy: MSE=3.282e-02, MAE=8.335e-02, RMSE=1.812e-01, Cosine=0.885, R2=-10.398
+2025-04-15 14:23:28,110 - INFO - p_2D_Navier_Stokes_Channel.npy: MSE=1.000e+00, MAE=1.000e+00, RMSE=1.000e+00, Cosine=0.000, R2=0.000
+2025-04-15 14:23:28,112 - INFO - p_2D_Poisson_Equation.npy: MSE=3.238e-06, MAE=1.227e-03, RMSE=1.799e-03, Cosine=0.868, R2=0.738
+2025-04-15 14:23:28,113 - INFO - p_Lid_Driven_Cavity.npy: MSE=4.668e+02, MAE=2.160e+01, RMSE=2.161e+01, Cosine=0.061, R2=-2732.306
+2025-04-15 14:23:28,114 - INFO - u_1D_Burgers_Equation.npy: MSE=5.584e+00, MAE=2.095e+00, RMSE=2.363e+00, Cosine=0.848, R2=-0.791
+2025-04-15 14:23:28,116 - INFO - u_1D_Diffusion.npy: MSE=8.064e-04, MAE=1.951e-02, RMSE=2.840e-02, Cosine=1.000, R2=0.993
+2025-04-15 14:23:28,117 - INFO - u_1D_KdV_Burgers_Equation.npy: MSE=6.302e-03, MAE=6.457e-02, RMSE=7.938e-02, Cosine=0.894, R2=0.696
+2025-04-15 14:23:28,118 - INFO - u_1D_Linear_Convection.npy: MSE=9.470e-03, MAE=5.484e-02, RMSE=9.732e-02, Cosine=0.971, R2=0.865
+2025-04-15 14:23:28,120 - INFO - u_1D_Nonlinear_Convection.npy: MSE=2.910e-03, MAE=1.245e-02, RMSE=5.395e-02, Cosine=0.993, R2=0.969
+2025-04-15 14:23:28,121 - INFO - u_2D_Burgers_Equation.npy: MSE=1.606e-03, MAE=1.083e-02, RMSE=4.007e-02, Cosine=0.999, R2=0.968
+2025-04-15 14:23:28,123 - INFO - u_2D_Convection.npy: MSE=9.020e-05, MAE=3.188e-03, RMSE=9.497e-03, Cosine=1.000, R2=0.997
+2025-04-15 14:23:28,124 - INFO - u_2D_Diffusion.npy: MSE=1.275e-02, MAE=6.451e-02, RMSE=1.129e-01, Cosine=0.996, R2=-0.244
+2025-04-15 14:23:28,126 - INFO - u_2D_Inviscid_Burgers.npy: MSE=5.041e-04, MAE=4.746e-03, RMSE=2.245e-02, Cosine=1.000, R2=0.983
+2025-04-15 14:23:28,128 - INFO - u_2D_Linear_Convection.npy: MSE=1.624e-04, MAE=5.180e-03, RMSE=1.274e-02, Cosine=1.000, R2=0.996
+2025-04-15 14:23:28,129 - INFO - u_2D_Navier_Stokes_Cavity.npy: MSE=1.141e-03, MAE=2.091e-02, RMSE=3.378e-02, Cosine=0.990, R2=0.979
+2025-04-15 14:23:28,131 - INFO - u_2D_Navier_Stokes_Channel.npy: MSE=6.088e+00, MAE=2.226e+00, RMSE=2.467e+00, Cosine=0.959, R2=-4.188
+2025-04-15 14:23:28,132 - INFO - u_Fully_Developed_Turbulent_Channel_Flow.npy: MSE=4.533e+02, MAE=1.958e+01, RMSE=2.129e+01, Cosine=-0.944, R2=-8.588
+2025-04-15 14:23:28,133 - INFO - u_Lid_Driven_Cavity.npy: MSE=8.453e-04, MAE=2.178e-02, RMSE=2.907e-02, Cosine=0.993, R2=0.986
+2025-04-15 14:23:28,135 - INFO - v_2D_Burgers_Equation.npy: MSE=1.606e-03, MAE=1.083e-02, RMSE=4.007e-02, Cosine=0.999, R2=0.968
+2025-04-15 14:23:28,137 - INFO - v_2D_Convection.npy: MSE=9.020e-05, MAE=3.188e-03, RMSE=9.497e-03, Cosine=1.000, R2=0.997
+2025-04-15 14:23:28,139 - INFO - v_2D_Inviscid_Burgers.npy: MSE=5.041e-04, MAE=4.746e-03, RMSE=2.245e-02, Cosine=1.000, R2=0.983
+2025-04-15 14:23:28,140 - INFO - v_2D_Navier_Stokes_Cavity.npy: MSE=9.110e-04, MAE=1.927e-02, RMSE=3.018e-02, Cosine=0.962, R2=0.921
+2025-04-15 14:23:28,142 - INFO - v_2D_Navier_Stokes_Channel.npy: MSE=0.000e+00, MAE=0.000e+00, RMSE=0.000e+00, Cosine=0.000, R2=1.000
+2025-04-15 14:23:28,143 - INFO - v_Lid_Driven_Cavity.npy: MSE=1.485e-03, MAE=2.404e-02, RMSE=3.853e-02, Cosine=0.982, R2=0.834
+2025-04-15 14:23:28,148 - INFO - Found 27 common files.
+2025-04-15 14:23:36,605 - INFO - Found 27 common files.
+2025-04-15 14:23:43,415 - INFO - Execution successful, no errors detected.
+2025-04-15 14:23:45,093 - INFO - Execution successful, no errors detected.
+2025-04-15 14:23:45,226 - INFO - Execution successful, no errors detected.
+2025-04-15 14:23:45,453 - INFO - Execution successful, no errors detected.
+2025-04-15 14:23:57,898 - INFO - Execution successful, no errors detected.
+2025-04-15 14:24:36,561 - INFO - Execution successful, no errors detected.
+2025-04-15 14:24:36,694 - ERROR - Execution failed with errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Shear_Flow_With_Tracer.py", line 49, in <module>
+    ux_hat = 1j * KX * u_hat
+ValueError: operands could not be broadcast together with shapes (65,256) (128,129)
+2025-04-15 14:24:37,197 - INFO - Execution successful, no errors detected.
+2025-04-15 14:24:37,518 - INFO - Execution successful, no errors detected.
+2025-04-15 14:24:50,618 - INFO - Execution successful, no errors detected.
+2025-04-15 14:24:51,211 - INFO - Execution successful, no errors detected.
+2025-04-15 14:24:51,430 - INFO - Execution successful, no errors detected.
+2025-04-15 14:24:54,582 - INFO - Execution successful, no errors detected.
+2025-04-15 14:24:54,864 - INFO - Execution successful, no errors detected.
+2025-04-15 14:25:54,916 - ERROR - ❌ Unexpected error while running script /opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Rayleigh_Benard_Convection.py: Command '['python3', '/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Rayleigh_Benard_Convection.py']' timed out after 60 seconds
+2025-04-15 14:26:05,030 - INFO - Execution successful, no errors detected.
+2025-04-15 14:26:05,334 - INFO - Execution successful, no errors detected.
+2025-04-15 14:26:07,108 - INFO - Execution successful, no errors detected.
+2025-04-15 14:26:19,904 - INFO - Execution successful, no errors detected.
+2025-04-15 14:26:20,122 - INFO - Execution successful, no errors detected.
+2025-04-15 14:26:20,509 - INFO - Execution successful, no errors detected.
+2025-04-15 14:26:21,007 - INFO - Execution successful, no errors detected.
+2025-04-15 14:26:21,245 - INFO - Execution successful, no errors detected.
+2025-04-15 14:26:21,501 - INFO - Execution successful, no errors detected.
+2025-04-15 14:26:21,811 - INFO - Execution successful, no errors detected.

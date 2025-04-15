@@ -37,10 +37,10 @@ prompt_json = "prompts.json"  # the file under ./prompt/
 for llm_model in llm_models:
     print(f"\n=== Running for model: {llm_model} ===")
     # Instantiate the class
-    generator_llm = LLMCodeGenerator(llm_model, prompt_json)
-
-    # Call the API to generate code for each task
-    generator_llm.call_api()
+    # generator_llm = LLMCodeGenerator(llm_model, prompt_json)
+    #
+    # # Call the API to generate code for each task
+    # generator_llm.call_api()
 
     # STEP 3: post-process the generate code and compare the loss and images
     # Create the post-processor

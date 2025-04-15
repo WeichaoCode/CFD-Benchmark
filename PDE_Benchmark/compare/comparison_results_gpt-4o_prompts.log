@@ -728,3 +728,66 @@ Please correct it.
 2025-04-14 20:24:04,054 - INFO - Execution successful, no errors detected.
 2025-04-14 20:24:04,225 - INFO - Execution successful, no errors detected.
 2025-04-14 20:24:04,373 - INFO - Execution successful, no errors detected.
+2025-04-15 14:18:21,133 - INFO - ====== Starting Comparison ======
+2025-04-15 14:18:21,134 - INFO - Found 34 common files.
+2025-04-15 14:18:21,158 - INFO - T_2D_Steady_Heat_Equation.npy: MSE=3.318e+02, MAE=1.467e+01, RMSE=1.821e+01, Cosine=0.519, R2=-2.885
+2025-04-15 14:18:21,160 - INFO - T_2D_Unsteady_Heat_Equation.npy: MSE=1.063e+03, MAE=1.126e+01, RMSE=3.261e+01, Cosine=0.692, R2=-1381.369
+2025-04-15 14:18:21,162 - INFO - b_2D_Rayleigh_Benard_Convection.npy: MSE=6.584e+05, MAE=7.359e+02, RMSE=8.114e+02, Cosine=-0.002, R2=-11140645613.793
+2025-04-15 14:18:21,162 - ERROR - ❌ omega_Flow_Past_Circular_Cylinder.npy failed: Input contains NaN.
+2025-04-15 14:18:21,164 - INFO - p_2D_Laplace_Equation.npy: MSE=4.581e-02, MAE=1.690e-01, RMSE=2.140e-01, Cosine=0.757, R2=-0.275
+2025-04-15 14:18:21,165 - INFO - p_2D_Navier_Stokes_Cavity.npy: MSE=9.733e+09, MAE=9.765e+04, RMSE=9.866e+04, Cosine=-0.311, R2=-3380395041556.949
+2025-04-15 14:18:21,167 - INFO - p_2D_Navier_Stokes_Channel.npy: MSE=1.129e+00, MAE=1.002e+00, RMSE=1.063e+00, Cosine=-0.007, R2=0.000
+2025-04-15 14:18:21,168 - INFO - p_2D_Poisson_Equation.npy: MSE=9.783e-05, MAE=5.640e-03, RMSE=9.891e-03, Cosine=-0.765, R2=-6.916
+2025-04-15 14:18:21,169 - INFO - p_Lid_Driven_Cavity.npy: MSE=1.534e+01, MAE=3.909e+00, RMSE=3.917e+00, Cosine=0.159, R2=-88.822
+2025-04-15 14:18:21,170 - ERROR - ❌ psi_Flow_Past_Circular_Cylinder.npy failed: Input contains NaN.
+2025-04-15 14:18:21,171 - INFO - rho_1D_Euler_Shock_Tube.npy: MSE=3.541e-03, MAE=4.084e-02, RMSE=5.951e-02, Cosine=0.996, R2=0.974
+2025-04-15 14:18:21,174 - INFO - s_2D_Shear_Flow_With_Tracer.npy: MSE=inf, MAE=7.249e+174, RMSE=inf, Cosine=0.000, R2=-inf
+2025-04-15 14:18:21,175 - INFO - u_1D_Burgers_Equation.npy: MSE=4.831e+00, MAE=1.939e+00, RMSE=2.198e+00, Cosine=0.865, R2=-0.550
+2025-04-15 14:18:21,177 - INFO - u_1D_Diffusion.npy: MSE=4.536e-04, MAE=1.463e-02, RMSE=2.130e-02, Cosine=1.000, R2=0.996
+2025-04-15 14:18:21,178 - INFO - u_1D_KdV_Burgers_Equation.npy: MSE=2.538e+17, MAE=4.363e+08, RMSE=5.038e+08, Cosine=-0.001, R2=-12239776274704054272.000
+2025-04-15 14:18:21,180 - INFO - u_1D_Linear_Convection.npy: MSE=1.832e-02, MAE=7.576e-02, RMSE=1.353e-01, Cosine=0.951, R2=0.739
+2025-04-15 14:18:21,181 - INFO - u_1D_Nonlinear_Convection.npy: MSE=2.925e-02, MAE=1.039e-01, RMSE=1.710e-01, Cosine=0.927, R2=0.690
+2025-04-15 14:18:21,182 - INFO - u_2D_Burgers_Equation.npy: MSE=3.209e-07, MAE=1.561e-04, RMSE=5.665e-04, Cosine=1.000, R2=1.000
+2025-04-15 14:18:21,184 - INFO - u_2D_Convection.npy: MSE=6.918e-05, MAE=2.087e-03, RMSE=8.318e-03, Cosine=1.000, R2=0.998
+2025-04-15 14:18:21,185 - INFO - u_2D_Diffusion.npy: MSE=1.275e-02, MAE=6.451e-02, RMSE=1.129e-01, Cosine=0.996, R2=-0.244
+2025-04-15 14:18:21,187 - INFO - u_2D_Inviscid_Burgers.npy: MSE=5.041e-04, MAE=4.746e-03, RMSE=2.245e-02, Cosine=1.000, R2=0.983
+2025-04-15 14:18:21,189 - INFO - u_2D_Linear_Convection.npy: MSE=1.624e-04, MAE=5.180e-03, RMSE=1.274e-02, Cosine=1.000, R2=0.996
+2025-04-15 14:18:21,190 - INFO - u_2D_Navier_Stokes_Cavity.npy: MSE=6.070e+09, MAE=6.861e+04, RMSE=7.791e+04, Cosine=-0.026, R2=-109261914161.154
+2025-04-15 14:18:21,191 - INFO - u_2D_Navier_Stokes_Channel.npy: MSE=6.262e+00, MAE=2.261e+00, RMSE=2.502e+00, Cosine=0.929, R2=-4.336
+2025-04-15 14:18:21,192 - ERROR - ❌ u_2D_Rayleigh_Benard_Convection.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-15 14:18:21,192 - ERROR - ❌ u_2D_Shear_Flow_With_Tracer.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-15 14:18:21,193 - INFO - u_Fully_Developed_Turbulent_Channel_Flow.npy: MSE=1.097e+02, MAE=9.010e+00, RMSE=1.047e+01, Cosine=0.715, R2=-1.321
+2025-04-15 14:18:21,195 - INFO - u_Lid_Driven_Cavity.npy: MSE=1.948e-03, MAE=2.227e-02, RMSE=4.414e-02, Cosine=0.984, R2=0.967
+2025-04-15 14:18:21,196 - INFO - v_2D_Burgers_Equation.npy: MSE=3.209e-07, MAE=1.561e-04, RMSE=5.665e-04, Cosine=1.000, R2=1.000
+2025-04-15 14:18:21,197 - INFO - v_2D_Convection.npy: MSE=6.918e-05, MAE=2.087e-03, RMSE=8.318e-03, Cosine=1.000, R2=0.998
+2025-04-15 14:18:21,199 - INFO - v_2D_Inviscid_Burgers.npy: MSE=5.041e-04, MAE=4.746e-03, RMSE=2.245e-02, Cosine=1.000, R2=0.983
+2025-04-15 14:18:21,201 - INFO - v_2D_Navier_Stokes_Cavity.npy: MSE=5.852e+09, MAE=6.693e+04, RMSE=7.650e+04, Cosine=0.078, R2=-507431523743.059
+2025-04-15 14:18:21,202 - INFO - v_2D_Navier_Stokes_Channel.npy: MSE=2.486e-06, MAE=8.477e-04, RMSE=1.577e-03, Cosine=0.000, R2=0.000
+2025-04-15 14:18:21,204 - INFO - v_Lid_Driven_Cavity.npy: MSE=1.381e-03, MAE=2.355e-02, RMSE=3.716e-02, Cosine=0.984, R2=0.845
+2025-04-15 14:18:21,211 - INFO - Found 34 common files.
+2025-04-15 14:18:31,526 - INFO - Found 34 common files.
+2025-04-15 14:18:58,687 - INFO - Execution successful, no errors detected.
+2025-04-15 14:18:59,050 - INFO - Execution successful, no errors detected.
+2025-04-15 14:18:59,218 - INFO - Execution successful, no errors detected.
+2025-04-15 14:18:59,371 - INFO - Execution successful, no errors detected.
+2025-04-15 14:19:59,433 - ERROR - ❌ Unexpected error while running script /opt/CFD-Benchmark/PDE_Benchmark/solver/o3-mini/prompts/Flow_Past_Circular_Cylinder.py: Command '['python3', '/opt/CFD-Benchmark/PDE_Benchmark/solver/o3-mini/prompts/Flow_Past_Circular_Cylinder.py']' timed out after 60 seconds
+2025-04-15 14:19:59,885 - INFO - Execution successful, no errors detected.
+2025-04-15 14:20:59,920 - ERROR - ❌ Unexpected error while running script /opt/CFD-Benchmark/PDE_Benchmark/solver/o3-mini/prompts/2D_Shear_Flow_With_Tracer.py: Command '['python3', '/opt/CFD-Benchmark/PDE_Benchmark/solver/o3-mini/prompts/2D_Shear_Flow_With_Tracer.py']' timed out after 60 seconds
+2025-04-15 14:21:10,221 - INFO - Execution successful, no errors detected.
+2025-04-15 14:21:10,376 - INFO - Execution successful, no errors detected.
+2025-04-15 14:21:10,525 - INFO - Execution successful, no errors detected.
+2025-04-15 14:21:11,092 - INFO - Execution successful, no errors detected.
+2025-04-15 14:21:11,380 - INFO - Execution successful, no errors detected.
+2025-04-15 14:21:11,614 - INFO - Execution successful, no errors detected.
+2025-04-15 14:21:16,869 - INFO - Execution successful, no errors detected.
+2025-04-15 14:22:16,928 - ERROR - ❌ Unexpected error while running script /opt/CFD-Benchmark/PDE_Benchmark/solver/o3-mini/prompts/2D_Rayleigh_Benard_Convection.py: Command '['python3', '/opt/CFD-Benchmark/PDE_Benchmark/solver/o3-mini/prompts/2D_Rayleigh_Benard_Convection.py']' timed out after 60 seconds
+2025-04-15 14:22:20,766 - INFO - Execution successful, no errors detected.
+2025-04-15 14:22:20,906 - INFO - Execution successful, no errors detected.
+2025-04-15 14:22:21,858 - INFO - Execution successful, no errors detected.
+2025-04-15 14:22:28,483 - INFO - Execution successful, no errors detected.
+2025-04-15 14:22:28,743 - INFO - Execution successful, no errors detected.
+2025-04-15 14:22:28,876 - INFO - Execution successful, no errors detected.
+2025-04-15 14:22:40,643 - INFO - Execution successful, no errors detected.
+2025-04-15 14:23:27,760 - INFO - Execution successful, no errors detected.
+2025-04-15 14:23:27,936 - INFO - Execution successful, no errors detected.
+2025-04-15 14:23:28,104 - INFO - Execution successful, no errors detected.

@@ -1,0 +1,377 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_KdV_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 1
+Total Scripts Failed: 0
+--- Running: 2D_Unsteady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 0
+--- Running: 1D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 0
+--- Running: Fully_Developed_Turbulent_Channel_Flow.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 4
+Total Scripts Failed: 0
+--- Running: Flow_Past_Circular_Cylinder.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:56: RuntimeWarning: overflow encountered in multiply
+  - u_r[1:-1, :] * (np.roll(omega, -1, axis=0)[1:-1, :] - np.roll(omega, 1, axis=0)[1:-1, :]) / (2 * dr)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:56: RuntimeWarning: overflow encountered in divide
+  - u_r[1:-1, :] * (np.roll(omega, -1, axis=0)[1:-1, :] - np.roll(omega, 1, axis=0)[1:-1, :]) / (2 * dr)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:57: RuntimeWarning: overflow encountered in multiply
+  - (u_theta[1:-1, :] / R[1:-1, :]) * (np.roll(omega, -1, axis=1)[1:-1, :] - np.roll(omega, 1, axis=1)[1:-1, :]) / (2 * dtheta)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:57: RuntimeWarning: overflow encountered in divide
+  - (u_theta[1:-1, :] / R[1:-1, :]) * (np.roll(omega, -1, axis=1)[1:-1, :] - np.roll(omega, 1, axis=1)[1:-1, :]) / (2 * dtheta)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:56: RuntimeWarning: invalid value encountered in subtract
+  - u_r[1:-1, :] * (np.roll(omega, -1, axis=0)[1:-1, :] - np.roll(omega, 1, axis=0)[1:-1, :]) / (2 * dr)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:49: RuntimeWarning: invalid value encountered in add
+  psi[1:-1, :] = 0.25 * (np.roll(psi, -1, axis=0)[1:-1, :] + np.roll(psi, 1, axis=0)[1:-1, :] +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:49: RuntimeWarning: invalid value encountered in subtract
+  psi[1:-1, :] = 0.25 * (np.roll(psi, -1, axis=0)[1:-1, :] + np.roll(psi, 1, axis=0)[1:-1, :] +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:57: RuntimeWarning: invalid value encountered in subtract
+  - (u_theta[1:-1, :] / R[1:-1, :]) * (np.roll(omega, -1, axis=1)[1:-1, :] - np.roll(omega, 1, axis=1)[1:-1, :]) / (2 * dtheta)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:30: RuntimeWarning: invalid value encountered in subtract
+  d2f_dr2 = (np.roll(f, -1, axis=0) - 2 * f + np.roll(f, 1, axis=0)) / dr**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:30: RuntimeWarning: invalid value encountered in add
+  d2f_dr2 = (np.roll(f, -1, axis=0) - 2 * f + np.roll(f, 1, axis=0)) / dr**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:31: RuntimeWarning: invalid value encountered in subtract
+  d2f_dtheta2 = (np.roll(f, -1, axis=1) - 2 * f + np.roll(f, 1, axis=1)) / dtheta**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:31: RuntimeWarning: invalid value encountered in add
+  d2f_dtheta2 = (np.roll(f, -1, axis=1) - 2 * f + np.roll(f, 1, axis=1)) / dtheta**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:32: RuntimeWarning: invalid value encountered in subtract
+  df_dr = (np.roll(f, -1, axis=0) - np.roll(f, 1, axis=0)) / (2 * dr)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:33: RuntimeWarning: invalid value encountered in add
+  return d2f_dr2 + (1 / r[:, np.newaxis]) * df_dr + (1 / r[:, np.newaxis]**2) * d2f_dtheta2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:56: RuntimeWarning: invalid value encountered in add
+  - u_r[1:-1, :] * (np.roll(omega, -1, axis=0)[1:-1, :] - np.roll(omega, 1, axis=0)[1:-1, :]) / (2 * dr)
+/opt/Dino_parallel/lib/python3.10/site-packages/numpy/lib/_function_base_impl.py:1286: RuntimeWarning: invalid value encountered in subtract
+  out[tuple(slice1)] = (f[tuple(slice4)] - f[tuple(slice2)]) / (2. * ax_dx)
+/opt/Dino_parallel/lib/python3.10/site-packages/numpy/lib/_function_base_impl.py:1314: RuntimeWarning: invalid value encountered in subtract
+  out[tuple(slice1)] = (f[tuple(slice2)] - f[tuple(slice3)]) / dx_n
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:56: RuntimeWarning: invalid value encountered in multiply
+  - u_r[1:-1, :] * (np.roll(omega, -1, axis=0)[1:-1, :] - np.roll(omega, 1, axis=0)[1:-1, :]) / (2 * dr)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/Flow_Past_Circular_Cylinder.py:57: RuntimeWarning: invalid value encountered in multiply
+  - (u_theta[1:-1, :] / R[1:-1, :]) * (np.roll(omega, -1, axis=1)[1:-1, :] - np.roll(omega, 1, axis=1)[1:-1, :]) / (2 * dtheta)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 5
+Total Scripts Failed: 0
+--- Running: 2D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 6
+Total Scripts Failed: 0
+--- Running: 2D_Shear_Flow_With_Tracer.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/2D_Shear_Flow_With_Tracer.py:46: RuntimeWarning: overflow encountered in multiply
+  nonlinear_u = np.nan_to_num(u * u_x + w * u_z, nan=0.0, posinf=0.0, neginf=0.0)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/2D_Shear_Flow_With_Tracer.py:46: RuntimeWarning: invalid value encountered in add
+  nonlinear_u = np.nan_to_num(u * u_x + w * u_z, nan=0.0, posinf=0.0, neginf=0.0)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/2D_Shear_Flow_With_Tracer.py:47: RuntimeWarning: overflow encountered in multiply
+  nonlinear_w = np.nan_to_num(u * w_x + w * w_z, nan=0.0, posinf=0.0, neginf=0.0)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/2D_Shear_Flow_With_Tracer.py:47: RuntimeWarning: invalid value encountered in add
+  nonlinear_w = np.nan_to_num(u * w_x + w * w_z, nan=0.0, posinf=0.0, neginf=0.0)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/2D_Shear_Flow_With_Tracer.py:48: RuntimeWarning: overflow encountered in multiply
+  nonlinear_s = np.nan_to_num(u * s_x + w * s_z, nan=0.0, posinf=0.0, neginf=0.0)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gpt-4o/prompts/2D_Shear_Flow_With_Tracer.py:48: RuntimeWarning: invalid value encountered in add
+  nonlinear_s = np.nan_to_num(u * s_x + w * s_z, nan=0.0, posinf=0.0, neginf=0.0)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 7
+Total Scripts Failed: 0
+--- Running: 2D_Navier_Stokes_Cavity.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 8
+Total Scripts Failed: 0
+--- Running: 1D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 9
+Total Scripts Failed: 0
+--- Running: 2D_Inviscid_Burgers.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 10
+Total Scripts Failed: 0
+--- Running: 2D_Steady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 11
+Total Scripts Failed: 0
+--- Running: Lane_Emden_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 12
+Total Scripts Failed: 0
+--- Running: 2D_Navier_Stokes_Channel.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 13
+Total Scripts Failed: 0
+--- Running: 2D_Poisson_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 14
+Total Scripts Failed: 0
+--- Running: 2D_Rayleigh_Benard_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 15
+Total Scripts Failed: 0
+--- Running: 2D_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 16
+Total Scripts Failed: 0
+--- Running: 1D_Nonlinear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 17
+Total Scripts Failed: 0
+--- Running: 1D_Euler_Shock_Tube.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 18
+Total Scripts Failed: 0
+--- Running: Lid_Driven_Cavity.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 19
+Total Scripts Failed: 0
+--- Running: Pipe_Flow_Disk_EVP.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 20
+Total Scripts Failed: 0
+--- Running: 2D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 21
+Total Scripts Failed: 0
+--- Running: Vortex_Roll_Up.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 22
+Total Scripts Failed: 0
+--- Running: 2D_Laplace_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 23
+Total Scripts Failed: 0
+--- Running: 1D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 24
+Total Scripts Failed: 0
+--- Running: 2D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 25
+Total Scripts Failed: 0

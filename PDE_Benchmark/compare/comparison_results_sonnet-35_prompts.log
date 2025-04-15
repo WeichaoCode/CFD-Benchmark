@@ -1,18 +1,12 @@
-2025-04-15 15:05:48,365 - INFO - ====== Starting Comparison ======
-2025-04-15 15:05:48,365 - INFO - Found 39 common files.
-2025-04-15 15:05:48,367 - INFO - E_1D_Euler_Shock_Tube.npy: MSE=3.089e-03, MAE=2.271e-02, RMSE=5.558e-02, Cosine=1.000, R2=0.975
-2025-04-15 15:05:48,368 - INFO - T_2D_Steady_Heat_Equation.npy: MSE=3.323e+02, MAE=1.468e+01, RMSE=1.823e+01, Cosine=0.519, R2=-2.891
-2025-04-15 15:05:48,370 - INFO - T_2D_Unsteady_Heat_Equation.npy: MSE=1.019e+02, MAE=6.727e+00, RMSE=1.010e+01, Cosine=0.946, R2=-131.517
-2025-04-15 15:05:48,372 - INFO - b_2D_Rayleigh_Benard_Convection.npy: MSE=4.804e-01, MAE=5.685e-01, RMSE=6.931e-01, Cosine=0.003, R2=-8127.660
-2025-04-15 15:05:48,372 - ERROR - ❌ f_Lane_Emden_Equation.npy failed: 'NoneType' object has no attribute 'shape'
-2025-04-15 15:05:48,373 - INFO - omega_Flow_Past_Circular_Cylinder.npy: MSE=1.629e+02, MAE=3.658e+00, RMSE=1.276e+01, Cosine=-0.043, R2=-299.949
-2025-04-15 15:05:48,375 - INFO - p_2D_Laplace_Equation.npy: MSE=1.931e-03, MAE=3.276e-02, RMSE=4.395e-02, Cosine=0.990, R2=0.946
-2025-04-15 15:05:48,376 - INFO - p_2D_Navier_Stokes_Cavity.npy: MSE=3.282e-02, MAE=8.335e-02, RMSE=1.812e-01, Cosine=0.885, R2=-10.398
-2025-04-15 15:05:48,378 - INFO - p_2D_Navier_Stokes_Channel.npy: MSE=1.000e+00, MAE=1.000e+00, RMSE=1.000e+00, Cosine=0.000, R2=0.000
-2025-04-15 15:05:48,379 - INFO - p_2D_Poisson_Equation.npy: MSE=2.978e-06, MAE=1.151e-03, RMSE=1.726e-03, Cosine=0.876, R2=0.759
-2025-04-15 15:05:48,381 - INFO - p_2D_Rayleigh_Benard_Convection.npy: MSE=2.055e+01, MAE=3.540e+00, RMSE=4.533e+00, Cosine=-0.014, R2=-2962830.532
-2025-04-15 15:05:48,383 - INFO - p_Lid_Driven_Cavity.npy: MSE=9.525e+00, MAE=3.078e+00, RMSE=3.086e+00, Cosine=0.122, R2=-54.769
-2025-04-15 15:05:48,387 - ERROR - ❌ p_Pipe_Flow_Disk_EVP.npy failed: Complex data not supported
+2025-04-15 15:03:09,002 - INFO - ====== Starting Comparison ======
+2025-04-15 15:03:09,002 - INFO - Found 26 common files.
+2025-04-15 15:03:09,003 - INFO - T_2D_Unsteady_Heat_Equation.npy: MSE=4.085e+00, MAE=1.821e+00, RMSE=2.021e+00, Cosine=0.270, R2=-4.311
+2025-04-15 15:03:09,004 - ERROR - ❌ f_Lane_Emden_Equation.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-15 15:03:09,005 - INFO - p_2D_Laplace_Equation.npy: MSE=8.326e-02, MAE=2.251e-01, RMSE=2.885e-01, Cosine=0.340, R2=-1.317
+2025-04-15 15:03:09,006 - INFO - p_2D_Navier_Stokes_Cavity.npy: MSE=3.177e-03, MAE=3.309e-02, RMSE=5.636e-02, Cosine=0.000, R2=-0.103
+2025-04-15 15:03:09,008 - INFO - p_2D_Navier_Stokes_Channel.npy: MSE=1.000e+00, MAE=1.000e+00, RMSE=1.000e+00, Cosine=0.000, R2=0.000
+2025-04-15 15:03:09,009 - INFO - p_2D_Poisson_Equation.npy: MSE=3.078e-06, MAE=1.233e-03, RMSE=1.754e-03, Cosine=0.877, R2=0.751
+2025-04-15 15:03:09,014 - ERROR - ❌ p_Pipe_Flow_Disk_EVP.npy failed: Complex data not supported
 [ 0.00000000e+00+0.00000000e+00j  0.00000000e+00+0.00000000e+00j
   0.00000000e+00+0.00000000e+00j  0.00000000e+00+0.00000000e+00j
   0.00000000e+00+0.00000000e+00j  0.00000000e+00+0.00000000e+00j
@@ -398,32 +392,25 @@
   0.00000000e+00+0.00000000e+00j  0.00000000e+00+0.00000000e+00j
   0.00000000e+00+0.00000000e+00j  0.00000000e+00+0.00000000e+00j]
 
-2025-04-15 15:05:48,388 - INFO - psi_Flow_Past_Circular_Cylinder.npy: MSE=1.295e+02, MAE=9.480e+00, RMSE=1.138e+01, Cosine=0.834, R2=-8.406
-2025-04-15 15:05:48,390 - INFO - rho_1D_Euler_Shock_Tube.npy: MSE=4.554e-04, MAE=1.009e-02, RMSE=2.134e-02, Cosine=1.000, R2=0.997
-2025-04-15 15:05:48,391 - INFO - u_1D_Burgers_Equation.npy: MSE=5.320e+00, MAE=2.037e+00, RMSE=2.307e+00, Cosine=0.854, R2=-0.707
-2025-04-15 15:05:48,393 - INFO - u_1D_Diffusion.npy: MSE=1.149e-03, MAE=2.317e-02, RMSE=3.389e-02, Cosine=1.000, R2=0.990
-2025-04-15 15:05:48,394 - INFO - u_1D_Euler_Shock_Tube.npy: MSE=2.064e-03, MAE=1.704e-02, RMSE=4.543e-02, Cosine=0.997, R2=0.987
-2025-04-15 15:05:48,395 - INFO - u_1D_KdV_Burgers_Equation.npy: MSE=3.580e+01, MAE=5.346e+00, RMSE=5.984e+00, Cosine=-0.188, R2=-1725.802
-2025-04-15 15:05:48,397 - INFO - u_1D_Linear_Convection.npy: MSE=3.317e+25, MAE=2.771e+12, RMSE=5.760e+12, Cosine=0.000, R2=-472462661668942290995904512.000
-2025-04-15 15:05:48,398 - INFO - u_1D_Nonlinear_Convection.npy: MSE=5.762e-01, MAE=6.188e-01, RMSE=7.591e-01, Cosine=0.319, R2=-5.097
-2025-04-15 15:05:48,400 - INFO - u_2D_Burgers_Equation.npy: MSE=2.866e-03, MAE=1.453e-02, RMSE=5.353e-02, Cosine=0.999, R2=0.944
-2025-04-15 15:05:48,401 - INFO - u_2D_Convection.npy: MSE=2.260e-03, MAE=1.323e-02, RMSE=4.754e-02, Cosine=0.999, R2=0.924
-2025-04-15 15:05:48,403 - INFO - u_2D_Diffusion.npy: MSE=inf, MAE=6.891e+210, RMSE=inf, Cosine=0.000, R2=-inf
-2025-04-15 15:05:48,405 - INFO - u_2D_Inviscid_Burgers.npy: MSE=7.241e-04, MAE=6.885e-03, RMSE=2.691e-02, Cosine=1.000, R2=0.976
-2025-04-15 15:05:48,407 - INFO - u_2D_Linear_Convection.npy: MSE=2.708e-04, MAE=5.651e-03, RMSE=1.646e-02, Cosine=1.000, R2=0.993
-2025-04-15 15:05:48,408 - INFO - u_2D_Navier_Stokes_Cavity.npy: MSE=1.141e-03, MAE=2.091e-02, RMSE=3.378e-02, Cosine=0.990, R2=0.979
-2025-04-15 15:05:48,409 - INFO - u_2D_Navier_Stokes_Channel.npy: MSE=6.088e+00, MAE=2.226e+00, RMSE=2.467e+00, Cosine=0.958, R2=-4.188
-2025-04-15 15:05:48,410 - ERROR - ❌ u_2D_Rayleigh_Benard_Convection.npy failed: 'NoneType' object has no attribute 'shape'
-2025-04-15 15:05:48,411 - INFO - u_Fully_Developed_Turbulent_Channel_Flow.npy: MSE=1.651e+02, MAE=1.130e+01, RMSE=1.285e+01, Cosine=0.920, R2=-2.492
-2025-04-15 15:05:48,412 - INFO - u_Lid_Driven_Cavity.npy: MSE=2.256e-03, MAE=2.480e-02, RMSE=4.749e-02, Cosine=0.981, R2=0.962
-2025-04-15 15:05:48,413 - ERROR - ❌ u_Pipe_Flow_Disk_EVP.npy failed: 'NoneType' object has no attribute 'shape'
-2025-04-15 15:05:48,414 - INFO - v_2D_Burgers_Equation.npy: MSE=2.866e-03, MAE=1.453e-02, RMSE=5.353e-02, Cosine=0.999, R2=0.944
-2025-04-15 15:05:48,416 - INFO - v_2D_Convection.npy: MSE=2.260e-03, MAE=1.323e-02, RMSE=4.754e-02, Cosine=0.999, R2=0.924
-2025-04-15 15:05:48,418 - INFO - v_2D_Inviscid_Burgers.npy: MSE=7.241e-04, MAE=6.885e-03, RMSE=2.691e-02, Cosine=1.000, R2=0.976
-2025-04-15 15:05:48,419 - INFO - v_2D_Navier_Stokes_Cavity.npy: MSE=9.110e-04, MAE=1.927e-02, RMSE=3.018e-02, Cosine=0.962, R2=0.921
-2025-04-15 15:05:48,421 - INFO - v_2D_Navier_Stokes_Channel.npy: MSE=0.000e+00, MAE=0.000e+00, RMSE=0.000e+00, Cosine=0.000, R2=1.000
-2025-04-15 15:05:48,422 - INFO - v_Lid_Driven_Cavity.npy: MSE=1.692e-03, MAE=2.500e-02, RMSE=4.114e-02, Cosine=0.980, R2=0.810
-2025-04-15 15:05:48,426 - ERROR - ❌ w_Pipe_Flow_Disk_EVP.npy failed: Complex data not supported
+2025-04-15 15:03:09,016 - INFO - u_1D_Burgers_Equation.npy: MSE=7.057e+04, MAE=1.000e+02, RMSE=2.657e+02, Cosine=0.136, R2=-22642.087
+2025-04-15 15:03:09,017 - INFO - u_1D_Diffusion.npy: MSE=1.141e-03, MAE=2.317e-02, RMSE=3.378e-02, Cosine=1.000, R2=0.990
+2025-04-15 15:03:09,018 - INFO - u_1D_KdV_Burgers_Equation.npy: MSE=1.274e+14, MAE=9.775e+06, RMSE=1.129e+07, Cosine=-0.000, R2=-6144914671358850.000
+2025-04-15 15:03:09,020 - INFO - u_1D_Linear_Convection.npy: MSE=1.236e+33, MAE=1.647e+16, RMSE=3.516e+16, Cosine=-0.000, R2=-17606849367045490998516557388185600.000
+2025-04-15 15:03:09,021 - INFO - u_2D_Burgers_Equation.npy: MSE=2.329e-03, MAE=1.221e-02, RMSE=4.826e-02, Cosine=0.999, R2=0.954
+2025-04-15 15:03:09,023 - INFO - u_2D_Convection.npy: MSE=3.283e-02, MAE=5.488e-02, RMSE=1.812e-01, Cosine=0.987, R2=-0.101
+2025-04-15 15:03:09,024 - INFO - u_2D_Diffusion.npy: MSE=1.291e-02, MAE=6.501e-02, RMSE=1.136e-01, Cosine=0.996, R2=-0.260
+2025-04-15 15:03:09,026 - INFO - u_2D_Inviscid_Burgers.npy: MSE=5.447e-02, MAE=1.028e-01, RMSE=2.334e-01, Cosine=0.976, R2=-0.824
+2025-04-15 15:03:09,028 - INFO - u_2D_Linear_Convection.npy: MSE=8.893e-03, MAE=4.008e-02, RMSE=9.430e-02, Cosine=0.996, R2=0.759
+2025-04-15 15:03:09,030 - INFO - u_2D_Navier_Stokes_Cavity.npy: MSE=2.478e-02, MAE=9.434e-02, RMSE=1.574e-01, Cosine=0.764, R2=0.554
+2025-04-15 15:03:09,031 - INFO - u_2D_Navier_Stokes_Channel.npy: MSE=6.088e+00, MAE=2.226e+00, RMSE=2.467e+00, Cosine=0.958, R2=-4.188
+2025-04-15 15:03:09,032 - INFO - u_Fully_Developed_Turbulent_Channel_Flow.npy: MSE=2.482e+04, MAE=1.426e+02, RMSE=1.575e+02, Cosine=-0.996, R2=-523.973
+2025-04-15 15:03:09,033 - ERROR - ❌ u_Pipe_Flow_Disk_EVP.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-15 15:03:09,034 - INFO - v_2D_Burgers_Equation.npy: MSE=2.329e-03, MAE=1.221e-02, RMSE=4.826e-02, Cosine=0.999, R2=0.954
+2025-04-15 15:03:09,036 - INFO - v_2D_Convection.npy: MSE=3.283e-02, MAE=5.488e-02, RMSE=1.812e-01, Cosine=0.987, R2=-0.101
+2025-04-15 15:03:09,038 - INFO - v_2D_Inviscid_Burgers.npy: MSE=2.860e-02, MAE=7.464e-02, RMSE=1.691e-01, Cosine=0.988, R2=0.042
+2025-04-15 15:03:09,039 - INFO - v_2D_Navier_Stokes_Cavity.npy: MSE=1.153e-02, MAE=7.489e-02, RMSE=1.074e-01, Cosine=0.000, R2=-0.000
+2025-04-15 15:03:09,041 - INFO - v_2D_Navier_Stokes_Channel.npy: MSE=0.000e+00, MAE=0.000e+00, RMSE=0.000e+00, Cosine=0.000, R2=1.000
+2025-04-15 15:03:09,045 - ERROR - ❌ w_Pipe_Flow_Disk_EVP.npy failed: Complex data not supported
 [ 0.00000000e+00+0.00000000e+00j  0.00000000e+00+0.00000000e+00j
   0.00000000e+00+0.00000000e+00j  0.00000000e+00+0.00000000e+00j
   0.00000000e+00+0.00000000e+00j  0.00000000e+00+0.00000000e+00j
@@ -809,106 +796,30 @@
   0.00000000e+00+0.00000000e+00j  0.00000000e+00+0.00000000e+00j
   0.00000000e+00+0.00000000e+00j  0.00000000e+00+0.00000000e+00j]
 
-2025-04-15 15:05:48,430 - INFO - Found 39 common files.
-2025-04-15 15:05:59,351 - INFO - Found 39 common files.
-2025-04-15 15:06:07,989 - WARNING - Execution completed with warnings:
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:25: RuntimeWarning: overflow encountered in scalar multiply
-  u_new[i] = u[i] - dt * u[i] * (u[(i+1)%nx] - u[(i-1)%nx]) / (2*dx) + \
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:25: RuntimeWarning: invalid value encountered in scalar add
-  u_new[i] = u[i] - dt * u[i] * (u[(i+1)%nx] - u[(i-1)%nx]) / (2*dx) + \
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:27: RuntimeWarning: invalid value encountered in scalar subtract
-  b * dt * (u[(i+2)%nx] - 2*u[(i+1)%nx] + 2*u[(i-1)%nx] - u[(i-2)%nx]) / (2*dx**3)
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:26: RuntimeWarning: invalid value encountered in scalar subtract
-  a * dt * (u[(i+1)%nx] - 2*u[i] + u[(i-1)%nx]) / dx**2 + \
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:25: RuntimeWarning: invalid value encountered in scalar subtract
-  u_new[i] = u[i] - dt * u[i] * (u[(i+1)%nx] - u[(i-1)%nx]) / (2*dx) + \
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:26: RuntimeWarning: invalid value encountered in scalar add
-  a * dt * (u[(i+1)%nx] - 2*u[i] + u[(i-1)%nx]) / dx**2 + \
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:27: RuntimeWarning: invalid value encountered in scalar add
-  b * dt * (u[(i+2)%nx] - 2*u[(i+1)%nx] + 2*u[(i-1)%nx] - u[(i-2)%nx]) / (2*dx**3)
-2025-04-15 15:06:08,610 - INFO - Execution successful, no errors detected.
-2025-04-15 15:06:08,747 - INFO - Execution successful, no errors detected.
-2025-04-15 15:06:09,021 - INFO - Execution successful, no errors detected.
-2025-04-15 15:07:09,054 - ERROR - ❌ Unexpected error while running script /opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Flow_Past_Circular_Cylinder.py: Command '['python3', '/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Flow_Past_Circular_Cylinder.py']' timed out after 60 seconds
-2025-04-15 15:07:19,176 - INFO - Execution successful, no errors detected.
-2025-04-15 15:07:19,662 - WARNING - Execution completed with warnings:
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:41: RuntimeWarning: overflow encountered in multiply
-  N_u = -u * np.real(fft.ifft2(1j * KX * u_hat)) - w * np.real(fft.ifft2(1j * KZ * u_hat))
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:41: RuntimeWarning: invalid value encountered in subtract
-  N_u = -u * np.real(fft.ifft2(1j * KX * u_hat)) - w * np.real(fft.ifft2(1j * KZ * u_hat))
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:42: RuntimeWarning: overflow encountered in multiply
-  N_w = -u * np.real(fft.ifft2(1j * KX * w_hat)) - w * np.real(fft.ifft2(1j * KZ * w_hat))
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:42: RuntimeWarning: invalid value encountered in subtract
-  N_w = -u * np.real(fft.ifft2(1j * KX * w_hat)) - w * np.real(fft.ifft2(1j * KZ * w_hat))
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:43: RuntimeWarning: overflow encountered in multiply
-  N_s = -u * np.real(fft.ifft2(1j * KX * s_hat)) - w * np.real(fft.ifft2(1j * KZ * s_hat))
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:43: RuntimeWarning: invalid value encountered in subtract
-  N_s = -u * np.real(fft.ifft2(1j * KX * s_hat)) - w * np.real(fft.ifft2(1j * KZ * s_hat))
-2025-04-15 15:08:19,722 - ERROR - ❌ Unexpected error while running script /opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Navier_Stokes_Cavity.py: Command '['python3', '/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Navier_Stokes_Cavity.py']' timed out after 60 seconds
-2025-04-15 15:08:19,901 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:20,438 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:22,691 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:22,940 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:26,410 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:28,337 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:40,911 - WARNING - Execution completed with warnings:
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:35: RuntimeWarning: overflow encountered in multiply
-  u_grad_w = u * (np.roll(w, -1, axis=1) - np.roll(w, 1, axis=1)) / (2*dx) + w * (np.roll(w, -1, axis=0) - np.roll(w, 1, axis=0)) / (2*dz)
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:36: RuntimeWarning: overflow encountered in multiply
-  u_grad_b = u * (np.roll(b, -1, axis=1) - np.roll(b, 1, axis=1)) / (2*dx) + w * (np.roll(b, -1, axis=0) - np.roll(b, 1, axis=0)) / (2*dz)
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:34: RuntimeWarning: invalid value encountered in multiply
-  u_grad_u = u * (np.roll(u, -1, axis=1) - np.roll(u, 1, axis=1)) / (2*dx) + w * (np.roll(u, -1, axis=0) - np.roll(u, 1, axis=0)) / (2*dz)
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:35: RuntimeWarning: invalid value encountered in multiply
-  u_grad_w = u * (np.roll(w, -1, axis=1) - np.roll(w, 1, axis=1)) / (2*dx) + w * (np.roll(w, -1, axis=0) - np.roll(w, 1, axis=0)) / (2*dz)
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:35: RuntimeWarning: invalid value encountered in subtract
-  u_grad_w = u * (np.roll(w, -1, axis=1) - np.roll(w, 1, axis=1)) / (2*dx) + w * (np.roll(w, -1, axis=0) - np.roll(w, 1, axis=0)) / (2*dz)
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:36: RuntimeWarning: invalid value encountered in multiply
-  u_grad_b = u * (np.roll(b, -1, axis=1) - np.roll(b, 1, axis=1)) / (2*dx) + w * (np.roll(b, -1, axis=0) - np.roll(b, 1, axis=0)) / (2*dz)
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:36: RuntimeWarning: invalid value encountered in subtract
-  u_grad_b = u * (np.roll(b, -1, axis=1) - np.roll(b, 1, axis=1)) / (2*dx) + w * (np.roll(b, -1, axis=0) - np.roll(b, 1, axis=0)) / (2*dz)
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:42: RuntimeWarning: invalid value encountered in subtract
-  d2w_dz2 = (np.roll(w, -1, axis=0) - 2*w + np.roll(w, 1, axis=0)) / dz**2
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:42: RuntimeWarning: invalid value encountered in add
-  d2w_dz2 = (np.roll(w, -1, axis=0) - 2*w + np.roll(w, 1, axis=0)) / dz**2
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:44: RuntimeWarning: invalid value encountered in subtract
-  d2b_dz2 = (np.roll(b, -1, axis=0) - 2*b + np.roll(b, 1, axis=0)) / dz**2
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:44: RuntimeWarning: invalid value encountered in add
-  d2b_dz2 = (np.roll(b, -1, axis=0) - 2*b + np.roll(b, 1, axis=0)) / dz**2
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:48: RuntimeWarning: invalid value encountered in add
-  w = w + dt * (-u_grad_w + nu * (d2w_dx2 + d2w_dz2) + b)
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:49: RuntimeWarning: invalid value encountered in add
-  b = b + dt * (-u_grad_b + kappa * (d2b_dx2 + d2b_dz2))
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:41: RuntimeWarning: invalid value encountered in add
-  d2w_dx2 = (np.roll(w, -1, axis=1) - 2*w + np.roll(w, 1, axis=1)) / dx**2
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:43: RuntimeWarning: invalid value encountered in add
-  d2b_dx2 = (np.roll(b, -1, axis=1) - 2*b + np.roll(b, 1, axis=1)) / dx**2
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:41: RuntimeWarning: invalid value encountered in subtract
-  d2w_dx2 = (np.roll(w, -1, axis=1) - 2*w + np.roll(w, 1, axis=1)) / dx**2
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:43: RuntimeWarning: invalid value encountered in subtract
-  d2b_dx2 = (np.roll(b, -1, axis=1) - 2*b + np.roll(b, 1, axis=1)) / dx**2
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:35: RuntimeWarning: overflow encountered in divide
-  u_grad_w = u * (np.roll(w, -1, axis=1) - np.roll(w, 1, axis=1)) / (2*dx) + w * (np.roll(w, -1, axis=0) - np.roll(w, 1, axis=0)) / (2*dz)
-2025-04-15 15:08:41,316 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:41,485 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:42,954 - WARNING - Execution completed with warnings:
-/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_Euler_Shock_Tube.py:42: RuntimeWarning: invalid value encountered in sqrt
-  lambda_max = np.max(np.abs([u_L + np.sqrt(gamma * p_L / rho_L), u_R + np.sqrt(gamma * p_R / rho_R)]))
-2025-04-15 15:08:43,187 - ERROR - Execution failed with errors:
-Traceback (most recent call last):
-  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Lid_Driven_Cavity.py", line 159, in <module>
-    u, v, p = solve_navier_stokes()
-  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Lid_Driven_Cavity.py", line 55, in solve_navier_stokes
-    b = calculate_pressure_rhs(rho, dt, dx, dy, u_star, v_star)
-  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Lid_Driven_Cavity.py", line 143, in calculate_pressure_rhs
-    (u_star[1:-1, 1:] - u_star[1:-1, :-1]) / dx
-ValueError: operands could not be broadcast together with shapes (39,40) (40,39)
-2025-04-15 15:08:43,410 - ERROR - Execution failed with errors:
-Traceback (most recent call last):
-  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Pipe_Flow_Disk_EVP.py", line 4, in <module>
-    from scipy.sparse.linalg import eig
-ImportError: cannot import name 'eig' from 'scipy.sparse.linalg' (/opt/Dino_parallel/lib/python3.10/site-packages/scipy/sparse/linalg/__init__.py)
-2025-04-15 15:08:43,700 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:44,371 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:47,754 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:47,901 - INFO - Execution successful, no errors detected.
-2025-04-15 15:08:48,321 - INFO - Execution successful, no errors detected.
+2025-04-15 15:03:09,049 - INFO - Found 26 common files.
+2025-04-15 15:03:15,862 - INFO - Found 26 common files.
+2025-04-15 15:03:22,159 - INFO - Execution successful, no errors detected.
+2025-04-15 15:03:26,915 - INFO - Execution successful, no errors detected.
+2025-04-15 15:03:27,044 - INFO - Execution successful, no errors detected.
+2025-04-15 15:03:27,309 - INFO - Execution successful, no errors detected.
+2025-04-15 15:03:33,335 - INFO - Execution successful, no errors detected.
+2025-04-15 15:03:33,474 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:33,505 - ERROR - ❌ Unexpected error while running script /opt/CFD-Benchmark/PDE_Benchmark/solver/haiku/prompts/2D_Shear_Flow_With_Tracer.py: Command '['python3', '/opt/CFD-Benchmark/PDE_Benchmark/solver/haiku/prompts/2D_Shear_Flow_With_Tracer.py']' timed out after 60 seconds
+2025-04-15 15:04:43,574 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:43,737 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:44,017 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:47,005 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:47,297 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:53,746 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:57,173 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:57,471 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:57,761 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:58,019 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:58,429 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:59,370 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:59,626 - INFO - Execution successful, no errors detected.
+2025-04-15 15:04:59,796 - INFO - Execution successful, no errors detected.
+2025-04-15 15:05:15,834 - INFO - Execution successful, no errors detected.
+2025-04-15 15:05:47,921 - INFO - Execution successful, no errors detected.
+2025-04-15 15:05:48,222 - INFO - Execution successful, no errors detected.
+2025-04-15 15:05:48,364 - INFO - Execution successful, no errors detected.

@@ -1,0 +1,63 @@
+import numpy as np
+import scipy.sparse as sp
+import scipy.sparse.linalg as spla
+
+# Problem parameters
+Lx, Ly = 2.0, 2.0
+rho = 1.0
+nu = 0.1
+t_end = 10.0
+nx, ny = 50, 50
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = 0.01
+
+# Grid generation
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize fields
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+p = np.zeros((ny, nx))
+
+# Boundary conditions
+u[-1, :] = 1.0  # Top lid moving with u=1
+
+# Time-stepping
+for t in np.arange(0, t_end, dt):
+    # Predictor step (simplified Navier-Stokes solution)
+    u_old = u.copy()
+    v_old = v.copy()
+    
+    # Momentum equations (simplified explicit scheme)
+    u[1:-1, 1:-1] = u_old[1:-1, 1:-1] + dt * (
+        -u_old[1:-1, 1:-1] * np.gradient(u_old, axis=1)[1:-1, 1:-1]
+        -v_old[1:-1, 1:-1] * np.gradient(u_old, axis=0)[1:-1, 1:-1]
+        + nu * (np.gradient(np.gradient(u_old, axis=0), axis=0)[1:-1, 1:-1] 
+               + np.gradient(np.gradient(u_old, axis=1), axis=1)[1:-1, 1:-1])
+    )
+    
+    v[1:-1, 1:-1] = v_old[1:-1, 1:-1] + dt * (
+        -u_old[1:-1, 1:-1] * np.gradient(v_old, axis=1)[1:-1, 1:-1]
+        -v_old[1:-1, 1:-1] * np.gradient(v_old, axis=0)[1:-1, 1:-1]
+        + nu * (np.gradient(np.gradient(v_old, axis=0), axis=0)[1:-1, 1:-1]
+               + np.gradient(np.gradient(v_old, axis=1), axis=1)[1:-1, 1:-1])
+    )
+    
+    # Pressure Poisson equation (simplified)
+    div_u = np.gradient(u, axis=1)[1:-1, 1:-1] + np.gradient(v, axis=0)[1:-1, 1:-1]
+    
+    # Enforce boundary conditions
+    u[0, :] = 0
+    u[:, 0] = 0
+    u[:, -1] = 0
+    v[0, :] = 0
+    v[:, 0] = 0
+    v[:, -1] = 0
+
+# Save final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/u_2D_Navier_Stokes_Cavity.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/v_2D_Navier_Stokes_Cavity.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/p_2D_Navier_Stokes_Cavity.npy', p)

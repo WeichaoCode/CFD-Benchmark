@@ -1,0 +1,392 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_KdV_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:25: RuntimeWarning: overflow encountered in scalar multiply
+  u_new[i] = u[i] - dt * u[i] * (u[(i+1)%nx] - u[(i-1)%nx]) / (2*dx) + \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:25: RuntimeWarning: invalid value encountered in scalar add
+  u_new[i] = u[i] - dt * u[i] * (u[(i+1)%nx] - u[(i-1)%nx]) / (2*dx) + \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:27: RuntimeWarning: invalid value encountered in scalar subtract
+  b * dt * (u[(i+2)%nx] - 2*u[(i+1)%nx] + 2*u[(i-1)%nx] - u[(i-2)%nx]) / (2*dx**3)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:26: RuntimeWarning: invalid value encountered in scalar subtract
+  a * dt * (u[(i+1)%nx] - 2*u[i] + u[(i-1)%nx]) / dx**2 + \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:25: RuntimeWarning: invalid value encountered in scalar subtract
+  u_new[i] = u[i] - dt * u[i] * (u[(i+1)%nx] - u[(i-1)%nx]) / (2*dx) + \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:26: RuntimeWarning: invalid value encountered in scalar add
+  a * dt * (u[(i+1)%nx] - 2*u[i] + u[(i-1)%nx]) / dx**2 + \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:27: RuntimeWarning: invalid value encountered in scalar add
+  b * dt * (u[(i+2)%nx] - 2*u[(i+1)%nx] + 2*u[(i-1)%nx] - u[(i-2)%nx]) / (2*dx**3)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 1
+Total Scripts Failed: 0
+--- Running: 2D_Unsteady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 0
+--- Running: 1D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 0
+--- Running: Fully_Developed_Turbulent_Channel_Flow.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 4
+Total Scripts Failed: 0
+--- Running: Flow_Past_Circular_Cylinder.py ---
+ 'NoneType' object has no attribute 'returncode'
+
+
+====== Execution Summary ======
+Total Scripts Passed: 4
+Total Scripts Failed: 0
+--- Running: 2D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 5
+Total Scripts Failed: 0
+--- Running: 2D_Shear_Flow_With_Tracer.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:41: RuntimeWarning: overflow encountered in multiply
+  N_u = -u * np.real(fft.ifft2(1j * KX * u_hat)) - w * np.real(fft.ifft2(1j * KZ * u_hat))
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:41: RuntimeWarning: invalid value encountered in subtract
+  N_u = -u * np.real(fft.ifft2(1j * KX * u_hat)) - w * np.real(fft.ifft2(1j * KZ * u_hat))
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:42: RuntimeWarning: overflow encountered in multiply
+  N_w = -u * np.real(fft.ifft2(1j * KX * w_hat)) - w * np.real(fft.ifft2(1j * KZ * w_hat))
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:42: RuntimeWarning: invalid value encountered in subtract
+  N_w = -u * np.real(fft.ifft2(1j * KX * w_hat)) - w * np.real(fft.ifft2(1j * KZ * w_hat))
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:43: RuntimeWarning: overflow encountered in multiply
+  N_s = -u * np.real(fft.ifft2(1j * KX * s_hat)) - w * np.real(fft.ifft2(1j * KZ * s_hat))
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:43: RuntimeWarning: invalid value encountered in subtract
+  N_s = -u * np.real(fft.ifft2(1j * KX * s_hat)) - w * np.real(fft.ifft2(1j * KZ * s_hat))
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 6
+Total Scripts Failed: 0
+--- Running: 2D_Navier_Stokes_Cavity.py ---
+ 'NoneType' object has no attribute 'returncode'
+
+
+====== Execution Summary ======
+Total Scripts Passed: 6
+Total Scripts Failed: 0
+--- Running: 1D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 7
+Total Scripts Failed: 0
+--- Running: 2D_Inviscid_Burgers.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 8
+Total Scripts Failed: 0
+--- Running: 2D_Steady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+Converged after 2231 iterations.
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 9
+Total Scripts Failed: 0
+--- Running: Lane_Emden_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 10
+Total Scripts Failed: 0
+--- Running: 2D_Navier_Stokes_Channel.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 11
+Total Scripts Failed: 0
+--- Running: 2D_Poisson_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 12
+Total Scripts Failed: 0
+--- Running: 2D_Rayleigh_Benard_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:35: RuntimeWarning: overflow encountered in multiply
+  u_grad_w = u * (np.roll(w, -1, axis=1) - np.roll(w, 1, axis=1)) / (2*dx) + w * (np.roll(w, -1, axis=0) - np.roll(w, 1, axis=0)) / (2*dz)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:36: RuntimeWarning: overflow encountered in multiply
+  u_grad_b = u * (np.roll(b, -1, axis=1) - np.roll(b, 1, axis=1)) / (2*dx) + w * (np.roll(b, -1, axis=0) - np.roll(b, 1, axis=0)) / (2*dz)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:34: RuntimeWarning: invalid value encountered in multiply
+  u_grad_u = u * (np.roll(u, -1, axis=1) - np.roll(u, 1, axis=1)) / (2*dx) + w * (np.roll(u, -1, axis=0) - np.roll(u, 1, axis=0)) / (2*dz)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:35: RuntimeWarning: invalid value encountered in multiply
+  u_grad_w = u * (np.roll(w, -1, axis=1) - np.roll(w, 1, axis=1)) / (2*dx) + w * (np.roll(w, -1, axis=0) - np.roll(w, 1, axis=0)) / (2*dz)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:35: RuntimeWarning: invalid value encountered in subtract
+  u_grad_w = u * (np.roll(w, -1, axis=1) - np.roll(w, 1, axis=1)) / (2*dx) + w * (np.roll(w, -1, axis=0) - np.roll(w, 1, axis=0)) / (2*dz)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:36: RuntimeWarning: invalid value encountered in multiply
+  u_grad_b = u * (np.roll(b, -1, axis=1) - np.roll(b, 1, axis=1)) / (2*dx) + w * (np.roll(b, -1, axis=0) - np.roll(b, 1, axis=0)) / (2*dz)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:36: RuntimeWarning: invalid value encountered in subtract
+  u_grad_b = u * (np.roll(b, -1, axis=1) - np.roll(b, 1, axis=1)) / (2*dx) + w * (np.roll(b, -1, axis=0) - np.roll(b, 1, axis=0)) / (2*dz)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:42: RuntimeWarning: invalid value encountered in subtract
+  d2w_dz2 = (np.roll(w, -1, axis=0) - 2*w + np.roll(w, 1, axis=0)) / dz**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:42: RuntimeWarning: invalid value encountered in add
+  d2w_dz2 = (np.roll(w, -1, axis=0) - 2*w + np.roll(w, 1, axis=0)) / dz**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:44: RuntimeWarning: invalid value encountered in subtract
+  d2b_dz2 = (np.roll(b, -1, axis=0) - 2*b + np.roll(b, 1, axis=0)) / dz**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:44: RuntimeWarning: invalid value encountered in add
+  d2b_dz2 = (np.roll(b, -1, axis=0) - 2*b + np.roll(b, 1, axis=0)) / dz**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:48: RuntimeWarning: invalid value encountered in add
+  w = w + dt * (-u_grad_w + nu * (d2w_dx2 + d2w_dz2) + b)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:49: RuntimeWarning: invalid value encountered in add
+  b = b + dt * (-u_grad_b + kappa * (d2b_dx2 + d2b_dz2))
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:41: RuntimeWarning: invalid value encountered in add
+  d2w_dx2 = (np.roll(w, -1, axis=1) - 2*w + np.roll(w, 1, axis=1)) / dx**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:43: RuntimeWarning: invalid value encountered in add
+  d2b_dx2 = (np.roll(b, -1, axis=1) - 2*b + np.roll(b, 1, axis=1)) / dx**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:41: RuntimeWarning: invalid value encountered in subtract
+  d2w_dx2 = (np.roll(w, -1, axis=1) - 2*w + np.roll(w, 1, axis=1)) / dx**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:43: RuntimeWarning: invalid value encountered in subtract
+  d2b_dx2 = (np.roll(b, -1, axis=1) - 2*b + np.roll(b, 1, axis=1)) / dx**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:35: RuntimeWarning: overflow encountered in divide
+  u_grad_w = u * (np.roll(w, -1, axis=1) - np.roll(w, 1, axis=1)) / (2*dx) + w * (np.roll(w, -1, axis=0) - np.roll(w, 1, axis=0)) / (2*dz)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 13
+Total Scripts Failed: 0
+--- Running: 2D_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 14
+Total Scripts Failed: 0
+--- Running: 1D_Nonlinear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 15
+Total Scripts Failed: 0
+--- Running: 1D_Euler_Shock_Tube.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_Euler_Shock_Tube.py:42: RuntimeWarning: invalid value encountered in sqrt
+  lambda_max = np.max(np.abs([u_L + np.sqrt(gamma * p_L / rho_L), u_R + np.sqrt(gamma * p_R / rho_R)]))
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 16
+Total Scripts Failed: 0
+--- Running: Lid_Driven_Cavity.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Lid_Driven_Cavity.py", line 159, in <module>
+    u, v, p = solve_navier_stokes()
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Lid_Driven_Cavity.py", line 55, in solve_navier_stokes
+    b = calculate_pressure_rhs(rho, dt, dx, dy, u_star, v_star)
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Lid_Driven_Cavity.py", line 143, in calculate_pressure_rhs
+    (u_star[1:-1, 1:] - u_star[1:-1, :-1]) / dx
+ValueError: operands could not be broadcast together with shapes (39,40) (40,39) 
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 16
+Total Scripts Failed: 1
+--- Running: Pipe_Flow_Disk_EVP.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Pipe_Flow_Disk_EVP.py", line 4, in <module>
+    from scipy.sparse.linalg import eig
+ImportError: cannot import name 'eig' from 'scipy.sparse.linalg' (/opt/Dino_parallel/lib/python3.10/site-packages/scipy/sparse/linalg/__init__.py)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 16
+Total Scripts Failed: 2
+--- Running: 2D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 17
+Total Scripts Failed: 2
+--- Running: Vortex_Roll_Up.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 18
+Total Scripts Failed: 2
+--- Running: 2D_Laplace_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 19
+Total Scripts Failed: 2
+--- Running: 1D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 20
+Total Scripts Failed: 2
+--- Running: 2D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 21
+Total Scripts Failed: 2

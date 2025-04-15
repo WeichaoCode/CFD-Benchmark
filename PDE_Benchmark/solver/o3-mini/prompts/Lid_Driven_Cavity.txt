@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+nx = 41                # number of grid points in x direction
+ny = 41                # number of grid points in y direction
+lx = 1.0               # domain length in x
+ly = 1.0               # domain length in y
+dx = lx / (nx - 1)
+dy = ly / (ny - 1)
+rho = 1.0            # fluid density
+nu = 0.1             # kinematic viscosity
+dt = 0.001           # time step size
+nt = 5000            # number of time steps to reach steady state
+nit = 50             # number of iterations for pressure Poisson equation
+
+# Create the grid
+x = np.linspace(0, lx, nx)
+y = np.linspace(0, ly, ny)
+
+# Initialize field variables: velocity components u,v and pressure p
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+p = np.zeros((ny, nx))
+
+# Time-stepping loop for unsteady simulation (only final time step is saved)
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    pn = p.copy()
+    
+    # Compute intermediate velocity (predictor step) using finite difference method
+    # Internal nodes update (using central differences for diffusion and upwind-like for convection)
+    u[1:-1,1:-1] = (un[1:-1,1:-1] -
+                     un[1:-1,1:-1] * dt/dx * (un[1:-1,1:-1] - un[1:-1,0:-2]) -
+                     vn[1:-1,1:-1] * dt/dy * (un[1:-1,1:-1] - un[0:-2,1:-1]) +
+                     nu * dt * ((un[1:-1,2:] - 2*un[1:-1,1:-1] + un[1:-1,0:-2])/(dx**2) +
+                                (un[2:,1:-1] - 2*un[1:-1,1:-1] + un[0:-2,1:-1])/(dy**2)))
+    
+    v[1:-1,1:-1] = (vn[1:-1,1:-1] -
+                     un[1:-1,1:-1] * dt/dx * (vn[1:-1,1:-1] - vn[1:-1,0:-2]) -
+                     vn[1:-1,1:-1] * dt/dy * (vn[1:-1,1:-1] - vn[0:-2,1:-1]) +
+                     nu * dt * ((vn[1:-1,2:] - 2*vn[1:-1,1:-1] + vn[1:-1,0:-2])/(dx**2) +
+                                (vn[2:,1:-1] - 2*vn[1:-1,1:-1] + vn[0:-2,1:-1])/(dy**2)))
+    
+    # Enforce velocity boundary conditions
+    # Left, bottom, and right walls: u = 0, v = 0 (no-slip)
+    u[0, :] = 0
+    u[:, 0] = 0
+    u[:, -1] = 0
+    v[0, :] = 0
+    v[:, 0] = 0
+    v[:, -1] = 0
+    # Top wall (lid) for u: u = 1, v = 0
+    u[-1, :] = 1
+    v[-1, :] = 0
+
+    # Pressure Poisson equation (solve for p)
+    for _ in range(nit):
+        pn = p.copy()
+        # Update pressure field
+        p[1:-1,1:-1] = (((pn[1:-1,2:] + pn[1:-1,0:-2]) * dy**2 +
+                         (pn[2:,1:-1] + pn[0:-2,1:-1]) * dx**2) -
+                        rho * (dx**2) * (dy**2) / dt *
+                        ((u[1:-1,2:] - u[1:-1,0:-2])/(2*dx) +
+                         (v[2:,1:-1] - v[0:-2,1:-1])/(2*dy))) / (2*(dx**2+dy**2))
+        # Neumann BC for pressure: dp/dn = 0 at boundaries
+        p[:, -1] = p[:, -2]   # right wall
+        p[:, 0] = p[:, 1]     # left wall
+        p[0, :] = p[1, :]     # bottom wall
+        p[-1, :] = p[-2, :]   # top wall
+
+        # Optionally set a reference value for p (e.g., at the top-right corner)
+        p[-1, -1] = 0
+
+    # Velocity correction step using pressure gradient
+    u[1:-1,1:-1] -= dt/(rho*2*dx) * (p[1:-1,2:] - p[1:-1,0:-2])
+    v[1:-1,1:-1] -= dt/(rho*2*dy) * (p[2:,1:-1] - p[0:-2,1:-1])
+    
+    # Reapply the velocity boundary conditions after correction
+    u[0, :] = 0
+    u[:, 0] = 0
+    u[:, -1] = 0
+    u[-1, :] = 1
+    v[0, :] = 0
+    v[:, 0] = 0
+    v[:, -1] = 0
+    v[-1, :] = 0
+
+# Save final solutions to .npy files (2D arrays)
+np.save("u.npy", u)
+np.save("v.npy", v)
+np.save("p.npy", p)

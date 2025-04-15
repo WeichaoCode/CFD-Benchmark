@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters and domain discretization
+nr = 100         # number of radial grid points
+ntheta = 128     # number of angular grid points
+r_min = 0.5
+r_max = 10.0
+v_inf = 1.0      # freestream velocity
+nu = 0.005       # kinematic viscosity
+
+r = np.linspace(r_min, r_max, nr)
+theta = np.linspace(0, 2*np.pi, ntheta, endpoint=False)
+dr = r[1] - r[0]
+dtheta = theta[1] - theta[0]
+
+# Time stepping parameters
+dt = 0.001
+nsteps = 1000  # number of time steps
+# For the Poisson solve:
+sor_omega = 1.5  # relaxation factor for SOR
+poisson_max_iter = 50  # iterations per time step for the Poisson solver
+tolerance = 1e-6
+
+# Initialize streamfunction (psi) and vorticity (omega)
+psi = np.zeros((nr, ntheta))
+omega = np.zeros((nr, ntheta))
+
+# Impose initial boundary conditions for psi based on problem statement
+# Inner boundary (r=r_min): cylinder surface: psi = 20
+psi[0, :] = 20.0
+# Outer boundary (r=r_max): psi = v_inf*y + 20, where y=r*sin(theta)
+psi[-1, :] = v_inf * (r_max * np.sin(theta)) + 20.0
+
+# Periodic boundaries in theta - already inherent in indexing later
+
+# Main time stepping loop (unsteady simulation)
+for n in range(nsteps):
+    # -------------------------
+    # Step 1: Solve Poisson equation for psi: ∇²ψ = -ω
+    # Use SOR iterative method for a fixed number of iterations per time step.
+    for it in range(poisson_max_iter):
+        psi_old = psi.copy()
+        # update interior points (i = 1 to nr-2, j periodic)
+        for i in range(1, nr-1):
+            r_i = r[i]
+            for j in range(ntheta):
+                jp = (j + 1) % ntheta
+                jm = (j - 1) % ntheta
+
+                # Coefficients based on finite difference in polar coordinates
+                A = 1.0/dr**2 + 1.0/(2*r_i*dr)
+                B = 1.0/dr**2 - 1.0/(2*r_i*dr)
+                C = 1.0/(r_i**2 * dtheta**2)
+                D = -2.0/dr**2 - 2.0/(r_i**2*dtheta**2)
+
+                psi_new = (-omega[i, j] - (A*psi[i+1, j] + B*psi[i-1, j] + C*(psi[i, jp] + psi[i, jm]))) / D
+                # SOR update
+                psi[i,j] = (1 - sor_omega)*psi[i,j] + sor_omega*psi_new
+
+        # Enforce boundary conditions for psi in the radial direction:
+        # Inner boundary: psi = 20
+        psi[0, :] = 20.0
+        # Outer boundary: psi = v_inf*y + 20 where y = r_max*sin(theta)
+        psi[-1, :] = v_inf * (r_max * np.sin(theta)) + 20.0
+
+        # Enforce periodicity in theta for psi is inherently satisfied via modulo indexing
+        # (No extra assignment is needed)
+
+        # Optional convergence check (not strictly required)
+        if np.linalg.norm(psi - psi_old, ord=np.inf) < tolerance:
+            break
+
+    # -------------------------
+    # Step 2: Compute velocity components from psi 
+    # u_r = (1/r) * d(psi)/d(theta), u_theta = -d(psi)/d(r)
+    u_r = np.zeros_like(psi)
+    u_theta = np.zeros_like(psi)
+    for i in range(nr):
+        r_i = r[i]
+        # central differences in theta (periodic)
+        u_r[i, :] = (1.0/r_i) * (np.roll(psi[i, :], -1) - np.roll(psi[i, :], 1))/(2*dtheta)
+    # For u_theta, use central differences in radial direction for interior points
+    u_theta[1:-1, :] = -(psi[2:, :] - psi[0:-2, :])/(2*dr)
+    # Use one-sided differences for boundaries:
+    u_theta[0, :] = -(psi[1, :] - psi[0, :])/dr
+    u_theta[-1, :] = -(psi[-1, :] - psi[-2, :])/dr
+
+    # -------------------------
+    # Step 3: Update vorticity omega using explicit Euler method
+    omega_new = omega.copy()
+
+    # Compute spatial derivatives of omega:
+    # Radial derivative d(omega)/dr using central differences for interior, one-sided for boundaries.
+    domega_dr = np.zeros_like(omega)
+    domega_dtheta = np.zeros_like(omega)
+    for i in range(1, nr-1):
+        domega_dr[i, :] = (omega[i+1, :] - omega[i-1, :])/(2*dr)
+    domega_dr[0, :] = (omega[1, :] - omega[0, :])/dr
+    domega_dr[-1, :] = (omega[-1, :] - omega[-2, :])/dr
+
+    # Angular derivative d(omega)/dtheta: use central differences with periodic boundaries
+    domega_dtheta = (np.roll(omega, -1, axis=1) - np.roll(omega, 1, axis=1))/(2*dtheta)
+
+    # Laplacian of omega in polar coordinates:
+    laplacian_omega = np.zeros_like(omega)
+    for i in range(1, nr-1):
+        r_i = r[i]
+        # second derivative in r:
+        d2omega_dr2 = (omega[i+1, :] - 2*omega[i, :] + omega[i-1, :])/(dr**2)
+        # first derivative term:
+        domega_dr_term = (omega[i+1, :] - omega[i-1, :])/(2*dr)
+        # second derivative in theta:
+        d2omega_dtheta2 = (np.roll(omega[i, :], -1) - 2*omega[i, :] + np.roll(omega[i, :], 1))/(dtheta**2)
+        laplacian_omega[i, :] = d2omega_dr2 + (1.0/r_i)*domega_dr_term + d2omega_dtheta2/(r_i**2)
+    # For boundaries in r, use one-sided differences (we won't use the Laplacian to update them because boundary conditions are prescribed)
+    laplacian_omega[0, :] = 0.0
+    laplacian_omega[-1, :] = 0.0
+
+    # Convective terms (advection)
+    convective = u_r * domega_dr + (u_theta/(r[:, None])) * domega_dtheta
+
+    # Update omega using explicit Euler: ω_new = ω_old + dt*( - convection + ν * laplacian )
+    omega_new = omega - dt * convective + dt * nu * laplacian_omega
+
+    # -------------------------
+    # Step 4: Re-impose boundary conditions for omega
+    # Inner boundary: ω = 2(ψ_inner - ψ_adjacent)/dr^2
+    for j in range(ntheta):
+        omega_new[0, j] = 2*(psi[0, j] - psi[1, j])/(dr**2)
+    # Outer boundary: ω = 0
+    omega_new[-1, :] = 0.0
+    # Periodicity in theta is automatically enforced by our use of roll in derivatives.
+
+    # Update omega for next time step
+    omega = omega_new.copy()
+
+# Save the final solution fields as .npy files
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/psi_Flow_Past_Circular_Cylinder.npy', psi)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/omega_Flow_Past_Circular_Cylinder.npy', omega)

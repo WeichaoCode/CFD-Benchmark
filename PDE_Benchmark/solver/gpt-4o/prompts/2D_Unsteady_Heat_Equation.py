@@ -1,0 +1,50 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+alpha = 0.01  # thermal diffusivity
+Q0 = 200.0  # source term strength
+sigma = 0.1  # source term spread
+L = 1.0  # domain extends from -L to L in both x and y
+T_final = 3.0  # final time
+Nx = 50  # number of grid points in x
+Ny = 50  # number of grid points in y
+Nt = 300  # number of time steps
+dx = 2 * L / (Nx - 1)
+dy = 2 * L / (Ny - 1)
+dt = T_final / Nt
+
+# Create grid
+x = np.linspace(-L, L, Nx)
+y = np.linspace(-L, L, Ny)
+X, Y = np.meshgrid(x, y)
+
+# Initial condition
+T = 1 + 200 * np.exp(-(X**2 + Y**2) / (2 * sigma**2))
+
+# Boundary conditions
+T[:, 0] = 1
+T[:, -1] = 1
+T[0, :] = 1
+T[-1, :] = 1
+
+# Time-stepping loop
+for n in range(Nt):
+    Tn = T.copy()
+    # Compute source term
+    q = Q0 * np.exp(-(X**2 + Y**2) / (2 * sigma**2))
+    
+    # Update temperature field
+    T[1:-1, 1:-1] = (Tn[1:-1, 1:-1] +
+                     alpha * dt / dx**2 * (Tn[2:, 1:-1] - 2 * Tn[1:-1, 1:-1] + Tn[:-2, 1:-1]) +
+                     alpha * dt / dy**2 * (Tn[1:-1, 2:] - 2 * Tn[1:-1, 1:-1] + Tn[1:-1, :-2]) +
+                     dt * q[1:-1, 1:-1])
+    
+    # Reapply boundary conditions
+    T[:, 0] = 1
+    T[:, -1] = 1
+    T[0, :] = 1
+    T[-1, :] = 1
+
+# Save the final temperature field
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gpt-4o/prompts/T_2D_Unsteady_Heat_Equation.npy', T)

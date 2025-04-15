@@ -1,0 +1,113 @@
+import numpy as np
+
+# Domain parameters
+Lx, Ly = 2.0, 2.0
+nx, ny = 100, 100
+nt = 1000
+
+# Physical parameters
+rho = 1.0
+nu = 0.1
+F = 1.0
+
+# Grid setup
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = 0.1 / nt
+
+# Initialize fields
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+p = np.zeros((ny, nx))
+
+# Time-stepping
+for n in range(nt):
+    # Store old values
+    u_old = u.copy()
+    v_old = v.copy()
+    p_old = p.copy()
+    
+    # Compute derivatives 
+    du_dx = np.zeros_like(u)
+    du_dy = np.zeros_like(u)
+    dv_dx = np.zeros_like(v)
+    dv_dy = np.zeros_like(v)
+    
+    du_dx[1:-1,1:-1] = (u_old[1:-1,2:] - u_old[1:-1,:-2]) / (2*dx)
+    du_dy[1:-1,1:-1] = (u_old[2:,1:-1] - u_old[:-2,1:-1]) / (2*dy)
+    dv_dx[1:-1,1:-1] = (v_old[1:-1,2:] - v_old[1:-1,:-2]) / (2*dx)
+    dv_dy[1:-1,1:-1] = (v_old[2:,1:-1] - v_old[:-2,1:-1]) / (2*dy)
+    
+    # Diffusion terms
+    d2u_dx2 = np.zeros_like(u)
+    d2u_dy2 = np.zeros_like(u)
+    d2v_dx2 = np.zeros_like(v)
+    d2v_dy2 = np.zeros_like(v)
+    
+    d2u_dx2[1:-1,1:-1] = (u_old[1:-1,2:] - 2*u_old[1:-1,1:-1] + u_old[1:-1,:-2]) / (dx**2)
+    d2u_dy2[1:-1,1:-1] = (u_old[2:,1:-1] - 2*u_old[1:-1,1:-1] + u_old[:-2,1:-1]) / (dy**2)
+    d2v_dx2[1:-1,1:-1] = (v_old[1:-1,2:] - 2*v_old[1:-1,1:-1] + v_old[1:-1,:-2]) / (dx**2)
+    d2v_dy2[1:-1,1:-1] = (v_old[2:,1:-1] - 2*v_old[1:-1,1:-1] + v_old[:-2,1:-1]) / (dy**2)
+    
+    # Pressure gradient
+    dp_dx = np.zeros_like(p)
+    dp_dy = np.zeros_like(p)
+    
+    dp_dx[1:-1,1:-1] = (p_old[1:-1,2:] - p_old[1:-1,:-2]) / (2*dx)
+    dp_dy[1:-1,1:-1] = (p_old[2:,1:-1] - p_old[:-2,1:-1]) / (2*dy)
+    
+    # Momentum equations
+    u[1:-1,1:-1] = (u_old[1:-1,1:-1] 
+                    - u_old[1:-1,1:-1] * du_dx[1:-1,1:-1] * dt
+                    - v_old[1:-1,1:-1] * du_dy[1:-1,1:-1] * dt
+                    + nu * (d2u_dx2[1:-1,1:-1] + d2u_dy2[1:-1,1:-1]) * dt
+                    - (1/rho) * dp_dx[1:-1,1:-1] * dt
+                    + F * dt)
+    
+    v[1:-1,1:-1] = (v_old[1:-1,1:-1] 
+                    - u_old[1:-1,1:-1] * dv_dx[1:-1,1:-1] * dt
+                    - v_old[1:-1,1:-1] * dv_dy[1:-1,1:-1] * dt
+                    + nu * (d2v_dx2[1:-1,1:-1] + d2v_dy2[1:-1,1:-1]) * dt
+                    - (1/rho) * dp_dy[1:-1,1:-1] * dt)
+    
+    # Pressure Poisson equation
+    p_rhs = np.zeros_like(p)
+    p_rhs[1:-1,1:-1] = -rho * (du_dx[1:-1,1:-1]**2 + 
+                                2*du_dy[1:-1,1:-1]*dv_dx[1:-1,1:-1] + 
+                                dv_dy[1:-1,1:-1]**2)
+    
+    # Solve Poisson equation for pressure
+    p_new = np.zeros_like(p)
+    for _ in range(50):  # Jacobi iterations
+        p_new[1:-1,1:-1] = 0.25 * (p[1:-1,2:] + 
+                                    p[1:-1,:-2] + 
+                                    p[2:,1:-1] + 
+                                    p[:-2,1:-1] - 
+                                    dx**2 * p_rhs[1:-1,1:-1])
+        
+        # Periodic BC in x
+        p_new[:,0] = p_new[:,-2]
+        p_new[:,-1] = p_new[:,1]
+        
+        # Neumann BC in y
+        p_new[0,:] = p_new[1,:]
+        p_new[-1,:] = p_new[-2,:]
+        
+        p = p_new.copy()
+    
+    # Periodic BC in x
+    u[:,0] = u[:,-2]
+    u[:,-1] = u[:,1]
+    v[:,0] = v[:,-2]
+    v[:,-1] = v[:,1]
+    
+    # No-slip BC in y
+    u[0,:] = 0
+    u[-1,:] = 0
+    v[0,:] = 0
+    v[-1,:] = 0
+
+# Save final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/u_2D_Navier_Stokes_Channel.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/v_2D_Navier_Stokes_Channel.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/p_2D_Navier_Stokes_Channel.npy', p)

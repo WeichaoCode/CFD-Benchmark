@@ -11,35 +11,74 @@ auto-evaluation utilities, and solution validation for physics-based problems.
 ├── __pycache__
 │   ├── utils.cpython-310.pyc
 │   └── utils.cpython-38.pyc
-├── compare     # compare the MSE
-├── compare_images # compare the fluid flow images
-│   ├── ground_truth   
-│   ├── prediction
-│   └── table
-├── image  # save the fluid flow images
-│   ├── gemini
-│   ├── gpt-4o
-│   ├── haiku
-│   ├── o3-mini
-│   └── sonnet-35
+├── clean.py
+├── folder_structure.md
 ├── prompt
 │   ├── PDE_TASK_QUESTION_ONLY.json
 │   └── prompts.json
-├── report # log files and report
-├── results # .npy files
-│   ├── prediction
-│   └── solution # groud truth 
-├── solution # ground truth python code
-├── solver # generate python code 
-│   ├── gemini
-│   ├── gpt-4o
-│   ├── haiku
-│   ├── o3-mini
-│   └── sonnet-35
-└── table # create table contains MSE ...
+├── results
+│   └── solution
+├── solution
+│   ├── 1D_Burgers_Equation.py
+│   ├── 1D_Diffusion.py
+│   ├── 1D_Euler_Shock_Tube.py
+│   ├── 1D_KdV_Burgers_Equation.py
+│   ├── 1D_Linear_Convection_adams.py
+│   ├── 1D_Linear_Convection_explicit_euler.py
+│   ├── 1D_Linear_Convection_pred_corr.py
+│   ├── 1D_Linear_Convection_rk.py
+│   ├── 1D_Nonlinear_Convection_LW.py
+│   ├── 1D_Nonlinear_Convection_Lax.py
+│   ├── 1D_Nonlinear_Convection_Mk.py
+│   ├── 2D_Burgers_Equation.py
+│   ├── 2D_Convection.py
+│   ├── 2D_Diffusion.py
+│   ├── 2D_Diffusion_FVM.py
+│   ├── 2D_Inviscid_Burgers_FOU.py
+│   ├── 2D_Inviscid_Burgers_MK.py
+│   ├── 2D_Laplace_Equation.py
+│   ├── 2D_Linear_Convection.py
+│   ├── 2D_Navier_Stokes_Cavity.py
+│   ├── 2D_Navier_Stokes_Channel.py
+│   ├── 2D_Possion.py
+│   ├── 2D_Rayleigh_Benard_Convection.py
+│   ├── 2D_Shear_Flow_With_Tracer.py
+│   ├── 2D_Steady_Heat_Equation_Gauss.py
+│   ├── 2D_Steady_Heat_Equation_Jac.py
+│   ├── 2D_Steady_Heat_Equation_SOR.py
+│   ├── 2D_Unsteady_Heat_Equation_ADI.py
+│   ├── 2D_Unsteady_Heat_Equation_DF.py
+│   ├── 2D_Unsteady_Heat_Equation_SE.py
+│   ├── Flow_Past_Circular_Cylinder.py
+│   ├── Fully_Developed_Turbulent_Channel_Flow.py
+│   ├── Lane_Emden_Equation.py
+│   ├── Lid_Driven_Cavity.py
+│   ├── Pipe_Flow_Disk_EVP.py
+│   └── Vortex_Roll_Up.py
+├── train_plain_prompts.py
+├── tree.py
+└── utils.py
 ```
+## 📁 Repository Structure Explained
+This repository is designed to **benchmark LLM-generated PDE solvers** against ground-truth implementations. 
+Here's an overview of each folder and file:
+### 📂 `prompt/`
+* `PDE_TASK_QUESTION_ONLY.json`: Main prompt configuration for generation
+### 📂 `solution/`
+* Holds ground-truth reference implementations of various PDE solvers (e.g., finite difference/volume/time methods).
+* Each file solves a specific PDE (e.g., `1D_Burgers_Equation.py`, `2D_Laplace_Equation.py`, etc.).
+* Used for comparison against LLM-generated solutions.
+### 📂 `results/solution/`
+* Stores outputs from the ground truth for comparison (e.g., `.npy` files).
+### 📄 `train_plain_prompts.py`
+* Main entry point for running the benchmark.
+* This script:
+  * Generate prompts for LLM using `PDE_TASK_QUESTION_ONLY.json`
+  * Calls the selected LLM to generate solver code
+  * Executes generated code and save the `.npy`
+  * Compares results with reference solutions
+  * Post-processing, create and save images / tables / log files
 ---
-
 ## 🚀 Quickstart
 
 ### 1. 🛠️ Installation
@@ -64,10 +103,11 @@ Before running, make sure your ```OpenAI```, ```Gemini```, or ```Bedrock``` API 
 You can either export them in environment variables:
 ```bash
 export OPENAI_API_KEY=your-key
-export GEMINI_API_KEY=your-key
+export GOOGLE_API_KEY=your-key
 ```
 Or directly edit the ```utils.py``` to insert your keys.
 
+---
 ## 💻 Run the Benchmark
 To run the benchmark pipeline for all prompts and models:
 ```bash
@@ -92,7 +132,7 @@ This script performs the following steps:
   * Visual outputs are saved in the `image/` folder.  
   * Final comparison results are stored in the `results/` directory.
   * Final comparison results tables are stored in the `table/` directory.
-
+---
 ## 📊 Output and Evaluation
 * Execution results (error logs, pass/fail): saved in `report/`
 
@@ -105,7 +145,15 @@ This script performs the following steps:
 * Comparison tools: `compare/`, `compare_images/`
 
 * Summary tables: `table/`
+---
 
+## 🧹 clean.py — Reset Environment Script
+This script is designed to reset the working environment before running a new experiment.
+It acts like a "make clean" command in traditional build systems.
+```bash
+python clean.py
+```
+---
 ## 🧪 Add Your Own Task
 * Add a new `prompt_name.json` under `prompt/`
 

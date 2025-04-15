@@ -169,35 +169,59 @@ def extract_model_response(llm_model, response):
     return model_response
 
 
-def update_token_usage(llm_model, original_prompt, response, total_input_tokens, total_output_tokens, total_cost):
-    if llm_model in ["gpt-4o", "o3-mini"]:
-        # Extract token usage from the response
-        total_tokens = response.usage.total_tokens  # Get the total tokens used for this request
-        input_tokens = len(
-            original_prompt.split())  # Get the number of tokens used by the prompt (input tokens)
-        output_tokens = total_tokens - input_tokens  # Subtract input tokens from total tokens to get output tokens
+def update_token_usage(llm_model, response, tokens_counts):
+    if llm_model == "gpt-4o":
+        usage = response.usage
+        tokens_counts['total_input_tokens'] += usage.prompt_tokens
+        tokens_counts['total_output_tokens'] += usage.completion_tokens
+        cost = (usage.prompt_tokens / 1000) * 0.005 + (usage.completion_tokens / 1000) * 0.015
+        tokens_counts['total_cost'] += cost
 
-        # Track the total token usage and cost
-        total_input_tokens += input_tokens  # Update total input tokens count
-        total_output_tokens += output_tokens  # Update total output tokens count
+    elif llm_model == "o3-mini":
+        # OpenAI's o3-mini (same cost as gpt-3.5-turbo)
+        usage = response.usage
+        tokens_counts['total_input_tokens'] += usage.prompt_tokens
+        tokens_counts['total_output_tokens'] += usage.completion_tokens
+        cost = (usage.prompt_tokens + usage.completion_tokens) / 1000 * 0.0005
+        tokens_counts['total_cost'] += cost
 
-        # Calculate cost (example, adjust as per pricing details)
-        cost_per_input_token = 2.50 / 1_000_000  # Cost per input token (example, adjust accordingly)
-        cost_per_output_token = 10.00 / 1_000_000  # Cost per output token (example, adjust accordingly)
-        total_cost += (input_tokens * cost_per_input_token) + (output_tokens * cost_per_output_token)
-
-        # Log the usage and estimated cost
-        logging.info(f"Input Tokens: {input_tokens}, Output Tokens: {output_tokens}")
-        logging.info(
-            f"Estimated cost for this request: ${input_tokens * cost_per_input_token + output_tokens * cost_per_output_token:.6f}")
     elif llm_model == "sonnet-35":
-        pass
+        # Anthropic Sonnet-3.5 (via Bedrock response metadata)
+        metadata = response.get('usage', {})
+        input_tokens = metadata.get('input_tokens', 0)
+        output_tokens = metadata.get('output_tokens', 0)
+        tokens_counts['total_input_tokens'] += input_tokens
+        tokens_counts['total_output_tokens'] += output_tokens
+        cost = (input_tokens / 1000) * 0.003 + (output_tokens / 1000) * 0.015
+        tokens_counts['total_cost'] += cost
+
     elif llm_model == "haiku":
-        pass
+        # Anthropic Haiku
+        metadata = response.get('usage', {})
+        input_tokens = metadata.get('input_tokens', 0)
+        output_tokens = metadata.get('output_tokens', 0)
+        tokens_counts['total_input_tokens'] += input_tokens
+        tokens_counts['total_output_tokens'] += output_tokens
+        cost = (input_tokens / 1000) * 0.00025 + (output_tokens / 1000) * 0.00125
+        tokens_counts['total_cost'] += cost
+
     elif llm_model == "gemini":
-        pass
+        # Gemini response has model_usage field
+        metadata = response.usage_metadata
+        input_tokens = metadata.prompt_token_count
+        output_tokens = metadata.candidates_token_count
+        tokens_counts['total_input_tokens'] += input_tokens
+        tokens_counts['total_output_tokens'] += output_tokens
+        cost = (input_tokens / 1000) * 0.00025 + (output_tokens / 1000) * 0.0005
+        tokens_counts['total_cost'] += cost
+
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
+
+    # Log summary
+    logging.info(f"[{llm_model}] Input Tokens: {tokens_counts['total_input_tokens']}, "
+                 f"Output Tokens: {tokens_counts['total_output_tokens']}, "
+                 f"Estimated Cost: ${tokens_counts['total_cost']:.4f}")
 
 
 def extract_code(model_response):
@@ -313,8 +337,7 @@ def call_llm_api(llm_model, client, conversation_history, temperature, bedrock_r
 
 
 def generate_code(llm_model, task_name, prompt, client, temperature, bedrock_runtime, inference_profile_arn,
-                  output_folder, total_input_tokens, total_output_tokens, total_input_tokens_cost,
-                  total_output_tokens_cost, total_cost, max_retries=5):
+                  output_folder, tokens_counts, max_retries=5):
     retries = 0
     original_prompt = prompt  # Keep the original prompt unchanged
     # Initialize an empty list to store the conversation history
@@ -347,8 +370,7 @@ def generate_code(llm_model, task_name, prompt, client, temperature, bedrock_run
             logging.info(conversation_history)
 
             # tracking the token usage will return input and output tokens each round
-            update_token_usage(llm_model, original_prompt, response, total_input_tokens, total_output_tokens,
-                               total_cost)
+            update_token_usage(llm_model, response, tokens_counts)
 
             # Extract Python code using regex, save the full model response and extracted python code
             script_path = save_model_outputs(task_name, output_folder, model_response)
@@ -370,11 +392,14 @@ def generate_code(llm_model, task_name, prompt, client, temperature, bedrock_run
 def api_key_configuration(llm_model):
     # === OpenAI API Configuration ===
     if llm_model in ["gpt-4o", "o3-mini"]:
-        api_key = ("sk-proj-hNMu"
-                   "-tIC6jn03YNcIT1d5XQvSebaao_uiVju1q1iQJKQcP1Ha7rXo1PDcbHVNcIUst75baI3QKT3BlbkFJ7XyhER3QUrjoOFUoWrsp97cw0Z853u7kf-nJgFzlDDB09lVV2fBmGHxvPkGGDSTbakE-FSe4wA")  # Replace this with your OpenAI API key
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("Missing OPENAI_API_KEY environment variable.")
         client = OpenAI(api_key=api_key)
     elif llm_model == "gemini":
-        api_key = "AIzaSyAlV3264W1Qoo_txpi7QCJz40PVN2jUhs4"
+        api_key = os.getenv("GOOGLE_API_KEY")
+        if not api_key:
+            raise ValueError("Missing GOOGLE_API_KEY environment variable.")
         client = genai.Client(api_key=api_key)
     elif llm_model in ["sonnet-35", "haiku"]:
         api_key, client = None, None
@@ -400,11 +425,6 @@ class LLMCodeGenerator:
         self.llm_model = llm_model
         self.prompt_json = prompt_json
         self.temperature = temperature
-        self.total_input_tokens = 0
-        self.total_output_tokens = 0
-        self.total_input_tokens_cost = 0
-        self.total_output_tokens_cost = 0
-        self.total_cost = 0  # Optional: for tracking cost
         # Initialize AWS Bedrock client
         self.bedrock_runtime = boto3.client("bedrock-runtime", region_name="us-west-2")
         # Get current time with microseconds
@@ -420,6 +440,9 @@ class LLMCodeGenerator:
         # Ensure the output directory exists
         os.makedirs(self.OUTPUT_FOLDER, exist_ok=True)
         os.makedirs(self.REPORT_FOLDER, exist_ok=True)
+
+        # Tracking the total input and output tokens
+        self.tokens_counts = {"total_input_tokens": 0, "total_output_tokens": 0, "total_cost": 0}
 
         logging.basicConfig(
             filename=self.LOG_FILE,
@@ -451,18 +474,14 @@ class LLMCodeGenerator:
                 self.bedrock_runtime,
                 inference_profile_arn,
                 self.OUTPUT_FOLDER,
-                self.total_input_tokens,
-                self.total_output_tokens,
-                self.total_input_tokens_cost,
-                self.total_output_tokens_cost,
-                self.total_cost,
+                self.tokens_counts,
                 max_retries=5
             )
 
         print("\n🎯 Execution completed. Check the solver directory for generated files.")
         logging.info("\n🎯 Execution completed. Check the solver directory for generated files.")
-        logging.info(f"Total Input Tokens: {self.total_input_tokens}")
-        logging.info(f"Total Output Tokens: {self.total_output_tokens}")
+        logging.info(f"Total Input Tokens: {self.tokens_counts['total_input_tokens']}")
+        logging.info(f"Total Output Tokens: {self.tokens_counts['total_output_tokens']}")
         logging.info(f"Total Estimated Cost: ${self.total_cost:.6f}")
 
 

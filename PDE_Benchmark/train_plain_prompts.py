@@ -22,16 +22,16 @@ generator_prompt.save_prompts(prompts)
 # Set the model and prompt JSON filename
 # llm_model = "gemini"  # "gpt-4o", ""o3-mini, "sonnet-3.5", "haiku", "lama 4", "gemini: gemini-2.0-flash"
 # List of LLM models to evaluate
-llm_models = [
-    "gpt-4o",
-    "o3-mini",
-    "sonnet-35",
-    "haiku",
-    "gemini"
-]
+# llm_models = [
+#     "gpt-4o",
+#     "o3-mini",
+#     "sonnet-35",
+#     "haiku",
+#     "gemini"
+# ]
 
 # use gpt-4o to check the code
-# llm_models = ["haiku"]
+llm_models = ["haiku"]
 prompt_json = "prompts.json"  # the file under ./prompt/
 # Loop over all models
 for llm_model in llm_models:

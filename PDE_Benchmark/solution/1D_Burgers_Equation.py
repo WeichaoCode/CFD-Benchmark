@@ -38,7 +38,7 @@ dt = dx * nu
 
 x = numpy.linspace(0, 2 * numpy.pi, nx)
 un = numpy.empty(nx)
-t = 0
+t = dt * nt
 
 u = numpy.asarray([ufunc(t, x0, nu) for x0 in x])
 
@@ -48,7 +48,7 @@ pyplot.figure(figsize=(11, 7), dpi=100)
 pyplot.plot(x, u, marker='o', lw=2)
 pyplot.xlim([0, 2 * numpy.pi])
 pyplot.ylim([0, 10])
-pyplot.show()
+pyplot.savefig("output.png", dpi=300, bbox_inches="tight")
 
 ##########################################################################
 import os

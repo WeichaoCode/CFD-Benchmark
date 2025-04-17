@@ -1,8 +1,10 @@
 import os
 
+
 def should_skip(filename):
-    skip_extensions = [".py", ".log", ".csv"]
+    skip_extensions = [".log", ".csv"]
     return any(filename.endswith(ext) for ext in skip_extensions)
+
 
 def generate_tree_limited_depth(root_dir, max_depth=2, current_depth=0, prefix=""):
     tree_str = ""
@@ -14,7 +16,7 @@ def generate_tree_limited_depth(root_dir, max_depth=2, current_depth=0, prefix="
     except Exception:
         return ""
 
-    # 排除不需要的文件
+    # except unnecessary files
     entries = [e for e in entries if not should_skip(e)]
     pointers = ["├── "] * (len(entries) - 1) + ["└── "] if entries else []
 
@@ -28,11 +30,12 @@ def generate_tree_limited_depth(root_dir, max_depth=2, current_depth=0, prefix="
 
     return tree_str
 
+
 if __name__ == "__main__":
-    root = "."  # 当前目录
+    root = "."  # current folder
     tree_output = generate_tree_limited_depth(root)
 
-    # 打印或保存为 Markdown
+    # print or save as Markdown
     print("```\n" + tree_output + "```")
 
     with open("folder_structure.md", "w") as f:

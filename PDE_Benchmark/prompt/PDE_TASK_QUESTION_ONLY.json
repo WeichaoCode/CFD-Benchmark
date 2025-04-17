@@ -59,7 +59,7 @@
         ]
     },
     "2D_Diffusion": {
-        "equation": "\\[\n\\frac{\\partial u}{\\partial t} = \\nu \\left( \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} \\right)\n\\]\n\nwhere:\n- \\( u(x,y,t) \\): diffused scalar field (e.g., temperature, concentration)\n- \\( \\nu = 1.0 \\): diffusion coefficient",
+        "equation": "\\[\n\\frac{\\partial u}{\\partial t} = \\nu \\left( \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} \\right)\n\\]\n\nwhere:\n- \\( u(x,y,t) \\): diffused scalar field (e.g., temperature, concentration)\n- \\( \\nu = 0.05 \\): diffusion coefficient",
         "boundary conditions": "Dirichlet boundary conditions:\n\\[\n  u = 1 \\quad \\text{on all boundaries}\n\\]",
         "initial conditions": "Set \\( u = 2 \\) in region \\( 0.5 \\leq x, y \\leq 1 \\), \\( u = 1 \\) elsewhere",
         "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\), Temporal domain: (t \\in [0, 0.3777])",
@@ -104,7 +104,7 @@
         "equation": "\\[\n\\frac{\\partial u}{\\partial t} + u \\frac{\\partial u}{\\partial x} + v \\frac{\\partial u}{\\partial y} = -\\frac{1}{\\rho} \\frac{\\partial p}{\\partial x} + \\nu \\left( \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} \\right) + F\n\\]\n\\[\n\\frac{\\partial v}{\\partial t} + u \\frac{\\partial v}{\\partial x} + v \\frac{\\partial v}{\\partial y} = -\\frac{1}{\\rho} \\frac{\\partial p}{\\partial y} + \\nu \\left( \\frac{\\partial^2 v}{\\partial x^2} + \\frac{\\partial^2 v}{\\partial y^2} \\right)\n\\]\n\\[\n\\frac{\\partial^2 p}{\\partial x^2} + \\frac{\\partial^2 p}{\\partial y^2} = -\\rho \\left( \\frac{\\partial u}{\\partial x}^2 + 2 \\frac{\\partial u}{\\partial y} \\frac{\\partial v}{\\partial x} + \\frac{\\partial v}{\\partial y}^2 \\right)\n\\]\n\nwhere:\n- \\( u(x,y,t) \\), \\( v(x,y,t) \\): velocity components\n- \\( p(x,y,t) \\): pressure field\n- \\( \\rho = 1 \\): fluid density\n- \\( \\nu = 0.1 \\): kinematic viscosity\n- \\( F = 1 \\): external force in the x-direction",
         "boundary conditions": "- Periodic boundary conditions in x-direction for \\( u, v, p \\)\n- No-slip boundary conditions in y-direction: \\( u = 0, v = 0 \\)\n- \\( \\frac{\\partial p}{\\partial y} = 0 \\) at \\( y = 0, 2 \\)",
         "initial conditions": "\\[\n  u = 0, \\quad v = 0, \\quad p = 0 \\text{ everywhere in the domain}\n\\]",
-        "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\), Temporal domain: (t \\in [0, 0.1])",
+        "domain": "- Spatial domain: \\( x, y \\in [0, 2] \\), Temporal domain: (t \\in [0, 5.0])",
         "save values": [
             "u",
             "v",
@@ -133,10 +133,10 @@
         "save values": "T"
     },
     "Fully_Developed_Turbulent_Channel_Flow": {
-        "equation": "\\[\n\\frac{d}{dy} \\left( (\\mu + \\mu_t(y)) \\frac{du}{dy} \\right) = -1\n\\]\n\nwhere:\n- \\( \\mu \\): molecular viscosity (constant), defined as \\( \\mu = 1 / \\text{Re}_\\tau \\)\n- \\( \\mu_t(y) \\): turbulent eddy viscosity, computed from a turbulence model\n- \\( \\mu_{\\text{eff}}(y) = \\mu + \\mu_t(y) \\): effective viscosity\n- \\( \\text{Re}_\\tau = 395 \\): friction Reynolds number\n- \\( \\rho = 1.0 \\): fluid density",
+        "equation": "\\[\n\\text{Momentum equation:} \\\\\n\\left[ \\frac{d\\mu_{\\text{eff}}}{dy} \\frac{d}{dy} + \\mu_{\\text{eff}} \\frac{d^2}{dy^2} \\right] u = -1\n\\]\n\n\\[\n\\text{Cess turbulence model:} \\\\\n\\frac{\\mu_{\\text{eff}}}{\\mu} = \\frac{1}{2} \\left( 1 + \\frac{1}{9} \\kappa^2 Re_\\tau^2 (2y - y^2)^2 (3 - 4y + 2y^2)^2 \\left[ 1 - \\exp \\left( -\\frac{y^+}{A} \\right) \\right]^2 \\right)^{1/2} - \\frac{1}{2}\n\\]\n\nwhere:\n- \\( \\mu_{\\text{eff}} = \\mu + \\mu_t \\): effective viscosity\n- \\( \\mu = 1 / Re_\\tau \\): molecular viscosity from input\n- \\( \\kappa = 0.42 \\): von Kármán constant\n- \\( A = 25.4 \\): damping constant\n- \\( y^+ = y Re_\\tau \\)\n- \\( Re_\\tau = 395 \\): friction Reynolds number (input)\n- \\( u^+ = \\sqrt{\\tau_w / \\rho} \\), \\( \\tau_w = \\mu (du/dy)_{wall} \\)",
         "boundary conditions": "- Dirichlet boundary conditions for velocity:\n  - \\( u(0) = 0 \\)\n  - \\( u(2) = 0 \\) (no-slip at walls)",
-        "initial conditions": "\\[\n  u(y) = 0 \\quad \\text{as the initial guess for the iterative solver}\n\\]",
-        "domain": "- Spatial domain: \\( y \\in [0, 2] \\)",
+        "initial conditions": "- \\( u(y) = 0 \\) (initial guess)\n- \\( \\mu_t(y) = 0 \\) (zero eddy viscosity)\n- \\( k(y) = 0.01 \\), \\( \\varepsilon(y) = 0.001 \\)\n- \\( \\omega(y) = 1.0 \\), \\( \\nu_{SA}(y) = 1 / Re_\\tau \\)",
+        "domain": "- Spatial domain: \\( y \\in [0, 2] \\) (channel height = 2)",
         "save values": "u"
     },
      "Lid_Driven_Cavity": {

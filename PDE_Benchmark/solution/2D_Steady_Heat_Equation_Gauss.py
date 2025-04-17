@@ -29,12 +29,12 @@ y = np.linspace(0., ylen, ny)
 T = np.zeros((nx, ny))
 
 for i in range(1, nx - 1):
-    T[i, 0] = 20  # lower wall = 20C
-    T[i, ny - 1] = 0  # upper wall = 0C
+    T[i, 0] = 10  # left wall = 10C
+    T[i, ny - 1] = 0  # right wall = 40C
 
 for i in range(ny - 1):
-    T[0, i] = 10  # left wall = 10C
-    T[nx - 1, i] = 40  # right wall = 40C
+    T[0, i] = 10  # upper wall = 0C
+    T[nx - 1, i] = 40  # lower wall = 20C
 
 Tkp1 = np.copy(T)
 eps = []
@@ -85,7 +85,7 @@ axes[1].legend()
 axes[1].set_title('Convergence History')
 
 plt.tight_layout()
-plt.show()
+plt.savefig("output.png", dpi=300, bbox_inches="tight")
 
 ##########################################################################
 import os

@@ -26,7 +26,8 @@ def generate_prompt(data):
         "**Equation:**\n" + data.get("equation", "") + "\n",
         "**Boundary Conditions:**\n" + data.get("boundary conditions", "") + "\n",
         "**Initial Conditions:**\n" + data.get("initial conditions", "") + "\n",
-        "**Domain:**\n" + data.get("domain", "") + "\n"
+        "**Domain:**\n" + data.get("domain", "") + "\n",
+        "**Numerical Method:**\n" + data.get("numerical method", "") + "\n"
     ]
 
     # Check for 'save_values' and add to task description

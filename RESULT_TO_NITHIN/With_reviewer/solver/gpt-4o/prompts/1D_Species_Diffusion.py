@@ -1,0 +1,37 @@
+import numpy as np
+
+# Parameters
+Gamma = 1e-4  # diffusion coefficient in m^2/s
+L = 0.1  # length of the domain in meters
+phi_0 = 10  # boundary condition at x=0
+phi_L = 100  # boundary condition at x=L
+
+# Discretization
+N = 100  # number of control volumes
+dx = L / N  # size of each control volume
+
+# Coefficients for the finite volume method
+A = np.zeros((N, N))
+b = np.zeros(N)
+
+# Fill the matrix A and vector b
+for i in range(N):
+    if i == 0:
+        # Left boundary
+        A[i, i] = 1
+        b[i] = phi_0
+    elif i == N-1:
+        # Right boundary
+        A[i, i] = 1
+        b[i] = phi_L
+    else:
+        # Internal nodes
+        A[i, i-1] = Gamma / dx
+        A[i, i] = -2 * Gamma / dx
+        A[i, i+1] = Gamma / dx
+
+# Solve the linear system
+phi = np.linalg.solve(A, b)
+
+# Save the solution
+np.save('/PDE_Benchmark/results/prediction/gpt-4o/prompts/phi_1D_Species_Diffusion.npy', phi)

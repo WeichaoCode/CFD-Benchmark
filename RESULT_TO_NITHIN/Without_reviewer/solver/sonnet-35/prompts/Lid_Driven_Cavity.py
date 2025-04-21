@@ -1,0 +1,125 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Problem Parameters
+Lx, Ly = 1.0, 1.0  # Domain dimensions
+rho = 1.0  # Density
+nu = 0.1   # Kinematic viscosity
+dt = 0.001  # Time step
+T = 100    # Total simulation time
+nx, ny = 50, 50  # Grid resolution
+
+# Grid generation
+dx, dy = Lx/(nx-1), Ly/(ny-1)
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize fields
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+p = np.zeros((ny, nx))
+
+# Boundary conditions
+u[-1, :] = 1.0  # Top lid moving with unit velocity
+
+def compute_intermediate_velocity(u, v):
+    u_star = u.copy()
+    v_star = v.copy()
+    
+    # Compute u_star
+    for i in range(1, ny-1):
+        for j in range(1, nx-1):
+            # Advection terms
+            u_adv_x = u[i,j] * (u[i,j+1] - u[i,j-1])/(2*dx)
+            u_adv_y = v[i,j] * (u[i+1,j] - u[i-1,j])/(2*dy)
+            
+            # Diffusion terms
+            u_diff_x = nu * (u[i,j+1] - 2*u[i,j] + u[i,j-1])/(dx**2)
+            u_diff_y = nu * (u[i+1,j] - 2*u[i,j] + u[i-1,j])/(dy**2)
+            
+            u_star[i,j] = u[i,j] + dt * (-u_adv_x - u_adv_y + u_diff_x + u_diff_y)
+    
+    # Compute v_star
+    for i in range(1, ny-1):
+        for j in range(1, nx-1):
+            # Advection terms
+            v_adv_x = u[i,j] * (v[i,j+1] - v[i,j-1])/(2*dx)
+            v_adv_y = v[i,j] * (v[i+1,j] - v[i-1,j])/(2*dy)
+            
+            # Diffusion terms
+            v_diff_x = nu * (v[i,j+1] - 2*v[i,j] + v[i,j-1])/(dx**2)
+            v_diff_y = nu * (v[i+1,j] - 2*v[i,j] + v[i-1,j])/(dy**2)
+            
+            v_star[i,j] = v[i,j] + dt * (-v_adv_x - v_adv_y + v_diff_x + v_diff_y)
+    
+    return u_star, v_star
+
+def compute_divergence(u_star, v_star):
+    div = np.zeros_like(u_star)
+    for i in range(1, ny-1):
+        for j in range(1, nx-1):
+            div[i,j] = (u_star[i,j+1] - u_star[i,j-1])/(2*dx) + \
+                       (v_star[i+1,j] - v_star[i-1,j])/(2*dy)
+    return div
+
+def solve_pressure_poisson(div):
+    p_new = np.zeros_like(div)
+    
+    # Solve using Jacobi iteration
+    for _ in range(100):  # Fixed number of iterations
+        p_old = p_new.copy()
+        for i in range(1, ny-1):
+            for j in range(1, nx-1):
+                p_new[i,j] = 0.25 * (p_old[i,j+1] + p_old[i,j-1] + 
+                                      p_old[i+1,j] + p_old[i-1,j] - 
+                                      dx*dy*div[i,j]/dt)
+        
+        # Enforce boundary conditions
+        p_new[0,:] = p_new[1,:]
+        p_new[-1,:] = p_new[-2,:]
+        p_new[:,0] = p_new[:,1]
+        p_new[:,-1] = p_new[:,-2]
+    
+    return p_new
+
+def correct_velocity(u_star, v_star, p):
+    u_corrected = u_star.copy()
+    v_corrected = v_star.copy()
+    
+    for i in range(1, ny-1):
+        for j in range(1, nx-1):
+            u_corrected[i,j] = u_star[i,j] - dt/(rho*dx) * (p[i,j+1] - p[i,j-1])
+            v_corrected[i,j] = v_star[i,j] - dt/(rho*dy) * (p[i+1,j] - p[i-1,j])
+    
+    # Enforce boundary conditions
+    u_corrected[0,:] = 0
+    u_corrected[-1,:] = 1.0
+    u_corrected[:,0] = 0
+    u_corrected[:,-1] = 0
+    
+    v_corrected[0,:] = 0
+    v_corrected[-1,:] = 0
+    v_corrected[:,0] = 0
+    v_corrected[:,-1] = 0
+    
+    return u_corrected, v_corrected
+
+# Time-stepping
+for t in range(int(T/dt)):
+    # Compute intermediate velocity
+    u_star, v_star = compute_intermediate_velocity(u, v)
+    
+    # Compute divergence
+    div = compute_divergence(u_star, v_star)
+    
+    # Solve pressure Poisson equation
+    p = solve_pressure_poisson(div)
+    
+    # Correct velocity
+    u, v = correct_velocity(u_star, v_star, p)
+
+# Save final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/u_Lid_Driven_Cavity.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/v_Lid_Driven_Cavity.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/p_Lid_Driven_Cavity.npy', p)

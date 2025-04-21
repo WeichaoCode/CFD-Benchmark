@@ -1,0 +1,40 @@
+import numpy as np
+
+# Domain parameters
+L = 2 * np.pi
+N = 256                  # number of spatial points
+x = np.linspace(0, L, N, endpoint=False)
+dx = L / N
+
+# Time parameters
+t_final = 5.0
+CFL = 0.3                # CFL number
+
+# Initial condition
+u = np.sin(x) + 0.5*np.sin(0.5*x)
+
+# Define the flux function f(u) = 0.5*u^2
+def flux(u):
+    return 0.5 * u**2
+
+# Time integration using Lax-Friedrichs scheme for the nonlinear convection equation
+t = 0.0
+while t < t_final:
+    # Compute time step based on CFL condition; ensure dt does not overshoot t_final
+    max_u = np.max(np.abs(u))
+    dt = CFL * dx / (max_u + 1e-6)
+    if t + dt > t_final:
+        dt = t_final - t
+
+    # Periodic boundary conditions: extend u with periodic wrap-around indices
+    u_plus = np.roll(u, -1)   # u[i+1]
+    u_minus = np.roll(u, 1)   # u[i-1]
+
+    # Lax-Friedrichs update
+    u_new = 0.5 * (u_plus + u_minus) - (dt / (2 * dx)) * (flux(u_plus) - flux(u_minus))
+    
+    u = u_new.copy()
+    t += dt
+
+# Save the final solution in a 1D numpy array in file "u.npy"
+np.save('/PDE_Benchmark/results/prediction/o3-mini/prompts/u_1D_Nonlinear_Convection.npy', u)

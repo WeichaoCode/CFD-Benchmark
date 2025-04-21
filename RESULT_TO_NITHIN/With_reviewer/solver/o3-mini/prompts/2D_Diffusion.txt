@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+nu = 0.05
+Lx = 2.0
+Ly = 2.0
+nx = 81
+ny = 81
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = 0.001
+t_final = 0.3777
+nt = int(t_final / dt)
+
+# Create spatial grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+# Initialize u with boundary condition u = 1 everywhere
+u = np.ones((ny, nx))
+
+# Set initial condition: u = 2 for 0.5 <= x, y <= 1
+X, Y = np.meshgrid(x, y)
+u[np.logical_and(np.logical_and(X >= 0.5, X <= 1.0),
+                 np.logical_and(Y >= 0.5, Y <= 1.0))] = 2.0
+
+# Time-stepping loop
+for n in range(nt):
+    u_prev = u.copy()
+    # Update the interior points using finite-difference method (central differences)
+    u[1:-1, 1:-1] = (u_prev[1:-1, 1:-1] +
+                     nu * dt * 
+                     ((u_prev[1:-1, 2:] - 2*u_prev[1:-1, 1:-1] + u_prev[1:-1, 0:-2]) / dx**2 +
+                      (u_prev[2:, 1:-1] - 2*u_prev[1:-1, 1:-1] + u_prev[0:-2, 1:-1]) / dy**2))
+    
+    # Enforce Dirichlet boundary conditions (u = 1 at boundaries)
+    u[0, :] = 1.0
+    u[-1, :] = 1.0
+    u[:, 0] = 1.0
+    u[:, -1] = 1.0
+
+# Save the final solution field as 2D numpy array with file name 'u.npy'
+np.save('u.npy', u)

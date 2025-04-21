@@ -1,0 +1,93 @@
+```python
+import numpy as np
+
+# Problem Parameters
+Lx, Ly = 2.0, 2.0  # Domain size
+nx, ny = 100, 100  # Grid points
+nt = 200  # Time steps
+dt = 0.4 / nt  # Time step size
+dx, dy = Lx / (nx-1), Ly / (ny-1)  # Spatial step sizes
+
+# Initialize solution arrays
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+
+# Initial Condition
+for i in range(ny):
+    for j in range(nx):
+        x, y = j*dx, i*dy
+        if 0.5 <= x <= 1.0 and 0.5 <= y <= 1.0:
+            u[i,j] = 2.0
+            v[i,j] = 2.0
+
+# Boundary Conditions (Dirichlet)
+u[0,:] = 1.0
+u[-1,:] = 1.0
+u[:,0] = 1.0
+u[:,-1] = 1.0
+v[0,:] = 1.0
+v[-1,:] = 1.0
+v[:,0] = 1.0
+v[:,-1] = 1.0
+
+# Finite Difference Method (MacCormack)
+def maccormack_2d(u, v):
+    un = u.copy()
+    vn = v.copy()
+    
+    for _ in range(nt):
+        # Predictor step
+        u_pred = np.zeros_like(u)
+        v_pred = np.zeros_like(v)
+        
+        for i in range(1, ny-1):
+            for j in range(1, nx-1):
+                # Predict u
+                u_pred[i,j] = u[i,j] - dt/dx * u[i,j] * (u[i,j] - u[i,j-1]) - \
+                               dt/dy * v[i,j] * (u[i,j] - u[i-1,j])
+                
+                # Predict v
+                v_pred[i,j] = v[i,j] - dt/dx * u[i,j] * (v[i,j] - v[i,j-1]) - \
+                               dt/dy * v[i,j] * (v[i,j] - v[i-1,j])
+        
+        # Corrector step
+        for i in range(1, ny-1):
+            for j in range(1, nx-1):
+                # Correct u
+                u[i,j] = 0.5 * (u[i,j] + u_pred[i,j] - 
+                                dt/dx * u_pred[i,j] * (u_pred[i,j+1] - u_pred[i,j]) - 
+                                dt/dy * v_pred[i,j] * (u_pred[i+1,j] - u_pred[i,j]))
+                
+                # Correct v
+                v[i,j] = 0.5 * (v[i,j] + v_pred[i,j] - 
+                                dt/dx * u_pred[i,j] * (v_pred[i,j+1] - v_pred[i,j]) - 
+                                dt/dy * v_pred[i,j] * (v_pred[i+1,j] - v_pred[i,j]))
+        
+        # Enforce boundary conditions
+        u[0,:] = 1.0
+        u[-1,:] = 1.0
+        u[:,0] = 1.0
+        u[:,-1] = 1.0
+        v[0,:] = 1.0
+        v[-1,:] = 1.0
+        v[:,0] = 1.0
+        v[:,-1] = 1.0
+    
+    return u, v
+
+# Solve
+u_final, v_final = maccormack_2d(u, v)
+
+# Save final solutions
+np.save('u.npy', u_final)
+np.save('v.npy', v_final)
+```
+
+Key changes:
+1. Replaced Lax-Wendroff method with MacCormack method, which is more stable for nonlinear advection problems
+2. Simplified flux calculations to reduce numerical instabilities
+3. Explicitly enforced boundary conditions at each time step
+4. Removed unnecessary intermediate flux arrays
+5. Used more robust predictor-corrector approach to handle nonlinear terms
+
+The MacCormack method is particularly well-suited for solving nonlinear advection equations like the 2D Burgers' equation, as it provides better numerical stability and accuracy compared to the previous implementation.

@@ -1,0 +1,40 @@
+```python
+import numpy as np
+
+# Parameters
+nu = 0.05
+Lx, Ly = 2.0, 2.0
+T = 0.3777
+nx, ny = 101, 101
+nt = 500
+
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+dt = T / nt
+
+# Initialize the solution array
+u = np.ones((ny, nx))
+
+# Initial condition
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+u[(X >= 0.5) & (X <= 1) & (Y >= 0.5) & (Y <= 1)] = 2
+
+# Time-stepping loop
+for n in range(nt):
+    u_old = u.copy()
+    u[1:-1, 1:-1] = (u_old[1:-1, 1:-1] +
+                     nu * dt / dx**2 * (u_old[1:-1, 2:] - 2 * u_old[1:-1, 1:-1] + u_old[1:-1, :-2]) +
+                     nu * dt / dy**2 * (u_old[2:, 1:-1] - 2 * u_old[1:-1, 1:-1] + u_old[:-2, 1:-1]))
+    
+    # Apply Dirichlet boundary conditions
+    u[:, 0] = 1
+    u[:, -1] = 1
+    u[0, :] = 1
+    u[-1, :] = 1
+
+# Save the final solution
+np.save('u.npy', u)
+```

@@ -1,0 +1,72 @@
+```python
+import numpy as np
+
+# Problem parameters
+L = 10.0  # Domain length
+T = 10.0  # Total simulation time
+a = 1e-4  # Diffusion coefficient 
+b = 2e-4  # Dispersion coefficient
+n = 20    # Initial condition parameter
+
+# Discretization
+Nx = 200  # Spatial points 
+Nt = 1000  # Time steps
+dx = L / (Nx - 1)
+dt = T / Nt
+x = np.linspace(0, L, Nx)
+
+# Initial condition 
+def initial_condition(x):
+    return 0.5/n * np.log(1 + np.cosh(n)**2 / np.cosh(n*(x - 0.2*L))**2)
+
+u = initial_condition(x)
+
+# Time integration using finite difference method
+for _ in range(Nt):
+    # Compute first derivative with periodic boundary conditions
+    u_x = np.zeros_like(u)
+    u_x[1:-1] = (u[2:] - u[:-2]) / (2 * dx)
+    u_x[0] = (u[1] - u[-1]) / (2 * dx)
+    u_x[-1] = (u[0] - u[-2]) / (2 * dx)
+    
+    # Second derivative with periodic boundary conditions
+    u_xx = np.zeros_like(u)
+    u_xx[1:-1] = (u[2:] - 2*u[1:-1] + u[:-2]) / (dx**2)
+    u_xx[0] = (u[1] - 2*u[0] + u[-1]) / (dx**2)
+    u_xx[-1] = (u[0] - 2*u[-1] + u[-2]) / (dx**2)
+    
+    # Third derivative calculation with careful indexing
+    u_xxx = np.zeros_like(u)
+    
+    # Use forward and backward differences at boundaries
+    u_xxx[0] = (u[3] - 3*u[2] + 3*u[1] - u[0]) / (dx**3)
+    u_xxx[-1] = (u[2] - 3*u[-1] + 3*u[-2] - u[-3]) / (dx**3)
+    
+    # Central difference for interior points
+    for i in range(1, Nx-1):
+        u_xxx[i] = (u[i+2] - 3*u[i+1] + 3*u[i] - u[i-1]) / (dx**3)
+    
+    # KdV-Burgers equation update
+    nonlinear_term = u * u_x
+    diffusion_term = a * u_xx
+    dispersion_term = b * u_xxx
+    
+    u_new = u - dt * nonlinear_term + dt * diffusion_term + dt * dispersion_term
+    
+    # Enforce periodic boundary conditions
+    u_new[0] = u_new[-1]
+    
+    u = u_new
+
+# Save final solution
+np.save('u.npy', u)
+```
+
+Key changes:
+1. Explicitly calculated third derivative using a loop to avoid broadcasting issues
+2. Used forward and backward differences at boundaries
+3. Maintained periodic boundary conditions
+4. Carefully handled derivative calculations to prevent shape mismatch
+5. Simplified periodic boundary condition enforcement
+
+This version should resolve the previous array shape broadcasting errors while maintaining the numerical scheme for the KdV-Burgers equation.

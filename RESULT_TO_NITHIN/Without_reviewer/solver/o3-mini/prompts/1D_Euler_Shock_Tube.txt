@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+gamma = 1.4
+CFL = 0.5
+t_final = 0.25
+nx = 400          # number of interior grid cells
+x_start = -1.0
+x_end = 1.0
+L = x_end - x_start
+dx = L / nx
+
+# Create grid with ghost cells: indices 0 and nx+1 are ghost cells, interior 1...nx
+x = np.linspace(x_start - dx, x_end + dx, nx + 2)
+
+# Initialize conservative variables U = [rho, rho*u, rho*E] (shape: (nx+2, 3))
+U = np.zeros((nx + 2, 3))
+
+# Setup initial conditions in the interior cells: index 1 to nx
+for i in range(1, nx + 1):
+    if x[i] < 0:
+        rho = 1.0
+        u = 0.0
+        p = 1.0
+    else:
+        rho = 0.125
+        u = 0.0
+        p = 0.1
+    E = p / ((gamma - 1) * rho) + 0.5 * u**2
+    U[i, 0] = rho
+    U[i, 1] = rho * u
+    U[i, 2] = rho * E
+
+# Function to compute primitive variables and fluxes
+def compute_flux(U):
+    # U shape: (nx+2, 3)
+    rho = U[:, 0]
+    u = np.where(rho != 0, U[:, 1] / rho, 0.0)
+    E = np.where(rho != 0, U[:, 2] / rho, 0.0)
+    p = (gamma - 1) * (U[:, 2] - 0.5 * rho * u**2)
+    # Flux vector F = [rho*u, rho*u^2 + p, u*(rho*E + p)]
+    F = np.zeros_like(U)
+    F[:, 0] = rho * u
+    F[:, 1] = rho * u**2 + p
+    F[:, 2] = u * (U[:, 2] + p)
+    return u, p, F
+
+# Function to update ghost cells with reflective (mirror) conditions
+def apply_reflective_bc(U):
+    # Left boundary ghost cell (index 0) mirrors cell 1: reverse velocity (momentum) component.
+    U[0, 0] = U[1, 0]
+    U[0, 1] = -U[1, 1]
+    U[0, 2] = U[1, 2]
+    # Right boundary ghost cell (index nx+1) mirrors cell nx:
+    U[-1, 0] = U[-2, 0]
+    U[-1, 1] = -U[-2, 1]
+    U[-1, 2] = U[-2, 2]
+    return U
+
+# Time integration using Lax-Friedrichs scheme
+t = 0.0
+while t < t_final:
+    # Apply boundary conditions
+    U = apply_reflective_bc(U)
+    
+    # Compute primitive variables and fluxes
+    u, p, F = compute_flux(U)
+    # Calculate speed of sound and maximum wave speed from interior cells (indices 1...nx)
+    c = np.sqrt(gamma * np.maximum(p[1:-1] / U[1:-1, 0], 0))
+    max_speed = np.max(np.abs(u[1:-1]) + c)
+    dt = CFL * dx / max_speed if max_speed > 0 else 1e-6
+    if t + dt > t_final:
+        dt = t_final - t
+
+    # Create a new U array for the update
+    U_new = U.copy()
+    # Lax-Friedrichs update for interior cells
+    for i in range(1, nx + 1):
+        U_new[i] = 0.5 * (U[i+1] + U[i-1]) - dt / (2 * dx) * (F[i+1] - F[i-1])
+    
+    U = U_new.copy()
+    t += dt
+
+# After final time, extract interior cells (physical domain)
+rho_final = U[1:-1, 0]
+rho_u_final = U[1:-1, 1]
+rho_E_final = U[1:-1, 2]
+
+# Save final results in .npy format as 1D arrays
+np.save("rho.npy", rho_final)
+np.save("rho_u.npy", rho_u_final)
+np.save("rho_E.npy", rho_E_final)

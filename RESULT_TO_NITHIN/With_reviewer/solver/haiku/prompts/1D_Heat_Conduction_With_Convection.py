@@ -1,0 +1,41 @@
+import numpy as np
+from scipy.sparse import diags
+from scipy.sparse.linalg import spsolve
+
+# Parameters
+k = 1000  # W/(m.K)
+h_P_kA = 25.0  # m^-2 
+T_inf = 20  # °C
+L = 0.5  # m
+N = 100  # number of control volumes
+
+# Grid
+dx = L/N
+x_faces = np.linspace(0, L, N+1)  # faces
+x_centers = (x_faces[1:] + x_faces[:-1])/2  # cell centers
+
+# Matrix coefficients
+ae = np.ones(N)*k/dx
+aw = np.ones(N)*k/dx
+ap = ae + aw + h_P_kA*dx*np.ones(N)
+b = h_P_kA*dx*T_inf*np.ones(N)
+
+# Adjust for boundary conditions
+# Left boundary T(0) = 100
+ap[0] = ae[0] + h_P_kA*dx
+b[0] = aw[0]*100 + h_P_kA*dx*T_inf
+
+# Right boundary T(0.5) = 200
+ap[-1] = aw[-1] + h_P_kA*dx  
+b[-1] = ae[-1]*200 + h_P_kA*dx*T_inf
+
+# Create sparse matrix
+diagonals = [ap, -ae[:-1], -aw[1:]]
+positions = [0, 1, -1]
+A = diags(diagonals, positions, shape=(N,N)).tocsr()
+
+# Solve system
+T = spsolve(A, b)
+
+# Save temperature distribution
+np.save('/PDE_Benchmark/results/prediction/haiku/prompts/T_1D_Heat_Conduction_With_Convection.npy', T)

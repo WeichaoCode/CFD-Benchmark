@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+nu = 0.07
+L = 2 * np.pi
+nx = 256
+dx = L / nx
+x = np.linspace(0, L, nx, endpoint=False)
+t_end = 0.14 * np.pi
+dt = 1e-4
+nt = int(t_end / dt)
+
+# Initial condition: u = - (2*nu/phi) * dphi/dx + 4, where phi is given.
+phi = np.exp(-x**2 / (4 * nu)) + np.exp(- (x - L)**2 / (4 * nu))
+# Compute dphi/dx using a central difference with periodic BC
+dphi = (np.roll(phi, -1) - np.roll(phi, 1)) / (2 * dx)
+u = - (2 * nu / phi) * dphi + 4
+
+# Time stepping: forward Euler method with central difference for derivatives
+for _ in range(nt):
+    # Compute first derivative u_x (central difference, periodic BC)
+    u_x = (np.roll(u, -1) - np.roll(u, 1)) / (2 * dx)
+    # Compute second derivative u_xx (central difference, periodic BC)
+    u_xx = (np.roll(u, -1) - 2 * u + np.roll(u, 1)) / dx**2
+    # Update u according to the PDE: u_t = - u * u_x + nu * u_xx
+    u = u + dt * (- u * u_x + nu * u_xx)
+
+# Save the final solution as a 1D NumPy array in 'u.npy'
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_1D_Burgers_Equation.npy', u)

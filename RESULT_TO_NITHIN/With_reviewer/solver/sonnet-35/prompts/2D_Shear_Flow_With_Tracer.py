@@ -1,0 +1,93 @@
+import numpy as np
+
+def initial_condition_u(x, z):
+    return 0.5 * (1 + np.tanh((z - 0.5)/0.1) - np.tanh((z + 0.5)/0.1))
+
+def solve_navier_stokes_2d():
+    # Domain parameters
+    Lx, Lz = 1.0, 2.0
+    nx, nz = 32, 64  # Further reduced grid resolution
+    x = np.linspace(0, Lx, nx)
+    z = np.linspace(-1, 1, nz)
+    dx, dz = x[1] - x[0], z[1] - z[0]
+
+    # Time parameters
+    t_start, t_end = 0, 20
+    dt = 0.1  # Larger time step
+    nt = int((t_end - t_start) / dt)
+
+    # Physical parameters
+    nu = 1/5e4
+    D = nu
+
+    # Initialize fields
+    u = np.zeros((nx, nz))
+    w = np.zeros((nx, nz))
+    s = np.zeros((nx, nz))
+
+    # Initial conditions
+    for i in range(nx):
+        for j in range(nz):
+            u[i, j] = initial_condition_u(x[i], z[j])
+            w[i, j] = 0.01 * np.sin(np.pi * z[j]) * np.sin(np.pi * x[i])
+            s[i, j] = u[i, j]
+
+    # Simplified time stepping
+    for _ in range(nt):
+        # Compute periodic derivatives
+        def periodic_diff_x(field):
+            field_x = np.zeros_like(field)
+            for i in range(nx):
+                field_x[i, :] = (np.roll(field, -1, axis=0)[i, :] - np.roll(field, 1, axis=0)[i, :]) / (2*dx)
+            return field_x
+
+        def periodic_diff_z(field):
+            field_z = np.zeros_like(field)
+            for j in range(nz):
+                field_z[:, j] = (np.roll(field, -1, axis=1)[:, j] - np.roll(field, 1, axis=1)[:, j]) / (2*dz)
+            return field_z
+
+        def periodic_diff2_x(field):
+            field_xx = np.zeros_like(field)
+            for i in range(nx):
+                field_xx[i, :] = (np.roll(field, -1, axis=0)[i, :] + 
+                                  np.roll(field, 1, axis=0)[i, :] - 2*field[i, :]) / (dx**2)
+            return field_xx
+
+        def periodic_diff2_z(field):
+            field_zz = np.zeros_like(field)
+            for j in range(nz):
+                field_zz[:, j] = (np.roll(field, -1, axis=1)[:, j] + 
+                                  np.roll(field, 1, axis=1)[:, j] - 2*field[:, j]) / (dz**2)
+            return field_zz
+
+        # Compute derivatives
+        u_x = periodic_diff_x(u)
+        u_z = periodic_diff_z(u)
+        w_x = periodic_diff_x(w)
+        w_z = periodic_diff_z(w)
+        s_x = periodic_diff_x(s)
+        s_z = periodic_diff_z(s)
+
+        # Compute Laplacians
+        u_xx = periodic_diff2_x(u)
+        u_zz = periodic_diff2_z(u)
+        w_xx = periodic_diff2_x(w)
+        w_zz = periodic_diff2_z(w)
+        s_xx = periodic_diff2_x(s)
+        s_zz = periodic_diff2_z(s)
+
+        # Update equations (simplified)
+        u_new = u + dt * (nu * (u_xx + u_zz) - u * u_x - w * u_z)
+        w_new = w + dt * (nu * (w_xx + w_zz) - u * w_x - w * w_z)
+        s_new = s + dt * (D * (s_xx + s_zz) - u * s_x - w * s_z)
+
+        # Update fields
+        u, w, s = u_new, w_new, s_new
+
+    # Save final solutions
+    np.save('/PDE_Benchmark/results/prediction/sonnet-35/prompts/u_2D_Shear_Flow_With_Tracer.npy', u)
+    np.save('/PDE_Benchmark/results/prediction/sonnet-35/prompts/w_2D_Shear_Flow_With_Tracer.npy', w)
+    np.save('/PDE_Benchmark/results/prediction/sonnet-35/prompts/s_2D_Shear_Flow_With_Tracer.npy', s)
+
+solve_navier_stokes_2d()

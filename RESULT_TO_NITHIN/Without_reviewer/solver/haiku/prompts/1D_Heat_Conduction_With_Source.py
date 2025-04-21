@@ -1,0 +1,42 @@
+import numpy as np
+
+# Parameters
+L = 0.5  # Length of domain [m]
+k = 1000  # Thermal conductivity [W/m.K]
+Q = 2e6   # Heat generation [W/m^3]
+T_left = 100  # Left boundary temperature [°C]
+T_right = 200 # Right boundary temperature [°C]
+N = 100   # Number of control volumes
+
+# Grid
+dx = L/N
+x_faces = np.linspace(0, L, N+1)  # Cell faces
+x_centers = (x_faces[1:] + x_faces[:-1])/2  # Cell centers
+
+# Initialize coefficient matrix and RHS
+A = np.zeros((N,N))
+b = np.zeros(N)
+
+# Interior nodes
+for i in range(1,N-1):
+    A[i,i-1] = k/dx**2
+    A[i,i] = -2*k/dx**2
+    A[i,i+1] = k/dx**2
+    b[i] = -Q
+
+# Boundary conditions
+# Left boundary
+A[0,0] = -2*k/dx**2
+A[0,1] = k/dx**2
+b[0] = -Q - T_left*k/dx**2
+
+# Right boundary
+A[N-1,N-2] = k/dx**2
+A[N-1,N-1] = -2*k/dx**2
+b[N-1] = -Q - T_right*k/dx**2
+
+# Solve system
+T = np.linalg.solve(A,b)
+
+# Save temperature distribution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/T_1D_Heat_Conduction_With_Source.npy', T)

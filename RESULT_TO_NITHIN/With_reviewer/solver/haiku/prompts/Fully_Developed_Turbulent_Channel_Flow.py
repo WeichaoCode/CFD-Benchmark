@@ -1,0 +1,67 @@
+import numpy as np
+from scipy.sparse import lil_matrix
+from scipy.sparse.linalg import spsolve
+
+# Parameters
+Re_tau = 395.0
+kappa = 0.42
+A_const = 25.4  # Renamed to avoid conflict
+mu = 1.0/Re_tau
+
+# Grid
+N = 200
+y = np.linspace(0, 2, N)
+dy = y[1] - y[0]
+
+# Initial conditions
+u = np.zeros(N)
+mu_eff = np.ones(N) * mu
+
+def get_mu_eff(y_arr, Re_tau, kappa, A, mu):
+    yplus = y_arr * Re_tau
+    term = (1.0/9.0) * (kappa**2) * (Re_tau**2) * ((2*y_arr - y_arr**2)**2) * ((3 - 4*y_arr + 2*y_arr**2)**2)
+    damp = (1.0 - np.exp(-yplus/A))**2
+    return mu * (0.5 * np.sqrt(1.0 + term * damp) - 0.5)
+
+# Iteration loop
+max_iter = 1000
+tolerance = 1e-6
+error = 1.0
+
+while error > tolerance and max_iter > 0:
+    mu_eff_old = mu_eff.copy()
+    
+    # Update mu_eff
+    mu_eff = mu + get_mu_eff(y, Re_tau, kappa, A_const, mu)
+    
+    # Build coefficient matrix
+    dmu_dy = np.gradient(mu_eff, dy)
+    
+    A = lil_matrix((N, N))
+    
+    # Interior points
+    for i in range(1, N-1):
+        A[i,i-1] = mu_eff[i-1]/dy**2 - dmu_dy[i-1]/(2*dy)
+        A[i,i] = -2*mu_eff[i]/dy**2
+        A[i,i+1] = mu_eff[i+1]/dy**2 + dmu_dy[i+1]/(2*dy)
+    
+    # Boundary conditions
+    A[0,0] = 1.0
+    A[-1,-1] = 1.0
+    
+    A = A.tocsr()
+    
+    # RHS vector
+    b = -np.ones(N)
+    b[0] = 0.0  # u(0) = 0
+    b[-1] = 0.0  # u(2) = 0
+    
+    # Solve system
+    u = spsolve(A, b)
+    
+    error = np.max(np.abs(mu_eff - mu_eff_old))
+    max_iter -= 1
+
+# Save solution
+np.save('/PDE_Benchmark/results/prediction/haiku/prompts/u_Fully_Developed_Turbulent_Channel_Flow.npy', u)
+np.save('/PDE_Benchmark/results/prediction/haiku/prompts/mu_eff_Fully_Developed_Turbulent_Channel_Flow.npy', mu_eff)

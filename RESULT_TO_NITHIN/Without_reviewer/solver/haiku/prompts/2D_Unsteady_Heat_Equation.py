@@ -1,0 +1,46 @@
+import numpy as np
+
+# Parameters
+Lx = 2.0  # Domain length in x
+Ly = 2.0  # Domain length in y
+Nx = 100  # Number of points in x
+Ny = 100  # Number of points in y
+dx = Lx/Nx
+dy = Ly/Ny
+x = np.linspace(-1, 1, Nx)
+y = np.linspace(-1, 1, Ny)
+X, Y = np.meshgrid(x, y)
+
+# Time parameters
+t_final = 3.0
+dt = 0.0001  # Time step
+Nt = int(t_final/dt)
+
+# Physical parameters
+alpha = 0.1
+Q0 = 200
+sigma = 0.1
+
+# Initialize temperature field
+T = np.ones((Ny, Nx))
+T = T + 200*np.exp(-(X**2 + Y**2)/(2*sigma**2))
+
+# Time stepping
+for n in range(Nt):
+    T_old = T.copy()
+    
+    # Interior points
+    T[1:-1,1:-1] = T_old[1:-1,1:-1] + dt*(
+        alpha*((T_old[1:-1,2:] - 2*T_old[1:-1,1:-1] + T_old[1:-1,:-2])/dx**2 +
+              (T_old[2:,1:-1] - 2*T_old[1:-1,1:-1] + T_old[:-2,1:-1])/dy**2) +
+        Q0*np.exp(-(X[1:-1,1:-1]**2 + Y[1:-1,1:-1]**2)/(2*sigma**2))
+    )
+    
+    # Boundary conditions
+    T[0,:] = 1  # Bottom
+    T[-1,:] = 1 # Top
+    T[:,0] = 1  # Left
+    T[:,-1] = 1 # Right
+
+# Save final temperature field
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/haiku/prompts/T_2D_Unsteady_Heat_Equation.npy', T)

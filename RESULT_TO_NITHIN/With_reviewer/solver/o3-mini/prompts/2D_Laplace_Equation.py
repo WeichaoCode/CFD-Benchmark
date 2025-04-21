@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Domain parameters
+Lx = 2.0
+Ly = 1.0
+nx = 101  # number of grid points in x-direction
+ny = 51   # number of grid points in y-direction
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+# Create grid for y values (for boundary conditions at x=2: p = y)
+y_vals = np.linspace(0, Ly, ny)
+
+# Initialize p field with initial condition p=0 everywhere
+p = np.zeros((ny, nx))
+
+# Set boundary conditions (Dirichlet on left and right)
+# Left boundary x=0: p=0
+p[:, 0] = 0.0
+# Right boundary x=2: p = y
+p[:, -1] = y_vals
+
+# Tolerance and relaxation parameter for SOR
+tol = 1e-6
+max_iter = 10000
+omega = 1.5  # relaxation factor
+
+# Iterative solver: SOR for Laplace equation
+for itr in range(max_iter):
+    p_old = p.copy()
+    
+    # Enforce Neumann BC (zero-gradient) at the boundaries in y:
+    # Bottom (y=0): p[0, :] = p[1, :]
+    p[0, :] = p[1, :]
+    # Top (y=Ly): p[-1, :] = p[-2, :]
+    p[-1, :] = p[-2, :]
+    
+    # Update interior points using SOR
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            # Standard five point stencil average
+            p_new = 0.25 * (p[j, i+1] + p[j, i-1] + p[j+1, i] + p[j-1, i])
+            p[j, i] = (1 - omega)*p[j, i] + omega*p_new
+    
+    # Re-impose Dirichlet boundary conditions
+    p[:, 0] = 0.0
+    p[:, -1] = y_vals
+
+    # Compute the maximum change for convergence
+    diff = np.abs(p - p_old).max()
+    if diff < tol:
+        break
+
+# Save the final solution in a .npy file
+np.save('/PDE_Benchmark/results/prediction/o3-mini/prompts/p_2D_Laplace_Equation.npy', p)

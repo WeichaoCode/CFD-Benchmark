@@ -1,0 +1,121 @@
+import numpy as np
+
+def solve_lid_driven_cavity():
+    # Parameters
+    rho = 1.0
+    nu = 0.1
+    Lx = 2.0
+    Ly = 2.0
+    T = 10.0
+    nx = 41
+    ny = 41
+    nt = 200
+    dx = Lx / (nx - 1)
+    dy = Ly / (ny - 1)
+    dt = T / nt
+
+    # Initialize variables
+    u = np.zeros((nx, ny))
+    v = np.zeros((nx, ny))
+    p = np.zeros((nx, ny))
+
+    # Boundary conditions
+    u[0, :] = 0.0
+    u[-1, :] = 0.0
+    u[:, 0] = 0.0
+    u[:, -1] = 1.0
+
+    v[0, :] = 0.0
+    v[-1, :] = 0.0
+    v[:, 0] = 0.0
+    v[:, -1] = 0.0
+
+    # Time loop
+    for n in range(nt):
+        # Navier-Stokes equations
+        u_old = u.copy()
+        v_old = v.copy()
+
+        # Predictor step
+        for i in range(1, nx - 1):
+            for j in range(1, ny - 1):
+                u[i, j] = u_old[i, j] + dt * (
+                    -u_old[i, j] * (u_old[i + 1, j] - u_old[i - 1, j]) / (2 * dx)
+                    - v_old[i, j] * (u_old[i, j + 1] - u_old[i, j - 1]) / (2 * dy)
+                    - (p[i + 1, j] - p[i - 1, j]) / (2 * dx) / rho
+                    + nu * ((u_old[i + 1, j] - 2 * u_old[i, j] + u_old[i - 1, j]) / dx**2 + (u_old[i, j + 1] - 2 * u_old[i, j] + u_old[i, j - 1]) / dy**2)
+                )
+                v[i, j] = v_old[i, j] + dt * (
+                    -u_old[i, j] * (v_old[i + 1, j] - v_old[i - 1, j]) / (2 * dx)
+                    - v_old[i, j] * (v_old[i, j + 1] - v_old[i, j - 1]) / (2 * dy)
+                    - (p[i, j + 1] - p[i, j - 1]) / (2 * dy) / rho
+                    + nu * ((v_old[i + 1, j] - 2 * v_old[i, j] + v_old[i - 1, j]) / dx**2 + (v_old[i, j + 1] - 2 * v_old[i, j] + v_old[i, j - 1]) / dy**2)
+                )
+
+        # Boundary conditions for predictor step
+        u[0, :] = 0.0
+        u[-1, :] = 0.0
+        u[:, 0] = 0.0
+        u[:, -1] = 1.0
+
+        v[0, :] = 0.0
+        v[-1, :] = 0.0
+        v[:, 0] = 0.0
+        v[:, -1] = 0.0
+
+        # Pressure Poisson equation
+        for iter in range(50):
+            p_old = p.copy()
+            for i in range(1, nx - 1):
+                for j in range(1, ny - 1):
+                    p[i, j] = 0.25 * (
+                        p_old[i + 1, j] + p_old[i - 1, j] + p_old[i, j + 1] + p_old[i, j - 1]
+                        - rho * (
+                            (u[i + 1, j] - u[i - 1, j]) / (2 * dx) * (u[i + 1, j] - u[i - 1, j]) / (2 * dx)
+                            + 2 * (u[i, j + 1] - u[i, j - 1]) / (2 * dy) * (v[i + 1, j] - v[i - 1, j]) / (2 * dx)
+                            + (v[i, j + 1] - v[i, j - 1]) / (2 * dy) * (v[i, j + 1] - v[i, j - 1]) / (2 * dy)
+                        ) * dx**2
+                    )
+
+            # Pressure boundary conditions
+            p[:, 0] = p[:, 1]  # dp/dy = 0 at y = 0
+            p[:, -1] = 0.0  # p = 0 at y = 2
+            p[0, :] = p[1, :]  # dp/dx = 0 at x = 0
+            p[-1, :] = p[-2, :]  # dp/dx = 0 at x = 2
+
+        # Corrector step
+        for i in range(1, nx - 1):
+            for j in range(1, ny - 1):
+                u[i, j] = u_old[i, j] + dt * (
+                    -u_old[i, j] * (u_old[i + 1, j] - u_old[i - 1, j]) / (2 * dx)
+                    - v_old[i, j] * (u_old[i, j + 1] - u_old[i, j - 1]) / (2 * dy)
+                    - (p[i + 1, j] - p[i - 1, j]) / (2 * dx) / rho
+                    + nu * ((u_old[i + 1, j] - 2 * u_old[i, j] + u_old[i - 1, j]) / dx**2 + (u_old[i, j + 1] - 2 * u_old[i, j] + u_old[i, j - 1]) / dy**2)
+                )
+                v[i, j] = v_old[i, j] + dt * (
+                    -u_old[i, j] * (v_old[i + 1, j] - v_old[i - 1, j]) / (2 * dx)
+                    - v_old[i, j] * (v_old[i, j + 1] - v_old[i, j - 1]) / (2 * dy)
+                    - (p[i, j + 1] - p[i, j - 1]) / (2 * dy) / rho
+                    + nu * ((v_old[i + 1, j] - 2 * v_old[i, j] + v_old[i - 1, j]) / dx**2 + (v_old[i, j + 1] - 2 * v_old[i, j] + v_old[i, j - 1]) / dy**2)
+                )
+
+        # Boundary conditions for corrector step
+        u[0, :] = 0.0
+        u[-1, :] = 0.0
+        u[:, 0] = 0.0
+        u[:, -1] = 1.0
+
+        v[0, :] = 0.0
+        v[-1, :] = 0.0
+        v[:, 0] = 0.0
+        v[:, -1] = 0.0
+
+    return u, v, p
+
+if __name__ == "__main__":
+    u, v, p = solve_lid_driven_cavity()
+
+    # Save the results
+    np.save('/PDE_Benchmark/results/prediction/gemini/prompts/u_2D_Navier_Stokes_Cavity.npy', u)
+    np.save('/PDE_Benchmark/results/prediction/gemini/prompts/v_2D_Navier_Stokes_Cavity.npy', v)
+    np.save('/PDE_Benchmark/results/prediction/gemini/prompts/p_2D_Navier_Stokes_Cavity.npy', p)

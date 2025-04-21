@@ -1,0 +1,37 @@
+import numpy as np
+
+def dudt(u, dx, a, b):
+    u_x = (np.roll(u, -1) - np.roll(u, 1)) / (2*dx)
+    u_xx = (np.roll(u, -1) - 2*u + np.roll(u, 1)) / (dx**2)
+    u_xxx = (np.roll(u, -2) - 2*np.roll(u, -1) + 2*np.roll(u, 1) - np.roll(u, 2)) / (2*dx**3)
+    return -u * u_x + a * u_xx + b * u_xxx
+
+# Parameters
+a = 1e-4
+b = 2e-4
+L = 10.0
+T = 10.0
+n = 20
+
+# Spatial discretization
+Nx = 512
+dx = L / Nx
+x = np.linspace(0, L, Nx, endpoint=False)
+
+# Initial condition
+u = (1 / (2 * n)) * np.log(1 + (np.cosh(n)**2) / (np.cosh(n * (x - 0.2 * L))**2))
+
+# Time-stepping parameters
+dt = 1e-3
+Nt = int(T / dt)
+
+# Time integration using RK4 scheme
+for _ in range(Nt):
+    k1 = dudt(u, dx, a, b)
+    k2 = dudt(u + 0.5 * dt * k1, dx, a, b)
+    k3 = dudt(u + 0.5 * dt * k2, dx, a, b)
+    k4 = dudt(u + dt * k3, dx, a, b)
+    u = u + (dt / 6) * (k1 + 2*k2 + 2*k3 + k4)
+
+# Save the final solution as a 1D NumPy array in "u.npy"
+np.save("u.npy", u)

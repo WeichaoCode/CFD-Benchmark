@@ -1,0 +1,50 @@
+2025-04-21 12:51:18,486 - INFO - ====== Starting Comparison ======
+2025-04-21 12:51:18,486 - INFO - Found 44 common files.
+2025-04-21 12:51:18,488 - INFO - T_1D_Heat_Conduction_With_Convection.npy: MSE=2.304e+13, MAE=4.800e+06, RMSE=4.800e+06, Cosine=0.961, R2=-23870694286.458
+2025-04-21 12:51:18,489 - INFO - T_1D_Heat_Conduction_With_Source.npy: MSE=1.783e+00, MAE=1.074e+00, RMSE=1.335e+00, Cosine=1.000, R2=0.998
+2025-04-21 12:51:18,491 - INFO - T_2D_Steady_Heat_Equation.npy: MSE=3.391e+02, MAE=1.494e+01, RMSE=1.842e+01, Cosine=0.455, R2=-2.813
+2025-04-21 12:51:18,492 - INFO - T_2D_Unsteady_Heat_Equation.npy: MSE=1.019e+02, MAE=6.727e+00, RMSE=1.010e+01, Cosine=0.946, R2=-131.517
+2025-04-21 12:51:18,494 - INFO - b_2D_Rayleigh_Benard_Convection.npy: MSE=3.458e-01, MAE=5.074e-01, RMSE=5.881e-01, Cosine=0.003, R2=-5850.354
+2025-04-21 12:51:18,495 - ERROR - ❌ f_Lane_Emden_Equation.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-21 12:51:18,496 - INFO - omega_Flow_Past_Circular_Cylinder.npy: MSE=5.722e+00, MAE=6.753e-01, RMSE=2.392e+00, Cosine=0.026, R2=-9.574
+2025-04-21 12:51:18,497 - INFO - p_2D_Laplace_Equation.npy: MSE=1.877e-03, MAE=3.230e-02, RMSE=4.332e-02, Cosine=0.990, R2=0.948
+2025-04-21 12:51:18,499 - INFO - p_2D_Navier_Stokes_Cavity.npy: MSE=1.492e+15, MAE=3.863e+07, RMSE=3.863e+07, Cosine=0.306, R2=-518264886950144960.000
+2025-04-21 12:51:18,500 - INFO - p_2D_Navier_Stokes_Channel.npy: MSE=1.000e+00, MAE=1.000e+00, RMSE=1.000e+00, Cosine=0.000, R2=0.000
+2025-04-21 12:51:18,502 - INFO - p_2D_Poisson_Equation.npy: MSE=2.978e-06, MAE=1.151e-03, RMSE=1.726e-03, Cosine=0.876, R2=0.759
+2025-04-21 12:51:18,503 - INFO - p_2D_Rayleigh_Benard_Convection.npy: MSE=1.514e+03, MAE=3.891e+01, RMSE=3.891e+01, Cosine=0.005, R2=-218254223.922
+2025-04-21 12:51:18,506 - INFO - p_2D_Shear_Flow_With_Tracer.npy: MSE=1.416e+15, MAE=3.198e+07, RMSE=3.763e+07, Cosine=-0.004, R2=-6939522987178162388992.000
+2025-04-21 12:51:18,507 - INFO - p_Lid_Driven_Cavity.npy: MSE=9.525e+00, MAE=3.078e+00, RMSE=3.086e+00, Cosine=0.122, R2=-54.769
+2025-04-21 12:51:18,508 - INFO - phi_1D_Convection_Diffusion_Phi.npy: MSE=1.921e+00, MAE=1.196e+00, RMSE=1.386e+00, Cosine=0.000, R2=-2.909
+2025-04-21 12:51:18,510 - INFO - phi_1D_Species_Diffusion.npy: MSE=3.544e+03, MAE=5.250e+01, RMSE=5.953e+01, Cosine=0.272, R2=-4.470
+2025-04-21 12:51:18,511 - INFO - phi_1D_Unsteady_Convection.npy: MSE=1.961e-02, MAE=5.608e-02, RMSE=1.400e-01, Cosine=0.901, R2=0.754
+2025-04-21 12:51:18,512 - INFO - phi_1D_Unsteady_Convection_Diffusion_Periodic.npy: MSE=9.029e-04, MAE=1.437e-02, RMSE=3.005e-02, Cosine=0.992, R2=0.975
+2025-04-21 12:51:18,514 - INFO - psi_Flow_Past_Circular_Cylinder.npy: MSE=1.510e+00, MAE=8.161e-01, RMSE=1.229e+00, Cosine=0.998, R2=0.890
+2025-04-21 12:51:18,515 - INFO - rho_1D_Euler_Shock_Tube.npy: MSE=1.615e+14, MAE=7.967e+06, RMSE=1.271e+07, Cosine=0.678, R2=-1171498044620666.750
+2025-04-21 12:51:18,517 - INFO - s_2D_Shear_Flow_With_Tracer.npy: MSE=3.116e+19, MAE=4.749e+09, RMSE=5.582e+09, Cosine=-0.004, R2=-3102827363179887251685376.000
+2025-04-21 12:51:18,518 - INFO - u_1D_Burgers_Equation.npy: MSE=3.734e-04, MAE=7.505e-03, RMSE=1.932e-02, Cosine=1.000, R2=1.000
+2025-04-21 12:51:18,520 - INFO - u_1D_Diffusion.npy: MSE=1.141e-03, MAE=2.317e-02, RMSE=3.378e-02, Cosine=1.000, R2=0.990
+2025-04-21 12:51:18,521 - INFO - u_1D_Euler_Shock_Tube.npy: MSE=1.451e+23, MAE=2.448e+11, RMSE=3.809e+11, Cosine=0.408, R2=-897111606369220338647040.000
+2025-04-21 12:51:18,522 - INFO - u_1D_KdV_Burgers_Equation.npy: MSE=4.541e+05, MAE=5.931e+02, RMSE=6.739e+02, Cosine=-0.024, R2=-21904101.594
+2025-04-21 12:51:18,524 - INFO - u_1D_Linear_Convection.npy: MSE=3.317e+25, MAE=2.770e+12, RMSE=5.760e+12, Cosine=0.000, R2=-472462617962036703738724352.000
+2025-04-21 12:51:18,525 - INFO - u_1D_Nonlinear_Convection.npy: MSE=9.450e-02, MAE=2.664e-01, RMSE=3.074e-01, Cosine=0.718, R2=-0.000
+2025-04-21 12:51:18,526 - INFO - u_2D_Burgers_Equation.npy: MSE=9.810e-02, MAE=1.080e-01, RMSE=3.132e-01, Cosine=0.958, R2=-0.928
+2025-04-21 12:51:18,528 - INFO - u_2D_Convection.npy: MSE=2.260e-03, MAE=1.323e-02, RMSE=4.754e-02, Cosine=0.999, R2=0.924
+2025-04-21 12:51:18,529 - INFO - u_2D_Diffusion.npy: MSE=3.160e-03, MAE=3.459e-02, RMSE=5.622e-02, Cosine=0.999, R2=0.692
+2025-04-21 12:51:18,531 - INFO - u_2D_Inviscid_Burgers.npy: MSE=3.106e-01, MAE=1.364e-01, RMSE=5.573e-01, Cosine=0.886, R2=-9.402
+2025-04-21 12:51:18,533 - INFO - u_2D_Linear_Convection.npy: MSE=2.565e-04, MAE=5.526e-03, RMSE=1.601e-02, Cosine=1.000, R2=0.993
+2025-04-21 12:51:18,534 - INFO - u_2D_Navier_Stokes_Cavity.npy: MSE=4.934e+06, MAE=1.387e+03, RMSE=2.221e+03, Cosine=-0.021, R2=-88814421.097
+2025-04-21 12:51:18,536 - INFO - u_2D_Navier_Stokes_Channel.npy: MSE=2.261e-06, MAE=1.298e-03, RMSE=1.504e-03, Cosine=1.000, R2=1.000
+2025-04-21 12:51:18,536 - ERROR - ❌ u_2D_Rayleigh_Benard_Convection.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-21 12:51:18,536 - ERROR - ❌ u_2D_Shear_Flow_With_Tracer.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-21 12:51:18,537 - INFO - u_Fully_Developed_Turbulent_Channel_Flow.npy: MSE=1.109e+02, MAE=9.182e+00, RMSE=1.053e+01, Cosine=0.982, R2=-1.346
+2025-04-21 12:51:18,539 - INFO - u_Lid_Driven_Cavity.npy: MSE=1.066e-03, MAE=2.361e-02, RMSE=3.265e-02, Cosine=0.991, R2=0.982
+2025-04-21 12:51:18,540 - INFO - v_2D_Burgers_Equation.npy: MSE=9.810e-02, MAE=1.080e-01, RMSE=3.132e-01, Cosine=0.958, R2=-0.928
+2025-04-21 12:51:18,542 - INFO - v_2D_Convection.npy: MSE=2.260e-03, MAE=1.323e-02, RMSE=4.754e-02, Cosine=0.999, R2=0.924
+2025-04-21 12:51:18,544 - INFO - v_2D_Inviscid_Burgers.npy: MSE=3.106e-01, MAE=1.364e-01, RMSE=5.573e-01, Cosine=0.886, R2=-9.402
+2025-04-21 12:51:18,545 - INFO - v_2D_Navier_Stokes_Cavity.npy: MSE=1.048e+07, MAE=1.966e+03, RMSE=3.237e+03, Cosine=0.062, R2=-908362698.919
+2025-04-21 12:51:18,546 - INFO - v_2D_Navier_Stokes_Channel.npy: MSE=0.000e+00, MAE=0.000e+00, RMSE=0.000e+00, Cosine=0.000, R2=1.000
+2025-04-21 12:51:18,548 - INFO - v_Lid_Driven_Cavity.npy: MSE=1.692e-03, MAE=2.500e-02, RMSE=4.114e-02, Cosine=0.980, R2=0.810
+2025-04-21 12:51:18,552 - INFO - Found 44 common files.
+2025-04-21 12:51:30,583 - INFO - Found 44 common files.
+2025-04-21 12:51:40,138 - INFO - ####################################################################################################
+2025-04-21 12:51:40,139 - INFO - Using the gemini, change temperature to 0.0, use the prompt prompts.json

@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Physical parameters
+rho = 1.0       # kg/m^3
+u = 2.5         # m/s
+Gamma = 0.1     # kg/(m·s)
+
+# Domain and discretization: 1D domain [0,1] with 5 control volumes
+nx = 5
+L = 1.0
+dx = L / nx
+
+# Boundary conditions
+phi_0 = 1.0   # at x=0 (West boundary)
+phi_L = 0.0   # at x=1 (East boundary)
+
+# Coefficients for finite volume discretization with upwind for convection
+# For cell i, the discretized equation becomes:
+#    a_P * phi_i = a_E * phi_{i+1} + a_W * phi_{i-1}
+# where:
+#    a_E = Gamma/dx
+#    a_W = rho*u + Gamma/dx
+#    a_P = rho*u + 2*(Gamma/dx)
+aE = Gamma / dx
+aW = rho * u + Gamma / dx
+aP = rho * u + 2 * (Gamma / dx)
+
+# Create arrays for the linear system A*phi = b, where phi is the vector of cell-center values.
+A = np.zeros((nx, nx))
+b = np.zeros(nx)
+
+# Set up equations for each control volume
+# Cell 1 (index 0): uses known phi at the West boundary
+A[0, 0] = aP
+A[0, 1] = -aE
+b[0] = aW * phi_0
+
+# Interior cells: indices 1 to nx-2
+for i in range(1, nx - 1):
+    A[i, i - 1] = -aW
+    A[i, i]     = aP
+    A[i, i + 1] = -aE
+    b[i] = 0.0
+
+# Last cell (index nx-1): uses known phi at the East boundary
+A[nx - 1, nx - 2] = -aW
+A[nx - 1, nx - 1] = aP
+b[nx - 1] = -aE * phi_L  # phi_L = 0 so this is 0
+
+# Solve the linear system for phi at control volume centers
+phi = np.linalg.solve(A, b)
+
+# Save the solution (1D array) in a .npy file with the variable name "phi"
+np.save('/PDE_Benchmark/results/prediction/o3-mini/prompts/phi_1D_Convection_Diffusion_Phi.npy', phi)
+
+# End of code.

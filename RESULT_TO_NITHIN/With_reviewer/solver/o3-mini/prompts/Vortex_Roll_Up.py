@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+nx = 101         # number of grid points in x (periodic)
+ny = 101         # number of grid points in y (Dirichlet for psi at top/bottom)
+Lx = 1.0
+Ly = 1.0
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+h = dx  # assuming dx = dy
+
+nu = 0.001     # kinematic viscosity
+
+# Time-stepping parameters
+T_end = 1.0
+dt = 0.001
+nt = int(T_end/dt)
+
+# Create spatial grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize streamfunction and vorticity fields
+psi = np.zeros((ny, nx))
+omega = np.zeros((ny, nx))
+
+# Initialize a pair of vortex layers in the center region.
+mask1 = (np.abs(Y - 0.5) < 0.1) & (X > 0.35) & (X < 0.45)
+mask2 = (np.abs(Y - 0.5) < 0.1) & (X > 0.55) & (X < 0.65)
+omega[mask1] = 1.0
+omega[mask2] = -1.0
+
+# Vectorized solver for Poisson equation using Jacobi iteration
+def solve_poisson(psi, omega, max_iter=500, tol=1e-6):
+    psi_new = psi.copy()
+    for _ in range(max_iter):
+        psi_old = psi_new.copy()
+        # Update interior points with periodic boundaries in x
+        psi_new[1:-1, :] = 0.25 * (
+            psi_old[2:, :] + psi_old[:-2, :] +
+            np.roll(psi_old, shift=1, axis=1)[1:-1, :] +
+            np.roll(psi_old, shift=-1, axis=1)[1:-1, :] +
+            (h**2) * omega[1:-1, :]
+        )
+        # Enforce Dirichlet BC for psi at top and bottom
+        psi_new[0, :] = 0.0
+        psi_new[-1, :] = 0.0
+        if np.linalg.norm(psi_new - psi_old, ord=np.inf) < tol:
+            break
+    return psi_new
+
+# Time integration loop
+for n in range(nt):
+    # 1. Solve Poisson equation: ∇² psi = -omega
+    psi = solve_poisson(psi, omega, max_iter=500, tol=1e-6)
+    
+    # 2. Compute velocity components from psi
+    u = np.empty_like(psi)
+    v = np.empty_like(psi)
+    # u = d(psi)/dy using central differences for interior and one-sided differences at boundaries
+    u[1:-1, :] = (psi[2:, :] - psi[:-2, :]) / (2*dy)
+    u[0, :] = (psi[1, :] - psi[0, :]) / dy
+    u[-1, :] = (psi[-1, :] - psi[-2, :]) / dy
+    # v = - d(psi)/dx using periodic differences in x
+    v[:] = - (np.roll(psi, -1, axis=1) - np.roll(psi, 1, axis=1)) / (2*dx)
+
+    # 3. Compute spatial derivatives for omega
+    # First derivatives
+    omega_x = (np.roll(omega, -1, axis=1) - np.roll(omega, 1, axis=1)) / (2*dx)
+    omega_y = np.empty_like(omega)
+    omega_y[1:-1, :] = (omega[2:, :] - omega[:-2, :]) / (2*dy)
+    omega_y[0, :] = (omega[1, :] - omega[0, :]) / dy
+    omega_y[-1, :] = (omega[-1, :] - omega[-2, :]) / dy
+
+    # Second derivatives for diffusion
+    omega_xx = (np.roll(omega, -1, axis=1) - 2*omega + np.roll(omega, 1, axis=1)) / (dx**2)
+    omega_yy = np.empty_like(omega)
+    omega_yy[1:-1, :] = (omega[2:, :] - 2*omega[1:-1, :] + omega[:-2, :]) / (dy**2)
+    # For boundaries in y, use one-sided differences (second order approximation)
+    omega_yy[0, :] = (omega[2, :] - 2*omega[1, :] + omega[0, :]) / (dy**2)
+    omega_yy[-1, :] = (omega[-1, :] - 2*omega[-2, :] + omega[-3, :]) / (dy**2)
+
+    # 4. Update omega using forward Euler time stepping
+    domega_dt = - (u * omega_x + v * omega_y) + nu * (omega_xx + omega_yy)
+    omega_new = omega + dt * domega_dt
+
+    # 5. Enforce boundary conditions for omega (periodic in x is inherent; for y, use extrapolation)
+    omega_new[0, :] = omega_new[1, :]
+    omega_new[-1, :] = omega_new[-2, :]
+
+    omega = omega_new.copy()
+
+# Save the final fields as .npy files
+np.save('/PDE_Benchmark/results/prediction/o3-mini/prompts/psi_Vortex_Roll_Up.npy', psi)
+np.save('/PDE_Benchmark/results/prediction/o3-mini/prompts/omega_Vortex_Roll_Up.npy', omega)

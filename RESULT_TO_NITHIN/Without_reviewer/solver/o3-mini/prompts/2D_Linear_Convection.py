@@ -1,0 +1,61 @@
+import numpy as np
+
+# Parameters
+c = 1.0             # Convection speed in both x and y directions
+x_min, x_max = 0.0, 2.0
+y_min, y_max = 0.0, 2.0
+t_final = 0.50
+
+# Discretization parameters
+nx = 101            # number of grid points in x-direction
+ny = 101            # number of grid points in y-direction
+dx = (x_max - x_min) / (nx - 1)
+dy = (y_max - y_min) / (ny - 1)
+
+# CFL condition: choose CFL number less than 1 for stability
+CFL = 0.4
+dt = CFL * min(dx, dy) / c
+
+# Create spatial grid
+x = np.linspace(x_min, x_max, nx)
+y = np.linspace(y_min, y_max, ny)
+X, Y = np.meshgrid(x, y, indexing='ij')
+
+# Initialize solution u with initial conditions
+u = np.ones((nx, ny))
+u[np.logical_and(np.logical_and(X >= 0.5, X <= 1.0),
+                 np.logical_and(Y >= 0.5, Y <= 1.0))] = 2.0
+
+# Enforce Dirichlet boundaries: u = 1 at boundaries
+u[0, :] = 1.0
+u[-1, :] = 1.0
+u[:, 0] = 1.0
+u[:, -1] = 1.0
+
+# Time stepping loop (unsteady problem: store only final solution)
+t = 0.0
+while t < t_final:
+    # Adjust dt if overshooting final time
+    if t + dt > t_final:
+        dt = t_final - t
+
+    u_old = u.copy()
+    
+    # Update interior points with first order upwind differencing
+    # Since convection is in the positive x and y directions, we use backward differences
+    for i in range(1, nx - 1):
+        for j in range(1, ny - 1):
+            du_dx = (u_old[i, j] - u_old[i-1, j]) / dx
+            du_dy = (u_old[i, j] - u_old[i, j-1]) / dy
+            u[i, j] = u_old[i, j] - c * dt * (du_dx + du_dy)
+    
+    # Reapply Dirichlet boundary conditions: u = 1 on boundaries
+    u[0, :] = 1.0
+    u[-1, :] = 1.0
+    u[:, 0] = 1.0
+    u[:, -1] = 1.0
+    
+    t += dt
+
+# Save the final solution as a 2D numpy array in "u.npy"
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_2D_Linear_Convection.npy', u)

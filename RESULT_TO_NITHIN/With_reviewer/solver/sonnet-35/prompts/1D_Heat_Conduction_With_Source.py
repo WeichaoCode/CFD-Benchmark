@@ -1,0 +1,43 @@
+import numpy as np
+import scipy.sparse as sp
+import scipy.sparse.linalg as spla
+
+# Problem parameters
+L = 0.5  # domain length [m]
+k = 1000  # thermal conductivity [W/(m·K)]
+Q = 2e6   # heat generation [W/m³]
+
+# Discretization
+nx = 100  # number of control volumes
+dx = L / nx
+
+# Grid generation
+x = np.linspace(0, L, nx+1)
+
+# Finite Volume discretization
+# Construct coefficient matrix A and source vector b
+A = sp.lil_matrix((nx+1, nx+1))
+b = np.zeros(nx+1)
+
+# Interior points
+for i in range(1, nx):
+    A[i, i-1] = k/dx
+    A[i, i] = -2*k/dx
+    A[i, i+1] = k/dx
+    b[i] = -Q*dx
+
+# Boundary conditions
+A[0, 0] = 1
+b[0] = 100  # T(0) = 100°C
+
+A[nx, nx] = 1
+b[nx] = 200  # T(0.5) = 200°C
+
+# Convert to CSR for efficient solving
+A = A.tocsr()
+
+# Solve linear system
+T = spla.spsolve(A, b)
+
+# Save temperature field
+np.save('/PDE_Benchmark/results/prediction/sonnet-35/prompts/T_1D_Heat_Conduction_With_Source.npy', T)

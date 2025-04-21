@@ -1,0 +1,41 @@
+2025-04-21 15:38:32,658 - INFO - ====== Starting Comparison ======
+2025-04-21 15:38:32,658 - INFO - Found 35 common files.
+2025-04-21 15:38:32,660 - INFO - T_1D_Heat_Conduction_With_Convection.npy: MSE=1.857e+02, MAE=1.228e+01, RMSE=1.363e+01, Cosine=0.993, R2=0.808
+2025-04-21 15:38:32,661 - INFO - T_1D_Heat_Conduction_With_Source.npy: MSE=7.445e+00, MAE=1.891e+00, RMSE=2.729e+00, Cosine=1.000, R2=0.994
+2025-04-21 15:38:32,663 - INFO - T_2D_Unsteady_Heat_Equation.npy: MSE=1.068e+03, MAE=1.127e+01, RMSE=3.268e+01, Cosine=0.691, R2=-1387.165
+2025-04-21 15:38:32,664 - INFO - p_2D_Laplace_Equation.npy: MSE=1.815e-02, MAE=1.162e-01, RMSE=1.347e-01, Cosine=0.902, R2=0.495
+2025-04-21 15:38:32,665 - INFO - p_2D_Navier_Stokes_Cavity.npy: MSE=3.648e-02, MAE=1.807e-01, RMSE=1.910e-01, Cosine=-0.380, R2=-11.671
+2025-04-21 15:38:32,667 - INFO - p_2D_Navier_Stokes_Channel.npy: MSE=1.000e+00, MAE=1.000e+00, RMSE=1.000e+00, Cosine=0.000, R2=0.000
+2025-04-21 15:38:32,668 - INFO - p_2D_Poisson_Equation.npy: MSE=3.497e-04, MAE=1.255e-02, RMSE=1.870e-02, Cosine=0.868, R2=-27.292
+2025-04-21 15:38:32,669 - ERROR - ❌ p_2D_Shear_Flow_With_Tracer.npy failed: Input contains NaN.
+2025-04-21 15:38:32,670 - INFO - p_Lid_Driven_Cavity.npy: MSE=1.737e+00, MAE=1.301e+00, RMSE=1.318e+00, Cosine=0.375, R2=-9.171
+2025-04-21 15:38:32,672 - INFO - phi_1D_Convection_Diffusion_Phi.npy: MSE=6.263e-01, MAE=5.358e-01, RMSE=7.914e-01, Cosine=0.833, R2=-0.274
+2025-04-21 15:38:32,673 - INFO - phi_1D_Species_Diffusion.npy: MSE=4.050e+01, MAE=5.400e+00, RMSE=6.364e+00, Cosine=0.996, R2=0.938
+2025-04-21 15:38:32,674 - INFO - phi_1D_Unsteady_Convection.npy: MSE=2.094e-02, MAE=5.812e-02, RMSE=1.447e-01, Cosine=0.892, R2=0.737
+2025-04-21 15:38:32,676 - INFO - phi_1D_Unsteady_Convection_Diffusion_Periodic.npy: MSE=1.252e-03, MAE=1.762e-02, RMSE=3.539e-02, Cosine=0.989, R2=0.965
+2025-04-21 15:38:32,677 - ERROR - ❌ s_2D_Shear_Flow_With_Tracer.npy failed: Input contains NaN.
+2025-04-21 15:38:32,678 - INFO - u_1D_Burgers_Equation.npy: MSE=4.982e-03, MAE=2.217e-02, RMSE=7.058e-02, Cosine=1.000, R2=0.997
+2025-04-21 15:38:32,679 - INFO - u_1D_Diffusion.npy: MSE=8.064e-04, MAE=1.951e-02, RMSE=2.840e-02, Cosine=1.000, R2=0.993
+2025-04-21 15:38:32,680 - ERROR - ❌ u_1D_KdV_Burgers_Equation.npy failed: Input contains NaN.
+2025-04-21 15:38:32,681 - INFO - u_1D_Linear_Convection.npy: MSE=1.241e-03, MAE=2.108e-02, RMSE=3.523e-02, Cosine=0.995, R2=0.982
+2025-04-21 15:38:32,682 - INFO - u_1D_Nonlinear_Convection.npy: MSE=5.545e-03, MAE=2.207e-02, RMSE=7.447e-02, Cosine=0.986, R2=0.941
+2025-04-21 15:38:32,684 - INFO - u_2D_Burgers_Equation.npy: MSE=5.528e-04, MAE=6.174e-03, RMSE=2.351e-02, Cosine=1.000, R2=0.989
+2025-04-21 15:38:32,685 - INFO - u_2D_Convection.npy: MSE=6.271e-05, MAE=2.658e-03, RMSE=7.919e-03, Cosine=1.000, R2=0.998
+2025-04-21 15:38:32,687 - INFO - u_2D_Diffusion.npy: MSE=3.161e-03, MAE=3.459e-02, RMSE=5.622e-02, Cosine=0.999, R2=0.691
+2025-04-21 15:38:32,689 - INFO - u_2D_Inviscid_Burgers.npy: MSE=8.980e-04, MAE=5.428e-03, RMSE=2.997e-02, Cosine=1.000, R2=0.970
+2025-04-21 15:38:32,691 - INFO - u_2D_Linear_Convection.npy: MSE=5.196e-04, MAE=9.025e-03, RMSE=2.280e-02, Cosine=1.000, R2=0.986
+2025-04-21 15:38:32,692 - INFO - u_2D_Navier_Stokes_Cavity.npy: MSE=1.778e-01, MAE=3.111e-01, RMSE=4.217e-01, Cosine=-0.053, R2=-2.201
+2025-04-21 15:38:32,693 - INFO - u_2D_Navier_Stokes_Channel.npy: MSE=1.331e-06, MAE=1.026e-03, RMSE=1.154e-03, Cosine=1.000, R2=1.000
+2025-04-21 15:38:32,694 - ERROR - ❌ u_2D_Shear_Flow_With_Tracer.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-21 15:38:32,695 - INFO - u_Fully_Developed_Turbulent_Channel_Flow.npy: MSE=2.194e+01, MAE=3.848e+00, RMSE=4.684e+00, Cosine=0.945, R2=0.536
+2025-04-21 15:38:32,696 - INFO - u_Lid_Driven_Cavity.npy: MSE=8.637e-04, MAE=2.107e-02, RMSE=2.939e-02, Cosine=0.993, R2=0.985
+2025-04-21 15:38:32,698 - INFO - v_2D_Burgers_Equation.npy: MSE=5.528e-04, MAE=6.174e-03, RMSE=2.351e-02, Cosine=1.000, R2=0.989
+2025-04-21 15:38:32,699 - INFO - v_2D_Convection.npy: MSE=6.271e-05, MAE=2.658e-03, RMSE=7.919e-03, Cosine=1.000, R2=0.998
+2025-04-21 15:38:32,701 - INFO - v_2D_Inviscid_Burgers.npy: MSE=8.980e-04, MAE=5.428e-03, RMSE=2.997e-02, Cosine=1.000, R2=0.970
+2025-04-21 15:38:32,702 - INFO - v_2D_Navier_Stokes_Cavity.npy: MSE=2.794e-02, MAE=1.125e-01, RMSE=1.672e-01, Cosine=-0.398, R2=-1.423
+2025-04-21 15:38:32,704 - INFO - v_2D_Navier_Stokes_Channel.npy: MSE=0.000e+00, MAE=0.000e+00, RMSE=0.000e+00, Cosine=0.000, R2=1.000
+2025-04-21 15:38:32,705 - INFO - v_Lid_Driven_Cavity.npy: MSE=1.169e-03, MAE=1.966e-02, RMSE=3.419e-02, Cosine=0.981, R2=0.869
+2025-04-21 15:38:32,709 - INFO - Found 35 common files.
+2025-04-21 15:38:45,350 - INFO - Found 35 common files.
+2025-04-21 15:38:53,992 - INFO - ####################################################################################################
+2025-04-21 15:38:53,992 - INFO - Using the sonnet-3.5, change temperature to 0.0, use the prompt prompts.json

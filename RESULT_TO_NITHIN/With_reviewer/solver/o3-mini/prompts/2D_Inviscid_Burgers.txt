@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+nx = 101         # number of grid points in x
+ny = 101         # number of grid points in y
+dx = 2.0 / (nx - 1)
+dy = 2.0 / (ny - 1)
+dt = 0.001       # time step size
+nt = int(0.40 / dt)  # number of time steps to reach final time 0.40
+
+# Spatial grid
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+
+# Initialize u and v
+u = np.ones((ny, nx))  # note: using (ny, nx) indexing for 2D arrays, y first then x
+v = np.ones((ny, nx))
+
+# Set initial conditions: for 0.5 <= x <= 1 and 0.5 <= y <= 1, set u=v=2
+X, Y = np.meshgrid(x, y)
+u[np.logical_and(X >= 0.5, X <= 1) & np.logical_and(Y >= 0.5, Y <= 1)] = 2
+v[np.logical_and(X >= 0.5, X <= 1) & np.logical_and(Y >= 0.5, Y <= 1)] = 2
+
+# Time-stepping loop using explicit upwind scheme for convection
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    # Update interior points using upwind differences because u, v are advecting themselves.
+    # For u: Upwind difference in x-direction using un[i,j] - un[i-1,j] and in y-direction using un[i,j] - un[i,j-1]
+    u[1:, 1:] = un[1:, 1:] - dt * (
+            un[1:, 1:] * (un[1:, 1:] - un[0:-1, 1:]) / dx +
+            vn[1:, 1:] * (un[1:, 1:] - un[1:, 0:-1]) / dy
+    )
+    # For v:
+    v[1:, 1:] = vn[1:, 1:] - dt * (
+            un[1:, 1:] * (vn[1:, 1:] - vn[0:-1, 1:]) / dx +
+            vn[1:, 1:] * (vn[1:, 1:] - vn[1:, 0:-1]) / dy
+    )
+    # Apply Dirichlet boundary conditions: u = 1, v = 1 on all boundaries.
+    u[0, :] = 1
+    u[-1, :] = 1
+    u[:, 0] = 1
+    u[:, -1] = 1
+    v[0, :] = 1
+    v[-1, :] = 1
+    v[:, 0] = 1
+    v[:, -1] = 1
+
+# Save final solutions
+np.save("u.npy", u)
+np.save("v.npy", v)

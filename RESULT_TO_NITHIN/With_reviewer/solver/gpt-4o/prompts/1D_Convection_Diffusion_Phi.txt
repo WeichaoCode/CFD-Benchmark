@@ -1,0 +1,47 @@
+```python
+import numpy as np
+
+# Parameters
+rho = 1.0  # kg/m^3
+u = 2.5    # m/s
+Gamma = 0.1  # kg/(m*s)
+L = 1.0    # Length of the domain
+N = 5      # Number of control volumes
+
+# Discretization
+dx = L / N
+x = np.linspace(dx/2, L-dx/2, N)  # Cell centers
+
+# Coefficients
+aW = Gamma / dx
+aE = Gamma / dx
+aP = rho * u * dx + aW + aE
+
+# Coefficient matrix and RHS vector
+A = np.zeros((N, N))
+b = np.zeros(N)
+
+# Fill the coefficient matrix A and RHS vector b
+for i in range(N):
+    if i == 0:
+        # Left boundary
+        A[i, i] = aP - aW
+        A[i, i+1] = -aE
+        b[i] = rho * u * dx * 1  # phi(0) = 1
+    elif i == N-1:
+        # Right boundary
+        A[i, i-1] = -aW
+        A[i, i] = aP - aE
+        b[i] = rho * u * dx * 0  # phi(1) = 0
+    else:
+        # Interior nodes
+        A[i, i-1] = -aW
+        A[i, i] = aP
+        A[i, i+1] = -aE
+
+# Solve the linear system
+phi = np.linalg.solve(A, b)
+
+# Save the solution
+np.save('phi.npy', phi)
+```

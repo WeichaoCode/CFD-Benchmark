@@ -1,0 +1,44 @@
+import numpy as np
+from scipy.optimize import fsolve
+
+# Parameters
+n = 3.0
+R0 = 5.0
+r_min = 0.0
+r_max = 1.0
+num_points = 100
+
+# Discretization
+r = np.linspace(r_min, r_max, num_points)
+dr = r[1] - r[0]
+
+# Initial guess for f
+f_initial = R0**(2/(n-1)) * (1 - r**2)**2
+
+# Boundary conditions
+f_initial[-1] = 0.0  # f(r=1) = 0
+
+# Function to solve
+def lane_emden(f):
+    dfdr = np.zeros_like(f)
+    d2fdr2 = np.zeros_like(f)
+    
+    # Central difference for the second derivative
+    d2fdr2[1:-1] = (f[2:] - 2*f[1:-1] + f[:-2]) / dr**2
+    # Forward difference for the first derivative at the center
+    dfdr[0] = (f[1] - f[0]) / dr
+    # Central difference for the first derivative elsewhere
+    dfdr[1:-1] = (f[2:] - f[:-2]) / (2*dr)
+    
+    # Lane-Emden equation
+    equation = d2fdr2 + 2/r * dfdr + f**n
+    equation[0] = dfdr[0]  # Regularity condition at r=0
+    equation[-1] = f[-1]  # Dirichlet boundary condition at r=1
+    
+    return equation
+
+# Solve the Lane-Emden equation
+f_solution = fsolve(lane_emden, f_initial)
+
+# Save the solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gpt-4o/prompts/f_solution_Lane_Emden_Equation.npy', f_solution)

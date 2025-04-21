@@ -1,0 +1,531 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_KdV_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_KdV_Burgers_Equation.py:32: RuntimeWarning: overflow encountered in multiply
+  u_new = u - dt * (u * u_x) + dt * a * u_xx + dt * b * u_xxx
+/opt/Dino_parallel/lib/python3.10/site-packages/numpy/lib/_function_base_impl.py:1286: RuntimeWarning: invalid value encountered in subtract
+  out[tuple(slice1)] = (f[tuple(slice4)] - f[tuple(slice2)]) / (2. * ax_dx)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_KdV_Burgers_Equation.py:32: RuntimeWarning: invalid value encountered in subtract
+  u_new = u - dt * (u * u_x) + dt * a * u_xx + dt * b * u_xxx
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_KdV_Burgers_Equation.py:32: RuntimeWarning: invalid value encountered in add
+  u_new = u - dt * (u * u_x) + dt * a * u_xx + dt * b * u_xxx
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 1
+Total Scripts Failed: 0
+--- Running: 2D_Unsteady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+Stability check (should be <= 0.5): 24.502499999999998
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Unsteady_Heat_Equation.py:39: RuntimeWarning: overflow encountered in divide
+  (T_old[1:-1, 2:] - 2*T_old[1:-1, 1:-1] + T_old[1:-1, :-2]) / dx**2 +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Unsteady_Heat_Equation.py:40: RuntimeWarning: overflow encountered in divide
+  (T_old[2:, 1:-1] - 2*T_old[1:-1, 1:-1] + T_old[:-2, 1:-1]) / dy**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Unsteady_Heat_Equation.py:39: RuntimeWarning: overflow encountered in add
+  (T_old[1:-1, 2:] - 2*T_old[1:-1, 1:-1] + T_old[1:-1, :-2]) / dx**2 +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Unsteady_Heat_Equation.py:39: RuntimeWarning: invalid value encountered in subtract
+  (T_old[1:-1, 2:] - 2*T_old[1:-1, 1:-1] + T_old[1:-1, :-2]) / dx**2 +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Unsteady_Heat_Equation.py:39: RuntimeWarning: invalid value encountered in add
+  (T_old[1:-1, 2:] - 2*T_old[1:-1, 1:-1] + T_old[1:-1, :-2]) / dx**2 +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Unsteady_Heat_Equation.py:40: RuntimeWarning: invalid value encountered in subtract
+  (T_old[2:, 1:-1] - 2*T_old[1:-1, 1:-1] + T_old[:-2, 1:-1]) / dy**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Unsteady_Heat_Equation.py:40: RuntimeWarning: invalid value encountered in add
+  (T_old[2:, 1:-1] - 2*T_old[1:-1, 1:-1] + T_old[:-2, 1:-1]) / dy**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Unsteady_Heat_Equation.py:38: RuntimeWarning: invalid value encountered in add
+  T[1:-1, 1:-1] = T_old[1:-1, 1:-1] + alpha * dt * (
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 0
+--- Running: 1D_Diffusion.py ---
+Exit Code: 0
+Output:
+Stability condition: 0.12300501256281407
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 0
+--- Running: Fully_Developed_Turbulent_Channel_Flow.py ---
+Exit Code: 1
+Output:
+
+Errors:
+TypeError: only length-1 arrays can be converted to Python scalars
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/Fully_Developed_Turbulent_Channel_Flow.py", line 70, in <module>
+    u = solve_momentum()
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/Fully_Developed_Turbulent_Channel_Flow.py", line 47, in solve_momentum
+    diags[0, i] = a_im
+ValueError: setting an array element with a sequence.
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 1
+--- Running: Flow_Past_Circular_Cylinder.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 4
+Total Scripts Failed: 1
+--- Running: 1D_Species_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 5
+Total Scripts Failed: 1
+--- Running: 2D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 6
+Total Scripts Failed: 1
+--- Running: 2D_Shear_Flow_With_Tracer.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Shear_Flow_With_Tracer.py:59: RuntimeWarning: overflow encountered in multiply
+  u_adv_hat = -1j * (kx[:, np.newaxis] * u_hat + kz[np.newaxis, :] * w_hat) * u_hat
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Shear_Flow_With_Tracer.py:60: RuntimeWarning: overflow encountered in multiply
+  w_adv_hat = -1j * (kx[:, np.newaxis] * u_hat + kz[np.newaxis, :] * w_hat) * w_hat
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Shear_Flow_With_Tracer.py:61: RuntimeWarning: overflow encountered in multiply
+  s_adv_hat = -1j * (kx[:, np.newaxis] * u_hat + kz[np.newaxis, :] * w_hat) * s_hat
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Shear_Flow_With_Tracer.py:69: RuntimeWarning: invalid value encountered in multiply
+  u_hat += dt * (u_diff_hat + u_adv_hat)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Shear_Flow_With_Tracer.py:70: RuntimeWarning: invalid value encountered in multiply
+  w_hat += dt * (w_diff_hat + w_adv_hat)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Shear_Flow_With_Tracer.py:71: RuntimeWarning: invalid value encountered in multiply
+  s_hat += dt * (s_diff_hat + s_adv_hat)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 7
+Total Scripts Failed: 1
+--- Running: 1D_Unsteady_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 8
+Total Scripts Failed: 1
+--- Running: 2D_Navier_Stokes_Cavity.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:62: RuntimeWarning: overflow encountered in multiply
+  u_new = u + dt * (-u * du_dx - v * du_dy +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:69: RuntimeWarning: overflow encountered in square
+  rhs = -rho * (du_dx**2 + 2*du_dy*dv_dx + dv_dy**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:87: RuntimeWarning: invalid value encountered in subtract
+  if np.max(np.abs(p_new - p_old)) < 1e-6:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:33: RuntimeWarning: invalid value encountered in subtract
+  dx_field[1:-1, 1:-1] = (field[1:-1, 2:] - field[1:-1, :-2]) / (2*dx)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:62: RuntimeWarning: invalid value encountered in multiply
+  u_new = u + dt * (-u * du_dx - v * du_dy +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:40: RuntimeWarning: invalid value encountered in add
+  lap[1:-1, 1:-1] = ((field[1:-1, 2:] + field[1:-1, :-2] - 2*field[1:-1, 1:-1]) / dx**2 +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:40: RuntimeWarning: invalid value encountered in subtract
+  lap[1:-1, 1:-1] = ((field[1:-1, 2:] + field[1:-1, :-2] - 2*field[1:-1, 1:-1]) / dx**2 +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:62: RuntimeWarning: invalid value encountered in add
+  u_new = u + dt * (-u * du_dx - v * du_dy +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:65: RuntimeWarning: invalid value encountered in multiply
+  v_new = v + dt * (-u * dv_dx - v * dv_dy +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:69: RuntimeWarning: invalid value encountered in multiply
+  rhs = -rho * (du_dx**2 + 2*du_dy*dv_dx + dv_dy**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:41: RuntimeWarning: invalid value encountered in add
+  (field[2:, 1:-1] + field[:-2, 1:-1] - 2*field[1:-1, 1:-1]) / dy**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:41: RuntimeWarning: invalid value encountered in subtract
+  (field[2:, 1:-1] + field[:-2, 1:-1] - 2*field[1:-1, 1:-1]) / dy**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:34: RuntimeWarning: invalid value encountered in subtract
+  dy_field[1:-1, 1:-1] = (field[2:, 1:-1] - field[:-2, 1:-1]) / (2*dy)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:40: RuntimeWarning: overflow encountered in divide
+  lap[1:-1, 1:-1] = ((field[1:-1, 2:] + field[1:-1, :-2] - 2*field[1:-1, 1:-1]) / dx**2 +
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Cavity.py:41: RuntimeWarning: overflow encountered in divide
+  (field[2:, 1:-1] + field[:-2, 1:-1] - 2*field[1:-1, 1:-1]) / dy**2)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 9
+Total Scripts Failed: 1
+--- Running: 1D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 10
+Total Scripts Failed: 1
+--- Running: 2D_Inviscid_Burgers.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Inviscid_Burgers.py:48: RuntimeWarning: overflow encountered in scalar multiply
+  0.5 * dt/dy * (u[i+1,j] * v[i+1,j] - u[i-1,j] * v[i-1,j])
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Inviscid_Burgers.py:52: RuntimeWarning: overflow encountered in scalar power
+  0.5 * dt/dy * (v[i+1,j]**2 - v[i-1,j]**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Inviscid_Burgers.py:47: RuntimeWarning: overflow encountered in scalar power
+  0.5 * dt/dx * (u[i,j+1]**2 - u[i,j-1]**2) - \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Inviscid_Burgers.py:51: RuntimeWarning: overflow encountered in scalar multiply
+  0.5 * dt/dx * (v[i,j+1] * u[i,j+1] - v[i,j-1] * u[i,j-1]) - \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Inviscid_Burgers.py:47: RuntimeWarning: invalid value encountered in scalar subtract
+  0.5 * dt/dx * (u[i,j+1]**2 - u[i,j-1]**2) - \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Inviscid_Burgers.py:51: RuntimeWarning: invalid value encountered in scalar subtract
+  0.5 * dt/dx * (v[i,j+1] * u[i,j+1] - v[i,j-1] * u[i,j-1]) - \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Inviscid_Burgers.py:46: RuntimeWarning: invalid value encountered in scalar subtract
+  uf[i,j] = 0.5 * (u[i,j+1] + u[i,j]) - \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Inviscid_Burgers.py:50: RuntimeWarning: invalid value encountered in scalar subtract
+  vf[i,j] = 0.5 * (v[i,j+1] + v[i,j]) - \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Inviscid_Burgers.py:48: RuntimeWarning: invalid value encountered in scalar subtract
+  0.5 * dt/dy * (u[i+1,j] * v[i+1,j] - u[i-1,j] * v[i-1,j])
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Inviscid_Burgers.py:52: RuntimeWarning: invalid value encountered in scalar subtract
+  0.5 * dt/dy * (v[i+1,j]**2 - v[i-1,j]**2)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 11
+Total Scripts Failed: 1
+--- Running: 1D_Heat_Conduction_With_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Heat_Conduction_With_Convection.py:57: SparseEfficiencyWarning: spsolve requires A be CSC or CSR matrix format
+  T = la.spsolve(A, rhs)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Heat_Conduction_With_Convection.py:57: MatrixRankWarning: Matrix is exactly singular
+  T = la.spsolve(A, rhs)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 12
+Total Scripts Failed: 1
+--- Running: 2D_Steady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 13
+Total Scripts Failed: 1
+--- Running: Lane_Emden_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/Lane_Emden_Equation.py:55: SparseEfficiencyWarning: spsolve requires A be CSC or CSR matrix format
+  df = spla.spsolve(J, -res)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 14
+Total Scripts Failed: 1
+--- Running: 1D_Heat_Conduction_With_Source.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 15
+Total Scripts Failed: 1
+--- Running: 2D_Navier_Stokes_Channel.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Navier_Stokes_Channel.py", line 52, in <module>
+    p_laplacian = sp.poisson((ny, nx), format='csr')
+AttributeError: module 'scipy.sparse' has no attribute 'poisson'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 15
+Total Scripts Failed: 2
+--- Running: 2D_Poisson_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 16
+Total Scripts Failed: 2
+--- Running: 1D_Convection_Diffusion_Phi.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 17
+Total Scripts Failed: 2
+--- Running: 2D_Rayleigh_Benard_Convection.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/2D_Rayleigh_Benard_Convection.py", line 3, in <module>
+    from numba import njit
+ModuleNotFoundError: No module named 'numba'
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 17
+Total Scripts Failed: 3
+--- Running: 2D_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 18
+Total Scripts Failed: 3
+--- Running: 1D_Nonlinear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Nonlinear_Convection.py:30: RuntimeWarning: overflow encountered in scalar multiply
+  u[i] = u_old[i] - 0.5 * dt/dx * u_old[i] * (u_old[i+1] - u_old[i-1]) + \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Nonlinear_Convection.py:31: RuntimeWarning: overflow encountered in scalar multiply
+  0.5 * (dt/dx)**2 * u_old[i] * (u_old[i+1] - 2*u_old[i] + u_old[i-1])
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Nonlinear_Convection.py:30: RuntimeWarning: invalid value encountered in scalar add
+  u[i] = u_old[i] - 0.5 * dt/dx * u_old[i] * (u_old[i+1] - u_old[i-1]) + \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Nonlinear_Convection.py:30: RuntimeWarning: invalid value encountered in scalar subtract
+  u[i] = u_old[i] - 0.5 * dt/dx * u_old[i] * (u_old[i+1] - u_old[i-1]) + \
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Nonlinear_Convection.py:31: RuntimeWarning: invalid value encountered in scalar subtract
+  0.5 * (dt/dx)**2 * u_old[i] * (u_old[i+1] - 2*u_old[i] + u_old[i-1])
+/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Nonlinear_Convection.py:31: RuntimeWarning: invalid value encountered in scalar add
+  0.5 * (dt/dx)**2 * u_old[i] * (u_old[i+1] - 2*u_old[i] + u_old[i-1])
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 19
+Total Scripts Failed: 3
+--- Running: 1D_Unsteady_Convection_Diffusion_Periodic.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 20
+Total Scripts Failed: 3
+--- Running: 1D_Euler_Shock_Tube.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Euler_Shock_Tube.py", line 78, in <module>
+    F[:, j] = lax_friedrichs_flux(UL, UR)
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Euler_Shock_Tube.py", line 55, in lax_friedrichs_flux
+    FL = compute_flux(UL)
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/sonnet-35/prompts/1D_Euler_Shock_Tube.py", line 48, in compute_flux
+    F[0, :] = rho * u
+IndexError: too many indices for array: array is 1-dimensional, but 2 were indexed
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 20
+Total Scripts Failed: 4
+--- Running: Lid_Driven_Cavity.py ---
+ 'NoneType' object has no attribute 'returncode'
+
+
+====== Execution Summary ======
+Total Scripts Passed: 20
+Total Scripts Failed: 4
+--- Running: Pipe_Flow_Disk_EVP.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 21
+Total Scripts Failed: 4
+--- Running: 2D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 22
+Total Scripts Failed: 4
+--- Running: Vortex_Roll_Up.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 23
+Total Scripts Failed: 4
+--- Running: 2D_Laplace_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 24
+Total Scripts Failed: 4
+--- Running: 1D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 25
+Total Scripts Failed: 4
+--- Running: 2D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 26
+Total Scripts Failed: 4

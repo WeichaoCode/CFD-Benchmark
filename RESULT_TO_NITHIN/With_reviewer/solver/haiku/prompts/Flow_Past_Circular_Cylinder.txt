@@ -1,0 +1,91 @@
+```python
+import numpy as np
+
+# Grid parameters with reduced resolution and time steps for faster convergence
+nr = 50  # Reduced number of points in r direction
+ntheta = 60  # Reduced number of points in theta direction
+r_min, r_max = 0.5, 10.0
+dr = (r_max - r_min) / (nr-1)
+dtheta = 2*np.pi / ntheta
+dt = 0.005  # Increased time step
+nt = 200  # Reduced number of time steps
+nu = 0.005
+v_inf = 1.0
+
+# Create grid
+r = np.linspace(r_min, r_max, nr)
+theta = np.linspace(0, 2*np.pi, ntheta)
+r_grid, theta_grid = np.meshgrid(r, theta, indexing='ij')
+
+# Initialize arrays
+psi = np.zeros((nr, ntheta))
+omega = np.zeros((nr, ntheta))
+psi_new = np.zeros((nr, ntheta))
+omega_new = np.zeros((nr, ntheta))
+
+# Set initial and boundary conditions
+y = r_grid * np.sin(theta_grid)
+psi[-1,:] = v_inf * y[-1,:] + 20
+psi[0,:] = 20
+
+# Time stepping loop
+for n in range(nt):
+    # Solve Poisson equation for stream function (reduced iterations)
+    for iter in range(20):
+        for i in range(1, nr-1):
+            for j in range(ntheta):
+                jp = (j+1) % ntheta
+                jm = (j-1) % ntheta
+                
+                r_term = 1/(2*r[i]*dr)
+                r2_term = 1/(r[i]**2)
+                
+                psi_new[i,j] = ((psi[i+1,j] + psi[i-1,j])/(dr**2) + 
+                               r_term*(psi[i+1,j] - psi[i-1,j]) +
+                               r2_term*(psi[i,jp] + psi[i,jm])/(dtheta**2) - 
+                               omega[i,j]) / (2/(dr**2) + 2*r2_term/(dtheta**2))
+        
+        psi_new[0,:] = 20
+        psi_new[-1,:] = v_inf * y[-1,:] + 20
+        psi = psi_new.copy()
+    
+    # Calculate velocities
+    ur = np.zeros((nr, ntheta))
+    utheta = np.zeros((nr, ntheta))
+    
+    for i in range(nr):
+        for j in range(ntheta):
+            jp = (j+1) % ntheta
+            jm = (j-1) % ntheta
+            
+            ur[i,j] = (psi[i,jp] - psi[i,jm])/(2*r[i]*dtheta)
+            if i == 0:
+                utheta[i,j] = -(psi[1,j] - psi[0,j])/dr
+            elif i == nr-1:
+                utheta[i,j] = -(psi[-1,j] - psi[-2,j])/dr
+            else:
+                utheta[i,j] = -(psi[i+1,j] - psi[i-1,j])/(2*dr)
+    
+    # Solve vorticity transport equation
+    for i in range(1, nr-1):
+        for j in range(ntheta):
+            jp = (j+1) % ntheta
+            jm = (j-1) % ntheta
+            
+            r_adv = ur[i,j]*(omega[i+1,j] - omega[i-1,j])/(2*dr)
+            theta_adv = utheta[i,j]*(omega[i,jp] - omega[i,jm])/(2*r[i]*dtheta)
+            
+            r_diff = (omega[i+1,j] - 2*omega[i,j] + omega[i-1,j])/(dr**2) + \
+                    (omega[i+1,j] - omega[i-1,j])/(2*r[i]*dr)
+            theta_diff = (omega[i,jp] - 2*omega[i,j] + omega[i,jm])/(r[i]**2 * dtheta**2)
+            
+            omega_new[i,j] = omega[i,j] + dt*(-r_adv - theta_adv + nu*(r_diff + theta_diff))
+    
+    omega_new[0,:] = 2*(psi[0,:] - psi[1,:])/(dr**2)
+    omega_new[-1,:] = 0
+    omega = omega_new.copy()
+
+# Save final solutions
+np.save('psi.npy', psi)
+np.save('omega.npy', omega)
+```

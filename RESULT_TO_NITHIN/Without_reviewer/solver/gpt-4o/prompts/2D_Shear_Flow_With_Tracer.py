@@ -1,0 +1,60 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+Lx, Lz = 1.0, 2.0
+Nx, Nz = 128, 256
+dx, dz = Lx / Nx, Lz / Nz
+dt = 0.001
+T = 20.0
+nu = 1 / 5e4
+D = nu
+save_values = ['u', 'w', 's']
+
+# Grid
+x = np.linspace(0, Lx, Nx, endpoint=False)
+z = np.linspace(-Lz/2, Lz/2, Nz, endpoint=False)
+X, Z = np.meshgrid(x, z, indexing='ij')
+
+# Initial conditions
+u = 0.5 * (1 + np.tanh((Z - 0.5) / 0.1) - np.tanh((Z + 0.5) / 0.1))
+w = 0.01 * np.sin(2 * np.pi * X) * (np.exp(-((Z - 0.5) / 0.1)**2) + np.exp(-((Z + 0.5) / 0.1)**2))
+s = u.copy()
+
+# Helper functions for derivatives
+def periodic_derivative(f, axis, dx):
+    return np.roll(f, -1, axis=axis) - np.roll(f, 1, axis=axis) / (2 * dx)
+
+def laplacian(f, dx, dz):
+    d2fdx2 = (np.roll(f, -1, axis=0) - 2 * f + np.roll(f, 1, axis=0)) / dx**2
+    d2fdz2 = (np.roll(f, -1, axis=1) - 2 * f + np.roll(f, 1, axis=1)) / dz**2
+    return d2fdx2 + d2fdz2
+
+# Time-stepping loop
+t = 0.0
+while t < T:
+    # Compute derivatives
+    dudx = periodic_derivative(u, axis=0, dx=dx)
+    dudz = periodic_derivative(u, axis=1, dx=dz)
+    dwdx = periodic_derivative(w, axis=0, dx=dx)
+    dwdz = periodic_derivative(w, axis=1, dx=dz)
+    dsdx = periodic_derivative(s, axis=0, dx=dx)
+    dsdz = periodic_derivative(s, axis=1, dx=dz)
+
+    # Compute nonlinear terms
+    u_nonlinear = u * dudx + w * dudz
+    w_nonlinear = u * dwdx + w * dwdz
+    s_nonlinear = u * dsdx + w * dsdz
+
+    # Update fields
+    u += dt * (-u_nonlinear + nu * laplacian(u, dx, dz))
+    w += dt * (-w_nonlinear + nu * laplacian(w, dx, dz))
+    s += dt * (-s_nonlinear + D * laplacian(s, dx, dz))
+
+    # Update time
+    t += dt
+
+# Save final results
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gpt-4o/prompts/u_2D_Shear_Flow_With_Tracer.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gpt-4o/prompts/w_2D_Shear_Flow_With_Tracer.npy', w)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gpt-4o/prompts/s_2D_Shear_Flow_With_Tracer.npy', s)

@@ -1,0 +1,117 @@
+```python
+import numpy as np
+
+# Parameters
+r_inner = 0.5
+r_outer = 10.0
+v_inf = 1.0
+nu = 0.005
+dr = 0.1
+dtheta = 0.1
+dt = 0.01
+T = 1.0
+
+# Grid
+r = np.arange(r_inner, r_outer + dr, dr)
+theta = np.arange(0, 2 * np.pi, dtheta)
+R, Theta = np.meshgrid(r, theta)
+Nr = len(r)
+Ntheta = len(theta)
+
+# Initialize
+psi = np.zeros((Ntheta, Nr))
+omega = np.zeros((Ntheta, Nr))
+
+# Initial condition
+# psi = 0
+# omega = 0
+
+# Boundary conditions
+psi[:, 0] = 20.0  # Inner boundary
+omega[:, 0] = 2 * (psi[:, 1] - psi[:, 0]) / dr**2  # Inner boundary
+
+y = R * np.sin(Theta)
+psi[:, -1] = v_inf * y[:, -1] + 20.0  # Outer boundary
+omega[:, -1] = 0.0  # Outer boundary
+
+
+def solve_poisson(omega, dr, dtheta):
+    psi = np.zeros_like(omega)
+    # Boundary conditions
+    psi[:, 0] = 20.0  # Inner boundary
+    y = R * np.sin(Theta)
+    psi[:, -1] = v_inf * y[:, -1] + 20.0  # Outer boundary
+
+    # Iterative solver (Jacobi)
+    max_iter = 1000
+    tolerance = 1e-6
+    for _ in range(max_iter):
+        psi_old = psi.copy()
+        for i in range(1, Ntheta - 1):
+            for j in range(1, Nr - 1):
+                term1 = (psi_old[i, j + 1] + psi_old[i, j - 1]) / dr**2
+                term2 = (psi_old[i + 1, j] + psi_old[i - 1, j]) / (R[i, j] * dtheta)**2
+                term3 = (psi_old[i, j + 1] - psi_old[i, j - 1]) / (2 * R[i, j] * dr * dr)
+                psi[i, j] = 0.5 * (term1 + term2 + term3 + omega[i, j]) / (1 / dr**2 + 1 / (R[i, j] * dtheta)**2)
+
+        # Boundary conditions
+        psi[:, 0] = 20.0  # Inner boundary
+        psi[:, -1] = v_inf * y[:, -1] + 20.0  # Outer boundary
+        # Periodic BC
+        psi[0, :] = psi[-2, :]
+        psi[-1, :] = psi[1, :]
+
+        # Check for convergence
+        if np.max(np.abs(psi - psi_old)) < tolerance:
+            break
+    return psi
+
+
+# Time loop
+t = 0.0
+while t < T:
+    # Calculate velocity components
+    u_r = np.zeros_like(psi)
+    u_theta = np.zeros_like(psi)
+    for i in range(1, Ntheta - 1):
+        for j in range(1, Nr - 1):
+            u_r[i, j] = (psi[i + 1, j] - psi[i - 1, j]) / (2 * R[i, j] * dtheta)
+            u_theta[i, j] = -(psi[i, j + 1] - psi[i, j - 1]) / (2 * dr)
+
+    # Periodic BC
+    u_r[0, :] = u_r[-2, :]
+    u_r[-1, :] = u_r[1, :]
+    u_theta[0, :] = u_theta[-2, :]
+    u_theta[-1, :] = u_theta[1, :]
+
+    # Vorticity transport equation (explicit FTCS)
+    omega_new = np.zeros_like(omega)
+    for i in range(1, Ntheta - 1):
+        for j in range(1, Nr - 1):
+            domega_dt = (
+                -u_r[i, j] * (omega[i, j + 1] - omega[i, j - 1]) / (2 * dr)
+                - u_theta[i, j] / R[i, j] * (omega[i + 1, j] - omega[i - 1, j]) / (2 * dtheta)
+                + nu * (omega[i, j + 1] - 2 * omega[i, j] + omega[i, j - 1]) / dr**2
+                + nu / R[i, j] * (omega[i, j + 1] - omega[i, j - 1]) / (2 * dr)
+                + nu / R[i, j]**2 * (omega[i + 1, j] - 2 * omega[i, j] + omega[i - 1, j]) / dtheta**2
+            )
+            omega_new[i, j] = omega[i, j] + dt * domega_dt
+
+    # Boundary conditions
+    omega_new[:, 0] = 2 * (psi[:, 1] - psi[:, 0]) / dr**2  # Inner boundary
+    omega_new[:, -1] = 0.0  # Outer boundary
+    # Periodic BC
+    omega_new[0, :] = omega_new[-2, :]
+    omega_new[-1, :] = omega_new[1, :]
+
+    omega = omega_new.copy()
+
+    # Solve Poisson equation
+    psi = solve_poisson(omega, dr, dtheta)
+
+    t += dt
+
+# Save the final solution
+np.save('psi.npy', psi)
+np.save('omega.npy', omega)
+```

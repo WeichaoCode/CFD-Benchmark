@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+import numpy as np
+from numpy.linalg import norm, solve
+
+# Parameters
+n = 3.0
+R0 = 5.0  # initial guess parameter
+N = 101   # number of grid points
+r = np.linspace(0, 1, N)
+dr = r[1] - r[0]
+
+# Initial guess using provided formula: f0(r) = R0^(2/(n-1)) * (1 - r^2)**2
+# For n=3, exponent is 2/(3-1)=1, so f0 = R0*(1 - r**2)**2.
+f = R0 * (1 - r**2)**2
+
+# Newton-Raphson nonlinear solver
+tol = 1e-8
+max_iter = 100
+
+for iteration in range(max_iter):
+    # Residual vector
+    R_vec = np.zeros(N)
+    # Jacobian matrix
+    J = np.zeros((N, N))
+    
+    # Boundary at r=0: use regularity condition.
+    # In spherical coordinates, using the expansion f(r)=f(0)+1/2 f''(0) r^2, one obtains:
+    #   Laplacian = f''(0) + O(r^2) and f''(0) ~ 3*(f[1]-f[0])/dr^2.
+    R_vec[0] = 3*(f[1] - f[0])/(dr**2) + f[0]**3
+    J[0,0] = -3/(dr**2) + 3*f[0]**2
+    J[0,1] = 3/(dr**2)
+    
+    # Interior nodes i=1,...,N-2
+    for i in range(1, N-1):
+        # Avoid division by zero at r=0; here r[i] > 0 since i>=1.
+        Ri = (f[i+1] - 2*f[i] + f[i-1])/(dr**2) \
+             + (f[i+1] - f[i-1])/(2*r[i]*dr) \
+             + f[i]**3
+        R_vec[i] = Ri
+        
+        # Derivatives for finite difference:
+        J[i, i-1] = 1/(dr**2) - 1/(2*r[i]*dr)
+        J[i, i]   = -2/(dr**2) + 3*f[i]**2
+        J[i, i+1] = 1/(dr**2) + 1/(2*r[i]*dr)
+    
+    # Outer boundary i=N-1: Dirichlet f(1)=0
+    R_vec[N-1] = f[N-1]
+    J[N-1, N-1] = 1.0
+    
+    # Check residual norm
+    res_norm = norm(R_vec, ord=2)
+    if res_norm < tol:
+        break
+    
+    # Solve for update delta_f: J * delta_f = -R_vec
+    delta_f = solve(J, -R_vec)
+    f = f + delta_f
+
+# Save final solution as a 1D numpy array under the variable name "f"
+np.save('/PDE_Benchmark/results/prediction/o3-mini/prompts/f_Lane_Emden_Equation.npy', f)

@@ -1,0 +1,501 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_KdV_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:38: RuntimeWarning: overflow encountered in scalar multiply
+  u_new[i] = u[i] + dt * (-u[i] * du_dx + a * d2u_dx2 + b * d3u_dx3)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:35: RuntimeWarning: invalid value encountered in scalar add
+  d3u_dx3 = (-u[i_minus_2] + 2 * u[i_minus_1] - 2 * u[i_plus_1] + u[i_plus_2]) / (2 * dx**3)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:34: RuntimeWarning: invalid value encountered in scalar subtract
+  d2u_dx2 = (u[i_plus_1] - 2 * u[i] + u[i_minus_1]) / (dx**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:34: RuntimeWarning: invalid value encountered in scalar add
+  d2u_dx2 = (u[i_plus_1] - 2 * u[i] + u[i_minus_1]) / (dx**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:33: RuntimeWarning: invalid value encountered in scalar subtract
+  du_dx = (u[i_plus_1] - u[i_minus_1]) / (2 * dx)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:35: RuntimeWarning: invalid value encountered in scalar subtract
+  d3u_dx3 = (-u[i_minus_2] + 2 * u[i_minus_1] - 2 * u[i_plus_1] + u[i_plus_2]) / (2 * dx**3)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_KdV_Burgers_Equation.py:38: RuntimeWarning: invalid value encountered in scalar add
+  u_new[i] = u[i] + dt * (-u[i] * du_dx + a * d2u_dx2 + b * d3u_dx3)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 1
+Total Scripts Failed: 0
+--- Running: 2D_Unsteady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 0
+--- Running: 1D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 0
+--- Running: Fully_Developed_Turbulent_Channel_Flow.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Fully_Developed_Turbulent_Channel_Flow.py", line 76, in <module>
+    solve_channel_flow()
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Fully_Developed_Turbulent_Channel_Flow.py", line 57, in solve_channel_flow
+    diag[1:] -= lower_diag * upper_diag[:-1] / diag[:-1]
+ValueError: operands could not be broadcast together with shapes (100,) (99,) 
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 1
+--- Running: Flow_Past_Circular_Cylinder.py ---
+ 'NoneType' object has no attribute 'returncode'
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 1
+--- Running: 1D_Species_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 4
+Total Scripts Failed: 1
+--- Running: 2D_Diffusion.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 5
+Total Scripts Failed: 1
+--- Running: 2D_Shear_Flow_With_Tracer.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:42: RuntimeWarning: overflow encountered in multiply
+  return u * f_x + w * f_z
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:42: RuntimeWarning: invalid value encountered in add
+  return u * f_x + w * f_z
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:35: RuntimeWarning: invalid value encountered in subtract
+  u_x = (np.roll(u, -1, axis=1) - np.roll(u, 1, axis=1)) / (2 * (x[1] - x[0]))
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:36: RuntimeWarning: invalid value encountered in subtract
+  w_z = (np.roll(w, -1, axis=0) - np.roll(w, 1, axis=0)) / (2 * (z[1] - z[0]))
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:40: RuntimeWarning: invalid value encountered in subtract
+  f_x = (np.roll(f, -1, axis=1) - np.roll(f, 1, axis=1)) / (2 * (x[1] - x[0]))
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:41: RuntimeWarning: invalid value encountered in subtract
+  f_z = (np.roll(f, -1, axis=0) - np.roll(f, 1, axis=0)) / (2 * (z[1] - z[0]))
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:25: RuntimeWarning: invalid value encountered in subtract
+  f_xx = (np.roll(f, -1, axis=1) - 2 * f + np.roll(f, 1, axis=1)) / (x[1] - x[0])**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:25: RuntimeWarning: invalid value encountered in add
+  f_xx = (np.roll(f, -1, axis=1) - 2 * f + np.roll(f, 1, axis=1)) / (x[1] - x[0])**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:26: RuntimeWarning: invalid value encountered in subtract
+  f_zz = (np.roll(f, -1, axis=0) - 2 * f + np.roll(f, 1, axis=0)) / (z[1] - z[0])**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Shear_Flow_With_Tracer.py:26: RuntimeWarning: invalid value encountered in add
+  f_zz = (np.roll(f, -1, axis=0) - 2 * f + np.roll(f, 1, axis=0)) / (z[1] - z[0])**2
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 6
+Total Scripts Failed: 1
+--- Running: 1D_Unsteady_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 7
+Total Scripts Failed: 1
+--- Running: 2D_Navier_Stokes_Cavity.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Navier_Stokes_Cavity.py:74: RuntimeWarning: overflow encountered in scalar add
+  (u[i + 1, j] - u[i - 1, j]) / (2 * dx) * (u[i + 1, j] - u[i - 1, j]) / (2 * dx)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Navier_Stokes_Cavity.py:74: RuntimeWarning: overflow encountered in scalar divide
+  (u[i + 1, j] - u[i - 1, j]) / (2 * dx) * (u[i + 1, j] - u[i - 1, j]) / (2 * dx)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Navier_Stokes_Cavity.py:74: RuntimeWarning: overflow encountered in scalar multiply
+  (u[i + 1, j] - u[i - 1, j]) / (2 * dx) * (u[i + 1, j] - u[i - 1, j]) / (2 * dx)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Navier_Stokes_Cavity.py:75: RuntimeWarning: overflow encountered in scalar divide
+  + 2 * (u[i, j + 1] - u[i, j - 1]) / (2 * dy) * (v[i + 1, j] - v[i - 1, j]) / (2 * dx)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Navier_Stokes_Cavity.py:75: RuntimeWarning: overflow encountered in scalar multiply
+  + 2 * (u[i, j + 1] - u[i, j - 1]) / (2 * dy) * (v[i + 1, j] - v[i - 1, j]) / (2 * dx)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Navier_Stokes_Cavity.py:76: RuntimeWarning: overflow encountered in scalar divide
+  + (v[i, j + 1] - v[i, j - 1]) / (2 * dy) * (v[i, j + 1] - v[i, j - 1]) / (2 * dy)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Navier_Stokes_Cavity.py:76: RuntimeWarning: overflow encountered in scalar multiply
+  + (v[i, j + 1] - v[i, j - 1]) / (2 * dy) * (v[i, j + 1] - v[i, j - 1]) / (2 * dy)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Navier_Stokes_Cavity.py:74: RuntimeWarning: invalid value encountered in scalar add
+  (u[i + 1, j] - u[i - 1, j]) / (2 * dx) * (u[i + 1, j] - u[i - 1, j]) / (2 * dx)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 8
+Total Scripts Failed: 1
+--- Running: 1D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 9
+Total Scripts Failed: 1
+--- Running: 2D_Inviscid_Burgers.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 10
+Total Scripts Failed: 1
+--- Running: 1D_Heat_Conduction_With_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 11
+Total Scripts Failed: 1
+--- Running: 2D_Steady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 12
+Total Scripts Failed: 1
+--- Running: Lane_Emden_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Lane_Emden_Equation.py:43: RuntimeWarning: overflow encountered in scalar power
+  residual[i] = (f[i-1] - 2*f[i] + f[i+1]) / dr**2 + (f[i+1] - f[i-1]) / (2 * r[i] * dr) + f[i]**n
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Lane_Emden_Equation.py:52: RuntimeWarning: overflow encountered in scalar power
+  residual[0] = 2 * (f[1] - f[0]) / dr**2 + f[0]**n
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 13
+Total Scripts Failed: 1
+--- Running: 1D_Heat_Conduction_With_Source.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 14
+Total Scripts Failed: 1
+--- Running: 2D_Navier_Stokes_Channel.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 15
+Total Scripts Failed: 1
+--- Running: 2D_Poisson_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 16
+Total Scripts Failed: 1
+--- Running: 1D_Convection_Diffusion_Phi.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_Convection_Diffusion_Phi.py:53: RuntimeWarning: invalid value encountered in scalar divide
+  c[i] /= w
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_Convection_Diffusion_Phi.py:54: RuntimeWarning: divide by zero encountered in scalar divide
+  d[i] = (d[i] - a[i] * d[i-1]) / w
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 17
+Total Scripts Failed: 1
+--- Running: 2D_Rayleigh_Benard_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:64: RuntimeWarning: overflow encountered in multiply
+  adv_w = u * dudx(w) + w * dudz(w)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:65: RuntimeWarning: overflow encountered in multiply
+  adv_b = u * dudx(b) + w * dudz(b)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:63: RuntimeWarning: invalid value encountered in multiply
+  adv_u = u * dudx(u) + w * dudz(u)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:64: RuntimeWarning: invalid value encountered in multiply
+  adv_w = u * dudx(w) + w * dudz(w)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:41: RuntimeWarning: invalid value encountered in subtract
+  du[1:-1, :] = (u[2:, :] - u[:-2, :]) / (2 * dz)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:65: RuntimeWarning: invalid value encountered in multiply
+  adv_b = u * dudx(b) + w * dudz(b)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:55: RuntimeWarning: invalid value encountered in subtract
+  d2u[1:-1, :] = (u[2:, :] - 2 * u[1:-1, :] + u[:-2, :]) / dz**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:55: RuntimeWarning: invalid value encountered in add
+  d2u[1:-1, :] = (u[2:, :] - 2 * u[1:-1, :] + u[:-2, :]) / dz**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:74: RuntimeWarning: invalid value encountered in subtract
+  w = w - dt * adv_w + dt * visc_w + dt * b
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:74: RuntimeWarning: invalid value encountered in add
+  w = w - dt * adv_w + dt * visc_w + dt * b
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:75: RuntimeWarning: invalid value encountered in subtract
+  b = b - dt * adv_b + dt * diff_b
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:75: RuntimeWarning: invalid value encountered in add
+  b = b - dt * adv_b + dt * diff_b
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/2D_Rayleigh_Benard_Convection.py:35: RuntimeWarning: invalid value encountered in subtract
+  du[:, 0] = (u[:, 1] - u[:, -1]) / (2 * dx)  # Periodic BC
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 18
+Total Scripts Failed: 1
+--- Running: 2D_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 19
+Total Scripts Failed: 1
+--- Running: 1D_Nonlinear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 20
+Total Scripts Failed: 1
+--- Running: 1D_Unsteady_Convection_Diffusion_Periodic.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_Unsteady_Convection_Diffusion_Periodic.py", line 34, in <module>
+    a_W = D_w + max(F_w, 0)
+ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 20
+Total Scripts Failed: 2
+--- Running: 1D_Euler_Shock_Tube.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/1D_Euler_Shock_Tube.py:40: RuntimeWarning: invalid value encountered in sqrt
+  a = np.sqrt(gamma * p / rho)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 21
+Total Scripts Failed: 2
+--- Running: Lid_Driven_Cavity.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 22
+Total Scripts Failed: 2
+--- Running: Pipe_Flow_Disk_EVP.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Pipe_Flow_Disk_EVP.py", line 98, in <module>
+    eigenvalues, eigenvectors = solve_stability(nr, kz, Re)
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemini/prompts/Pipe_Flow_Disk_EVP.py", line 33, in solve_stability
+    d_dr[0, 2] = -1 / (2 * dr)
+IndexError: index 2 is out of bounds for axis 1 with size 2
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 22
+Total Scripts Failed: 3
+--- Running: 2D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 23
+Total Scripts Failed: 3
+--- Running: Vortex_Roll_Up.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 24
+Total Scripts Failed: 3
+--- Running: 2D_Laplace_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 25
+Total Scripts Failed: 3
+--- Running: 1D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 26
+Total Scripts Failed: 3
+--- Running: 2D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 27
+Total Scripts Failed: 3

@@ -1,0 +1,57 @@
+import numpy as np
+import scipy.sparse as sp
+import scipy.sparse.linalg as spla
+
+# Problem parameters
+rho = 1.0  # density
+u = 2.5    # velocity 
+gamma = 0.1  # diffusion coefficient
+
+# Discretization
+L = 1.0  # domain length
+N = 5    # number of control volumes
+dx = L / (N-1)
+
+# Grid generation
+x = np.linspace(0, L, N)
+
+# Coefficient matrix assembly
+# Central differencing scheme for convection and diffusion
+A = sp.lil_matrix((N, N))
+b = np.zeros(N)
+
+# Boundary conditions
+b[0] = 1.0   # phi(0) = 1
+b[-1] = 0.0  # phi(1) = 0
+
+# Interior points
+for i in range(1, N-1):
+    # Convection coefficients 
+    Fe = rho * u
+    Fw = rho * u
+    
+    # Diffusion coefficients
+    De = gamma / dx
+    Dw = gamma / dx
+    
+    # Coefficients
+    aE = De - 0.5 * Fe
+    aW = Dw + 0.5 * Fw
+    aP = aE + aW + Fe - Fw
+    
+    # Matrix assembly
+    A[i, i-1] = -aW
+    A[i, i] = aP
+    A[i, i+1] = -aE
+
+# Apply boundary conditions to matrix
+A[0, 0] = 1.0
+A[0, 1:] = 0.0
+A[-1, -1] = 1.0
+A[-1, :-1] = 0.0
+
+# Solve linear system
+phi = spla.spsolve(A.tocsr(), b)
+
+# Save solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/sonnet-35/prompts/phi_1D_Convection_Diffusion_Phi.npy', phi)

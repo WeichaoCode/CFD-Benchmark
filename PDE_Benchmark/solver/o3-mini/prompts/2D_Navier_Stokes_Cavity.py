@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Domain and physical parameters
+nx = 41      # number of grid points in x
+ny = 41      # number of grid points in y
+lx = 2.0
+ly = 2.0
+dx = lx / (nx - 1)
+dy = ly / (ny - 1)
+
+rho = 1.0
+nu = 0.1
+
+# Time-stepping parameters
+t_final = 10.0
+dt = 0.002
+nt = int(t_final / dt)
+nit = 50  # number of iterations for the pressure Poisson equation per time step
+
+# Initialize fields: u, v, p
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+p = np.zeros((ny, nx))
+b = np.zeros((ny, nx))
+
+# Main time-stepping loop
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    
+    # Compute the RHS term for the pressure Poisson equation using finite differences
+    b[1:-1,1:-1] = -rho * (
+        ((un[1:-1,2:] - un[1:-1,0:-2]) / (2*dx))**2 +
+        2 * ((un[2:,1:-1] - un[0:-2,1:-1]) / (2*dy)) * ((vn[1:-1,2:] - vn[1:-1,0:-2]) / (2*dx)) +
+        ((vn[2:,1:-1] - vn[0:-2,1:-1]) / (2*dy))**2
+    )
+    
+    # Solve the pressure Poisson equation iteratively
+    for it in range(nit):
+        pn = p.copy()
+        p[1:-1,1:-1] = (
+            ( (pn[1:-1,2:] + pn[1:-1,0:-2]) * dy**2 +
+              (pn[2:,1:-1] + pn[0:-2,1:-1]) * dx**2 -
+              b[1:-1,1:-1] * dx**2 * dy**2 )
+            / (2 * (dx**2 + dy**2))
+        )
+        # Apply pressure boundary conditions:
+        # dp/dx = 0 at x = 0 and x = lx
+        p[:,0] = p[:,1]
+        p[:,-1] = p[:,-2]
+        # dp/dy = 0 at y = 0
+        p[0,:] = p[1,:]
+        # p = 0 at y = ly
+        p[-1,:] = 0.0
+
+    # Update velocity fields using finite difference approximations
+    u[1:-1,1:-1] = (un[1:-1,1:-1] -
+                     un[1:-1,1:-1] * dt / dx * (un[1:-1,1:-1] - un[1:-1,0:-2]) -
+                     vn[1:-1,1:-1] * dt / dy * (un[1:-1,1:-1] - un[0:-2,1:-1]) -
+                     dt / (2*rho*dx) * (p[1:-1,2:] - p[1:-1,0:-2]) +
+                     nu * dt / dx**2 * (un[1:-1,2:] - 2*un[1:-1,1:-1] + un[1:-1,0:-2]) +
+                     nu * dt / dy**2 * (un[2:,1:-1] - 2*un[1:-1,1:-1] + un[0:-2,1:-1])
+                    )
+    
+    v[1:-1,1:-1] = (vn[1:-1,1:-1] -
+                     un[1:-1,1:-1] * dt / dx * (vn[1:-1,1:-1] - vn[1:-1,0:-2]) -
+                     vn[1:-1,1:-1] * dt / dy * (vn[1:-1,1:-1] - vn[0:-2,1:-1]) -
+                     dt / (2*rho*dy) * (p[2:,1:-1] - p[0:-2,1:-1]) +
+                     nu * dt / dx**2 * (vn[1:-1,2:] - 2*vn[1:-1,1:-1] + vn[1:-1,0:-2]) +
+                     nu * dt / dy**2 * (vn[2:,1:-1] - 2*vn[1:-1,1:-1] + vn[0:-2,1:-1])
+                    )
+    
+    # Apply boundary conditions for u and v
+    # Left, right and bottom walls: u = v = 0 (no-slip)
+    u[0, :] = 0.0
+    u[:, 0] = 0.0
+    u[:, -1] = 0.0
+    v[0, :] = 0.0
+    v[:, 0] = 0.0
+    v[:, -1] = 0.0
+    # Top boundary (lid-driven): u = 1, v = 0
+    u[-1, :] = 1.0
+    v[-1, :] = 0.0
+
+# Save the final time-step solutions in .npy files
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_2D_Navier_Stokes_Cavity.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/v_2D_Navier_Stokes_Cavity.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/p_2D_Navier_Stokes_Cavity.npy', p)

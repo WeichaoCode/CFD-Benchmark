@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+nx = 101          # number of grid points in x
+ny = 101          # number of grid points in y
+Lx = 1.0
+Ly = 1.0
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+nu = 0.001        # kinematic viscosity
+dt = 0.0005       # time step
+T_final = 0.1     # final time
+nt = int(T_final/dt)
+
+# SOR parameters for Poisson solve
+sor_omega = 1.5
+tol_poisson = 1e-6
+max_iter_poisson = 5000
+
+# Create grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize psi and omega arrays
+psi = np.zeros((ny, nx))
+omega = np.zeros((ny, nx))
+
+# Initialize vorticity: pair of vortex layers in the central region.
+# Upper layer: negative vorticity; lower layer: positive vorticity.
+for j in range(ny):
+    for i in range(nx):
+        # Use centered vortex layers in a strip near x=0.5; two layers in y.
+        if np.abs(x[i] - 0.5) < 0.1:
+            if 0.4 < y[j] < 0.5:
+                omega[j, i] = 5.0
+            elif 0.5 < y[j] < 0.6:
+                omega[j, i] = -5.0
+
+# Time stepping loop
+for tstep in range(nt):
+    # --- Solve Poisson equation: ∇²ψ = -ω using SOR ---
+    # Enforce Dirichlet BC for psi on y-boundaries (top and bottom)
+    psi[0, :] = 0.0
+    psi[-1, :] = 0.0
+    res = 1e9
+    iter_count = 0
+    while res > tol_poisson and iter_count < max_iter_poisson:
+        res = 0.0
+        psi_old = psi.copy()
+        # Update interior points in y; x is periodic
+        for j in range(1, ny-1):
+            for i in range(nx):
+                ip = (i+1) % nx
+                im = (i-1) % nx
+                psi_new = ((psi[j,ip] + psi[j,im])/(dx**2) + (psi[j+1,i] + psi[j-1,i])/(dy**2) + (-omega[j,i])) \
+                           / (2/(dx**2) + 2/(dy**2))
+                # SOR update
+                tmp = psi[j,i]
+                psi[j,i] = (1 - sor_omega)*psi[j,i] + sor_omega * psi_new
+                res = max(res, abs(psi[j,i]-tmp))
+        iter_count += 1
+
+    # --- Compute velocity components ---
+    # u = dψ/dy (central difference); use np.roll for interior in y (for simplicity, boundaries use one-sided differences)
+    u = np.zeros_like(psi)
+    v = np.zeros_like(psi)
+    # For u: use central difference in y for interior. For boundaries, use one-sided.
+    u[1:-1, :] = (psi[2:,:] - psi[0:-2,:])/(2*dy)
+    u[0, :] = (psi[1, :] - psi[0, :])/dy
+    u[-1, :] = (psi[-1, :] - psi[-2, :])/dy
+    # For v: periodic in x
+    v[:, :] = -(np.roll(psi, -1, axis=1) - np.roll(psi, 1, axis=1))/(2*dx)
+
+    # --- Advance vorticity (ω) via explicit Euler ---
+    # Compute dω/dx using periodic difference in x
+    domega_dx = (np.roll(omega, -1, axis=1) - np.roll(omega, 1, axis=1))/(2*dx)
+    # Compute dω/dy using central difference; use edge padding for y (Neumann BC)
+    omega_pad = np.pad(omega, ((1,1),(0,0)), mode='edge')
+    domega_dy = (omega_pad[2:,:] - omega_pad[:-2,:])/(2*dy)
+    # Compute Laplacian of ω:
+    lap_omega_x = (np.roll(omega, -1, axis=1) - 2*omega + np.roll(omega, 1, axis=1))/(dx**2)
+    lap_omega_y = (omega_pad[2:,:] - 2*omega + omega_pad[:-2,:])/(dy**2)
+    lap_omega = lap_omega_x + lap_omega_y
+
+    omega_new = omega + dt*(nu*lap_omega - u*domega_dx - v*domega_dy)
+
+    # Apply boundary conditions for ω in y: approximate using interior values
+    omega_new[0, :] = omega_new[1, :]
+    omega_new[-1, :] = omega_new[-2, :]
+
+    omega = omega_new.copy()
+
+# Save final solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/psi_Vortex_Roll_Up.npy', psi)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/omega_Vortex_Roll_Up.npy', omega)

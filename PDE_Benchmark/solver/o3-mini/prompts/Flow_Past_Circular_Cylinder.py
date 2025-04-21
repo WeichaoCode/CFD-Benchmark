@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+nu = 0.005
+v_inf = 1.0       # free-stream velocity
+r_min = 0.5
+r_max = 10.0
+N_r = 50        # grid resolution in r
+N_theta = 64    # grid resolution in theta
+T_final = 1e-3  # final time reduced for stability
+dt = 1e-6       # time step (small for stability)
+n_steps = int(T_final / dt)
+
+# Grid
+r = np.linspace(r_min, r_max, N_r)
+theta = np.linspace(0, 2 * np.pi, N_theta, endpoint=False)
+dr = (r_max - r_min) / (N_r - 1)
+dtheta = 2 * np.pi / N_theta
+
+# Create 2D mesh arrays for r and theta
+R, Theta = np.meshgrid(r, theta, indexing='ij')
+
+# Initialize fields: psi and omega (2D arrays)
+psi = np.zeros((N_r, N_theta))
+omega = np.zeros((N_r, N_theta))
+
+# Set Dirichlet boundary conditions for psi
+psi[0, :] = 20.0  # inner boundary: psi = 20
+psi[-1, :] = v_inf * (r_max * np.sin(theta)) + 20.0  # outer boundary
+
+def solve_poisson(psi, omega, r, dr, dtheta, tol=1e-4, max_iter=50, relax=1.0):
+    psi_new = psi.copy()
+    N_r, N_theta = psi_new.shape
+    # Precompute coefficients for interior nodes (i=1 to N_r-2)
+    r_inner = r[1:-1].reshape(-1, 1)
+    A = 1.0 / dr**2 + 1.0 / (2 * r_inner * dr)
+    B = 1.0 / dr**2 - 1.0 / (2 * r_inner * dr)
+    C = 1.0 / (r_inner**2 * dtheta**2)
+    D = -2.0 / dr**2 - 2.0 / (r_inner**2 * dtheta**2)
+    for it in range(max_iter):
+        psi_old = psi_new.copy()
+        psi_update = (A * psi_new[2:, :] + B * psi_new[:-2, :] +
+                      C * (np.roll(psi_new[1:-1, :], -1, axis=1) +
+                           np.roll(psi_new[1:-1, :], 1, axis=1)) +
+                      omega[1:-1, :]) / (-D)
+        # Relaxation update
+        psi_new[1:-1, :] = (1 - relax) * psi_new[1:-1, :] + relax * psi_update
+        # Reapply Dirichlet boundary conditions for psi
+        psi_new[0, :] = 20.0
+        psi_new[-1, :] = v_inf * (r_max * np.sin(theta)) + 20.0
+        if np.max(np.abs(psi_new - psi_old)) < tol:
+            break
+    return psi_new
+
+for n in range(n_steps):
+    # Compute velocity components from psi
+    # u_r = (1/r)*(∂psi/∂θ) using central differences (periodic in theta)
+    u_r = (np.roll(psi, -1, axis=1) - np.roll(psi, 1, axis=1)) / (2 * dtheta)
+    u_r = u_r / r.reshape(-1, 1)
+    # u_theta = -∂psi/∂r using central differences
+    u_theta = np.zeros_like(psi)
+    u_theta[1:-1, :] = - (psi[2:, :] - psi[:-2, :]) / (2 * dr)
+    
+    # Upwind scheme for advection term in omega transport (for interior nodes)
+    # Radial derivative of omega: if u_r>=0 use backward difference else forward difference
+    omega_r = np.where(u_r[1:-1, :] >= 0,
+                       (omega[1:-1, :] - omega[:-2, :]) / dr,
+                       (omega[2:, :] - omega[1:-1, :]) / dr)
+    # Azimuthal derivative of omega: if u_theta>=0 use backward difference else forward difference
+    omega_theta = np.where(u_theta[1:-1, :] >= 0,
+                           (omega[1:-1, :] - np.roll(omega[1:-1, :], 1, axis=1)) / dtheta,
+                           (np.roll(omega[1:-1, :], -1, axis=1) - omega[1:-1, :]) / dtheta)
+    
+    # Compute advective term and clip to avoid overflow
+    advective = u_r[1:-1, :] * omega_r + u_theta[1:-1, :] * omega_theta
+    advective = np.clip(advective, -1e6, 1e6)
+    
+    # Laplacian of omega in polar coordinates (for interior nodes)
+    r_inner = r[1:-1].reshape(-1, 1)
+    laplacian_radial = (omega[2:, :] - 2*omega[1:-1, :] + omega[:-2, :]) / dr**2
+    laplacian_r_term = (omega[2:, :] - omega[:-2, :]) / (2 * dr * r_inner)
+    laplacian_theta = (np.roll(omega, -1, axis=1)[1:-1, :] - 2*omega[1:-1, :] +
+                       np.roll(omega, 1, axis=1)[1:-1, :]) / (r_inner**2 * dtheta**2)
+    laplacian_omega = laplacian_radial + laplacian_r_term + laplacian_theta
+    
+    # Update omega for interior nodes using explicit Euler time stepping
+    omega[1:-1, :] += dt * (-advective + nu * laplacian_omega)
+    
+    # Apply boundary conditions for omega
+    # Inner boundary: omega = 2*(psi[0] - psi[1]) / dr^2
+    omega[0, :] = 2 * (psi[0, :] - psi[1, :]) / (dr**2)
+    # Outer boundary: omega = 0
+    omega[-1, :] = 0.0
+    
+    # Update psi by solving the Poisson equation with the current omega field
+    psi = solve_poisson(psi, omega, r, dr, dtheta)
+
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/psi_Flow_Past_Circular_Cylinder.npy', psi)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/omega_Flow_Past_Circular_Cylinder.npy', omega)

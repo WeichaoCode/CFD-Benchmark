@@ -1,0 +1,53 @@
+import numpy as np
+
+# Parameters
+nu = 0.05
+Lx = 2.0
+Ly = 2.0
+T_final = 0.3777
+
+# Discretization parameters
+nx = 41
+ny = 41
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+# Stability criterion for explicit scheme: dt <= min(dx, dy)**2/(4*nu)
+dt = min(dx, dy)**2 / (4 * nu) * 0.9  # safety factor
+nt = int(T_final / dt) + 1
+dt = T_final / nt  # adjust dt to reach T_final exactly
+
+# Create grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+# Initial condition: u = 2 in region 0.5 <= x, y <= 1, else 1
+u = np.ones((ny, nx))
+X, Y = np.meshgrid(x, y)
+u[np.where((X >= 0.5) & (X <= 1.0) & (Y >= 0.5) & (Y <= 1.0))] = 2.0
+
+# Apply Dirichlet boundary conditions (u=1 on boundaries)
+u[0, :] = 1.0
+u[-1, :] = 1.0
+u[:, 0] = 1.0
+u[:, -1] = 1.0
+
+# Time-stepping loop using the explicit finite difference method
+u_new = u.copy()
+for n in range(nt):
+    # Compute interior points update
+    u_new[1:-1, 1:-1] = (u[1:-1, 1:-1] +
+                          nu * dt * ((u[2:, 1:-1] - 2 * u[1:-1, 1:-1] + u[:-2, 1:-1]) / dx**2 +
+                                     (u[1:-1, 2:] - 2 * u[1:-1, 1:-1] + u[1:-1, :-2]) / dy**2))
+    
+    # Re-apply Dirichlet boundary conditions
+    u_new[0, :] = 1.0
+    u_new[-1, :] = 1.0
+    u_new[:, 0] = 1.0
+    u_new[:, -1] = 1.0
+
+    # Update for next step
+    u, u_new = u_new, u
+
+# Save the final solution as a 2D NumPy array in 'u.npy'
+np.save("u.npy", u)

@@ -31,7 +31,7 @@ llm_models = [
 ]
 
 # use gpt-4o to check the code
-# llm_models = ["haiku"]
+# llm_models = ["o3-mini"]
 prompt_json = "prompts.json"  # the file under ./prompt/
 # Loop over all models
 for llm_model in llm_models:
@@ -48,5 +48,5 @@ for llm_model in llm_models:
 
     # Run the full post-processing pipeline
     # this time only run execute LLM generated python code and save the results to log file
-    processor.run_all()
+    processor.run_all(step1=False, step2=False, step4=False)
 

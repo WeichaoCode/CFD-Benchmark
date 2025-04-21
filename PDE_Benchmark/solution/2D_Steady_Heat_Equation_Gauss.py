@@ -29,12 +29,12 @@ y = np.linspace(0., ylen, ny)
 T = np.zeros((nx, ny))
 
 for i in range(1, nx - 1):
-    T[i, 0] = 10  # left wall = 10C
-    T[i, ny - 1] = 0  # right wall = 40C
+    T[i, 0] = 20  # lower wall = 20C
+    T[i, ny - 1] = 0  # top wall = 0C
 
 for i in range(ny - 1):
-    T[0, i] = 10  # upper wall = 0C
-    T[nx - 1, i] = 40  # lower wall = 20C
+    T[0, i] = 10  # left wall = 10C
+    T[nx - 1, i] = 40  # right wall = 40C
 
 Tkp1 = np.copy(T)
 eps = []

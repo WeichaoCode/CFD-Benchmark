@@ -1,0 +1,30 @@
+import numpy as np
+
+# Parameters
+c = 1.0
+epsilon = 5e-4  # set to 0 for undamped, 5e-4 for damped
+x_start, x_end = -5.0, 5.0
+t_start, t_end = 0.0, 10.0
+
+# Discretization
+Nx = 201
+x = np.linspace(x_start, x_end, Nx)
+dx = x[1] - x[0]
+
+dt = 0.01
+Nt = int((t_end - t_start) / dt)
+
+# Initial condition
+u = np.exp(-x**2)
+
+# Time integration loop using finite differences, periodic BCs.
+for n in range(Nt):
+    # periodic flux computation via np.roll for periodic BCs
+    u_x = (np.roll(u, -1) - np.roll(u, 1)) / (2*dx)
+    u_xx = (np.roll(u, -1) - 2*u + np.roll(u, 1)) / (dx**2)
+    
+    # update u using explicit (Forward Euler) scheme for time
+    u = u - c * dt * u_x + epsilon * dt * u_xx
+
+# Save final 1D solution as u.npy (1D NumPy array)
+np.save("u.npy", u)

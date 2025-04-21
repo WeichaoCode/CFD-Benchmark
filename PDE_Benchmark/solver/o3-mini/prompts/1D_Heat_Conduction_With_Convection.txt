@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+k = 1000.0           # thermal conductivity [W/(m·K)]
+h = 62.5             # convective heat transfer coefficient [W/(m^2·K)]
+T_inf = 20.0         # ambient temperature [°C]
+conv_coef = 25.0     # given hP/(kA) [m⁻²], as hP/(kA)=25.0
+
+# Domain
+x0 = 0.0
+xL = 0.5           # length of the rod [m]
+N = 51             # number of nodes (including boundaries)
+x = np.linspace(x0, xL, N)
+dx = x[1] - x[0]
+
+# Boundary Conditions
+T_left = 100.0     # T(x=0)
+T_right = 200.0    # T(x=0.5)
+
+# Finite Volume formulation:
+# For an internal control volume (node i) with width dx:
+#   (k/dx)*(T[i-1] - T[i]) - (k/dx)*(T[i] - T[i+1]) - conv_coef*dx*(T[i]-T_inf)= 0,
+# which can be rearranged as:
+#   (k/dx)*T[i-1] - ((2*k/dx) + conv_coef*dx)*T[i] + (k/dx)*T[i+1] = - conv_coef*dx*T_inf
+a_W = k/dx
+a_E = k/dx
+# Assemble the system of equations A*T = b
+A = np.zeros((N, N))
+b = np.zeros(N)
+
+# Boundary nodes
+A[0, 0] = 1.0
+b[0] = T_left
+A[-1, -1] = 1.0
+b[-1] = T_right
+
+# Internal nodes i = 1 to N-2
+for i in range(1, N-1):
+    a_P = a_W + a_E + conv_coef*dx
+    A[i, i-1] = a_W
+    A[i, i]   = -a_P
+    A[i, i+1] = a_E
+    b[i] = - conv_coef*dx * T_inf
+
+# Solve the linear system
+T = np.linalg.solve(A, b)
+
+# Save the final solution field as a 1D numpy array in 'T.npy'
+np.save("T.npy", T)

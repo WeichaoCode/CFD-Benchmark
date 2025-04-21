@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+import numpy as np
+from scipy.sparse import coo_matrix, csc_matrix
+from scipy.sparse.linalg import splu
+
+# Domain and simulation parameters
+L = 10.0         # Domain length
+T = 10.0         # Final time
+Nx = 256         # Number of spatial grid points
+dx = L / Nx      # Spatial step size
+dt = 1e-4        # Reduced time step size for stability
+nt = int(T / dt) # Number of time steps
+
+a = 1e-4         # Diffusion coefficient (Burgers term)
+b = 2e-4         # Dispersion coefficient (KdV term)
+n_param = 20     # Parameter for initial condition
+
+# Spatial grid with periodic points
+x = np.linspace(0, L, Nx, endpoint=False)
+
+# Safe computation of log(cosh(z)) to avoid overflow
+def safe_log_cosh(z):
+    absz = np.abs(z)
+    # For large |z|, log(cosh(z)) ~ |z| - log(2)
+    return np.where(absz > 20, absz - np.log(2), np.log(np.cosh(z)))
+
+# Compute initial condition:
+# u(x,0) = 1/(2*n_param) * log( 1 + cosh(n_param)^2 / cosh(n_param*(x-0.2*L))^2 )
+val1 = safe_log_cosh(n_param)
+val2 = safe_log_cosh(n_param*(x - 0.2*L))
+# Compute the exponent part safely
+exponent = 2*(val1 - val2)
+exponent_clip = np.clip(exponent, -100, 100)
+u = (1.0/(2*n_param)) * np.log1p(np.exp(exponent_clip))
+
+# Build the sparse matrix for the linear operator L(u) = a*u_xx + b*u_xxx
+# Finite difference approximations:
+#   u_xx ≈ (u[i+1] - 2*u[i] + u[i-1])/(dx^2)
+#   u_xxx ≈ (-u[i+2] + 2*u[i+1] - 2*u[i-1] + u[i-2])/(2*dx^3)
+N = Nx
+row = []
+col = []
+data = []
+c0 = 1 + 2 * dt * a / dx**2
+c1   = - dt * (a / dx**2 + b / dx**3)
+cm1  = - dt * (a / dx**2 - b / dx**3)
+c2   = dt * (b / (2 * dx**3))
+cm2  = - dt * (b / (2 * dx**3))
+for i in range(N):
+    row.extend([i, i, i, i, i])
+    col.extend([i, (i+1)%N, (i-1)%N, (i+2)%N, (i-2)%N])
+    data.extend([c0, c1, cm1, c2, cm2])
+A_sparse = csc_matrix(coo_matrix((data, (row, col)), shape=(N, N)))
+A_solver = splu(A_sparse)
+
+def compute_ux(u_arr):
+    # Central difference for first derivative with periodic boundaries
+    return (np.roll(u_arr, -1) - np.roll(u_arr, 1)) / (2*dx)
+
+# Time integration using a first-order IMEX scheme:
+#   u^(n+1) - dt*(linear terms evaluated at u^(n+1)) = u^n + dt*(nonlinear term at u^n)
+# To further avoid overflow, we clip u to a reasonable range after each time step.
+clip_value = 1e2
+for step in range(nt):
+    ux = compute_ux(u)
+    nonlinear = - u * ux
+    rhs = u + dt * nonlinear
+    u = A_solver.solve(rhs)
+    u = np.clip(u, -clip_value, clip_value)
+
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_1D_KdV_Burgers_Equation.npy', u)

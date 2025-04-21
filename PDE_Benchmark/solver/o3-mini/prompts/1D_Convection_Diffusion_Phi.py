@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Given parameters
+rho = 1.0         # fluid density (kg/m^3)
+u = 2.5           # fluid velocity (m/s)
+Gamma = 0.1       # diffusion coefficient (kg/(m·s))
+L = 1.0           # domain length
+N = 5             # number of control volumes
+
+# Discretization
+dx = L / N
+
+# Fluxes and diffusion conductance
+F = rho * u             # convective flux
+D = Gamma / dx          # diffusive conductance
+
+# Build the coefficient matrix A and right-hand side vector b for the linear system A * phi = b.
+# Unknowns: phi[0] to phi[N-1] correspond to cell center values of control volumes 1 to N.
+A = np.zeros((N, N))
+b = np.zeros(N)
+
+# Boundary conditions:
+phi0 = 1.0  # phi at x = 0 (Dirichlet)
+phiL = 0.0  # phi at x = 1 (Dirichlet)
+
+# Cell 1 (i=0 in Python indexing)
+# Derived discretization for cell 1:
+# (F + D)*phi_1 - D*phi_2 = (F + D)*phi0
+A[0, 0] = F + D
+if N > 1:
+    A[0, 1] = -D
+b[0] = (F + D) * phi0
+
+# Interior cells: i = 2 to N-1 (Python indexing: 1 to N-2)
+for i in range(1, N-1):
+    # Equation:
+    # - (F + D)*phi_{i-1} + (F + 2*D)*phi_i - D*phi_{i+1} = 0
+    A[i, i-1] = -(F + D)
+    A[i, i]   = F + 2*D
+    A[i, i+1] = -D
+    b[i] = 0.0
+
+# Cell N (i = N-1 in Python indexing)
+# Derived discretization for cell N:
+# - (F + D)*phi_{N-1} + (F + 2*D)*phi_N = - ( - D*phi_{N+1} ) but using boundary phiL:
+# In our derivation, for cell 5:
+# - (F+D)*phi_{4} + (F + 2*D)*phi_{5} = 0, where phi_{6} = phiL = 0.
+# So:
+A[N-1, N-2] = -(F + D)
+A[N-1, N-1] = F + 2*D
+b[N-1] = 0.0
+
+# Solve the linear system
+phi = np.linalg.solve(A, b)
+
+# Save the final solution as a 1D numpy array in "phi.npy"
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/phi_1D_Convection_Diffusion_Phi.npy', phi)
+
+if __name__ == '__main__':
+    # Optionally, print the computed solution
+    print("Computed phi at cell centers:")
+    print(phi)

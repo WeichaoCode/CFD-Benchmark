@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Domain parameters
+nx = 81
+ny = 81
+xmin, xmax = 0.0, 2.0
+ymin, ymax = 0.0, 2.0
+dx = (xmax - xmin) / (nx - 1)
+dy = (ymax - ymin) / (ny - 1)
+
+# Temporal parameters
+t_final = 0.40
+# CFL number and maximum velocity estimate
+sigma = 0.2
+u_max = 2.0  # maximum initial velocity in the central region
+dt = sigma * min(dx, dy) / u_max
+nt = int(t_final/dt)
+
+# Create grid
+x = np.linspace(xmin, xmax, nx)
+y = np.linspace(ymin, ymax, ny)
+X, Y = np.meshgrid(x, y)
+
+# Initialize velocity fields
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+# Set initial condition in the region 0.5<=x<=1 and 0.5<=y<=1
+u[(Y >= 0.5) & (Y <= 1.0) & (X >= 0.5) & (X <= 1.0)] = 2.0
+v[(Y >= 0.5) & (Y <= 1.0) & (X >= 0.5) & (X <= 1.0)] = 2.0
+
+# Time-stepping loop using an explicit upwind finite difference method
+for n in range(nt):
+    u_old = u.copy()
+    v_old = v.copy()
+    
+    # Compute derivatives using first order upwind differences
+    # For u equation: u_t + u*u_x + v*u_y = 0
+    un = u_old.copy()
+    vn = v_old.copy()
+    
+    # Upwind differencing: since u and v are positive, use backward differences.
+    u_x = (un - np.roll(un, 1, axis=1)) / dx
+    u_y = (un - np.roll(un, 1, axis=0)) / dy
+    v_x = (vn - np.roll(vn, 1, axis=1)) / dx
+    v_y = (vn - np.roll(vn, 1, axis=0)) / dy
+    
+    # Update interior points
+    u = un - dt * (un * u_x + vn * u_y)
+    v = vn - dt * (un * v_x + vn * v_y)
+    
+    # Apply Dirichlet boundary conditions: u=1, v=1 on all boundaries.
+    u[0, :] = 1.0
+    u[-1, :] = 1.0
+    u[:, 0] = 1.0
+    u[:, -1] = 1.0
+    v[0, :] = 1.0
+    v[-1, :] = 1.0
+    v[:, 0] = 1.0
+    v[:, -1] = 1.0
+
+# Save the final solution arrays in .npy format as specified
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_2D_Inviscid_Burgers.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/v_2D_Inviscid_Burgers.npy', v)

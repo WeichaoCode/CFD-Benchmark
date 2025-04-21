@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Parameters
+L = 2 * np.pi         # spatial domain length
+final_time = 5.0      # final time
+NX = 400              # number of spatial grid points
+cfl = 0.4             # CFL number
+
+# Spatial discretization
+dx = L / NX
+x = np.linspace(0, L, NX, endpoint=False)
+
+# Initial condition
+u = np.sin(x) + 0.5 * np.sin(0.5 * x)
+
+# Function for flux f(u)=0.5*u^2 (conservative form)
+def flux(u):
+    return 0.5 * u**2
+
+# Determine time step based on CFL condition (using maximum initial speed)
+dt = cfl * dx / np.max(np.abs(u))
+
+# Time integration using Lax-Friedrichs scheme
+t = 0.0
+while t < final_time:
+    # Adjust dt for last time step if necessary
+    if t + dt > final_time:
+        dt = final_time - t
+
+    # Periodic boundary indices using np.roll
+    u_plus  = np.roll(u, -1)  # u_{i+1}
+    u_minus = np.roll(u, 1)   # u_{i-1}
+
+    # Lax-Friedrichs update
+    u_new = 0.5 * (u_plus + u_minus) - (dt / (2 * dx)) * (flux(u_plus) - flux(u_minus))
+
+    u = u_new.copy()
+    t += dt
+
+# Save the final solution for variable 'u' as a 1D NumPy array in a .npy file
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_1D_Nonlinear_Convection.npy', u)

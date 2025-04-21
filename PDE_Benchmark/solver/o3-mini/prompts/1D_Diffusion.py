@@ -1,0 +1,30 @@
+import numpy as np
+
+# Parameters
+nu = 0.3
+L = 2.0             # domain length in x
+t_final = 0.0333    # final time
+dx = 0.01           # spatial step size
+dt = 1e-4           # time step size (chosen to satisfy stability: dt <= dx^2/(2*nu))
+nx = int(L/dx) + 1  # number of spatial points
+nt = int(t_final/dt)
+
+# Spatial grid
+x = np.linspace(0, L, nx)
+
+# Initial condition: u(x,0)=2 if 0.5 <= x <= 1, else 1
+u = np.ones(nx)
+u[(x >= 0.5) & (x <= 1)] = 2.0
+
+# Time stepping loop (explicit finite difference, Dirichlet BC: u[0]=1, u[-1]=1)
+for n in range(nt):
+    u_new = u.copy()
+    # Update interior points using central difference approximation for u_xx
+    u_new[1:-1] = u[1:-1] + nu * dt / dx**2 * (u[2:] - 2*u[1:-1] + u[:-2])
+    # Enforce Dirichlet boundary conditions: u(0)=1, u(L)=1
+    u_new[0] = 1.0
+    u_new[-1] = 1.0
+    u = u_new
+
+# Save the final solution as a 1D NumPy array in "u.npy"
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_1D_Diffusion.npy', u)

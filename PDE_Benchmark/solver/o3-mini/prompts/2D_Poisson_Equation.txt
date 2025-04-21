@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+import numpy as np
+
+# Domain parameters
+Lx = 2.0
+Ly = 1.0
+nx = 41  # number of grid points in x
+ny = 21  # number of grid points in y
+
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+# Create grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+
+# Initialize potential p and source term b
+p = np.zeros((ny, nx))  # note: using row as y, col as x convention
+b = np.zeros((ny, nx))
+
+# Set the source term b:
+# b = 100 at (x = Lx/4, y = Ly/4)
+# b = -100 at (x = 3*Lx/4, y = 3*Ly/4)
+target1_x = Lx / 4.0
+target1_y = Ly / 4.0
+target2_x = 3 * Lx / 4.0
+target2_y = 3 * Ly / 4.0
+
+# find the index in x and y nearest to the desired positions
+i1 = np.argmin(np.abs(x - target1_x))
+j1 = np.argmin(np.abs(y - target1_y))
+i2 = np.argmin(np.abs(x - target2_x))
+j2 = np.argmin(np.abs(y - target2_y))
+
+b[j1, i1] = 100.0
+b[j2, i2] = -100.0
+
+# Solver parameters for Gauss-Seidel iteration
+tolerance = 1e-6
+max_iter = 10000
+
+# Coefficients (from finite difference Laplacian)
+dx2 = dx * dx
+dy2 = dy * dy
+denom = 2.0 * (dx2 + dy2)
+
+# Gauss-Seidel iterative solver
+for it in range(max_iter):
+    p_old = p.copy()
+    # Update interior points
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            p[j, i] = ((dy2 * (p[j, i+1] + p[j, i-1]) +
+                        dx2 * (p[j+1, i] + p[j-1, i]) -
+                        dx2 * dy2 * b[j, i]) / denom)
+    # Enforce Dirichlet BC's p=0 on boundaries (x=0, Lx and y=0, Ly)
+    p[0, :] = 0.0
+    p[-1, :] = 0.0
+    p[:, 0] = 0.0
+    p[:, -1] = 0.0
+
+    # Check convergence
+    error = np.linalg.norm(p - p_old, ord=np.inf)
+    if error < tolerance:
+        break
+
+# Save the final solution
+np.save("p.npy", p)

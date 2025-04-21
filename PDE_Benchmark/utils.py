@@ -483,7 +483,7 @@ class LLMCodeGenerator:
         logging.info("\n🎯 Execution completed. Check the solver directory for generated files.")
         logging.info(f"Total Input Tokens: {self.tokens_counts['total_input_tokens']}")
         logging.info(f"Total Output Tokens: {self.tokens_counts['total_output_tokens']}")
-        logging.info(f"Total Estimated Cost: ${self.total_cost:.6f}")
+        logging.info(f"Total Estimated Cost: ${self.tokens_counts['total_cost']:.6f}")
 
 
 def replacer_factory(base_name, save_dir):

@@ -693,12 +693,17 @@ def interpolate_to_match(gt, pred):
 def compute_losses(gt, pred):
     gt_flat = gt.flatten()
     pred_flat = pred.flatten()
+
     mse = mean_squared_error(gt_flat, pred_flat)
     mae = mean_absolute_error(gt_flat, pred_flat)
     rmse = np.sqrt(mse)
     cosine_sim = cosine_similarity(gt_flat.reshape(1, -1), pred_flat.reshape(1, -1))[0][0]
     r2 = r2_score(gt_flat, pred_flat)
-    return mse, mae, rmse, cosine_sim, r2
+
+    # NMSE: Normalized Mean Squared Error
+    nmse = mse / np.mean(gt_flat**2)
+
+    return mse, mae, rmse, cosine_sim, r2, nmse
 
 
 def print_summary(results):
@@ -728,18 +733,20 @@ def compute_errors_gt_pred(common_files, ground_truth_dir, prediction_dir, resul
             if gt.shape != pred.shape:
                 raise ValueError(f"Shape mismatch after interpolation: {gt.shape} vs {pred.shape}")
 
-            mse, mae, rmse, cosine_sim, r2 = compute_losses(gt, pred)
+            mse, mae, rmse, cosine_sim, r2, nmse = compute_losses(gt, pred)
 
             results[fname] = {
                 "MSE": f"{mse:.3e}",
                 "MAE": f"{mae:.3e}",
                 "RMSE": f"{rmse:.3e}",
                 "CosineSimilarity": f"{cosine_sim:.3f}",
-                "R2": f"{r2:.3f}"
+                "R2": f"{r2:.3f}",
+                "NMSE": f"{nmse:.3f}"
             }
 
             logging.info(
-                f"{fname}: MSE={mse:.3e}, MAE={mae:.3e}, RMSE={rmse:.3e}, Cosine={cosine_sim:.3f}, R2={r2:.3f}")
+                f"{fname}: MSE={mse:.3e}, MAE={mae:.3e}, RMSE={rmse:.3e}, Cosine={cosine_sim:.3f}, R2={r2:.3f}, "
+                f"NMSE={nmse:.3f}")
 
         except Exception as e:
             results[fname] = {"Error": str(e)}

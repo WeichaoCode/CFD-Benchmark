@@ -12,9 +12,9 @@ from matplotlib import pyplot, cm
 from mpl_toolkits.mplot3d import Axes3D
 
 ###variable declarations
-nx = 41
-ny = 41
-nt = 120
+nx = 161
+ny = 161
+nt = 120 * 16
 c = 1
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)

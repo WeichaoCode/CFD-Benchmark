@@ -70,9 +70,9 @@ def pressure_poisson_periodic(p, dx, dy):
 
 
 ##variable declarations
-nx = 41
-ny = 41
-nt = 10
+nx = 201
+ny = 201
+nt = 40
 nit = 50
 c = 1
 dx = 2 / (nx - 1)
@@ -86,7 +86,7 @@ X, Y = numpy.meshgrid(x, y)
 rho = 1
 nu = .1
 F = 1
-dt = .01
+dt = .0025
 
 #initial conditions
 u = numpy.zeros((ny, nx))

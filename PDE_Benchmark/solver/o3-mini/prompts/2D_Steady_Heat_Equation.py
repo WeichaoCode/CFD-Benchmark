@@ -1,49 +1,45 @@
-#!/usr/bin/env python3
 import numpy as np
 
 # Domain parameters
-width = 5.0
-height = 4.0
-Nx = 51  # number of grid points in x-direction
-Ny = 41  # number of grid points in y-direction
-dx = width / (Nx - 1)
-dy = height / (Ny - 1)
+Lx = 5.0
+Ly = 4.0
+nx = 51  # number of grid points in x-direction
+ny = 41  # number of grid points in y-direction
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
 
-# Create the grid
-x = np.linspace(0, width, Nx)
-y = np.linspace(0, height, Ny)
+# Create grid
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
 
-# Initialize temperature field T, note that T[j, i] corresponds to (x[i], y[j])
-T = np.zeros((Ny, Nx))
+# Initialize temperature field with zero everywhere except boundaries
+T = np.zeros((ny, nx))
 
-# Set Dirichlet boundary conditions
-T[:, 0]   = 10.0   # Left boundary: x = 0
-T[:, -1]  = 40.0   # Right boundary: x = 5
-T[-1, :]  = 0.0    # Top boundary: y = 4
-T[0, :]   = 20.0   # Bottom boundary: y = 0
+# Apply Dirichlet boundary conditions
+T[:, 0] = 10.0     # Left boundary at x = 0
+T[:, -1] = 40.0    # Right boundary at x = 5
+T[-1, :] = 0.0     # Top boundary at y = 4
+T[0, :] = 20.0     # Bottom boundary at y = 0
 
-# Parameters for the iterative method
-tolerance = 1e-6
+# Iterative solver parameters
+tol = 1e-5
 max_iter = 10000
+iteration = 0
+error = 1.0
 
-# Precompute constant
-dx2 = dx * dx
-dy2 = dy * dy
-denom = 2 * (dx2 + dy2)
+# Jacobi iteration for Laplace equation
+T_new = T.copy()
 
-for iteration in range(max_iter):
-    T_old = T.copy()
+while error > tol and iteration < max_iter:
+    error = 0.0
+    # Update interior points
+    for j in range(1, ny-1):
+        for i in range(1, nx-1):
+            T_new[j, i] = 0.25 * (T[j, i+1] + T[j, i-1] + T[j+1, i] + T[j-1, i])
     
-    # Update interior points using finite difference (Jacobi method)
-    # Loop through interior nodes
-    for j in range(1, Ny-1):
-        for i in range(1, Nx-1):
-            T[j, i] = ((T_old[j, i+1] + T_old[j, i-1]) * dy2 + (T_old[j+1, i] + T_old[j-1, i]) * dx2) / denom
-    
-    # Compute maximum error
-    err = np.max(np.abs(T - T_old))
-    if err < tolerance:
-        break
+    error = np.max(np.abs(T_new - T))
+    T[:] = T_new[:]
+    iteration += 1
 
-# Save the final solution as a .npy file with the variable name "T"
+# Save the final solution as 2D NumPy array in "T.npy"
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/T_2D_Steady_Heat_Equation.npy', T)

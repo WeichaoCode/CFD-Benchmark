@@ -2,52 +2,54 @@ import numpy as np
 
 # Parameters
 nu = 0.05
-Lx = 2.0
-Ly = 2.0
-T_final = 0.3777
+Lx, Ly = 2.0, 2.0
+T = 0.3777
 
-# Discretization parameters
-nx = 41
-ny = 41
+# Grid resolution
+nx, ny = 101, 101  # number of grid points
 dx = Lx / (nx - 1)
 dy = Ly / (ny - 1)
 
-# Stability criterion for explicit scheme: dt <= min(dx, dy)**2/(4*nu)
-dt = min(dx, dy)**2 / (4 * nu) * 0.9  # safety factor
-nt = int(T_final / dt) + 1
-dt = T_final / nt  # adjust dt to reach T_final exactly
+# Time stepping parameters
+dt = 0.0005  # time step
+nt = int(T / dt)
 
-# Create grid
+# Create spatial grid
 x = np.linspace(0, Lx, nx)
 y = np.linspace(0, Ly, ny)
 
-# Initial condition: u = 2 in region 0.5 <= x, y <= 1, else 1
+# Initialize field u to 1 everywhere
 u = np.ones((ny, nx))
-X, Y = np.meshgrid(x, y)
-u[np.where((X >= 0.5) & (X <= 1.0) & (Y >= 0.5) & (Y <= 1.0))] = 2.0
 
-# Apply Dirichlet boundary conditions (u=1 on boundaries)
+# Set initial condition: u=2 in the region 0.5 <= x,y <= 1, else remain 1
+for i in range(nx):
+    for j in range(ny):
+        if 0.5 <= x[i] <= 1.0 and 0.5 <= y[j] <= 1.0:
+            u[j, i] = 2.0  # note: u[j, i] corresponds to (x[i], y[j])
+            
+# Dirichlet boundary conditions: u = 1 on all boundaries
 u[0, :] = 1.0
 u[-1, :] = 1.0
 u[:, 0] = 1.0
 u[:, -1] = 1.0
 
-# Time-stepping loop using the explicit finite difference method
-u_new = u.copy()
+# Precompute constant coefficients for the finite-difference scheme
+Cx = nu * dt / dx**2
+Cy = nu * dt / dy**2
+
+# Time-marching loop (explicit scheme)
 for n in range(nt):
-    # Compute interior points update
-    u_new[1:-1, 1:-1] = (u[1:-1, 1:-1] +
-                          nu * dt * ((u[2:, 1:-1] - 2 * u[1:-1, 1:-1] + u[:-2, 1:-1]) / dx**2 +
-                                     (u[1:-1, 2:] - 2 * u[1:-1, 1:-1] + u[1:-1, :-2]) / dy**2))
+    u_old = u.copy()
+    # Update interior points using central difference in space
+    u[1:-1, 1:-1] = (u_old[1:-1, 1:-1] +
+                      Cx * (u_old[1:-1, 2:] - 2*u_old[1:-1, 1:-1] + u_old[1:-1, :-2]) +
+                      Cy * (u_old[2:, 1:-1] - 2*u_old[1:-1, 1:-1] + u_old[:-2, 1:-1]))
     
-    # Re-apply Dirichlet boundary conditions
-    u_new[0, :] = 1.0
-    u_new[-1, :] = 1.0
-    u_new[:, 0] = 1.0
-    u_new[:, -1] = 1.0
+    # Reapply Dirichlet boundary conditions (u = 1 at boundaries)
+    u[0, :] = 1.0
+    u[-1, :] = 1.0
+    u[:, 0] = 1.0
+    u[:, -1] = 1.0
 
-    # Update for next step
-    u, u_new = u_new, u
-
-# Save the final solution as a 2D NumPy array in 'u.npy'
+# Save the final solution as a 2D array in 'u.npy'
 np.save("u.npy", u)

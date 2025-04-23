@@ -13,9 +13,9 @@ from matplotlib import pyplot, cm
 from mpl_toolkits.mplot3d import Axes3D  ##library for 3d projection plots
 
 ###variable declarations
-nx = 31
-ny = 31
-nt = 17
+nx = 121
+ny = 121
+nt = 17 * 16
 nu = .05
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)

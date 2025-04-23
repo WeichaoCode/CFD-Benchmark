@@ -46,8 +46,8 @@ def laplace2d(p, y, dx, dy, l1norm_target):
 
 
 ##variable declarations
-nx = 31
-ny = 31
+nx = 121
+ny = 121
 c = 1
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)

@@ -1,100 +1,140 @@
 #!/usr/bin/env python3
 import numpy as np
 
-# Parameters
-nu = 0.005
-v_inf = 1.0       # free-stream velocity
+# ----------------------------
+# Parameters and grid settings
+# ----------------------------
+Nr = 50            # number of grid points in r-direction
+Ntheta = 64        # number of grid points in theta-direction
 r_min = 0.5
 r_max = 10.0
-N_r = 50        # grid resolution in r
-N_theta = 64    # grid resolution in theta
-T_final = 1e-3  # final time reduced for stability
-dt = 1e-6       # time step (small for stability)
-n_steps = int(T_final / dt)
+r = np.linspace(r_min, r_max, Nr)
+theta = np.linspace(0, 2*np.pi, Ntheta, endpoint=False)
+dr = r[1] - r[0]
+dtheta = 2*np.pi/Ntheta
 
-# Grid
-r = np.linspace(r_min, r_max, N_r)
-theta = np.linspace(0, 2 * np.pi, N_theta, endpoint=False)
-dr = (r_max - r_min) / (N_r - 1)
-dtheta = 2 * np.pi / N_theta
+# Time parameters
+T = 10.0           # final time
+dt = 0.01          # time step
+nt = int(T/dt)     # number of time steps
 
-# Create 2D mesh arrays for r and theta
-R, Theta = np.meshgrid(r, theta, indexing='ij')
+# Physical parameters
+nu = 0.005         # kinematic viscosity
+v_infty = 1.0
 
-# Initialize fields: psi and omega (2D arrays)
-psi = np.zeros((N_r, N_theta))
-omega = np.zeros((N_r, N_theta))
+# Relaxation parameter for SOR while solving Poisson eq for psi
+sor = 1.5
+tol_psi = 1e-6
+max_iter_psi = 500
 
-# Set Dirichlet boundary conditions for psi
-psi[0, :] = 20.0  # inner boundary: psi = 20
-psi[-1, :] = v_inf * (r_max * np.sin(theta)) + 20.0  # outer boundary
+# ----------------------------
+# Initialize fields
+# ----------------------------
+psi = np.zeros((Nr, Ntheta))
+omega = np.zeros((Nr, Ntheta))
 
-def solve_poisson(psi, omega, r, dr, dtheta, tol=1e-4, max_iter=50, relax=1.0):
-    psi_new = psi.copy()
-    N_r, N_theta = psi_new.shape
-    # Precompute coefficients for interior nodes (i=1 to N_r-2)
-    r_inner = r[1:-1].reshape(-1, 1)
-    A = 1.0 / dr**2 + 1.0 / (2 * r_inner * dr)
-    B = 1.0 / dr**2 - 1.0 / (2 * r_inner * dr)
-    C = 1.0 / (r_inner**2 * dtheta**2)
-    D = -2.0 / dr**2 - 2.0 / (r_inner**2 * dtheta**2)
-    for it in range(max_iter):
-        psi_old = psi_new.copy()
-        psi_update = (A * psi_new[2:, :] + B * psi_new[:-2, :] +
-                      C * (np.roll(psi_new[1:-1, :], -1, axis=1) +
-                           np.roll(psi_new[1:-1, :], 1, axis=1)) +
-                      omega[1:-1, :]) / (-D)
-        # Relaxation update
-        psi_new[1:-1, :] = (1 - relax) * psi_new[1:-1, :] + relax * psi_update
-        # Reapply Dirichlet boundary conditions for psi
-        psi_new[0, :] = 20.0
-        psi_new[-1, :] = v_inf * (r_max * np.sin(theta)) + 20.0
-        if np.max(np.abs(psi_new - psi_old)) < tol:
+# Apply initial boundary conditions for psi:
+# Inner boundary: cylinder surface at r_min
+psi[0, :] = 20.0
+# Outer boundary: psi = v_infty * y + 20 where y = r*sin(theta)
+# r outer is r_max.
+psi[-1, :] = v_infty * (r[-1]*np.sin(theta)) + 20.0
+
+# For omega, initial condition is zero everywhere.
+# We will update omega at boundaries in the time-stepping.
+
+# ----------------------------
+# Function to solve Poisson equation for psi with SOR
+#    Discretized in polar coordinates:
+#    (1/dr^2)[psi(i+1,j) - 2 psi(i,j) + psi(i-1,j)]
+#    + (1/(2*r(i)*dr))[psi(i+1,j) - psi(i-1,j)]
+#    + (1/(r(i)^2*dtheta^2))[psi(i,j+1) - 2psi(i,j) + psi(i,j-1)]
+#    = - omega(i,j)
+# ----------------------------
+def solve_psi(psi, omega):
+    for it in range(max_iter_psi):
+        max_err = 0.0
+        # Update interior points in r: i=1 to Nr-2
+        for i in range(1, Nr-1):
+            # Precompute coefficients that depend on r[i]
+            A = 1.0 / dr**2
+            B = 1.0 / ( (r[i]**2) * dtheta**2 )
+            C = 1.0 / (2.0 * r[i] * dr)
+            coeff = 2*A + 2*B
+            for j in range(Ntheta):
+                jp = (j+1) % Ntheta
+                jm = (j-1) % Ntheta
+                psi_old = psi[i,j]
+                rhs = A*( psi[i+1,j] + psi[i-1,j] ) \
+                    + B*( psi[i,jp] + psi[i,jm] ) \
+                    + C*( psi[i+1,j] - psi[i-1,j] ) \
+                    + omega[i,j]
+                psi_new = rhs / coeff
+                # SOR update
+                psi[i,j] = (1.0 - sor)*psi_old + sor*psi_new
+                err = abs(psi[i,j] - psi_old)
+                if err > max_err:
+                    max_err = err
+        if max_err < tol_psi:
             break
-    return psi_new
+    return psi
 
-for n in range(n_steps):
-    # Compute velocity components from psi
-    # u_r = (1/r)*(∂psi/∂θ) using central differences (periodic in theta)
-    u_r = (np.roll(psi, -1, axis=1) - np.roll(psi, 1, axis=1)) / (2 * dtheta)
-    u_r = u_r / r.reshape(-1, 1)
-    # u_theta = -∂psi/∂r using central differences
+# ----------------------------
+# Main time stepping loop
+# ----------------------------
+for n in range(nt):
+    # Step 1: Solve the Poisson equation for psi at the current time step
+    psi = solve_psi(psi, omega)
+    
+    # Enforce boundary conditions on psi (remain constant)
+    psi[0, :] = 20.0
+    psi[-1, :] = v_infty * (r[-1]*np.sin(theta)) + 20.0
+    # Periodic in theta is automatically maintained through update loops.
+    
+    # Step 2: Compute velocity components from psi
+    # u_r = (1/r) * d(psi)/dtheta ; u_theta = - d(psi)/dr
+    u_r = np.zeros_like(psi)
     u_theta = np.zeros_like(psi)
-    u_theta[1:-1, :] = - (psi[2:, :] - psi[:-2, :]) / (2 * dr)
+    for i in range(Nr):
+        # Use periodic difference in theta for u_r
+        u_r[i, :] = (np.roll(psi[i, :], -1) - np.roll(psi[i, :], 1)) / (2*dtheta*r[i])
+    # For u_theta, use central difference in r; for boundaries use one-sided
+    # Interior points:
+    u_theta[1:-1, :] = -(psi[2:, :] - psi[:-2, :])/(2*dr)
+    # For inner boundary, use forward difference
+    u_theta[0, :] = -(psi[1, :] - psi[0, :])/dr
+    # For outer boundary, use backward difference
+    u_theta[-1, :] = -(psi[-1, :] - psi[-2, :])/dr
+
+    # Step 3: Update omega using explicit time marching (Euler forward)
+    omega_new = omega.copy()
+    # Update omega for interior radial indices (i=1...Nr-2)
+    for i in range(1, Nr-1):
+        # Pre-calculate r factor for the row i
+        r_val = r[i]
+        # Calculate derivatives in r and theta direction for omega
+        # Use central differences for interior points in theta with periodicity.
+        domega_dr = (omega[i+1, :] - omega[i-1, :])/(2*dr)
+        domega_dtheta = (np.roll(omega[i, :], -1) - np.roll(omega[i, :], 1))/(2*dtheta)
+        # Laplacian in polar coordinates:
+        d2omega_dr2 = (omega[i+1, :] - 2*omega[i, :] + omega[i-1, :])/(dr**2)
+        d2omega_dtheta2 = (np.roll(omega[i, :], -1) - 2*omega[i, :] + np.roll(omega[i, :], 1))/(dtheta**2)
+        lap_omega = d2omega_dr2 + (1.0/r_val)*((omega[i+1, :] - omega[i-1, :])/(2*dr)) \
+                    + d2omega_dtheta2/(r_val**2)
+        # Advection term
+        adv = u_r[i, :]*domega_dr + (u_theta[i, :]/r_val)*domega_dtheta
+        # Update omega (explicit Euler)
+        omega_new[i, :] = omega[i, :] + dt * (-adv + nu*lap_omega)
+    omega = omega_new.copy()
     
-    # Upwind scheme for advection term in omega transport (for interior nodes)
-    # Radial derivative of omega: if u_r>=0 use backward difference else forward difference
-    omega_r = np.where(u_r[1:-1, :] >= 0,
-                       (omega[1:-1, :] - omega[:-2, :]) / dr,
-                       (omega[2:, :] - omega[1:-1, :]) / dr)
-    # Azimuthal derivative of omega: if u_theta>=0 use backward difference else forward difference
-    omega_theta = np.where(u_theta[1:-1, :] >= 0,
-                           (omega[1:-1, :] - np.roll(omega[1:-1, :], 1, axis=1)) / dtheta,
-                           (np.roll(omega[1:-1, :], -1, axis=1) - omega[1:-1, :]) / dtheta)
-    
-    # Compute advective term and clip to avoid overflow
-    advective = u_r[1:-1, :] * omega_r + u_theta[1:-1, :] * omega_theta
-    advective = np.clip(advective, -1e6, 1e6)
-    
-    # Laplacian of omega in polar coordinates (for interior nodes)
-    r_inner = r[1:-1].reshape(-1, 1)
-    laplacian_radial = (omega[2:, :] - 2*omega[1:-1, :] + omega[:-2, :]) / dr**2
-    laplacian_r_term = (omega[2:, :] - omega[:-2, :]) / (2 * dr * r_inner)
-    laplacian_theta = (np.roll(omega, -1, axis=1)[1:-1, :] - 2*omega[1:-1, :] +
-                       np.roll(omega, 1, axis=1)[1:-1, :]) / (r_inner**2 * dtheta**2)
-    laplacian_omega = laplacian_radial + laplacian_r_term + laplacian_theta
-    
-    # Update omega for interior nodes using explicit Euler time stepping
-    omega[1:-1, :] += dt * (-advective + nu * laplacian_omega)
-    
-    # Apply boundary conditions for omega
-    # Inner boundary: omega = 2*(psi[0] - psi[1]) / dr^2
-    omega[0, :] = 2 * (psi[0, :] - psi[1, :]) / (dr**2)
+    # Step 4: Update vorticity boundary conditions
+    # Inner boundary: use omega = 2*(psi[0]-psi[1])/dr^2
+    omega[0, :] = 2.0*(psi[0, :] - psi[1, :])/(dr**2)
     # Outer boundary: omega = 0
     omega[-1, :] = 0.0
-    
-    # Update psi by solving the Poisson equation with the current omega field
-    psi = solve_poisson(psi, omega, r, dr, dtheta)
 
+# ----------------------------
+# Save final solutions
+# ----------------------------
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/psi_Flow_Past_Circular_Cylinder.npy', psi)
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/omega_Flow_Past_Circular_Cylinder.npy', omega)

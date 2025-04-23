@@ -2,52 +2,56 @@
 import numpy as np
 
 # Parameters
-alpha = 0.01            # thermal diffusivity
-Q0 = 200.0              # source term amplitude (°C/s)
-sigma = 0.1             # spread of source term
-t_final = 3.0           # final time
-nx = 101                # number of grid points in x
-ny = 101                # number of grid points in y
+alpha = 0.1               # thermal diffusivity
+Q0 = 200.0                # source term coefficient in °C/s
+sigma = 0.1               # standard deviation for source term
+t_final = 3.0             # final time
+# Domain
+x_min, x_max = -1.0, 1.0
+y_min, y_max = -1.0, 1.0
 
-# Spatial domain
-x = np.linspace(-1, 1, nx)
-y = np.linspace(-1, 1, ny)
-dx = x[1] - x[0]
-dy = y[1] - y[0]
+# Numerical parameters
+Nx = 101                  # number of grid points in x
+Ny = 101                  # number of grid points in y
+dx = (x_max - x_min) / (Nx - 1)
+dy = (y_max - y_min) / (Ny - 1)
 
-# Time stepping: stability criterion for explicit scheme: dt <= min(dx^2,dy^2)/(4*alpha)
-dt = min(dx, dy)**2 / (4 * alpha) * 0.5  # use some safety factor
+# Stability condition for explicit scheme in 2D: dt <= min(dx^2, dy^2)/(4*alpha)
+dt = 0.25 * min(dx**2, dy**2) / alpha
 nt = int(t_final / dt)
-dt = t_final / nt  # adjust dt to exactly reach t_final
 
-# Meshgrid for evaluation of initial and source term
+# Create grid
+x = np.linspace(x_min, x_max, Nx)
+y = np.linspace(y_min, y_max, Ny)
 X, Y = np.meshgrid(x, y, indexing='ij')
 
 # Initial condition
 T = 1.0 + 200.0 * np.exp(-((X**2 + Y**2) / (2 * sigma**2)))
 
-# Source term (independent of time in this problem formulation)
+# Enforce Dirichlet boundary conditions: T = 1 on all boundaries
+T[0, :] = 1.0
+T[-1, :] = 1.0
+T[:, 0] = 1.0
+T[:, -1] = 1.0
+
+# Pre-calculate the source term q(x,y,t). It is independent of time.
 q = Q0 * np.exp(-((X**2 + Y**2) / (2 * sigma**2)))
 
-# Boundary condition value
-T_boundary = 1.0
+# Time stepping loop (explicit finite difference)
+for n in range(nt):
+    Tn = T.copy()
+    # Compute second derivatives using central differences (for interior points)
+    d2T_dx2 = (Tn[2:, 1:-1] - 2 * Tn[1:-1, 1:-1] + Tn[:-2, 1:-1]) / dx**2
+    d2T_dy2 = (Tn[1:-1, 2:] - 2 * Tn[1:-1, 1:-1] + Tn[1:-1, :-2]) / dy**2
 
-# Time integration (explicit Euler with central differences)
-for step in range(nt):
-    T_new = T.copy()
-    # Update interior nodes
-    T_new[1:-1, 1:-1] = T[1:-1, 1:-1] + dt * (
-        alpha * (
-            (T[2:, 1:-1] - 2 * T[1:-1, 1:-1] + T[:-2, 1:-1]) / dx**2 +
-            (T[1:-1, 2:] - 2 * T[1:-1, 1:-1] + T[1:-1, :-2]) / dy**2
-        ) + q[1:-1, 1:-1]
-    )
-    # Enforce boundary conditions: T = 1 on all boundaries
-    T_new[0, :] = T_boundary
-    T_new[-1, :] = T_boundary
-    T_new[:, 0] = T_boundary
-    T_new[:, -1] = T_boundary
-    T = T_new
+    # Update interior points
+    T[1:-1, 1:-1] = Tn[1:-1, 1:-1] + dt * (alpha * (d2T_dx2 + d2T_dy2) + q[1:-1, 1:-1])
+    
+    # Reapply boundary conditions: T = 1 on boundaries
+    T[0, :] = 1.0
+    T[-1, :] = 1.0
+    T[:, 0] = 1.0
+    T[:, -1] = 1.0
 
-# Save final solution in a .npy file: as a 2D array since the problem is 2D.
+# Save the final solution field as a 2D NumPy array in "T.npy"
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/T_2D_Unsteady_Heat_Equation.npy', T)

@@ -14,8 +14,8 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 # Parameters
-nx = 50
-ny = 50
+nx = 201
+ny = 201
 nt  = 100
 xmin = 0
 xmax = 2

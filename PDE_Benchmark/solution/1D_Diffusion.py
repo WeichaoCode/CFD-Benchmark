@@ -10,9 +10,9 @@ Date: 2025/03/13
 
 import numpy  # loading our favorite library
 from matplotlib import pyplot  # and the useful plotting library
-nx = 41
+nx = 161
 dx = 2 / (nx - 1)
-nt = 20  # the number of timesteps we want to calculate
+nt = 80  # the number of timesteps we want to calculate
 nu = 0.3  # the value of viscosity
 sigma = .2  # sigma is a parameter, we'll learn more about it later
 dt = sigma * dx ** 2 / nu  # dt is defined using sigma ... more later!

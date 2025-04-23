@@ -3,100 +3,65 @@ import numpy as np
 
 # Parameters
 Re_tau = 395.0
-mu = 1.0 / Re_tau          # Molecular viscosity
-kappa = 0.42               # von Kármán constant
-A = 25.4                   # Damping constant
-
-# Domain discretization
-y_start = 0.0
-y_end = 2.0
-N = 201                   # number of grid points
-y = np.linspace(y_start, y_end, N)
+mu = 1.0 / Re_tau
+kappa = 0.42
+A = 25.4
+# Domain
+y_min = 0.0
+y_max = 2.0
+N = 201  # number of grid points
+y = np.linspace(y_min, y_max, N)
 dy = y[1] - y[0]
 
-# Compute effective viscosity (Cess turbulence model)
-# Compute y+ = y*Re_tau
+# Compute effective viscosity using the Cess turbulence model
+# ues: mu_eff/mu = 0.5*( sqrt[1 + (1/9)*kappa^2*Re_tau^2*(2*y - y**2)**2*(3 - 4*y + 2*y**2)**2*(1 - exp(-y+ / A))**2] - 1)
 y_plus = y * Re_tau
-
-# Compute the term X in the Cess model
-# Note: (2y - y^2)^2 and (3 - 4y + 2y^2)^2 appear in the formula.
-term1 = (2*y - y**2)**2
-term2 = (3 - 4*y + 2*y**2)**2
-# Compute the damping function: [1 - exp(-y_plus/A)]^2
-damping = (1.0 - np.exp(-y_plus / A))**2
-X = (1.0/9.0) * kappa**2 * Re_tau**2 * term1 * term2 * damping
-
-# Cess model: mu_eff/mu = 1/2*(sqrt(1+X)-1)
-ratio = 0.5 * (np.sqrt(1.0 + X) - 1.0)
+extra = (1.0 / 9.0) * (kappa**2) * (Re_tau**2) * ((2*y - y**2)**2) * ((3 - 4*y + 2*y**2)**2) * ((1 - np.exp(-y_plus/A))**2)
+ratio = 0.5 * (np.sqrt(1.0 + extra) - 1.0)
 mu_eff = mu * ratio
 
-# For the momentum equation, effective viscosity is taken to be mu_eff = mu + mu_t.
-# Thus, we solve for u given d/dy(mu_eff du/dy) = -1.
-# Discretization: central differences with Dirichlet BCs: u(0)=0 and u(2)=0.
-# Build coefficients for interior nodes i = 1 to N-2.
-A_diag = np.zeros(N-2)
-B_diag = np.zeros(N-2)
-C_diag = np.zeros(N-2)
-RHS = -np.ones(N-2)  # Right-hand side, constant -1
-
-# Compute mu_eff at half-nodes by averaging adjacent nodes.
-mu_half = np.zeros(N-1)
-for i in range(N-1):
-    mu_half[i] = 0.5 * (mu_eff[i] + mu_eff[i+1])
-
-# Assembly of the linear system for interior nodes
-for i in range(0, N-2):
-    if i == 0:
-        a = mu_half[i] / (dy**2)         # coefficient for u[0] (boundary) -- u[0]=0 so not stored in matrix
-    else:
-        a = mu_half[i] / (dy**2)
-    b = - (mu_half[i] + mu_half[i+1]) / (dy**2)
-    if i == N-3:
-        c = mu_half[i+1] / (dy**2)         # coefficient for u[N-1] (boundary) -- u[N-1]=0 so not stored in matrix
-    else:
-        c = mu_half[i+1] / (dy**2)
-    A_diag[i] = a
-    B_diag[i] = b
-    C_diag[i] = c
-
-# Build the tridiagonal matrix
-# The system corresponds to interior nodes u[1]...u[N-2]
-diag = B_diag.copy()
-lower = A_diag[1:]   # from i=1 to N-3
-upper = C_diag[:-1]  # from i=0 to N-3
-
-# Assemble full matrix
-n_interior = N - 2
-LHS = np.zeros((n_interior, n_interior))
-for i in range(n_interior):
-    LHS[i, i] = diag[i]
-    if i > 0:
-        LHS[i, i-1] = lower[i-1]
-    if i < n_interior - 1:
-        LHS[i, i+1] = upper[i]
-
-# Solve linear system
-u_interior = np.linalg.solve(LHS, RHS)
-
-# Construct full solution vector u with BCs
-u = np.zeros(N)
-u[1:N-1] = u_interior
-u[0] = 0.0
-u[-1] = 0.0
-
-# Compute mu_t from mu_eff; since mu_eff = mu + mu_t
+# Compute turbulent viscosity: mu_t = mu_eff - mu (if negative, set to zero)
 mu_t = mu_eff - mu
+mu_t[mu_t < 0] = 0.0
 
-# Other initial conditions (constant fields)
-k = np.full(N, 0.01)
-epsilon = np.full(N, 0.001)
-omega = np.full(N, 1.0)
-nu_SA = np.full(N, mu)  # nu_SA = 1/Re_tau = mu
+# Given initial conditions for other variables (they remain constant in this steady problem)
+k = np.full_like(y, 0.01)
+eps = np.full_like(y, 0.001)
+omega = np.full_like(y, 1.0)
+nu_SA = np.full_like(y, mu)  # 1/Re_tau
 
-# Save the final solution fields as .npy files (1D arrays)
-np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_Fully_Developed_Turbulent_Channel_Flow.npy', u)
-np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/mu_t_Fully_Developed_Turbulent_Channel_Flow.npy', mu_t)
-np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/k_Fully_Developed_Turbulent_Channel_Flow.npy', k)
-np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/epsilon_Fully_Developed_Turbulent_Channel_Flow.npy', epsilon)
-np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/omega_Fully_Developed_Turbulent_Channel_Flow.npy', omega)
-np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/nu_SA_Fully_Developed_Turbulent_Channel_Flow.npy', nu_SA)
+# Solve the steady momentum equation:
+# d/dy( mu_eff * du/dy ) = -1, with u(0)=0, u(2)=0.
+# Discretize using finite differences:
+# For interior i, (mu_{i+1/2}*(u[i+1]-u[i]) - mu_{i-1/2}*(u[i]-u[i-1]))/dy^2 = -1.
+# Use mu_{i+1/2} = 0.5*(mu_eff[i]+mu_eff[i+1]).
+u = np.zeros_like(y)
+
+# Assemble the coefficient matrix A and right-hand side b
+A_matrix = np.zeros((N, N))
+b = -np.ones(N)  # right-hand side is -1 at interior nodes
+
+# Boundary conditions u[0]=0 and u[N-1]=0
+A_matrix[0,0] = 1.0
+b[0] = 0.0
+A_matrix[-1,-1] = 1.0
+b[-1] = 0.0
+
+# Interior nodes
+for i in range(1, N-1):
+    mu_ip = 0.5 * (mu_eff[i] + mu_eff[i+1])  # mu_{i+1/2}
+    mu_im = 0.5 * (mu_eff[i-1] + mu_eff[i])    # mu_{i-1/2}
+    A_matrix[i, i-1] = -mu_im / dy**2
+    A_matrix[i, i]   = (mu_im + mu_ip) / dy**2
+    A_matrix[i, i+1] = -mu_ip / dy**2
+
+# Solve the linear system
+u = np.linalg.solve(A_matrix, b)
+
+# Save the final solution variables in .npy files
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_Fully_Developed_Turbulent_Channel_Flow.npy', u)         # 1D array for velocity u
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/mu_t_Fully_Developed_Turbulent_Channel_Flow.npy', mu_t)   # 1D array for turbulent viscosity mu_t
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/k_Fully_Developed_Turbulent_Channel_Flow.npy', k)         # 1D array for turbulent kinetic energy k
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/eps_Fully_Developed_Turbulent_Channel_Flow.npy', eps)     # 1D array for turbulent dissipation eps
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/omega_Fully_Developed_Turbulent_Channel_Flow.npy', omega) # 1D array for specific dissipation omega
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/nu_SA_Fully_Developed_Turbulent_Channel_Flow.npy', nu_SA) # 1D array for Spalart-Allmaras viscosity nu_SA

@@ -30,8 +30,8 @@ ufunc = lambdify((t, x, nu), u)
 from matplotlib import pyplot
 
 ###variable declarations
-nx = 101
-nt = 100
+nx = 401
+nt = 400
 dx = 2 * numpy.pi / (nx - 1)
 nu = .07
 dt = dx * nu

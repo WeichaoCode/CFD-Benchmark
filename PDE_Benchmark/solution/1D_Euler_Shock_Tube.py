@@ -37,7 +37,7 @@ xL = -1
 xR = 1
 
 # Define number of mesh points
-n = 81
+n = 320
 
 # Define spatial step size
 dx = (xR - xL) / n

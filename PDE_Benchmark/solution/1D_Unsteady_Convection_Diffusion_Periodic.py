@@ -13,7 +13,7 @@ BCb = 0.0  # RHS BC
 u = 0.2  # m/s, velocity
 rho = 1.0  # kg/m^3, density
 gamma = 0.001  # kg/m/s, diffusive coefficient
-N = 200
+N = 800
 Tfinal = L / u
 alpha = 1.0
 

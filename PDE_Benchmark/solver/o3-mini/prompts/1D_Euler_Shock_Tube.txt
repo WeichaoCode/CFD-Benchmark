@@ -1,109 +1,90 @@
 #!/usr/bin/env python3
 import numpy as np
 
-# Parameters and constants
+# Parameters
 gamma = 1.4
-x_start = -1.0
-x_end = 1.0
-t_end = 0.25
+xmin, xmax = -1.0, 1.0
+T = 0.25
+N = 400            # number of physical cells
 CFL = 0.5
-nx = 400
 
-dx = (x_end - x_start) / nx
-# Create computational grid with ghost cells on both sides
-# Domain indices 1...nx correspond to physical domain
-x = np.linspace(x_start - dx, x_end + dx, nx + 2)
+# Create grid with ghost cells (index 0 and N+1)
+dx = (xmax - xmin) / N
+# physical cell centers for interior cells only
+x = np.linspace(xmin + dx/2, xmax - dx/2, N)
 
-# Allocate conserved variable array U = [rho, rho*u, rho*E]
-U = np.zeros((3, nx + 2))
+# Total number of cells including ghost cells
+n_cells = N + 2
 
-# Set initial conditions for each cell in the physical domain (i=1,..,nx)
-for i in range(1, nx+1):
-    if x[i] < 0:
-        # Left state
-        rho = 1.0
-        u = 0.0
-        p = 1.0
-    else:
-        # Right state
-        rho = 0.125
-        u = 0.0
-        p = 0.1
-    # Total energy per unit mass: E = p/((gamma-1)*rho) + 0.5*u^2
-    E = p / ((gamma - 1) * rho) + 0.5 * u**2
-    U[0, i] = rho
-    U[1, i] = rho * u
-    U[2, i] = rho * E
+# Initialize conservative variables U = [rho, rho*u, rho*E] with shape (3, n_cells)
+U = np.zeros((3, n_cells))
+
+# Set initial conditions for interior cells (indices 1 to N)
+rho = np.where(x < 0.0, 1.0, 0.125)
+u = np.zeros_like(x)
+p = np.where(x < 0.0, 1.0, 0.1)
+E = p/((gamma - 1)*rho) + 0.5*u**2
+
+# Fill interior cells
+U[0, 1:-1] = rho
+U[1, 1:-1] = rho * u
+U[2, 1:-1] = rho * E
+
+def apply_reflective_bc(U):
+    # Reflective BC: density and energy same, momentum reversed.
+    # Left ghost: mirror interior cell at index 1
+    U[0,0] = U[0,1]
+    U[1,0] = - U[1,1]
+    U[2,0] = U[2,1]
+    # Right ghost: mirror interior cell at index -2
+    U[0,-1] = U[0,-2]
+    U[1,-1] = - U[1,-2]
+    U[2,-1] = U[2,-2]
 
 def compute_flux(U):
-    """
-    Compute the flux vector F for the conserved variables U.
-    U shape : (3, N) where N can be any number of cells.
-    Returns F with the same shape.
-    """
-    rho = U[0]
-    u = U[1] / rho
-    # Compute pressure: p = (gamma-1) * (rho*E - 0.5*rho*u^2)
-    p = (gamma - 1) * (U[2] - 0.5 * rho * u**2)
+    # U shape: (3, n_cells)
+    rho = U[0, :]
+    mom = U[1, :]
+    E_tot = U[2, :]
+    u = mom / rho
+    p = (gamma - 1) * (E_tot - 0.5 * rho * u**2)
     F = np.zeros_like(U)
-    F[0] = rho * u
-    F[1] = rho * u**2 + p
-    F[2] = u * (U[2] + p)
+    F[0, :] = mom
+    F[1, :] = rho * u**2 + p
+    F[2, :] = u * (E_tot + p)
     return F
 
-def apply_reflective_BC(U):
-    """
-    Apply reflective (no-flux) boundary conditions.
-    Left ghost cell from first physical cell: rho mirrored, momentum reversed, energy same.
-    Right ghost cell from last physical cell.
-    """
-    # Left BC (i=0) from i=1
-    U[0, 0] = U[0, 1]
-    U[1, 0] = -U[1, 1]
-    U[2, 0] = U[2, 1]
-    # Right BC (i=-1) from i=-2
-    U[0, -1] = U[0, -2]
-    U[1, -1] = -U[1, -2]
-    U[2, -1] = U[2, -2]
-    return U
-
-# Initialize ghost cells
-U = apply_reflective_BC(U)
-
+# Main time loop (explicit finite difference using Lax-Friedrichs scheme)
 t = 0.0
-while t < t_end:
-    # Compute primitive variables for CFL condition (only physical domain cells)
-    rho = U[0, 1:-1]
-    u = U[1, 1:-1] / rho
-    p = (gamma - 1) * (U[2, 1:-1] - 0.5 * rho * u**2)
-    a = np.sqrt(np.abs(gamma * p / rho))
-    max_speed = np.max(np.abs(u) + a)
-    dt = CFL * dx / max_speed
-    if t + dt > t_end:
-        dt = t_end - t
-
-    # Compute fluxes at all cells
+while t < T:
+    apply_reflective_bc(U)
     F = compute_flux(U)
+    # Determine maximum wave speed for CFL time step
+    rho_in = U[0, 1:-1]
+    u_in = U[1, 1:-1] / rho_in
+    p_in = (gamma - 1) * (U[2, 1:-1] - 0.5 * rho_in * u_in**2)
+    c = np.sqrt(gamma * p_in / rho_in)
+    max_speed = np.max(np.abs(u_in) + c)
+    dt = CFL * dx / max_speed
+    if t + dt > T:
+        dt = T - t
 
-    # Lax-Friedrichs scheme update for physical cells: i = 1 ... nx
     U_new = U.copy()
-    # Use vectorized update for interior cells
-    U_new[:, 1:-1] = 0.5 * (U[:, 2:] + U[:, :-2]) - (dt / (2 * dx)) * (F[:, 2:] - F[:, :-2])
-
-    # Update the solution array
-    U = U_new.copy()
-
-    # Apply reflective boundary conditions
-    U = apply_reflective_BC(U)
-
+    # Lax-Friedrichs update for interior cells (i=1 ... N)
+    # U_new[:, i] = 0.5*(U[:,i+1] + U[:,i-1]) - dt/(2*dx) * (F[:,i+1] - F[:,i-1])
+    U_new[:, 1:-1] = 0.5 * (U[:, 2:] + U[:, 0:-2]) - (dt/(2*dx)) * (F[:, 2:] - F[:, 0:-2])
+    U = U_new
     t += dt
 
-# Final solution in the physical domain, indices 1 to nx (1D arrays)
-rho_final = U[0, 1:-1]
-rho_u_final = U[1, 1:-1]
-rho_E_final = U[2, 1:-1]
+# Apply BC one final time
+apply_reflective_bc(U)
 
-# Save final solutions as .npy files
-np.save("rho.npy", rho_final)
-np.save("rho_u.npy", rho_u_final)
-np.save("rho_E.npy", rho_E_final)
+# Extract final solution for interior cells
+rho_final = U[0, 1:-1]
+u_final = U[1, 1:-1] / rho_final
+p_final = (gamma - 1) * (U[2, 1:-1] - 0.5 * rho_final * u_final**2)
+
+# Save final 1D arrays to .npy files
+np.save("density.npy", rho_final)
+np.save("velocity.npy", u_final)
+np.save("pressure.npy", p_final)

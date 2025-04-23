@@ -5,9 +5,10 @@ import os
 # Set the root directory (you can also use os.getcwd() if running from root)
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 root_dir = os.path.join(ROOT_DIR, 'PDE_Benchmark')  # PDE_Benchmark root
-
+json_file = "prompts.json"  # do not use mms
+# json_file = "mms_prompts.json"  # use mms
 # Initialize the PromptGenerator
-generator_prompt = PromptGenerator(root_dir)
+generator_prompt = PromptGenerator(root_dir, json_file)
 
 # Load the problem data from the input JSON
 generator_prompt.load_problem_data()
@@ -23,21 +24,22 @@ generator_prompt.save_prompts(prompts)
 # llm_model = "gemini"  # "gpt-4o", ""o3-mini, "sonnet-3.5", "haiku", "lama 4", "gemini: gemini-2.0-flash"
 # List of LLM models to evaluate
 llm_models = [
-    "gpt-4o",
-    "o3-mini",
+    # "gpt-4o",
+    # "o3-mini",
+    # "gemini",
     "sonnet-35",
     "haiku",
-    "gemini"
 ]
 
 # use gpt-4o to check the code
 # llm_models = ["o3-mini"]
-prompt_json = "prompts.json"  # the file under ./prompt/
+prompt_json = json_file  # the file under ./prompt/
 # Loop over all models
 for llm_model in llm_models:
-    print(f"\n=== Running for model: {llm_model} ===")
+    print(f"\n=== Running for model: {llm_model} ===\n")
+    print(f"\n=== Running for prompt: {json_file} ===")
     # Instantiate the class
-    generator_llm = LLMCodeGenerator(llm_model, prompt_json)
+    generator_llm = LLMCodeGenerator(llm_model, prompt_json, reviewer=False)
 
     # Call the API to generate code for each task
     generator_llm.call_api()
@@ -48,5 +50,4 @@ for llm_model in llm_models:
 
     # Run the full post-processing pipeline
     # this time only run execute LLM generated python code and save the results to log file
-    processor.run_all(step1=False, step2=False, step4=False)
-
+    processor.run_all()

@@ -7,7 +7,7 @@ L = 2.0 # m, length
 BCa = 0.0 # lHS BC
 BCb = 0.0 # RHS BC
 u = 0.2 # m/s, velocity
-N = 200
+N = 800
 Ts = 0.25*L/u
 
 

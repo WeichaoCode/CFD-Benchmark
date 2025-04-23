@@ -1,165 +1,152 @@
 #!/usr/bin/env python3
 import numpy as np
 
-# Set NumPy error handling to ignore overflow warnings in critical sections.
-np.seterr(over='ignore', divide='ignore', invalid='ignore')
-
-# Parameters
-Ra = 2e6
-Pr = 1
-nu = (Ra / Pr) ** (-0.5)
-kappa = (Ra * Pr) ** (-0.5)
-
+# Domain and simulation parameters
 Lx = 4.0
 Lz = 1.0
-t_final = 50.0
-
-# Discretization parameters (coarse grid for speed and stability)
-Nx = 65           # number of grid points in x
-Nz = 17           # number of grid points in z
+Nx = 81        # number of grid points in x-direction
+Nz = 21        # number of grid points in z-direction
 dx = Lx / (Nx - 1)
 dz = Lz / (Nz - 1)
 
-# Time stepping parameters (dt chosen for stability)
-dt = 0.005
-nt = int(t_final / dt)
+T = 50.0       # final time
+dt = 0.01      # time step
+nt = int(T/dt)
 
-# Pressure Poisson solver parameters
-p_tol = 1e-6
-p_max_iter = 300
-p_omega = 1.7  # SOR relaxation factor
+# Physical parameters
+Ra = 2e6
+Pr = 1.0
+nu = 1.0 / np.sqrt(Ra / Pr)       # kinematic viscosity
+kappa = 1.0 / np.sqrt(Ra * Pr)      # thermal diffusivity
 
-# Create grids
+# Create grid
 x = np.linspace(0, Lx, Nx)
 z = np.linspace(0, Lz, Nz)
-X, Z = np.meshgrid(x, z, indexing='ij')
 
-# Initialize fields: u: horizontal, w: vertical, p, b (buoyancy)
-u = np.zeros((Nx, Nz))
-w = np.zeros((Nx, Nz))
-p = np.zeros((Nx, Nz))
+# Initialize variables (2D arrays with shape (Nz, Nx))
+u = np.zeros((Nz, Nx))    # horizontal velocity
+w = np.zeros((Nz, Nx))    # vertical velocity
+p = np.zeros((Nz, Nx))    # pressure
+b = np.zeros((Nz, Nx))    # buoyancy (temperature deviation)
+
+# Initial conditions
+# u and w are initially zero.
+# b = Lz - z + a small random perturbation; here we add the perturbation row-wise.
 np.random.seed(42)
-b = (Lz - Z) + 1e-3 * (np.random.rand(Nx, Nz) - 0.5)
+for j in range(Nz):
+    b[j, :] = Lz - z[j] + 1e-3 * (np.random.rand(Nx) - 0.5)
 
-# Apply buoyancy boundary conditions: bottom: b = Lz, top: b = 0
-b[:, 0] = Lz
-b[:, -1] = 0.0
-
+# Function: compute Laplacian of a 2D field with periodic BC in x and Dirichlet in z.
 def laplacian(f):
-    with np.errstate(over='ignore', divide='ignore', invalid='ignore'):
-        lap = ((np.roll(f, -1, axis=0) - 2 * f + np.roll(f, 1, axis=0)) / dx**2 +
-               (np.roll(f, -1, axis=1) - 2 * f + np.roll(f, 1, axis=1)) / dz**2)
+    lap = (np.roll(f, -1, axis=1) - 2*f + np.roll(f, 1, axis=1)) / dx**2
+    # For the z derivatives, use central differences (no periodicity in z)
+    lap[1:-1, :] += (f[2:, :] - 2*f[1:-1, :] + f[:-2, :]) / dz**2
     return lap
 
-def divergence(u_field, w_field):
-    with np.errstate(over='ignore', divide='ignore', invalid='ignore'):
-        du_dx = (np.roll(u_field, -1, axis=0) - np.roll(u_field, 1, axis=0)) / (2 * dx)
-        dw_dz = (np.roll(w_field, -1, axis=1) - np.roll(w_field, 1, axis=1)) / (2 * dz)
-        div = du_dx + dw_dz
-    return div
-
-def pressure_poisson(p, u_star, w_star, dt):
-    with np.errstate(over='ignore', divide='ignore', invalid='ignore'):
-        rhs = divergence(u_star, w_star) / dt
-    denom = 2 / dx**2 + 2 / dz**2
-    for _ in range(p_max_iter):
-        p_old = p.copy()
-        with np.errstate(over='ignore', divide='ignore', invalid='ignore'):
-            p_new = (1 - p_omega) * p + (p_omega / denom) * (
-                (np.roll(p, -1, axis=0) + np.roll(p, 1, axis=0)) / dx**2 +
-                (np.roll(p, -1, axis=1) + np.roll(p, 1, axis=1)) / dz**2 - rhs)
-        p = np.nan_to_num(p_new, nan=0.0, posinf=1e6, neginf=-1e6)
-        # Enforce Neumann boundary condition in z for p (dp/dz = 0)
-        p[:, 0] = p[:, 1]
-        p[:, -1] = p[:, -2]
-        diff = p - p_old
-        if not np.all(np.isfinite(diff)):
+# Function: solve Poisson equation for the pressure correction phi with Dirichlet BC (phi=0 at top and bottom) 
+# and periodic in x using a simple iterative Jacobi solver.
+def poisson_solver(rhs, tol=1e-6, max_iter=1000):
+    phi = np.zeros_like(rhs)
+    # Coefficients for non-uniform grid in x and z
+    dx2 = dx**2
+    dz2 = dz**2
+    coeff = 2*(dx2 + dz2)
+    for it in range(max_iter):
+        phi_old = phi.copy()
+        # update interior points (j=1 to Nz-2, all i with periodic wrap in x)
+        phi[1:-1, :] = (
+            dz2 * (np.roll(phi, -1, axis=1)[1:-1, :] + np.roll(phi, 1, axis=1)[1:-1, :]) +
+            dx2 * (phi[2:, :] + phi[:-2, :]) -
+            dx2 * dz2 * rhs[1:-1, :]
+        ) / coeff
+        # Enforce Dirichlet conditions in z
+        phi[0, :] = 0.0
+        phi[-1, :] = 0.0
+        # Check convergence
+        if np.linalg.norm(phi - phi_old, ord=2) < tol:
             break
-        res = np.linalg.norm(diff.ravel(), 2)
-        if res < p_tol:
-            break
-    return p
+    return phi
 
-def apply_velocity_bc(u_field, w_field):
-    # No-slip at top and bottom: u = 0, w = 0
-    u_field[:, 0] = 0.0
-    u_field[:, -1] = 0.0
-    w_field[:, 0] = 0.0
-    w_field[:, -1] = 0.0
-    return u_field, w_field
-
-def apply_buoyancy_bc(b_field):
-    # Enforce buoyancy boundary conditions: bottom: b = Lz, top: b = 0
-    b_field[:, 0] = Lz
-    b_field[:, -1] = 0.0
-    return b_field
-
-def upwind_x(f, velocity):
-    with np.errstate(over='ignore', divide='ignore', invalid='ignore'):
-        diff_backward = (f - np.roll(f, 1, axis=0)) / dx
-        diff_forward  = (np.roll(f, -1, axis=0) - f) / dx
-    return np.where(velocity >= 0, diff_backward, diff_forward)
-
-def upwind_z(f, velocity):
-    with np.errstate(over='ignore', divide='ignore', invalid='ignore'):
-        diff_backward = (f - np.roll(f, 1, axis=1)) / dz
-        diff_forward  = (np.roll(f, -1, axis=1) - f) / dz
-    return np.where(velocity >= 0, diff_backward, diff_forward)
-
-# Time stepping loop
+# Main time-stepping loop
 for n in range(nt):
-    # Upwind derivatives for velocity components
-    du_dx = upwind_x(u, u)
-    du_dz = upwind_z(u, w)
-    dw_dx = upwind_x(w, u)
-    dw_dz = upwind_z(w, w)
+    # --- Step 1: Compute intermediate velocities (u*, w*) using explicit Euler for convection and diffusion ---
+    u_star = u.copy()
+    w_star = w.copy()
     
-    with np.errstate(over='ignore', divide='ignore', invalid='ignore'):
-        conv_u = u * du_dx + w * du_dz
-        conv_w = u * dw_dx + w * dw_dz
-    conv_u = np.nan_to_num(conv_u, nan=0.0, posinf=1e6, neginf=-1e6)
-    conv_w = np.nan_to_num(conv_w, nan=0.0, posinf=1e6, neginf=-1e6)
+    # Update interior points only (j=1 to Nz-2)
+    # Use central differences in x with periodic BC and in z (not using rolled wrap in z to avoid ghost effects)
+    # Horizontal convection terms for u
+    u_int = u[1:-1, :]
+    w_int = w[1:-1, :]
     
-    lap_u = laplacian(u)
-    lap_w = laplacian(w)
+    u_x = (np.roll(u, -1, axis=1)[1:-1, :] - np.roll(u, 1, axis=1)[1:-1, :]) / (2*dx)
+    u_z = (u[2:, :] - u[:-2, :]) / (2*dz)
+    conv_u = u_int * u_x + w_int * u_z
     
-    # Compute intermediate velocities (u_star, w_star) including buoyancy in vertical momentum
-    u_star = u + dt * (-conv_u + nu * lap_u)
-    w_star = w + dt * (-conv_w + nu * lap_w + b)
+    # Horizontal convection terms for w
+    w_x = (np.roll(w, -1, axis=1)[1:-1, :] - np.roll(w, 1, axis=1)[1:-1, :]) / (2*dx)
+    w_z = (w[2:, :] - w[:-2, :]) / (2*dz)
+    conv_w = u_int * w_x + w_int * w_z
     
-    u_star, w_star = apply_velocity_bc(u_star, w_star)
+    # Diffusion terms for u and w
+    lap_u = laplacian(u)[1:-1, :]
+    lap_w = laplacian(w)[1:-1, :]
     
-    # Solve for pressure correction
-    p = pressure_poisson(p, u_star, w_star, dt)
+    # Update predicted velocities for interior points
+    u_star[1:-1, :] = u[1:-1, :] + dt * (-conv_u + nu * lap_u)
+    w_star[1:-1, :] = w[1:-1, :] + dt * (-conv_w + nu * lap_w + b[1:-1, :])
     
-    with np.errstate(over='ignore', divide='ignore', invalid='ignore'):
-        dp_dx = (np.roll(p, -1, axis=0) - np.roll(p, 1, axis=0)) / (2 * dx)
-        dp_dz = (np.roll(p, -1, axis=1) - np.roll(p, 1, axis=1)) / (2 * dz)
-    dp_dx = np.nan_to_num(dp_dx, nan=0.0, posinf=1e6, neginf=-1e6)
-    dp_dz = np.nan_to_num(dp_dz, nan=0.0, posinf=1e6, neginf=-1e6)
-    
-    # Correct velocities for incompressibility
-    u = u_star - dt * dp_dx
-    w = w_star - dt * dp_dz
-    u, w = apply_velocity_bc(u, w)
-    
-    # Buoyancy advection-diffusion; upwind for advection terms
-    db_dx = upwind_x(b, u)
-    db_dz = upwind_z(b, w)
-    with np.errstate(over='ignore', divide='ignore', invalid='ignore'):
-        conv_b = u * db_dx + w * db_dz
-    conv_b = np.nan_to_num(conv_b, nan=0.0, posinf=1e6, neginf=-1e6)
-    lap_b = laplacian(b)
-    b = b + dt * (-conv_b + kappa * lap_b)
-    b = apply_buoyancy_bc(b)
-    
-    # Exit early if any non-finite values are encountered
-    if not (np.all(np.isfinite(u)) and np.all(np.isfinite(w)) and 
-            np.all(np.isfinite(p)) and np.all(np.isfinite(b))):
-        print("Non-finite values encountered at time step", n)
-        break
+    # Enforce velocity BC: top and bottom (Dirichlet: u = 0, w = 0)
+    u_star[0, :] = 0.0
+    u_star[-1, :] = 0.0
+    w_star[0, :] = 0.0
+    w_star[-1, :] = 0.0
 
-# Save final solutions as .npy files (each variable saved as a 2D NumPy array)
+    # --- Step 2: Pressure projection to enforce incompressibility ---
+    # Compute divergence of u_star at interior points using central differences.
+    div = np.zeros((Nz, Nx))
+    div[1:-1, :] = ((np.roll(u_star, -1, axis=1) - np.roll(u_star, 1, axis=1)) / (2*dx))[1:-1, :] \
+                   + (w_star[2:, :] - w_star[:-2, :]) / (2*dz)
+    # Right-hand side for pressure Poisson: (divergence)/dt
+    rhs = div / dt
+    # Solve Poisson equation for pressure correction phi with phi=0 at z=0 and z=Lz, periodic in x.
+    phi = poisson_solver(rhs, tol=1e-6, max_iter=500)
+    
+    # Correct velocities with pressure gradient (central differences)
+    grad_phi_x = (np.roll(phi, -1, axis=1) - np.roll(phi, 1, axis=1)) / (2*dx)
+    grad_phi_z = np.zeros_like(phi)
+    grad_phi_z[1:-1, :] = (phi[2:, :] - phi[:-2, :]) / (2*dz)
+    
+    u_new = u_star - dt * grad_phi_x
+    w_new = w_star - dt * grad_phi_z
+    
+    # Enforce no-slip BC for velocity at top and bottom
+    u_new[0, :] = 0.0
+    u_new[-1, :] = 0.0
+    w_new[0, :] = 0.0
+    w_new[-1, :] = 0.0
+
+    # Update pressure (here we simply set p = phi, as correction)
+    p = phi.copy()
+
+    # --- Step 3: Update buoyancy b using explicit Euler, convection and diffusion ---
+    b_new = b.copy()
+    b_int = b[1:-1, :]
+    b_x = (np.roll(b, -1, axis=1)[1:-1, :] - np.roll(b, 1, axis=1)[1:-1, :]) / (2*dx)
+    b_z = (b[2:, :] - b[:-2, :]) / (2*dz)
+    conv_b = u_int * b_x + w_int * b_z
+    lap_b = laplacian(b)[1:-1, :]
+    b_new[1:-1, :] = b[1:-1, :] + dt * (-conv_b + kappa * lap_b)
+    # Enforce buoyancy BC: top: b=0, bottom: b=Lz
+    b_new[0, :] = 0.0
+    b_new[-1, :] = Lz
+
+    # Set updated fields for next iteration
+    u = u_new.copy()
+    w = w_new.copy()
+    b = b_new.copy()
+
+# Save the final time step solution fields as .npy files (2D arrays)
 np.save("u.npy", u)
 np.save("w.npy", w)
 np.save("p.npy", p)

@@ -26,7 +26,7 @@ b = 2e-4
 dealias = 3/2
 stop_sim_time = 10
 timestepper = d3.SBDF2
-timestep = 2e-3
+timestep = 5e-4
 dtype = np.float64
 
 # Bases

@@ -132,7 +132,7 @@ def solveU(p, un, vn, dt, dx, dy, rho, nu, DDT):
 # Define problem parameters
 Re = 100.0
 CFL = 0.25
-nt = 2000
+nt = 8000
 
 # Select time scheme
 # Options: 'RK' = Runge-Kutta 4th order; 'EE' = Euler explicit
@@ -141,8 +141,8 @@ DDT = 'RK'
 # Define spatial grid info
 Lx = 1.0
 Ly = 1.0
-nx = 51
-ny = 51
+nx = 201
+ny = 201
 dx = Lx / (nx - 1)
 dy = Ly / (ny - 1)
 rho = 1

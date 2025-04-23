@@ -1,0 +1,27 @@
+2025-04-23 13:58:38,590 - INFO - ====== Starting Comparison ======
+2025-04-23 13:58:38,590 - INFO - Found 23 common files.
+2025-04-23 13:58:38,592 - INFO - T_2D_Steady_Heat_Equation.npy: MSE=3.392e+02, MAE=1.495e+01, RMSE=1.842e+01, Cosine=0.455, R2=-2.814
+2025-04-23 13:58:38,594 - INFO - T_2D_Unsteady_Heat_Equation.npy: MSE=1.019e+02, MAE=6.727e+00, RMSE=1.010e+01, Cosine=0.946, R2=-131.517
+2025-04-23 13:58:38,595 - INFO - p_2D_Laplace_Equation.npy: MSE=1.877e-03, MAE=3.230e-02, RMSE=4.332e-02, Cosine=0.990, R2=0.948
+2025-04-23 13:58:38,597 - INFO - p_2D_Navier_Stokes_Channel.npy: MSE=1.000e+00, MAE=1.000e+00, RMSE=1.000e+00, Cosine=0.000, R2=0.000
+2025-04-23 13:58:38,598 - INFO - p_2D_Poisson_Equation.npy: MSE=2.802e-06, MAE=1.153e-03, RMSE=1.674e-03, Cosine=0.885, R2=0.773
+2025-04-23 13:58:38,600 - INFO - p_Lid_Driven_Cavity.npy: MSE=7.447e+00, MAE=2.719e+00, RMSE=2.729e+00, Cosine=0.217, R2=-42.601
+2025-04-23 13:58:38,601 - INFO - rho_1D_Euler_Shock_Tube.npy: MSE=5.307e-04, MAE=1.109e-02, RMSE=2.304e-02, Cosine=0.999, R2=0.996
+2025-04-23 13:58:38,602 - INFO - u_1D_Burgers_Equation.npy: MSE=3.734e-04, MAE=7.505e-03, RMSE=1.932e-02, Cosine=1.000, R2=1.000
+2025-04-23 13:58:38,604 - INFO - u_1D_Diffusion.npy: MSE=1.149e-03, MAE=2.318e-02, RMSE=3.389e-02, Cosine=1.000, R2=0.990
+2025-04-23 13:58:38,605 - INFO - u_1D_Euler_Shock_Tube.npy: MSE=2.380e-03, MAE=1.851e-02, RMSE=4.879e-02, Cosine=0.996, R2=0.985
+2025-04-23 13:58:38,605 - ERROR - ❌ u_1D_KdV_Burgers_Equation.npy failed: Input contains NaN.
+2025-04-23 13:58:38,607 - INFO - u_1D_Linear_Convection.npy: MSE=1.563e-03, MAE=2.451e-02, RMSE=3.954e-02, Cosine=0.993, R2=0.978
+2025-04-23 13:58:38,608 - INFO - u_1D_Nonlinear_Convection.npy: MSE=2.310e-01, MAE=2.233e-01, RMSE=4.806e-01, Cosine=0.224, R2=-1.444
+2025-04-23 13:58:38,610 - INFO - u_2D_Burgers_Equation.npy: MSE=2.919e-03, MAE=1.284e-02, RMSE=5.403e-02, Cosine=0.999, R2=0.943
+2025-04-23 13:58:38,611 - INFO - u_2D_Convection.npy: MSE=2.260e-03, MAE=1.323e-02, RMSE=4.754e-02, Cosine=0.999, R2=0.924
+2025-04-23 13:58:38,613 - INFO - u_2D_Diffusion.npy: MSE=3.532e+79, MAE=1.798e+39, RMSE=5.943e+39, Cosine=0.001, R2=-3448081170034409590305311848192212336838256283111496801210739478818462135513776128.000
+2025-04-23 13:58:38,614 - INFO - u_2D_Linear_Convection.npy: MSE=2.708e-04, MAE=5.651e-03, RMSE=1.646e-02, Cosine=1.000, R2=0.993
+2025-04-23 13:58:38,616 - INFO - u_2D_Navier_Stokes_Channel.npy: MSE=2.261e-06, MAE=1.298e-03, RMSE=1.504e-03, Cosine=1.000, R2=1.000
+2025-04-23 13:58:38,617 - INFO - u_Lid_Driven_Cavity.npy: MSE=2.148e-03, MAE=2.294e-02, RMSE=4.635e-02, Cosine=0.982, R2=0.964
+2025-04-23 13:58:38,619 - INFO - v_2D_Burgers_Equation.npy: MSE=2.919e-03, MAE=1.284e-02, RMSE=5.403e-02, Cosine=0.999, R2=0.943
+2025-04-23 13:58:38,620 - INFO - v_2D_Convection.npy: MSE=2.260e-03, MAE=1.323e-02, RMSE=4.754e-02, Cosine=0.999, R2=0.924
+2025-04-23 13:58:38,622 - INFO - v_2D_Navier_Stokes_Channel.npy: MSE=0.000e+00, MAE=0.000e+00, RMSE=0.000e+00, Cosine=0.000, R2=1.000
+2025-04-23 13:58:38,623 - INFO - v_Lid_Driven_Cavity.npy: MSE=1.266e-03, MAE=2.008e-02, RMSE=3.559e-02, Cosine=0.980, R2=0.858
+2025-04-23 13:58:38,627 - INFO - Found 23 common files.
+2025-04-23 13:58:45,722 - INFO - Found 23 common files.

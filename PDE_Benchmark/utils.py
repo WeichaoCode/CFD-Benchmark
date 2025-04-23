@@ -57,12 +57,47 @@ def generate_prompt(data):
     return "\n".join(parts)
 
 
+def generate_mms_prompt(data):
+    parts = [
+        "You are given the following partial differential equation (PDE) to test using the **Method of Manufactured "
+        "Solutions (MMS)**:\n",
+        "**Equation:**\n" + data.get("equation", "") + "\n",
+        "**Domain:**\n" + data.get("domain", "") + "\n",
+        "**Numerical Method:**\n" + data.get("numerical method", "") + "\n"
+    ]
+
+    # Check for 'save_values' and add to task description
+    save_values = data.get("save_values", [])
+    save_values_str = ", ".join(save_values) if save_values else "the relevant solution variables"
+
+    parts.append(
+        "### Task:\n"
+        "- Choose a smooth manufactured solution \( u(x, t) \) that fits the domain.\n"
+        "- Derive a source term \( f(x, t) \) such that the modified PDE:\n"
+        "  \n    Original_PDE + f(x, t) = 0\n"
+        "  \n  holds true for the chosen manufactured solution.\n"
+        "- Implement a numerical solver using the specified method to solve the PDE with the source term.\n"
+        "- At the final time step, compare the numerical result to the exact (manufactured) solution.\n"
+        "- For each variable in the list below, save a `.npy` file named after the variable (e.g., `u.npy`, `p.npy`).\n"
+        f"  - Variables to save: {save_values_str}\n"
+        "- Each `.npy` file should contain a Python dictionary with two entries:\n"
+        "  \n    `{'numerical': ..., 'MMS': ...}`\n"
+        "  \n  where `'numerical'` is the computed solution and `'MMS'` is the exact solution.\n"
+        "- Example: for variable `u`, save using `np.save('u.npy', {'numerical': u_numeric, 'MMS': u_exact})`\n"
+        "- **Return only the complete, runnable Python code** that performs all steps: MMS setup, solver, comparison, "
+        "and saving."
+    )
+
+    return "\n".join(parts)
+
+
 class PromptGenerator:
-    def __init__(self, root_dir):
+    def __init__(self, root_dir, json_file):
         self.problems = None
         self.root_dir = root_dir
         self.input_json = os.path.join(root_dir, 'prompt/PDE_TASK_QUESTION_ONLY.json')
-        self.output_json = os.path.join(root_dir, 'prompt/prompts.json')
+        self.output_json = os.path.join(root_dir, f'prompt/{json_file}')
+        self.json_file = json_file
 
     def load_problem_data(self):
         with open(self.input_json, "r") as f:
@@ -71,7 +106,12 @@ class PromptGenerator:
     def create_prompts(self):
         output_data = {}
         for name, data in self.problems.items():
-            output_data[name] = generate_prompt(data)
+            if self.json_file == "prompts.json":
+                output_data[name] = generate_prompt(data)
+            elif self.json_file == "mms_prompts.json":
+                output_data[name] = generate_mms_prompt(data)
+            else:
+                raise ValueError(f"Unsupported prompt type: {self.json_file}")
         return {"prompts": output_data}  # <-- wrap in top-level "prompts" key
 
     def save_prompts(self, prompts):
@@ -422,7 +462,7 @@ def api_key_configuration(llm_model):
 
 
 class LLMCodeGenerator:
-    def __init__(self, llm_model, prompt_json, temperature=0.0):
+    def __init__(self, llm_model, prompt_json, temperature=0.0, reviewer=True):
         self.llm_model = llm_model
         self.prompt_json = prompt_json
         self.temperature = temperature
@@ -444,6 +484,10 @@ class LLMCodeGenerator:
 
         # Tracking the total input and output tokens
         self.tokens_counts = {"total_input_tokens": 0, "total_output_tokens": 0, "total_cost": 0}
+        if reviewer:
+            self.max_retries = 5
+        else:
+            self.max_retries = 1
 
         logging.basicConfig(
             filename=self.LOG_FILE,
@@ -476,7 +520,7 @@ class LLMCodeGenerator:
                 inference_profile_arn,
                 self.OUTPUT_FOLDER,
                 self.tokens_counts,
-                max_retries=5
+                max_retries=self.max_retries
             )
 
         print("\n🎯 Execution completed. Check the solver directory for generated files.")
@@ -538,15 +582,29 @@ def write_execute_results_to_log(log, script, result, status_counts):
         log.write(result.stderr + "\n")
         log.write("-" * 50 + "\n\n")
 
-        # Print execution status
-        if result.returncode == 0:
-            print(f"✅ {script} executed successfully.")
-            status_counts['pass'] += 1  # Increment pass count
+        # Normalize case for easier checking
+        stdout_lower = result.stdout.lower()
+        stderr_lower = result.stderr.lower()
+
+        # Define pass condition: no "error" or "warning" in either output
+        has_error_or_warning = (
+            "error" in stdout_lower or
+            "error" in stderr_lower or
+            "warning" in stdout_lower or
+            "warning" in stderr_lower
+        )
+
+        if result.returncode == 0 and not has_error_or_warning:
+            print(f"✅ {script} executed successfully with clean output.")
+            status_counts['pass'] += 1
         else:
-            print(f"❌ {script} encountered an error (check logs).")
-            status_counts['fail'] += 1  # Increment fail count
+            print(f"❌ {script} has warnings or errors (check logs).")
+            status_counts['fail'] += 1
+
     except Exception as e:
-        log.write(f" {e}\n")
+        log.write(f"Exception occurred while logging execution: {e}\n")
+        print(f"❌ Exception while logging {script}: {e}")
+        status_counts['fail'] += 1
 
 
 def write_execute_error_to_log(log, script, status_counts):
@@ -1030,7 +1088,8 @@ class SolverPostProcessor:
         if step4:
             # STEP 4:
             # plot and save the images of gt and pred in different folder
-            call_save_image_different_dir(self.ground_truth_dir, self.prediction_dir, self.save_dir_gt, self.save_dir_pred)
+            call_save_image_different_dir(self.ground_truth_dir, self.prediction_dir, self.save_dir_gt,
+                                          self.save_dir_pred)
             # compare the images for mismatch shape, change the image to gray image, note the MSE is for pixel not
             # the same with MSE of original images, it works like human eyes (this function is optional)
             call_compare_image_mismatch(self.save_dir_gt, self.save_dir_pred, self.save_csv_path)

@@ -1,150 +1,180 @@
 #!/usr/bin/env python3
 import numpy as np
-import scipy.linalg
+from scipy.linalg import eig
 
 # Parameters
-N = 50               # number of radial grid points
+N = 50             # number of radial grid points
 Re = 1e4
-kz = 1.0
-h = 1.0/(N-1)
-r = np.linspace(0, 1, N)
-w0 = 1 - r**2       # base flow
-dw0_dr = -2*r       # derivative of base flow
+kz = 1.0           # axial wavenumber
+dr = 1.0/(N-1)     # uniform radial grid spacing
+r = np.linspace(0.0, 1.0, N)
+w0 = 1.0 - r**2    # laminar background flow
 
-# Total number of unknowns for variables u, w, p (each is an array of length N)
-nVar = 3 * N
+# Total unknowns: u, w, p each defined at N grid points
+# Unknown ordering:
+#   u: indices 0        ... N-1
+#   w: indices N        ... 2*N-1
+#   p: indices 2*N      ... 3*N-1
+nvars = 3 * N
 
-# Total number of equations:
-# We'll use the PDE at interior points: i=1,...,N-2 for each of 3 equations (divergence, radial mom, axial mom) -> 3*(N-2)
-# plus 6 boundary conditions:
-#    u(0)=0, u(1)=0, w(1)=0, w'(0)=0, p(0)=0, p(1)=0.
-nEq = 3*(N-2) + 6
+# We will assemble a generalized eigenvalue problem: A x = s B x,
+# where x = [u; w; p] and s is the eigenvalue.
+# In the momentum equations, s multiplies u and w (but not p or continuity).
+A = np.zeros((nvars, nvars), dtype=complex)
+B = np.zeros((nvars, nvars), dtype=complex)
 
-# Create A and B matrices for the generalized eigenvalue problem A x = s B x.
-A = np.zeros((nEq, nVar), dtype=complex)
-B = np.zeros((nEq, nVar), dtype=complex)
+# We'll assemble equations on two sets:
+# (I) For interior points (i = 1,...,N-2) we enforce the PDEs.
+#     We have three PDEs: continuity, u-momentum, and w-momentum.
+# (II) For the boundaries (at r=0 and r=1) we impose BCs.
+#
+# The order in our assembled system will be:
+#   A) Interior equations for i=1,...,N-2 (for each PDE in order: continuity, then u‐momentum, then w‐momentum).
+#   B) Boundary conditions at r=0 and r=1 for u, w, and p.
+#
+# Count of interior points: N_int = N-2.
+N_int = N - 2
+neq_interior = 3 * N_int
+neq_BC = 6   # BC: at r=0: u'(0)=0, w'(0)=0, p(0)=0; at r=1: u(1)=0, w(1)=0, p(1)=0.
+total_eq = neq_interior + neq_BC
 
-# Helper indices for variable blocks
-def ind_u(i):
+if total_eq != nvars:
+    raise ValueError("Total number of equations does not equal number of unknowns.")
+
+# Helper indices for unknown blocks:
+def u_idx(i):
     return i
-def ind_w(i):
+def w_idx(i):
     return N + i
-def ind_p(i):
-    return 2*N + i
+def p_idx(i):
+    return 2 * N + i
 
-# Interior equations for i = 1,...,N-2
-# Row counters:
-# eq1: divergence equation
-# eq2: radial momentum equation
-# eq3: axial momentum equation
+row = 0  # equation row counter
 
-row = 0
+# ---------------------------
+# (I) Interior equations for i=1,...,N-2
+# ---------------------------
 for i in range(1, N-1):
-    # ---------- Equation 1: Divergence (incompressibility) ---------------
-    # (1/r) d/dr (r u) + i*kz*w = 0  at r_i.
-    # Use centered finite difference for d/dr (r*u):
-    #   (r[i+1]*u[i+1] - r[i-1]*u[i-1])/(2h) divided by r[i]
-    if r[i] != 0:
-        A[row, ind_u(i+1)] =  r[i+1] / (2*h*r[i])
-        A[row, ind_u(i-1)] = -r[i-1] / (2*h*r[i])
-    else:
-        # At r=0, use symmetry; but i never equals 0 here.
-        pass
-    # Add term for w:
-    A[row, ind_w(i)] = 1j * kz
-    # (No s terms)
-    # B row remains zero.
+    # Use central differences at interior points.
+    # Note: i corresponds to the grid index in our array.
+    ri = r[i]
+    
+    # ---------------------------
+    # (I-a) Continuity: u_r' + (1/r)*u + i*kz * w = 0
+    # Approximate u_r' ~ (u[i+1]-u[i-1])/(2dr)
+    # Equation: (u[i+1]-u[i-1])/(2dr) + (1/ri)*u[i] + 1j*kz * w[i] = 0.
+    A[row, u_idx(i-1)] += -1.0/(2*dr)
+    A[row, u_idx(i+1)] +=  1.0/(2*dr)
+    A[row, u_idx(i)]   +=  1.0/ri
+    A[row, w_idx(i)]   +=  1j*kz
+    # No s-term, so no entry in B.
     row += 1
 
-for i in range(1, N-1):
-    # ---------- Equation 2: Radial momentum ---------------
-    # Eq2: s * u + i*w0*u + dp/dr - (1/Re)*( u_rr + (1/r) u_r - (1/r^2+kz^2) u ) = 0, at r_i.
-    # s multiplies u; so B: coefficient 1 on u_i.
-    Arow = row
-    B[Arow, ind_u(i)] = 1.0
-    # Add advection term: i*w0[i]* u[i]
-    A[Arow, ind_u(i)] += 1j * w0[i]
-    # Finite difference for u_rr and u_r at interior point i.
-    # Second derivative u_rr approximated by central differences:
-    #   u[i-1]: 1/h^2, u[i]: -2/h^2, u[i+1]: 1/h^2.
-    # First derivative u_r approximated by central differences:
-    #   u[i-1]: -1/(2*h), u[i+1]: 1/(2*h).
-    # Multiply first derivative by (1/r[i]).
-    coef_u_im1 = - (1/Re)* ( (1.0/h**2) - (1/(2*h*r[i])) )
-    coef_u_i   = - (1/Re)* ( (-2.0/h**2) - ( (1/r[i]**2 + kz**2) ) )
-    coef_u_ip1 = - (1/Re)* ( (1.0/h**2) + (1/(2*h*r[i])) )
-    A[Arow, ind_u(i-1)] += coef_u_im1
-    A[Arow, ind_u(i)]   += coef_u_i
-    A[Arow, ind_u(i+1)] += coef_u_ip1
-    # Pressure gradient dp/dr approximated by central difference:
-    #   p[i+1]: 1/(2*h), p[i-1]: -1/(2*h)
-    A[Arow, ind_p(i+1)] +=  1.0/(2*h)
-    A[Arow, ind_p(i-1)] += -1.0/(2*h)
+    # ---------------------------
+    # (I-b) u-momentum:
+    # Equation: s*u + i*kz*w0*u + dp/dr - (1/Re)[ u'' + (1/r)u' - (1/r^2) u - kz^2 u ] = 0.
+    # Approximate:
+    #   u'' ~ (u[i+1] - 2*u[i] + u[i-1])/(dr**2)
+    #   u'  ~ (u[i+1]-u[i-1])/(2*dr)
+    #   dp/dr ~ (p[i+1]-p[i-1])/(2*dr)
+    # Write as: s*u[i] appears multiplied by u, so in B set coefficient 1.
+    B[row, u_idx(i)] = 1.0
+    # Add convection term i*kz*w0:
+    A[row, u_idx(i)] += 1j*kz*w0[i]
+    # Pressure gradient:
+    A[row, p_idx(i-1)] += -1.0/(2*dr)
+    A[row, p_idx(i+1)] +=  1.0/(2*dr)
+    # Diffusion operator for u:
+    coeff_u_ip = (1.0/Re) * (1.0/(dr**2) + 1.0/(2*dr*ri))
+    coeff_u_im = (1.0/Re) * (1.0/(dr**2) - 1.0/(2*dr*ri))
+    coeff_u_i  = (1.0/Re)*( -2.0/(dr**2) - ( -1.0/(ri**2) - kz**2 ) )
+    # Note: the term in brackets is: u'' + (1/r)*u' - (1/r^2)*u - kz^2*u.
+    A[row, u_idx(i+1)] += - (1.0/Re)/ (dr**2) - (1.0/Re)*(1.0/(2*dr*ri))
+    A[row, u_idx(i-1)] += - (1.0/Re)/ (dr**2) + (1.0/Re)*(1.0/(2*dr*ri))
+    A[row, u_idx(i)]   += - (1.0/Re)*(-1.0/(ri**2) - kz**2) + (2.0/(1.0*Re))/(dr**2)  *(-1)  # Adjust sign
+    # To be consistent, write the diffusion term as:
+    # Diff = (1/Re)[ (u[i+1]-2*u[i]+u[i-1])/(dr**2) + (1/(2dr*ri))*(u[i+1]-u[i-1]) - (1/ri**2 + kz**2)*u[i] ]
+    A[row, u_idx(i+1)] += - (1.0/Re)* ( 1.0/(dr**2) + 1.0/(2*dr*ri) )
+    A[row, u_idx(i-1)] += - (1.0/Re)* ( 1.0/(dr**2) - 1.0/(2*dr*ri) )
+    A[row, u_idx(i)]   += + (1.0/Re)*(2.0/(dr**2)) + (1.0/Re)*(1/ri**2 + kz**2)
     row += 1
 
-for i in range(1, N-1):
-    # ---------- Equation 3: Axial momentum ---------------
-    # Eq3: s*w + i*w0*w + (dw0/dr)*u + i*kz*p - (1/Re)*(w_rr + (1/r)w_r - kz**2*w) = 0
-    # s multiplies w; so B: coefficient 1 on w[i].
-    Arow = row
-    B[Arow, ind_w(i)] = 1.0
-    # Advection term in w:
-    A[Arow, ind_w(i)] += 1j * w0[i]
-    # Viscous term for w: second derivative and first derivative
-    coef_w_im1 = - (1/Re)* ( (1.0/h**2) - (1/(2*h*r[i])) )
-    coef_w_i   = - (1/Re)* ( (-2.0/h**2) - kz**2 )
-    coef_w_ip1 = - (1/Re)* ( (1.0/h**2) + (1/(2*h*r[i])) )
-    A[Arow, ind_w(i-1)] += coef_w_im1
-    A[Arow, ind_w(i)]   += coef_w_i
-    A[Arow, ind_w(i+1)] += coef_w_ip1
-    # Coupling from u through d(w0)/dr = -2r
-    A[Arow, ind_u(i)] += dw0_dr[i]
-    # Pressure term: i*kz*p
-    A[Arow, ind_p(i)] += 1j * kz
+    # ---------------------------
+    # (I-c) w-momentum:
+    # Equation: s*w + i*kz*w0*w - 2*r*u + i*kz*p - (1/Re)[w'' + (1/r)w' - kz**2*w] = 0.
+    B[row, w_idx(i)] = 1.0  # s multiplies w
+    A[row, w_idx(i)] += 1j*kz*w0[i]
+    # Coupling with u: -2*r*u:
+    A[row, u_idx(i)] += -2.0 * ri
+    # Pressure term: i*kz*p (no derivative)
+    A[row, p_idx(i)] += 1j*kz
+    # Diffusion for w:
+    # Approximate w'' ~ (w[i+1]-2*w[i]+w[i-1])/(dr**2), w' ~ (w[i+1]-w[i-1])/(2dr)
+    A[row, w_idx(i+1)] += - (1.0/Re) * (1.0/(dr**2) + 1.0/(2*dr*ri))
+    A[row, w_idx(i-1)] += - (1.0/Re) * (1.0/(dr**2) - 1.0/(2*dr*ri))
+    A[row, w_idx(i)]   += + (1.0/Re)*(2.0/(dr**2)) + (1.0/Re)*(kz**2)
     row += 1
 
-# Boundary conditions (set in the remaining 6 rows)
-# There are 6 BC equations. Their rows go from row to nEq-1.
-# idx_BC_start = 3*(N-2)
-idx_BC = row
-# BC1: u(0) = 0
-A[idx_BC, ind_u(0)] = 1.0
-idx_BC += 1
-# BC2: u(1) [i.e. at r=1, index N-1] = 0
-A[idx_BC, ind_u(N-1)] = 1.0
-idx_BC += 1
-# BC3: w(1) = w at r=1 (index N-1) = 0
-A[idx_BC, ind_w(N-1)] = 1.0
-idx_BC += 1
-# BC4: w'(0) = 0, use forward difference: (w(1)-w(0))/h = 0
-A[idx_BC, ind_w(0)] = -1.0/h
-A[idx_BC, ind_w(1)] = 1.0/h
-idx_BC += 1
-# BC5: p(0)=0
-A[idx_BC, ind_p(0)] = 1.0
-idx_BC += 1
-# BC6: p(1)=0, i.e., at r=1 (index N-1)
-A[idx_BC, ind_p(N-1)] = 1.0
-idx_BC += 1
+# ---------------------------
+# (II) Boundary conditions
+#  At r=0 and r=1, enforce:
+#    at r=0: u'(0)=0, w'(0)=0, p(0)=0 (fix pressure gauge)
+#    at r=1: u(1)=0, w(1)=0, p(1)=0
+# ---------------------------
+# BC at r = 0 (i = 0)
+i = 0
+# (II-a) u'(0)=0 using a forward difference: (-3*u[0] + 4*u[1] - u[2])/(2dr)=0.
+A[row, u_idx(0)] += -3.0/(2*dr)
+A[row, u_idx(1)] +=  4.0/(2*dr)
+A[row, u_idx(2)] += -1.0/(2*dr)
+# No s-term => row in B remains 0.
+row += 1
+# (II-b) w'(0)=0 using forward difference.
+A[row, w_idx(0)] += -3.0/(2*dr)
+A[row, w_idx(1)] +=  4.0/(2*dr)
+A[row, w_idx(2)] += -1.0/(2*dr)
+row += 1
+# (II-c) p(0)=0
+A[row, p_idx(0)] = 1.0
+row += 1
 
-# Solve generalized eigenvalue problem A x = s B x.
-# Use scipy.linalg.eig on full matrices.
-eigvals, eigvecs = scipy.linalg.eig(A, B)
+# BC at r = 1 (i = N-1)
+i = N-1
+# (II-d) u(1)=0
+A[row, u_idx(N-1)] = 1.0
+row += 1
+# (II-e) w(1)=0
+A[row, w_idx(N-1)] = 1.0
+row += 1
+# (II-f) p(1)=0
+A[row, p_idx(N-1)] = 1.0
+row += 1
 
-# Choose the eigenmode with maximum real part of s
-max_index = np.argmax(eigvals.real)
-s_eig = eigvals[max_index]
-X = eigvecs[:, max_index]
+# Now we have assembled a generalized eigenvalue problem: A x = s B x.
+# In our formulation, s only appears multiplying the u and w variables in the momentum equations,
+# and we have inserted the identity in B accordingly.
+# For the continuity equation and the BC equations, B=0.
+# Solve the eigenvalue problem:
+evals, evecs = eig(A, B)
 
-# Extract solution fields: u, w, p are stored in X, ordering: first N -> u, next N -> w, last N -> p.
-u_sol = X[0:N]
-w_sol = X[N:2*N]
-p_sol = X[2*N:3*N]
+# For demonstration, choose the eigenmode with the largest real part of s.
+s_index = np.argmax(evals.real)
+s_chosen = evals[s_index]
 
-# Save final solution fields as .npy files (1D arrays)
+# Extract the eigenvector
+x = evecs[:, s_index]
+# Normalize (scale so that maximum absolute u is 1)
+u_sol = x[0:N]
+w_sol = x[N:2*N]
+p_sol = x[2*N:3*N]
+
+# Make sure to take the real part if the solution is nearly real.
+# (In eigenvalue problems with Fourier modes, the eigenfunctions may be complex.)
+u_sol = np.real(u_sol)
+w_sol = np.real(w_sol)
+p_sol = np.real(p_sol)
+
+# Save the final solution fields as .npy files.
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_sol_Pipe_Flow_Disk_EVP.npy', u_sol)
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/w_sol_Pipe_Flow_Disk_EVP.npy', w_sol)
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/p_sol_Pipe_Flow_Disk_EVP.npy', p_sol)
-
-print("Computed eigenvalue s = {}".format(s_eig))
-print("Solution saved in u.npy, w.npy, and p.npy.")

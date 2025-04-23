@@ -1,109 +1,106 @@
 #!/usr/bin/env python3
 import numpy as np
+import matplotlib.pyplot as plt
 
-# Parameters and domain
-nx = 64
-nz = 64
+# Domain and grid parameters
+Nx = 128
+Nz = 128
 Lx = 1.0
-Lz = 2.0  # z in [-1, 1]
-dx = Lx / nx
-dz = Lz / nz
-x = np.linspace(0, Lx, nx, endpoint=False)
-z = np.linspace(-1, 1, nz, endpoint=False)
+Lz = 2.0  # z from -1 to 1
+x = np.linspace(0, Lx, Nx, endpoint=False)
+z = np.linspace(-1, 1, Nz, endpoint=False)
+dx = Lx / Nx
+dz = Lz / Nz
 X, Z = np.meshgrid(x, z)
 
-t_end = 20.0
-dt = 0.001
-nt = int(t_end/dt)
-
 # Physical parameters
-nu = 1.0/5e4  # kinematic viscosity
-D = nu        # tracer diffusivity
+nu = 1/(5e4)       # kinematic viscosity
+D = nu/1.0         # tracer diffusivity
 
-# Initial conditions for u, w, and tracer s
+# Time parameters
+T = 20.0
+dt = 0.005
+nt = int(T/dt)
+
+# Initial conditions
+# u(x,z,0) = 0.5*(1 + tanh((z-0.5)/0.1) - tanh((z+0.5)/0.1))
 u = 0.5 * (1.0 + np.tanh((Z - 0.5)/0.1) - np.tanh((Z + 0.5)/0.1))
-w = 0.01 * np.sin(2*np.pi*X) * (np.exp(-((Z - 0.5)/0.1)**2) + np.exp(-((Z + 0.5)/0.1)**2))
-s = u.copy()  # tracer initial condition
-
-# Pressure field initialization
+# w: small sinusoidal perturbations localized around z = ±0.5
+w = 1e-3 * np.sin(2*np.pi*X) * (np.exp(-((Z-0.5)/0.1)**2) + np.exp(-((Z+0.5)/0.1)**2))
+# tracer initially equal to u
+s = u.copy()
+# pressure initial condition
 p = np.zeros_like(u)
 
-# Helper functions for periodic finite differences
-def upwind_dx(f, vel):
-    # Upwind difference in x-direction
-    f_roll_forward = np.roll(f, -1, axis=1)
-    f_roll_backward = np.roll(f, 1, axis=1)
-    dfdx = np.where(vel >= 0, (f - f_roll_backward) / dx, (f_roll_forward - f) / dx)
-    return dfdx
+# Precompute wavenumbers for FFT-based Poisson solver (periodic in both x and z)
+kx = 2 * np.pi * np.fft.fftfreq(Nx, d=dx)
+kz = 2 * np.pi * np.fft.fftfreq(Nz, d=dz)
+kx, kz = np.meshgrid(kx, kz)
+k2 = kx**2 + kz**2
+k2[0,0] = 1.0  # avoid division by zero in the 0 mode
 
-def upwind_dz(f, vel):
-    # Upwind difference in z-direction
-    f_roll_forward = np.roll(f, -1, axis=0)
-    f_roll_backward = np.roll(f, 1, axis=0)
-    dfdz = np.where(vel >= 0, (f - f_roll_backward) / dz, (f_roll_forward - f) / dz)
-    return dfdz
-
-def central_laplace(f):
-    return (np.roll(f, -1, axis=1) + np.roll(f, 1, axis=1) - 2*f) / (dx**2) + \
-           (np.roll(f, -1, axis=0) + np.roll(f, 1, axis=0) - 2*f) / (dz**2)
-
-def central_deriv_x(f):
+def ddx(f):
+    # periodic central difference in x direction
     return (np.roll(f, -1, axis=1) - np.roll(f, 1, axis=1)) / (2*dx)
 
-def central_deriv_z(f):
+def ddz(f):
+    # periodic central difference in z direction
     return (np.roll(f, -1, axis=0) - np.roll(f, 1, axis=0)) / (2*dz)
 
-# Precompute wave numbers for FFT-based Poisson solver for pressure
-kx = 2*np.pi * np.fft.fftfreq(nx, d=dx)
-kz = 2*np.pi * np.fft.fftfreq(nz, d=dz)
-KX, KZ = np.meshgrid(kx, kz)
-K2 = KX**2 + KZ**2
-K2[0, 0] = 1.0  # avoid division by zero
+def laplacian(f):
+    return (np.roll(f, -1, axis=1) - 2*f + np.roll(f, 1, axis=1)) / dx**2 + \
+           (np.roll(f, -1, axis=0) - 2*f + np.roll(f, 1, axis=0)) / dz**2
 
-# Time integration loop (explicit Euler with projection method)
-for tstep in range(nt):
-    # Compute advective derivatives using upwind differences
-    du_dx = upwind_dx(u, u)
-    du_dz = upwind_dz(u, w)
-    dw_dx = upwind_dx(w, u)
-    dw_dz = upwind_dz(w, w)
+# Time stepping loop
+for it in range(nt):
+    # Compute derivatives for convection terms (central differences)
+    u_x = ddx(u)
+    u_z = ddz(u)
+    w_x = ddx(w)
+    w_z = ddz(w)
     
-    adv_u = u * du_dx + w * du_dz
-    adv_w = u * dw_dx + w * dw_dz
+    adv_u = u * u_x + w * u_z
+    adv_w = u * w_x + w * w_z
+    
+    diff_u = nu * laplacian(u)
+    diff_w = nu * laplacian(w)
+    
+    # Compute intermediate velocities (without pressure gradient)
+    u_star = u + dt * (- adv_u + diff_u)
+    w_star = w + dt * (- adv_w + diff_w)
+    
+    # Projection: enforce incompressibility
+    # Compute divergence of intermediate velocity
+    div_u_star = ddx(u_star) + ddz(w_star)
+    
+    # Solve Poisson equation: Laplacian(phi) = (1/dt) div(u_star)
+    div_hat = np.fft.fftn(div_u_star)
+    phi_hat = -div_hat / (dt * k2)
+    phi_hat[0,0] = 0.0  # set the mean to zero
+    # Inverse FFT to get phi in physical space
+    phi = np.real(np.fft.ifftn(phi_hat))
+    
+    # Compute pressure gradient (using spectral derivative)
+    phi_x = np.real(np.fft.ifftn(1j * kx * phi_hat))
+    phi_z = np.real(np.fft.ifftn(1j * kz * phi_hat))
+    
+    # Update velocity fields using projection
+    u = u_star - dt * phi_x
+    w = w_star - dt * phi_z
+    p = phi.copy()  # update pressure field (could be accumulated if needed)
+    
+    # Update tracer field s
+    s_x = ddx(s)
+    s_z = ddz(s)
+    adv_s = u * s_x + w * s_z
+    diff_s = D * laplacian(s)
+    s = s + dt * (- adv_s + diff_s)
+    
+    # (Optional) You can print progress every 500 steps
+    if (it+1) % 500 == 0:
+        print(f"Time step {it+1}/{nt}")
 
-    # Viscous diffusion terms (central differencing)
-    diff_u = nu * central_laplace(u)
-    diff_w = nu * central_laplace(w)
-    
-    # Predictor step: intermediate velocity without pressure gradient
-    u_star = u + dt * (-adv_u + diff_u)
-    w_star = w + dt * (-adv_w + diff_w)
-    
-    # Compute divergence of the intermediate velocity field (central differences)
-    div_star = central_deriv_x(u_star) + central_deriv_z(w_star)
-    
-    # Pressure Poisson equation: Laplace(p) = (1/dt)*div(u_star)
-    div_star_hat = np.fft.fftn(div_star)
-    p_hat = div_star_hat / (-K2 * dt)
-    p_hat[0, 0] = 0.0  # set the zero mode to zero (gauge condition)
-    p = np.real(np.fft.ifftn(p_hat))
-    
-    # Pressure gradient (computed spectrally)
-    dp_dx = np.real(np.fft.ifftn(1j*KX*p_hat))
-    dp_dz = np.real(np.fft.ifftn(1j*KZ*p_hat))
-    
-    # Correct velocities (projection step)
-    u = u_star - dt * dp_dx
-    w = w_star - dt * dp_dz
-    
-    # Update tracer s using upwind scheme for advection and central for diffusion
-    ds_dx = upwind_dx(s, u)
-    ds_dz = upwind_dz(s, w)
-    adv_s = u * ds_dx + w * ds_dz
-    diff_s = D * central_laplace(s)
-    s = s + dt * (-adv_s + diff_s)
-
-# Save final solutions as .npy files (2D arrays)
+# Save final results as .npy files (2D arrays)
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/u_2D_Shear_Flow_With_Tracer.npy', u)
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/w_2D_Shear_Flow_With_Tracer.npy', w)
 np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/o3-mini/prompts/p_2D_Shear_Flow_With_Tracer.npy', p)

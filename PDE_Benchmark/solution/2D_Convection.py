@@ -12,9 +12,9 @@ from matplotlib import pyplot, cm
 import numpy
 
 ###variable declarations
-nx = 101
-ny = 101
-nt = 80
+nx = 401
+ny = 401
+nt = 320
 c = 1
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)

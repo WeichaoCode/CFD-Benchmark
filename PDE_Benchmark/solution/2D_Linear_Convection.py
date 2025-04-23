@@ -13,9 +13,9 @@ import numpy
 from matplotlib import pyplot, cm
 
 ###variable declarations
-nx = 81
-ny = 81
-nt = 100
+nx = 321
+ny = 321
+nt = 400
 c = 1
 dx = 2 / (nx - 1)
 dy = 2 / (ny - 1)

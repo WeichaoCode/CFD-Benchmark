@@ -1,0 +1,93 @@
+2025-04-23 13:21:54,287 - INFO - ====== Starting Comparison ======
+2025-04-23 13:21:54,287 - INFO - Found 34 common files.
+2025-04-23 13:21:54,289 - INFO - T_2D_Steady_Heat_Equation.npy: MSE=3.383e+02, MAE=1.493e+01, RMSE=1.839e+01, Cosine=0.455, R2=-2.804
+2025-04-23 13:21:54,291 - INFO - T_2D_Unsteady_Heat_Equation.npy: MSE=1.064e+03, MAE=1.126e+01, RMSE=3.262e+01, Cosine=0.692, R2=-1382.291
+2025-04-23 13:21:54,292 - INFO - b_2D_Rayleigh_Benard_Convection.npy: MSE=7.545e+00, MAE=1.476e+00, RMSE=2.747e+00, Cosine=0.001, R2=-127659.088
+2025-04-23 13:21:54,294 - INFO - p_2D_Laplace_Equation.npy: MSE=2.148e-03, MAE=3.434e-02, RMSE=4.635e-02, Cosine=0.989, R2=0.940
+2025-04-23 13:21:54,294 - ERROR - ❌ p_2D_Navier_Stokes_Cavity.npy failed: Input contains NaN.
+2025-04-23 13:21:54,295 - ERROR - ❌ p_2D_Navier_Stokes_Channel.npy failed: Input contains NaN.
+2025-04-23 13:21:54,296 - INFO - p_2D_Poisson_Equation.npy: MSE=1.393e-04, MAE=7.519e-03, RMSE=1.180e-02, Cosine=0.873, R2=-10.271
+2025-04-23 13:21:54,297 - ERROR - ❌ p_2D_Shear_Flow_With_Tracer.npy failed: Input contains NaN.
+2025-04-23 13:21:54,299 - INFO - p_Lid_Driven_Cavity.npy: MSE=1.394e-01, MAE=1.551e-01, RMSE=3.734e-01, Cosine=0.774, R2=0.184
+2025-04-23 13:21:54,299 - ERROR - ❌ rho_1D_Euler_Shock_Tube.npy failed: Input contains NaN.
+2025-04-23 13:21:54,300 - ERROR - ❌ s_2D_Shear_Flow_With_Tracer.npy failed: Input contains NaN.
+2025-04-23 13:21:54,301 - ERROR - ❌ u_1D_Burgers_Equation.npy failed: Input contains NaN.
+2025-04-23 13:21:54,302 - INFO - u_1D_Diffusion.npy: MSE=1.031e-03, MAE=2.192e-02, RMSE=3.210e-02, Cosine=1.000, R2=0.991
+2025-04-23 13:21:54,302 - ERROR - ❌ u_1D_Euler_Shock_Tube.npy failed: Input contains NaN.
+2025-04-23 13:21:54,303 - ERROR - ❌ u_1D_KdV_Burgers_Equation.npy failed: Input contains NaN.
+2025-04-23 13:21:54,304 - INFO - u_1D_Linear_Convection.npy: MSE=3.964e-02, MAE=1.554e-01, RMSE=1.991e-01, Cosine=0.801, R2=0.435
+2025-04-23 13:21:54,306 - INFO - u_1D_Nonlinear_Convection.npy: MSE=2.919e-02, MAE=1.038e-01, RMSE=1.709e-01, Cosine=0.927, R2=0.691
+2025-04-23 13:21:54,307 - INFO - u_2D_Burgers_Equation.npy: MSE=2.916e-03, MAE=1.283e-02, RMSE=5.400e-02, Cosine=0.999, R2=0.943
+2025-04-23 13:21:54,309 - INFO - u_2D_Convection.npy: MSE=2.184e-03, MAE=1.833e-02, RMSE=4.673e-02, Cosine=0.999, R2=0.927
+2025-04-23 13:21:54,310 - INFO - u_2D_Diffusion.npy: MSE=2.812e-03, MAE=3.488e-02, RMSE=5.303e-02, Cosine=0.999, R2=0.725
+2025-04-23 13:21:54,312 - INFO - u_2D_Inviscid_Burgers.npy: MSE=4.042e-03, MAE=1.733e-02, RMSE=6.358e-02, Cosine=0.998, R2=0.865
+2025-04-23 13:21:54,314 - INFO - u_2D_Linear_Convection.npy: MSE=1.079e-03, MAE=1.116e-02, RMSE=3.285e-02, Cosine=1.000, R2=0.971
+2025-04-23 13:21:54,314 - ERROR - ❌ u_2D_Navier_Stokes_Cavity.npy failed: Input contains NaN.
+2025-04-23 13:21:54,315 - ERROR - ❌ u_2D_Navier_Stokes_Channel.npy failed: Input contains NaN.
+2025-04-23 13:21:54,315 - ERROR - ❌ u_2D_Rayleigh_Benard_Convection.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-23 13:21:54,315 - ERROR - ❌ u_2D_Shear_Flow_With_Tracer.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-23 13:21:54,317 - INFO - u_Fully_Developed_Turbulent_Channel_Flow.npy: MSE=4.511e+02, MAE=1.768e+01, RMSE=2.124e+01, Cosine=-0.852, R2=-8.543
+2025-04-23 13:21:54,318 - INFO - u_Lid_Driven_Cavity.npy: MSE=2.813e-02, MAE=1.235e-01, RMSE=1.677e-01, Cosine=0.850, R2=0.525
+2025-04-23 13:21:54,319 - INFO - v_2D_Burgers_Equation.npy: MSE=2.916e-03, MAE=1.283e-02, RMSE=5.400e-02, Cosine=0.999, R2=0.943
+2025-04-23 13:21:54,321 - INFO - v_2D_Convection.npy: MSE=2.184e-03, MAE=1.833e-02, RMSE=4.673e-02, Cosine=0.999, R2=0.927
+2025-04-23 13:21:54,323 - INFO - v_2D_Inviscid_Burgers.npy: MSE=4.042e-03, MAE=1.733e-02, RMSE=6.358e-02, Cosine=0.998, R2=0.865
+2025-04-23 13:21:54,323 - ERROR - ❌ v_2D_Navier_Stokes_Cavity.npy failed: Input contains NaN.
+2025-04-23 13:21:54,324 - ERROR - ❌ v_2D_Navier_Stokes_Channel.npy failed: Input contains NaN.
+2025-04-23 13:21:54,325 - INFO - v_Lid_Driven_Cavity.npy: MSE=7.167e-03, MAE=5.722e-02, RMSE=8.466e-02, Cosine=0.938, R2=0.197
+2025-04-23 13:21:54,329 - INFO - Found 34 common files.
+2025-04-23 13:22:06,644 - INFO - Found 34 common files.
+2025-04-23 13:22:15,026 - INFO - ####################################################################################################
+2025-04-23 13:22:15,026 - INFO - Using the sonnet-35, change temperature to 0.0, use the prompt prompts.json
+2025-04-23 13:22:15,027 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/1)
+2025-04-23 13:22:15,311 - INFO - ❌ API Call Error for 1D_Burgers_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:15,311 - INFO - 🔹 Generating code for: 1D_Diffusion (Attempt 1/1)
+2025-04-23 13:22:15,402 - INFO - ❌ API Call Error for 1D_Diffusion: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:15,403 - INFO - 🔹 Generating code for: 1D_Euler_Shock_Tube (Attempt 1/1)
+2025-04-23 13:22:15,497 - INFO - ❌ API Call Error for 1D_Euler_Shock_Tube: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:15,497 - INFO - 🔹 Generating code for: 1D_Linear_Convection (Attempt 1/1)
+2025-04-23 13:22:15,592 - INFO - ❌ API Call Error for 1D_Linear_Convection: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:15,592 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection (Attempt 1/1)
+2025-04-23 13:22:15,700 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:15,700 - INFO - 🔹 Generating code for: 2D_Burgers_Equation (Attempt 1/1)
+2025-04-23 13:22:15,792 - INFO - ❌ API Call Error for 2D_Burgers_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:15,793 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 1/1)
+2025-04-23 13:22:15,889 - INFO - ❌ API Call Error for 2D_Convection: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:15,889 - INFO - 🔹 Generating code for: 2D_Diffusion (Attempt 1/1)
+2025-04-23 13:22:15,985 - INFO - ❌ API Call Error for 2D_Diffusion: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:15,985 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers (Attempt 1/1)
+2025-04-23 13:22:16,078 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:16,078 - INFO - 🔹 Generating code for: 2D_Laplace_Equation (Attempt 1/1)
+2025-04-23 13:22:16,171 - INFO - ❌ API Call Error for 2D_Laplace_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:16,171 - INFO - 🔹 Generating code for: 2D_Linear_Convection (Attempt 1/1)
+2025-04-23 13:22:16,261 - INFO - ❌ API Call Error for 2D_Linear_Convection: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:16,262 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Cavity (Attempt 1/1)
+2025-04-23 13:22:16,354 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Cavity: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:16,354 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Channel (Attempt 1/1)
+2025-04-23 13:22:16,446 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Channel: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:16,446 - INFO - 🔹 Generating code for: 2D_Poisson_Equation (Attempt 1/1)
+2025-04-23 13:22:16,550 - INFO - ❌ API Call Error for 2D_Poisson_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:16,551 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation (Attempt 1/1)
+2025-04-23 13:22:16,649 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:16,649 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation (Attempt 1/1)
+2025-04-23 13:22:16,741 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:16,741 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow (Attempt 1/1)
+2025-04-23 13:22:16,834 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:16,835 - INFO - 🔹 Generating code for: Lid_Driven_Cavity (Attempt 1/1)
+2025-04-23 13:22:16,928 - INFO - ❌ API Call Error for Lid_Driven_Cavity: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:16,928 - INFO - 🔹 Generating code for: Flow_Past_Circular_Cylinder (Attempt 1/1)
+2025-04-23 13:22:17,020 - INFO - ❌ API Call Error for Flow_Past_Circular_Cylinder: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:17,020 - INFO - 🔹 Generating code for: 1D_KdV_Burgers_Equation (Attempt 1/1)
+2025-04-23 13:22:17,114 - INFO - ❌ API Call Error for 1D_KdV_Burgers_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:17,114 - INFO - 🔹 Generating code for: 2D_Rayleigh_Benard_Convection (Attempt 1/1)
+2025-04-23 13:22:17,205 - INFO - ❌ API Call Error for 2D_Rayleigh_Benard_Convection: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:17,205 - INFO - 🔹 Generating code for: 2D_Shear_Flow_With_Tracer (Attempt 1/1)
+2025-04-23 13:22:17,296 - INFO - ❌ API Call Error for 2D_Shear_Flow_With_Tracer: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:17,296 - INFO - 🔹 Generating code for: Pipe_Flow_Disk_EVP (Attempt 1/1)
+2025-04-23 13:22:17,387 - INFO - ❌ API Call Error for Pipe_Flow_Disk_EVP: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:17,387 - INFO - 🔹 Generating code for: Lane_Emden_Equation (Attempt 1/1)
+2025-04-23 13:22:17,478 - INFO - ❌ API Call Error for Lane_Emden_Equation: An error occurred (UnrecognizedClientException) when calling the InvokeModel operation: The security token included in the request is invalid
+2025-04-23 13:22:17,479 - INFO - 
+🎯 Execution completed. Check the solver directory for generated files.
+2025-04-23 13:22:17,479 - INFO - Total Input Tokens: 0
+2025-04-23 13:22:17,479 - INFO - Total Output Tokens: 0
+2025-04-23 13:22:17,479 - INFO - Total Estimated Cost: $0.000000

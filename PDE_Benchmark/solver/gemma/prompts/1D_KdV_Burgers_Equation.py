@@ -1,0 +1,36 @@
+import numpy as np
+from scipy.io import savemat
+
+# Parameters
+a = 1e-4
+b = 2e-4
+L = 10
+n = 20
+T = 10
+Nx = 100
+Nt = 1000
+dx = L / (Nx - 1)
+dt = T / (Nt - 1)
+
+# Spatial grid
+x = np.linspace(0, L, Nx)
+
+# Initial condition
+u = (1 / (2 * n)) * np.log(1 + (np.cosh(n)**2) / (np.cosh(n * (x - 0.2 * L))**2))
+
+# Time grid
+t = np.linspace(0, T, Nt)
+
+# Finite difference scheme
+u_new = np.zeros_like(u)
+for j in range(Nt):
+    for i in range(1, Nx - 1):
+        u_new[i] = u[i] - dt / dx * u[i] * (u[i] - u[i - 1]) + a * dt / dx**2 * (u[i + 1] - 2 * u[i] + u[i - 1]) + b * dt / dx**3 * (u[i + 2] - 2 * u[i + 1] + u[i] - u[i - 1] + u[i - 2])
+    u = u_new.copy()
+
+# Apply periodic boundary conditions
+u[:, 0] = u[:, -1]
+u[:, -1] = u[:, 0]
+
+# Save the final solution
+savemat('u.mat', {'u': u})

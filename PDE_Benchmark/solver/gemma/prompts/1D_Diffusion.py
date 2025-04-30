@@ -1,0 +1,20 @@
+import numpy as np
+from numpy import save
+
+nx = 40
+nt = 100
+dx = 2 / (nx - 1)
+dt = 0.000333
+nu = 0.3
+
+x = np.linspace(0, 2, nx)
+t = np.linspace(0, 0.0333, nt)
+
+u = np.ones((nt, nx))
+u[0] = np.where((x >= 0.5) & (x <= 1), 2, 1)
+
+for n in range(1, nt):
+    un = u[n - 1]
+    u[n] = un + nu * dt / dx**2 * (un[2:] - 2 * un[1:-1] + un[:-2])
+
+save('u', u[-1])

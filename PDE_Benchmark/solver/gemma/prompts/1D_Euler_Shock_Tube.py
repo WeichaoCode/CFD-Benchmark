@@ -1,0 +1,46 @@
+import numpy as np
+from numpy import pi
+import matplotlib.pyplot as plt
+
+# Problem parameters
+nx = 100
+nt = 100
+dx = 2.0 / (nx - 1)
+dt = 0.001
+gamma = 1.4
+
+# Initial conditions
+x = np.linspace(-1, 1, nx)
+rho_L = 1.0
+rho_R = 0.125
+u_L = 0.0
+u_R = 0.0
+p_L = 1.0
+p_R = 0.1
+rho = np.where(x < 0, rho_L, rho_R)
+u = np.where(x < 0, u_L, u_R)
+p = np.where(x < 0, p_L, p_R)
+
+# Calculate initial values for E
+E_L = p_L / ((gamma - 1) * rho_L) + u_L**2 / 2
+E_R = p_R / ((gamma - 1) * rho_R) + u_R**2 / 2
+E = np.where(x < 0, E_L, E_R)
+
+# Conservative variables
+U = np.column_stack((rho, rho * u, rho * E))
+
+# Time loop
+for n in range(nt):
+    # Calculate fluxes
+    F = np.column_stack((rho * u, rho * u**2 + p, u * (rho * E + p)))
+
+    # Apply finite difference scheme
+    U_new = U - dt / dx * (F[1:, :] - F[:-1, :])
+
+    # Update U
+    U = U_new
+
+# Save final solution
+np.save("rho.npy", U[:, 0])
+np.save("rho_u.npy", U[:, 1])
+np.save("rho_E.npy", U[:, 2])

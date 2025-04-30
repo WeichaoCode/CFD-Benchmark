@@ -1,0 +1,41 @@
+import numpy as np
+from numpy import array, zeros
+import matplotlib.pyplot as plt
+
+# Parameters
+nx = 101
+ny = 101
+nt = 1001
+nu = 0.01
+dx = 2 / (nx - 1)
+dy = 2 / (ny - 1)
+dt = 0.027 / nt
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+
+# Initial conditions
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+u[int(0.5 / dx):int(1 / dx) + 1, int(0.5 / dy):int(1 / dy) + 1] = 2
+v[int(0.5 / dx):int(1 / dx) + 1, int(0.5 / dy):int(1 / dy) + 1] = 2
+
+# Boundary conditions
+u[0, :] = 1
+u[-1, :] = 1
+u[:, 0] = 1
+u[:, -1] = 1
+v[0, :] = 1
+v[-1, :] = 1
+v[:, 0] = 1
+v[:, -1] = 1
+
+# Time stepping
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+    u[1:-1, 1:-1] = un[1:-1, 1:-1] - dt / dx * un[1:-1, 1:-1] * (un[1:-1, 1:-1] - un[1:-1, :-2]) - dt / dy * vn[1:-1, 1:-1] * (un[1:-1, 1:-1] - un[:-2, 1:-1]) + nu * dt / dx**2 * (un[2:, 1:-1] - 2 * un[1:-1, 1:-1] + un[:-2, 1:-1]) + nu * dt / dy**2 * (un[1:-1, 2:] - 2 * un[1:-1, 1:-1] + un[1:-1, :-2])
+    v[1:-1, 1:-1] = vn[1:-1, 1:-1] - dt / dx * un[1:-1, 1:-1] * (vn[1:-1, 1:-1] - vn[1:-1, :-2]) - dt / dy * vn[1:-1, 1:-1] * (vn[1:-1, 1:-1] - vn[:-2, 1:-1]) + nu * dt / dx**2 * (vn[2:, 1:-1] - 2 * vn[1:-1, 1:-1] + vn[:-2, 1:-1]) + nu * dt / dy**2 * (vn[1:-1, 2:] - 2 * vn[1:-1, 1:-1] + vn[1:-1, :-2])
+
+# Save the final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/u_2D_Burgers_Equation.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/v_2D_Burgers_Equation.npy', v)

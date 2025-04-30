@@ -1,0 +1,45 @@
+import numpy as np
+from scipy.sparse import diags
+from scipy.sparse.linalg import spsolve
+
+nx = 100
+ny = 100
+nt = 100
+dx = 2 / (nx - 1)
+dy = 2 / (ny - 1)
+dt = 0.01
+
+u = np.zeros((ny, nx))
+v = np.zeros((ny, nx))
+p = np.zeros((ny, nx))
+
+for n in range(nt):
+    u_old = u.copy()
+    v_old = v.copy()
+    p_old = p.copy()
+
+    # Calculate convective terms
+    u_x = np.roll(u, -1, axis=1) - np.roll(u, 1, axis=1)
+    v_y = np.roll(v, -1, axis=0) - np.roll(v, 1, axis=0)
+
+    # Calculate diffusive terms
+    u_xx = (np.roll(u, -1, axis=1) - 2 * u + np.roll(u, 1, axis=1)) / dx**2
+    u_yy = (np.roll(u, -1, axis=0) - 2 * u + np.roll(u, 1, axis=0)) / dy**2
+    v_xx = (np.roll(v, -1, axis=1) - 2 * v + np.roll(v, 1, axis=1)) / dx**2
+    v_yy = (np.roll(v, -1, axis=0) - 2 * v + np.roll(v, 1, axis=0)) / dy**2
+
+    # Calculate pressure gradient
+    p_xx = (np.roll(p, -1, axis=1) - 2 * p + np.roll(p, 1, axis=1)) / dx**2
+    p_yy = (np.roll(p, -1, axis=0) - 2 * p + np.roll(p, 1, axis=0)) / dy**2
+
+    # Update velocity and pressure
+    u = u_old - dt * (u_old * u_x + v_old * v_y + 1 / 1 * p_xx + 0.1 * (u_xx + u_yy)) + dt * 1
+    v = v_old - dt * (u_old * v_x + v_old * v_y + 1 / 1 * p_yy + 0.1 * (v_xx + v_yy))
+    p = p_old - dt * (-1 * (u_xx + 2 * u_yy * v_x + v_yy))
+
+    # Apply boundary conditions
+
+# Save the final solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/u_2D_Navier_Stokes_Channel.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/v_2D_Navier_Stokes_Channel.npy', v)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/p_2D_Navier_Stokes_Channel.npy', p)

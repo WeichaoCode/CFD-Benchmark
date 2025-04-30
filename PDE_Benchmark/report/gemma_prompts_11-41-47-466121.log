@@ -1,0 +1,175 @@
+2025-04-30 11:41:47,467 - INFO - ####################################################################################################
+2025-04-30 11:41:47,467 - INFO - Using the gemma, change temperature to 0.0, use the prompt prompts.json
+2025-04-30 11:41:47,467 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/5)
+2025-04-30 11:41:47,629 - INFO - ❌ API Call Error for 1D_Burgers_Equation: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bb-2315646d78869e0307a8f85a;b31de4a2-f7f0-42d9-a12c-008197c581a9)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:47,630 - INFO - 🔹 Generating code for: 1D_Diffusion (Attempt 1/5)
+2025-04-30 11:41:47,701 - INFO - ❌ API Call Error for 1D_Diffusion: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bb-39d84a0768d6a8b943d1332f;4a972c03-30e6-48ef-afe9-9bf16b3cf411)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:47,701 - INFO - 🔹 Generating code for: 1D_Euler_Shock_Tube (Attempt 1/5)
+2025-04-30 11:41:47,759 - INFO - ❌ API Call Error for 1D_Euler_Shock_Tube: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bb-5a3d9ccb70426f8075e9b718;b028bcce-c4a9-4035-9938-c5fb0bdfa09f)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:47,759 - INFO - 🔹 Generating code for: 1D_Linear_Convection (Attempt 1/5)
+2025-04-30 11:41:47,820 - INFO - ❌ API Call Error for 1D_Linear_Convection: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bb-6b0c061f3e6ddce105315d28;1b6ddb18-2b9b-4ff9-a0f0-89f1ffe91602)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:47,821 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection (Attempt 1/5)
+2025-04-30 11:41:47,892 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bb-4f3579884309db5d63ec2752;4ba5e852-95da-4c2d-bcf7-6d3e0fb886cd)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:47,892 - INFO - 🔹 Generating code for: 2D_Burgers_Equation (Attempt 1/5)
+2025-04-30 11:41:47,953 - INFO - ❌ API Call Error for 2D_Burgers_Equation: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bb-55650b6153e8329c5715c5a8;a79066e3-8399-4356-a11f-e928d6a2b69b)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:47,953 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 1/5)
+2025-04-30 11:41:48,025 - INFO - ❌ API Call Error for 2D_Convection: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-6e9780bc3180b7986b5fd154;bcdad559-c6c5-4d68-a94b-2aa4205ec4ca)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,025 - INFO - 🔹 Generating code for: 2D_Diffusion (Attempt 1/5)
+2025-04-30 11:41:48,091 - INFO - ❌ API Call Error for 2D_Diffusion: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-7ace116c41ff4c3e72edaa01;862aabb1-183e-4795-8179-c7b41e25df38)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,091 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers (Attempt 1/5)
+2025-04-30 11:41:48,153 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-2796137b6b769ceb576d1901;74ad6bcb-eadd-4d24-bfe3-6818f21ec05d)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,153 - INFO - 🔹 Generating code for: 2D_Laplace_Equation (Attempt 1/5)
+2025-04-30 11:41:48,212 - INFO - ❌ API Call Error for 2D_Laplace_Equation: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-79ba2def4d2d940e23ba03df;78f85528-e5bc-49bd-9a3f-4d6625c10845)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,212 - INFO - 🔹 Generating code for: 2D_Linear_Convection (Attempt 1/5)
+2025-04-30 11:41:48,275 - INFO - ❌ API Call Error for 2D_Linear_Convection: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-0a45527e75cdf0da0be0d5fe;9781ec2a-b352-44dc-8050-58f100c758cb)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,275 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Cavity (Attempt 1/5)
+2025-04-30 11:41:48,330 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Cavity: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-36a022566a6c98c76bf61528;028108f2-de08-48de-93a1-dadf3040fc89)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,331 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Channel (Attempt 1/5)
+2025-04-30 11:41:48,394 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Channel: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-42f18b7f15f2a1f446206431;907c42e0-42b0-471d-857b-b829b7f8ef57)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,395 - INFO - 🔹 Generating code for: 2D_Poisson_Equation (Attempt 1/5)
+2025-04-30 11:41:48,463 - INFO - ❌ API Call Error for 2D_Poisson_Equation: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-5ee19c6255ce377254d78aff;24ffdd48-ac4f-4d26-ab13-717001713021)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,463 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation (Attempt 1/5)
+2025-04-30 11:41:48,553 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-6bbe629e74900f337c31c07d;69a38121-9199-4cb0-8b9f-f3292761c817)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,553 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation (Attempt 1/5)
+2025-04-30 11:41:48,625 - INFO - ❌ API Call Error for 2D_Unsteady_Heat_Equation: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-5f4f6954177c5a973d8b629e;9668d303-ff38-4b52-a7c1-0ff0f078c83e)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,625 - INFO - 🔹 Generating code for: Fully_Developed_Turbulent_Channel_Flow (Attempt 1/5)
+2025-04-30 11:41:48,691 - INFO - ❌ API Call Error for Fully_Developed_Turbulent_Channel_Flow: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-2670ac412da9e07f5e8858a0;1fb4186b-05da-4ff3-8156-9ae41c4cd649)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,691 - INFO - 🔹 Generating code for: Lid_Driven_Cavity (Attempt 1/5)
+2025-04-30 11:41:48,763 - INFO - ❌ API Call Error for Lid_Driven_Cavity: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-101b7a2f4d4cb811593ba641;3e4f7bbc-05ef-454d-ac20-f618c5a551ad)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,763 - INFO - 🔹 Generating code for: Flow_Past_Circular_Cylinder (Attempt 1/5)
+2025-04-30 11:41:48,924 - INFO - ❌ API Call Error for Flow_Past_Circular_Cylinder: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-74ea3e84455db2b32fd90468;1ff2705f-cfa3-4523-b08a-c2dfdda63606)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,925 - INFO - 🔹 Generating code for: 1D_KdV_Burgers_Equation (Attempt 1/5)
+2025-04-30 11:41:48,982 - INFO - ❌ API Call Error for 1D_KdV_Burgers_Equation: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bc-28c0489a042140556c7f3f40;2f29ae0d-aa97-4328-95c7-97db4a4bbe43)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:48,982 - INFO - 🔹 Generating code for: 2D_Rayleigh_Benard_Convection (Attempt 1/5)
+2025-04-30 11:41:49,045 - INFO - ❌ API Call Error for 2D_Rayleigh_Benard_Convection: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bd-2c92d5a60c647d257539840b;e04043df-902a-40bb-a303-b3a2da2d3915)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:49,045 - INFO - 🔹 Generating code for: 2D_Shear_Flow_With_Tracer (Attempt 1/5)
+2025-04-30 11:41:49,111 - INFO - ❌ API Call Error for 2D_Shear_Flow_With_Tracer: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bd-52dbf0d5412f7d98451d0db8;03f1b86b-2bbb-4320-b898-d8194e3b7ac1)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:49,111 - INFO - 🔹 Generating code for: Pipe_Flow_Disk_EVP (Attempt 1/5)
+2025-04-30 11:41:49,174 - INFO - ❌ API Call Error for Pipe_Flow_Disk_EVP: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bd-1617fb580336424d5c7a5940;7deda9a9-f050-434d-8f24-ca7d7c4a7b27)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:49,175 - INFO - 🔹 Generating code for: Lane_Emden_Equation (Attempt 1/5)
+2025-04-30 11:41:49,253 - INFO - ❌ API Call Error for Lane_Emden_Equation: You are trying to access a gated repo.
+Make sure to have access to it at https://huggingface.co/google/gemma-2-9b-it.
+401 Client Error. (Request ID: Root=1-681244bd-368e25767bf54c160c73adbc;cc44784c-0ad6-4f9f-8c61-d905311e890f)
+
+Cannot access gated repo for url https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json.
+Access to model google/gemma-2-9b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+2025-04-30 11:41:49,253 - INFO - 
+🎯 Execution completed. Check the solver directory for generated files.
+2025-04-30 11:41:49,254 - INFO - Total Input Tokens: 0
+2025-04-30 11:41:49,254 - INFO - Total Output Tokens: 0
+2025-04-30 11:41:49,254 - INFO - Total Estimated Cost: $0.000000

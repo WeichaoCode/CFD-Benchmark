@@ -1,6 +1,7 @@
 from utils import PromptGenerator, LLMCodeGenerator, SolverPostProcessor
 import os
 
+os.environ["HUGGINGFACE_HUB_TOKEN"] = "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"
 # STEP 1: generate the prompts
 # Set the root directory (you can also use os.getcwd() if running from root)
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,11 +25,12 @@ generator_prompt.save_prompts(prompts)
 # llm_model = "gemini"  # "gpt-4o", ""o3-mini, "sonnet-3.5", "haiku", "lama 4", "gemini: gemini-2.0-flash"
 # List of LLM models to evaluate
 llm_models = [
-    "gpt-4o",
-    "o3-mini",
-    "gemini",
-    "sonnet-35",
-    "haiku",
+    # "gpt-4o",
+    # "o3-mini",
+    # "gemini",
+    # "sonnet-35",
+    # "haiku",
+    "gemma"
 ]
 
 # use gpt-4o to check the code
@@ -39,10 +41,10 @@ for llm_model in llm_models:
     print(f"\n=== Running for model: {llm_model} ===\n")
     print(f"\n=== Running for prompt: {json_file} ===")
     # Instantiate the class
-    # generator_llm = LLMCodeGenerator(llm_model, prompt_json, reviewer=False)
-    #
-    # # Call the API to generate code for each task
-    # generator_llm.call_api()
+    generator_llm = LLMCodeGenerator(llm_model, prompt_json, reviewer=False)
+
+    # Call the API to generate code for each task
+    generator_llm.call_api()
 
     # STEP 3: post-process the generate code and compare the loss and images
     # Create the post-processor
@@ -50,4 +52,4 @@ for llm_model in llm_models:
 
     # Run the full post-processing pipeline
     # this time only run execute LLM generated python code and save the results to log file
-    processor.run_all(step1=False, step2=False, step4=False)
+    processor.run_all()

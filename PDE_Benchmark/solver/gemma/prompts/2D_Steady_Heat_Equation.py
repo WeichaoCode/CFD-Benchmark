@@ -1,0 +1,26 @@
+import numpy as np
+from numpy import save
+
+nx = 50
+ny = 40
+dx = 5 / (nx - 1)
+dy = 4 / (ny - 1)
+
+x = np.linspace(0, 5, nx)
+y = np.linspace(0, 4, ny)
+
+T = np.zeros((ny, nx))
+
+T[:, 0] = 10
+T[:, -1] = 40
+T[0, :] = 20
+T[-1, :] = 0
+
+for n in range(1000):
+    T_new = np.copy(T)
+    for i in range(1, nx - 1):
+        for j in range(1, ny - 1):
+            T_new[j, i] = T[j, i] + dx**2 * (T[j, i + 1] - 2 * T[j, i] + T[j, i - 1]) / (2 * dx**2) + dy**2 * (T[j + 1, i] - 2 * T[j, i] + T[j - 1, i]) / (2 * dy**2)
+    T = T_new
+
+save('T', T)

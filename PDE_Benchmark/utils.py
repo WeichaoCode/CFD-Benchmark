@@ -2,6 +2,7 @@ import json
 import re
 import subprocess
 import boto3
+import torch
 from openai import OpenAI
 import logging
 from datetime import datetime
@@ -18,6 +19,7 @@ import matplotlib.pyplot as plt
 import ast
 from google import genai
 from google.genai import types
+from transformers import pipeline
 
 
 def generate_prompt(data):
@@ -183,6 +185,10 @@ def build_conversation(original_prompt, llm_model):
         ]
     elif llm_model == "gemini":
         conversation_history = user_prompt
+    elif llm_model == "gemma":
+        conversation_history = [
+            {"role": "user", "content": instruction + user_prompt}
+        ]
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
 
@@ -204,6 +210,8 @@ def extract_model_response(llm_model, response):
             model_response = "Error: No response received from model."
     elif llm_model == "gemini":
         model_response = response.text
+    elif llm_model == "gemma":
+        model_response = response[0]["generated_text"][-1]["content"].strip()
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
 
@@ -255,7 +263,8 @@ def update_token_usage(llm_model, response, tokens_counts):
         tokens_counts['total_output_tokens'] += output_tokens
         cost = (input_tokens / 1000) * 0.00025 + (output_tokens / 1000) * 0.0005
         tokens_counts['total_cost'] += cost
-
+    elif llm_model == "gemma":
+        pass
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
 
@@ -372,6 +381,14 @@ def call_llm_api(llm_model, client, conversation_history, temperature, bedrock_r
                 system_instruction=build_system_prompt()
             )
         )
+    elif llm_model == "gemma":
+        pipe = pipeline(
+            "text-generation",
+            model="google/gemma-2-9b-it",
+            model_kwargs={"torch_dtype": torch.bfloat16},
+            device="cuda",
+        )
+        response = pipe(conversation_history, max_new_tokens=8192)
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
     return response
@@ -442,7 +459,7 @@ def api_key_configuration(llm_model):
         if not api_key:
             raise ValueError("Missing GOOGLE_API_KEY environment variable.")
         client = genai.Client(api_key=api_key)
-    elif llm_model in ["sonnet-35", "haiku"]:
+    elif llm_model in ["sonnet-35", "haiku", "gemma"]:
         api_key, client = None, None
     else:
         raise ValueError(f"Invalid {llm_model} api key")
@@ -453,7 +470,7 @@ def api_key_configuration(llm_model):
     elif llm_model == "haiku":
         # Define Haiku profile Inference Profile ARN
         inference_profile_arn = "arn:aws:bedrock:us-west-2:991404956194:application-inference-profile/56i8iq1vib3e"
-    elif llm_model in ["o3-mini", "gpt-4o", "gemini"]:
+    elif llm_model in ["o3-mini", "gpt-4o", "gemini", "gemma"]:
         inference_profile_arn = None
     else:
         raise ValueError(f"Unsupported model type: {llm_model}")
@@ -848,11 +865,13 @@ def call_create_table(compare_results_log_file, save_table_path):
 
     # === Regex pattern for results line ===
     pattern = re.compile(
-        r"INFO - ([\w_.\-]+): MSE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
+        r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d+ - INFO - ([\w_.\-]+): "
+        r"MSE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
         r"MAE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
         r"RMSE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
         r"Cosine=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
-        r"R2=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)"
+        r"R2=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?), "
+        r"NMSE=([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)"
     )
 
     # === Extract Data ===
@@ -868,13 +887,14 @@ def call_create_table(compare_results_log_file, save_table_path):
                     'RMSE': float(match.group(4)),
                     'Cosine Similarity': float(match.group(5)),
                     'R-squared': float(match.group(6)),
+                    'NMSE': float(match.group(7))
                 })
 
     # === Create DataFrame ===
     df = pd.DataFrame(results)
 
     # Format all float columns to scientific notation with 3 significant digits
-    for col in ['MSE', 'MAE', 'RMSE', 'Cosine Similarity', 'R-squared']:
+    for col in ['MSE', 'MAE', 'RMSE', 'Cosine Similarity', 'R-squared', 'NMSE']:
         df[col] = df[col].apply(lambda x: f"{x:.3e}")
 
     # === Save to CSV ===

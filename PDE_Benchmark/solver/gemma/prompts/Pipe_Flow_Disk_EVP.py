@@ -1,0 +1,33 @@
+import numpy as np
+from scipy.sparse import diags
+
+# Parameters
+Re = 10**4
+k_z = 1
+w_0 = lambda r: 1 - r**2
+
+# Domain
+N_r = 100
+r = np.linspace(0, 1, N_r)
+dr = r[1] - r[0]
+
+# Discretization
+A_r = diags([-1, 2, -1], [-1, 0, 1], shape=(N_r, N_r)) / dr**2
+A_z = diags([-1, 2, -1], [-1, 0, 1], shape=(N_r, N_r)) / (k_z**2 * dr**2)
+
+# Linearized Navier-Stokes equations in matrix form
+def linear_navier_stokes(s, u, w, p):
+    #... (Implement the matrix equations for u, w, and p)
+
+# Eigenvalue problem solver
+eigenvalues, eigenvectors = np.linalg.eig(linear_navier_stokes(s, u, w, p))
+
+# Extract the solution at the final time step
+u_final = eigenvectors[:, 0]
+w_final = eigenvectors[:, 1]
+p_final = eigenvectors[:, 2]
+
+# Save the solutions
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/u_final_Pipe_Flow_Disk_EVP.npy', u_final)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/w_final_Pipe_Flow_Disk_EVP.npy', w_final)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/p_final_Pipe_Flow_Disk_EVP.npy', p_final)

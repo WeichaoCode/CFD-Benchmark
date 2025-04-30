@@ -1,0 +1,42 @@
+2025-04-30 13:25:15,475 - INFO - ####################################################################################################
+2025-04-30 13:25:15,475 - INFO - Using the gemma, change temperature to 0.0, use the prompt prompts.json
+2025-04-30 13:25:15,476 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/5)
+2025-04-30 13:25:21,112 - INFO - ❌ API Call Error for 1D_Burgers_Equation: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>, <class 'transformers.models.gemma2.modeling_gemma2.Gemma2ForCausalLM'>). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have files named ('model-00001-of-00004.safetensors', 'model-00002-of-00004.safetensors', 'model-00003-of-00004.safetensors'). Checkout 'https://huggingface.co/google/gemma-2-9b-it/tree/main'for available files.
+
+while loading with Gemma2ForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have files named ('model-00001-of-00004.safetensors', 'model-00002-of-00004.safetensors', 'model-00003-of-00004.safetensors'). Checkout 'https://huggingface.co/google/gemma-2-9b-it/tree/main'for available files.
+
+
+
+2025-04-30 13:25:21,112 - INFO - 🔹 Generating code for: 1D_Diffusion (Attempt 1/5)

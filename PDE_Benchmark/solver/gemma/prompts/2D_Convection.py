@@ -1,0 +1,51 @@
+import numpy as np
+from numpy import array
+import matplotlib.pyplot as plt
+
+# Domain parameters
+nx = 100
+ny = 100
+x = np.linspace(0, 2, nx)
+y = np.linspace(0, 2, ny)
+X, Y = np.meshgrid(x, y)
+
+# Time parameters
+nt = 100
+dt = 0.32 / nt
+
+# Initial conditions
+u = np.ones((ny, nx))
+v = np.ones((ny, nx))
+u[int(ny / 2):int(3 * ny / 2), int(nx / 2):int(3 * nx / 2)] = 2
+v[int(ny / 2):int(3 * ny / 2), int(nx / 2):int(3 * nx / 2)] = 2
+
+# Boundary conditions
+u[0, :] = 1
+u[-1, :] = 1
+u[:, 0] = 1
+u[:, -1] = 1
+v[0, :] = 1
+v[-1, :] = 1
+v[:, 0] = 1
+v[:, -1] = 1
+
+# Time loop
+for n in range(nt):
+    un = u.copy()
+    vn = v.copy()
+
+    # Update u
+    u[1:-1, 1:-1] = un[1:-1, 1:-1] - dt * (
+        (un[1:-1, 1:-1] * (un[1:-1, 2:] - un[1:-1, :-2]) / (2 * dx))
+        + (vn[1:-1, 1:-1] * (un[2:, 1:-1] - un[:-2, 1:-1]) / (2 * dy))
+    )
+
+    # Update v
+    v[1:-1, 1:-1] = vn[1:-1, 1:-1] - dt * (
+        (un[1:-1, 1:-1] * (vn[1:-1, 2:] - vn[1:-1, :-2]) / (2 * dx))
+        + (vn[1:-1, 1:-1] * (vn[2:, 1:-1] - vn[:-2, 1:-1]) / (2 * dy))
+    )
+
+# Save results
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/u_2D_Convection.npy', u)
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/v_2D_Convection.npy', v)

@@ -1,0 +1,52 @@
+```python
+import numpy as np
+from scipy.sparse import diags
+
+# Constants
+Re_tau = 395
+kappa = 0.42
+A = 25.4
+mu = 1 / Re_tau
+
+# Domain and grid
+y = np.linspace(0, 2, 100)
+dy = y[1] - y[0]
+
+# Initial conditions
+u = np.zeros_like(y)
+mu_t = np.zeros_like(y)
+k = np.ones_like(y) * 0.01
+eps = np.ones_like(y) * 0.001
+omega = np.ones_like(y) * 1.0
+nu_SA = 1 / Re_tau
+
+# Time stepping parameters
+dt = 0.01
+nt = 1000
+
+# Solve the momentum equation
+for n in range(nt):
+    # Calculate mu_eff
+    mu_eff = mu + mu_t
+
+    # Construct the finite difference matrix
+    a = -mu_eff / (dy**2)
+    b = 1 / dy
+    c = 1 / (dy**2)
+    d = -1
+
+    # Assemble the sparse matrix
+    A = diags([a, b, c], [-1, 0, 1], shape=(len(y), len(y)))
+
+    # Solve for u
+    u_new = np.linalg.solve(A, u)
+
+    # Update u
+    u = u_new
+
+# Save the final solution
+np.save("u.npy", u)
+
+
+
+```

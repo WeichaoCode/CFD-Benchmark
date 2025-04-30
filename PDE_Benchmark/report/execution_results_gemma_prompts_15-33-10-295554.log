@@ -1,0 +1,464 @@
+====== Execution Results for Generated Solvers ======
+
+--- Running: 1D_KdV_Burgers_Equation.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/1D_KdV_Burgers_Equation.py", line 28, in <module>
+    u_new[i] = u[i] - dt / dx * u[i] * (u[i] - u[i - 1]) + a * dt / dx**2 * (u[i + 1] - 2 * u[i] + u[i - 1]) + b * dt / dx**3 * (u[i + 2] - 2 * u[i + 1] + u[i] - u[i - 1] + u[i - 2])
+IndexError: index 100 is out of bounds for axis 0 with size 100
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 1
+--- Running: 2D_Unsteady_Heat_Equation.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Unsteady_Heat_Equation.py", line 33, in <module>
+    T[1:-1, 1:-1] = T[1:-1, 1:-1] + alpha * dt * (dT_dx2 + dT_dy2) + dt * q[1:-1, 1:-1]
+ValueError: operands could not be broadcast together with shapes (99,101) (101,99) 
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 2
+--- Running: 1D_Diffusion.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/1D_Diffusion.py", line 18, in <module>
+    u[n] = un + nu * dt / dx**2 * (un[2:] - 2 * un[1:-1] + un[:-2])
+ValueError: operands could not be broadcast together with shapes (40,) (38,) 
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 3
+--- Running: Fully_Developed_Turbulent_Channel_Flow.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/Fully_Developed_Turbulent_Channel_Flow.py", line 41, in <module>
+    u_new = np.linalg.solve(A, u)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/numpy/linalg/_linalg.py", line 395, in solve
+    _assert_stacked_2d(a)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/numpy/linalg/_linalg.py", line 195, in _assert_stacked_2d
+    raise LinAlgError('%d-dimensional array given. Array must be '
+numpy.linalg.LinAlgError: 0-dimensional array given. Array must be at least two-dimensional
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 4
+--- Running: Flow_Past_Circular_Cylinder.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/Flow_Past_Circular_Cylinder.py", line 47, in <module>
+    u_r = (1 / r) * np.diff(psi, axis=1)
+ValueError: operands could not be broadcast together with shapes (100,) (100,99) 
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 5
+--- Running: 2D_Diffusion.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Diffusion.py", line 22, in <module>
+    A = diags([ -nu * (1 / (dx**2) + 1 / (dy**2)), 
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/scipy/sparse/_construct.py", line 297, in diags
+    A = diags_array(diagonals, offsets=offsets, shape=shape, dtype=dtype)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/scipy/sparse/_construct.py", line 211, in diags_array
+    return dia_array((data_arr, offsets), shape=(m, n)).asformat(format)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/scipy/sparse/_dia.py", line 97, in __init__
+    raise ValueError('offset array contains duplicate values')
+ValueError: offset array contains duplicate values
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 6
+--- Running: 2D_Shear_Flow_With_Tracer.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Shear_Flow_With_Tracer.py", line 37, in <module>
+    u_new = u - dt * (u * du_dx + w * du_dz) + dt * (np.diff(np.gradient(np.gradient(u, axis=0), axis=0), axis=0) / (z[1] - z[0])**2 + np.diff(np.gradient(np.gradient(u, axis=1), axis=1), axis=1) / (x[1] - x[0])**2)
+ValueError: operands could not be broadcast together with shapes (64,64) (64,63) 
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 7
+--- Running: 2D_Navier_Stokes_Cavity.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:45: RuntimeWarning: overflow encountered in scalar multiply
+  (un[j, i] * (un[j, i] - un[j, i - 1])) / dx
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:46: RuntimeWarning: overflow encountered in scalar multiply
+  + (vn[j, i] * (un[j, i] - un[j - 1, i])) / dy
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:45: RuntimeWarning: invalid value encountered in scalar add
+  (un[j, i] * (un[j, i] - un[j, i - 1])) / dx
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:54: RuntimeWarning: overflow encountered in scalar multiply
+  (un[j, i] * (vn[j, i] - vn[j, i - 1])) / dx
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:55: RuntimeWarning: overflow encountered in scalar multiply
+  + (vn[j, i] * (vn[j, i] - vn[j - 1, i])) / dy
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:54: RuntimeWarning: invalid value encountered in scalar add
+  (un[j, i] * (vn[j, i] - vn[j, i - 1])) / dx
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:49: RuntimeWarning: invalid value encountered in scalar subtract
+  (un[j, i + 1] - 2 * un[j, i] + un[j, i - 1]) / dx**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:58: RuntimeWarning: invalid value encountered in scalar subtract
+  (vn[j, i + 1] - 2 * vn[j, i] + vn[j, i - 1]) / dx**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:45: RuntimeWarning: invalid value encountered in scalar subtract
+  (un[j, i] * (un[j, i] - un[j, i - 1])) / dx
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:49: RuntimeWarning: invalid value encountered in scalar add
+  (un[j, i + 1] - 2 * un[j, i] + un[j, i - 1]) / dx**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:54: RuntimeWarning: invalid value encountered in scalar subtract
+  (un[j, i] * (vn[j, i] - vn[j, i - 1])) / dx
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:58: RuntimeWarning: invalid value encountered in scalar add
+  (vn[j, i + 1] - 2 * vn[j, i] + vn[j, i - 1]) / dx**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:50: RuntimeWarning: invalid value encountered in scalar subtract
+  + (un[j + 1, i] - 2 * un[j, i] + un[j - 1, i]) / dy**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:59: RuntimeWarning: invalid value encountered in scalar subtract
+  + (vn[j + 1, i] - 2 * vn[j, i] + vn[j - 1, i]) / dy**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:46: RuntimeWarning: invalid value encountered in scalar subtract
+  + (vn[j, i] * (un[j, i] - un[j - 1, i])) / dy
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:50: RuntimeWarning: invalid value encountered in scalar add
+  + (un[j + 1, i] - 2 * un[j, i] + un[j - 1, i]) / dy**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:55: RuntimeWarning: invalid value encountered in scalar subtract
+  + (vn[j, i] * (vn[j, i] - vn[j - 1, i])) / dy
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:59: RuntimeWarning: invalid value encountered in scalar add
+  + (vn[j + 1, i] - 2 * vn[j, i] + vn[j - 1, i]) / dy**2
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:68: RuntimeWarning: invalid value encountered in scalar subtract
+  (un[j, i + 1] - un[j, i - 1]) / (2 * dx)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:69: RuntimeWarning: invalid value encountered in scalar subtract
+  + (un[j + 1, i] - un[j - 1, i]) / (2 * dy)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:68: RuntimeWarning: invalid value encountered in scalar add
+  (un[j, i + 1] - un[j, i - 1]) / (2 * dx)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Cavity.py:46: RuntimeWarning: overflow encountered in scalar divide
+  + (vn[j, i] * (un[j, i] - un[j - 1, i])) / dy
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 0
+Total Scripts Failed: 8
+--- Running: 1D_Linear_Convection.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 1
+Total Scripts Failed: 8
+--- Running: 2D_Inviscid_Burgers.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Inviscid_Burgers.py", line 33, in <module>
+    u[1:-1, 1:-1] = un[1:-1, 1:-1] - dt / dx * un[1:-1, 1:-1] * ux[1:-1, 1:-1] - dt / dy * un[1:-1, 1:-1] * uy[1:-1, 1:-1]
+ValueError: operands could not be broadcast together with shapes (39,39) (38,39) 
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 1
+Total Scripts Failed: 9
+--- Running: 2D_Steady_Heat_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Steady_Heat_Equation.py:23: RuntimeWarning: overflow encountered in scalar add
+  T_new[j, i] = T[j, i] + dx**2 * (T[j, i + 1] - 2 * T[j, i] + T[j, i - 1]) / (2 * dx**2) + dy**2 * (T[j + 1, i] - 2 * T[j, i] + T[j - 1, i]) / (2 * dy**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Steady_Heat_Equation.py:23: RuntimeWarning: overflow encountered in scalar subtract
+  T_new[j, i] = T[j, i] + dx**2 * (T[j, i + 1] - 2 * T[j, i] + T[j, i - 1]) / (2 * dx**2) + dy**2 * (T[j + 1, i] - 2 * T[j, i] + T[j - 1, i]) / (2 * dy**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Steady_Heat_Equation.py:23: RuntimeWarning: overflow encountered in scalar multiply
+  T_new[j, i] = T[j, i] + dx**2 * (T[j, i + 1] - 2 * T[j, i] + T[j, i - 1]) / (2 * dx**2) + dy**2 * (T[j + 1, i] - 2 * T[j, i] + T[j - 1, i]) / (2 * dy**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Steady_Heat_Equation.py:23: RuntimeWarning: invalid value encountered in scalar add
+  T_new[j, i] = T[j, i] + dx**2 * (T[j, i + 1] - 2 * T[j, i] + T[j, i - 1]) / (2 * dx**2) + dy**2 * (T[j + 1, i] - 2 * T[j, i] + T[j - 1, i]) / (2 * dy**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Steady_Heat_Equation.py:23: RuntimeWarning: invalid value encountered in scalar subtract
+  T_new[j, i] = T[j, i] + dx**2 * (T[j, i + 1] - 2 * T[j, i] + T[j, i - 1]) / (2 * dx**2) + dy**2 * (T[j + 1, i] - 2 * T[j, i] + T[j - 1, i]) / (2 * dy**2)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 1
+Total Scripts Failed: 10
+--- Running: Lane_Emden_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 10
+--- Running: 2D_Navier_Stokes_Channel.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Navier_Stokes_Channel.py", line 37, in <module>
+    v = v_old - dt * (u_old * v_x + v_old * v_y + 1 / 1 * p_yy + 0.1 * (v_xx + v_yy))
+NameError: name 'v_x' is not defined. Did you mean: 'u_x'?
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 11
+--- Running: 2D_Poisson_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Poisson_Equation.py:30: RuntimeWarning: overflow encountered in scalar add
+  p_new[j, i] = p[j, i] + dx**2 * (b[j, i] / 2 + (p[j, i + 1] - 2 * p[j, i] + p[j, i - 1]) / dx**2 + (p[j + 1, i] - 2 * p[j, i] + p[j - 1, i]) / dy**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Poisson_Equation.py:30: RuntimeWarning: overflow encountered in scalar divide
+  p_new[j, i] = p[j, i] + dx**2 * (b[j, i] / 2 + (p[j, i + 1] - 2 * p[j, i] + p[j, i - 1]) / dx**2 + (p[j + 1, i] - 2 * p[j, i] + p[j - 1, i]) / dy**2)
+/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Poisson_Equation.py:30: RuntimeWarning: invalid value encountered in scalar add
+  p_new[j, i] = p[j, i] + dx**2 * (b[j, i] / 2 + (p[j, i + 1] - 2 * p[j, i] + p[j, i - 1]) / dx**2 + (p[j + 1, i] - 2 * p[j, i] + p[j - 1, i]) / dy**2)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 12
+--- Running: 2D_Rayleigh_Benard_Convection.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Rayleigh_Benard_Convection.py", line 42, in <module>
+    u_new = u + dt * (advection(u, u, w) + nu * laplacian(u))
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Rayleigh_Benard_Convection.py", line 35, in advection
+    return -np.roll(u * du_dx, 1, axis=0) - np.roll(w * dw_dz, 1, axis=1)
+ValueError: operands could not be broadcast together with shapes (64,64) (63,64) 
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 13
+--- Running: 2D_Convection.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Convection.py", line 39, in <module>
+    (un[1:-1, 1:-1] * (un[1:-1, 2:] - un[1:-1, :-2]) / (2 * dx))
+NameError: name 'dx' is not defined. Did you mean: 'nx'?
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 14
+--- Running: 1D_Nonlinear_Convection.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/1D_Nonlinear_Convection.py", line 18, in <module>
+    sol = solve_ivp(rhs, t_span, u0, t_eval=np.linspace(0, 5, 100), vectorized=True)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/scipy/integrate/_ivp/ivp.py", line 621, in solve_ivp
+    solver = method(fun, t0, y0, tf, vectorized=vectorized, **options)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/scipy/integrate/_ivp/rk.py", line 94, in __init__
+    self.f = self.fun(self.t, self.y)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/scipy/integrate/_ivp/base.py", line 154, in fun
+    return self.fun_single(t, y)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/scipy/integrate/_ivp/base.py", line 141, in fun_single
+    return self._fun(t, y[:, None]).ravel()
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/scipy/integrate/_ivp/base.py", line 23, in fun_wrapped
+    return np.asarray(fun(t, y), dtype=dtype)
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/1D_Nonlinear_Convection.py", line 14, in rhs
+    dudt = -u * np.gradient(u, x)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/numpy/lib/_function_base_impl.py", line 1234, in gradient
+    raise TypeError("invalid number of arguments")
+TypeError: invalid number of arguments
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 15
+--- Running: 1D_Euler_Shock_Tube.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/1D_Euler_Shock_Tube.py", line 38, in <module>
+    U_new = U - dt / dx * (F[1:, :] - F[:-1, :])
+ValueError: operands could not be broadcast together with shapes (100,3) (99,3) 
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 2
+Total Scripts Failed: 16
+--- Running: Lid_Driven_Cavity.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 16
+--- Running: Pipe_Flow_Disk_EVP.py ---
+Exit Code: 1
+Output:
+
+Errors:
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/Pipe_Flow_Disk_EVP.py", line 23
+    eigenvalues, eigenvectors = np.linalg.eig(linear_navier_stokes(s, u, w, p))
+    ^
+IndentationError: expected an indented block after function definition on line 19
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 17
+--- Running: 2D_Linear_Convection.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Linear_Convection.py", line 34, in <module>
+    u_new[j, k] = u[j, k] - dt * c * (u[j + 1, k] - u[j - 1, k]) / (2 * dx) - dt * c * (u[j, k + 1] - u[j, k - 1]) / (2 * dy)
+NameError: name 'dx' is not defined. Did you mean: 'x'?
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 18
+--- Running: 2D_Laplace_Equation.py ---
+Exit Code: 1
+Output:
+
+Errors:
+Traceback (most recent call last):
+  File "/opt/CFD-Benchmark/PDE_Benchmark/solver/gemma/prompts/2D_Laplace_Equation.py", line 17, in <module>
+    p[:, -1] = Y
+ValueError: could not broadcast input array from shape (50,50) into shape (50,)
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 3
+Total Scripts Failed: 19
+--- Running: 1D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 4
+Total Scripts Failed: 19
+--- Running: 2D_Burgers_Equation.py ---
+Exit Code: 0
+Output:
+
+Errors:
+
+--------------------------------------------------
+
+
+
+====== Execution Summary ======
+Total Scripts Passed: 5
+Total Scripts Failed: 19

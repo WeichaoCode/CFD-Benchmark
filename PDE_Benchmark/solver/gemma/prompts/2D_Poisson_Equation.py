@@ -1,0 +1,33 @@
+import numpy as np
+from numpy import array
+import matplotlib.pyplot as plt
+
+Lx = 2
+Ly = 1
+nx = 50
+ny = 20
+dx = Lx / (nx - 1)
+dy = Ly / (ny - 1)
+
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+X, Y = np.meshgrid(x, y)
+
+p = np.zeros((ny, nx))
+b = np.zeros((ny, nx))
+
+idx = int(nx / 4)
+idy = int(ny / 4)
+b[idy, idx] = 100
+idx = int(3 * nx / 4)
+idy = int(3 * ny / 4)
+b[idy, idx] = -100
+
+for n in range(1000):
+    p_new = np.copy(p)
+    for i in range(1, nx - 1):
+        for j in range(1, ny - 1):
+            p_new[j, i] = p[j, i] + dx**2 * (b[j, i] / 2 + (p[j, i + 1] - 2 * p[j, i] + p[j, i - 1]) / dx**2 + (p[j + 1, i] - 2 * p[j, i] + p[j - 1, i]) / dy**2)
+    p = p_new
+
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/p_2D_Poisson_Equation.npy', p)

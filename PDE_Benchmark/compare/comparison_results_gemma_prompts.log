@@ -1,0 +1,14 @@
+2025-04-30 15:33:29,743 - INFO - ====== Starting Comparison ======
+2025-04-30 15:33:29,744 - INFO - Found 10 common files.
+2025-04-30 15:33:29,745 - ERROR - ❌ f_Lane_Emden_Equation.npy failed: 'NoneType' object has no attribute 'shape'
+2025-04-30 15:33:29,751 - ERROR - ❌ p_2D_Navier_Stokes_Cavity.npy failed: Input contains NaN.
+2025-04-30 15:33:29,752 - ERROR - ❌ p_2D_Poisson_Equation.npy failed: Input contains NaN.
+2025-04-30 15:33:29,759 - INFO - p_Lid_Driven_Cavity.npy: MSE=1.615e+00, MAE=2.500e-01, RMSE=1.271e+00, Cosine=-0.043, R2=-8.453, NMSE=9.439
+2025-04-30 15:33:29,761 - INFO - u_2D_Burgers_Equation.npy: MSE=7.446e-04, MAE=7.057e-03, RMSE=2.729e-02, Cosine=1.000, R2=0.985, NMSE=0.001
+2025-04-30 15:33:29,762 - ERROR - ❌ u_2D_Navier_Stokes_Cavity.npy failed: Input contains NaN.
+2025-04-30 15:33:29,763 - INFO - u_Lid_Driven_Cavity.npy: MSE=7.685e-03, MAE=6.557e-02, RMSE=8.766e-02, Cosine=0.942, R2=0.870, NMSE=0.126
+2025-04-30 15:33:29,765 - INFO - v_2D_Burgers_Equation.npy: MSE=7.446e-04, MAE=7.057e-03, RMSE=2.729e-02, Cosine=1.000, R2=0.985, NMSE=0.001
+2025-04-30 15:33:29,766 - ERROR - ❌ v_2D_Navier_Stokes_Cavity.npy failed: Input contains NaN.
+2025-04-30 15:33:29,767 - INFO - v_Lid_Driven_Cavity.npy: MSE=8.925e-03, MAE=6.509e-02, RMSE=9.447e-02, Cosine=0.006, R2=-0.000, NMSE=1.000
+2025-04-30 15:33:29,823 - INFO - Found 10 common files.
+2025-04-30 15:33:33,838 - INFO - Found 10 common files.

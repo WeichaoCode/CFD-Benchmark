@@ -1,0 +1,27 @@
+import numpy as np
+from scipy.sparse import diags
+
+# Problem parameters
+n = 3.0
+R0 = 5
+
+# Domain and grid
+N = 100
+r = np.linspace(0, 1, N)
+dr = r[1] - r[0]
+
+# Initial guess
+f0 = R0**(2/(n-1)) * (1 - r**2)**2
+
+# Finite difference discretization
+A = diags([-1/dr**2, 1/dr**2], [-1, 1], shape=(N, N))
+A = A + np.diag(f0**n)
+
+# Solve the linear system
+f = np.linalg.solve(A, np.zeros(N))
+
+# Boundary condition
+f[0] = 0
+
+# Save the solution
+np.save('/opt/CFD-Benchmark/PDE_Benchmark/results/prediction/gemma/prompts/f_Lane_Emden_Equation.npy', f)

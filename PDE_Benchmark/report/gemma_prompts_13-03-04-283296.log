@@ -1,0 +1,330 @@
+2025-04-30 13:03:04,283 - INFO - ####################################################################################################
+2025-04-30 13:03:04,283 - INFO - Using the gemma, change temperature to 0.0, use the prompt prompts.json
+2025-04-30 13:03:04,283 - INFO - 🔹 Generating code for: 1D_Burgers_Equation (Attempt 1/5)
+2025-04-30 13:24:06,547 - WARNING - Ignored error while writing commit hash to /home/weichao/.cache/huggingface/hub/models--google--gemma-2-9b-it/refs/main: [Errno 28] No space left on device.
+2025-04-30 13:24:09,884 - INFO - ❌ API Call Error for 1D_Burgers_Equation: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>, <class 'transformers.models.gemma2.modeling_gemma2.Gemma2ForCausalLM'>). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have files named ('model-00001-of-00004.safetensors', 'model-00002-of-00004.safetensors', 'model-00003-of-00004.safetensors'). Checkout 'https://huggingface.co/google/gemma-2-9b-it/tree/main'for available files.
+
+while loading with Gemma2ForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have files named ('model-00001-of-00004.safetensors', 'model-00002-of-00004.safetensors', 'model-00003-of-00004.safetensors', 'model-00004-of-00004.safetensors'). Checkout 'https://huggingface.co/google/gemma-2-9b-it/tree/main'for available files.
+
+
+
+2025-04-30 13:24:09,885 - INFO - 🔹 Generating code for: 1D_Diffusion (Attempt 1/5)
+2025-04-30 13:24:10,420 - INFO - ❌ API Call Error for 1D_Diffusion: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:10,421 - INFO - 🔹 Generating code for: 1D_Euler_Shock_Tube (Attempt 1/5)
+2025-04-30 13:24:11,212 - INFO - ❌ API Call Error for 1D_Euler_Shock_Tube: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:11,212 - INFO - 🔹 Generating code for: 1D_Linear_Convection (Attempt 1/5)
+2025-04-30 13:24:11,700 - INFO - ❌ API Call Error for 1D_Linear_Convection: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:11,701 - INFO - 🔹 Generating code for: 1D_Nonlinear_Convection (Attempt 1/5)
+2025-04-30 13:24:12,190 - INFO - ❌ API Call Error for 1D_Nonlinear_Convection: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:12,190 - INFO - 🔹 Generating code for: 2D_Burgers_Equation (Attempt 1/5)
+2025-04-30 13:24:13,025 - INFO - ❌ API Call Error for 2D_Burgers_Equation: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:13,026 - INFO - 🔹 Generating code for: 2D_Convection (Attempt 1/5)
+2025-04-30 13:24:13,508 - INFO - ❌ API Call Error for 2D_Convection: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:13,509 - INFO - 🔹 Generating code for: 2D_Diffusion (Attempt 1/5)
+2025-04-30 13:24:43,799 - WARNING - Ignored error while writing commit hash to /home/weichao/.cache/huggingface/hub/models--google--gemma-2-9b-it/refs/main: [Errno 28] No space left on device.
+2025-04-30 13:24:46,703 - INFO - ❌ API Call Error for 2D_Diffusion: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>, <class 'transformers.models.gemma2.modeling_gemma2.Gemma2ForCausalLM'>). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have files named ('model-00001-of-00004.safetensors', 'model-00002-of-00004.safetensors', 'model-00003-of-00004.safetensors'). Checkout 'https://huggingface.co/google/gemma-2-9b-it/tree/main'for available files.
+
+while loading with Gemma2ForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1152, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 1115, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/utils/hub.py", line 517, in cached_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have files named ('model-00001-of-00004.safetensors', 'model-00002-of-00004.safetensors', 'model-00003-of-00004.safetensors', 'model-00004-of-00004.safetensors'). Checkout 'https://huggingface.co/google/gemma-2-9b-it/tree/main'for available files.
+
+
+
+2025-04-30 13:24:46,704 - INFO - 🔹 Generating code for: 2D_Inviscid_Burgers (Attempt 1/5)
+2025-04-30 13:24:47,416 - INFO - ❌ API Call Error for 2D_Inviscid_Burgers: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:47,416 - INFO - 🔹 Generating code for: 2D_Laplace_Equation (Attempt 1/5)
+2025-04-30 13:24:48,585 - INFO - ❌ API Call Error for 2D_Laplace_Equation: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:48,586 - INFO - 🔹 Generating code for: 2D_Linear_Convection (Attempt 1/5)
+2025-04-30 13:24:49,300 - INFO - ❌ API Call Error for 2D_Linear_Convection: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:49,300 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Cavity (Attempt 1/5)
+2025-04-30 13:24:50,077 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Cavity: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:50,077 - INFO - 🔹 Generating code for: 2D_Navier_Stokes_Channel (Attempt 1/5)
+2025-04-30 13:24:51,133 - INFO - ❌ API Call Error for 2D_Navier_Stokes_Channel: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:51,134 - INFO - 🔹 Generating code for: 2D_Poisson_Equation (Attempt 1/5)
+2025-04-30 13:24:52,056 - INFO - ❌ API Call Error for 2D_Poisson_Equation: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:52,056 - INFO - 🔹 Generating code for: 2D_Steady_Heat_Equation (Attempt 1/5)
+2025-04-30 13:24:53,289 - INFO - ❌ API Call Error for 2D_Steady_Heat_Equation: Could not load model google/gemma-2-9b-it with any of the following classes: (<class 'transformers.models.auto.modeling_auto.AutoModelForCausalLM'>,). See the original errors:
+
+while loading with AutoModelForCausalLM, an error is thrown:
+Traceback (most recent call last):
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/pipelines/base.py", line 291, in infer_framework_load_model
+    model = model_class.from_pretrained(model, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 279, in _wrapper
+    return func(*args, **kwargs)
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4260, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/opt/Dino_parallel/lib/python3.10/site-packages/transformers/modeling_utils.py", line 1100, in _get_resolved_checkpoint_files
+    raise EnvironmentError(
+OSError: google/gemma-2-9b-it does not appear to have a file named pytorch_model.bin, model.safetensors, tf_model.h5, model.ckpt or flax_model.msgpack.
+
+
+
+2025-04-30 13:24:53,290 - INFO - 🔹 Generating code for: 2D_Unsteady_Heat_Equation (Attempt 1/5)
